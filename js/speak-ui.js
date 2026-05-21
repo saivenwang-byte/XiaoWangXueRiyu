@@ -29,9 +29,25 @@ const SpeakUI = (() => {
     el.textContent = msg;
     el.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      el.hidden = true;
-    }, ms);
+    if (ms > 0) {
+      toastTimer = setTimeout(() => {
+        el.hidden = true;
+      }, ms);
+    }
+  }
+
+  function hideToast() {
+    const el = ensureToast();
+    if (!el) return;
+    el.hidden = true;
+    clearTimeout(toastTimer);
+  }
+
+  if (typeof SpeechEngine !== "undefined" && SpeechEngine.setLoadingListener) {
+    SpeechEngine.setLoadingListener((on) => {
+      if (on) showToast("加载中…", 0);
+      else hideToast();
+    });
   }
 
   function parsePayload(btn) {
@@ -104,6 +120,7 @@ const SpeakUI = (() => {
     const payload = parsePayload(btn);
     btn.classList.add("is-speaking");
     const ok = await SpeechEngine.speakJa(payload);
+    hideToast();
     btn.classList.remove("is-speaking");
     if (!ok) {
       const wx = /MicroMessenger/i.test(navigator.userAgent || "");

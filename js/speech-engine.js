@@ -13,10 +13,14 @@ const SpeechEngine = (() => {
   const mp3Warm = new Map();
 
   const TTS_CACHE_DIR = "tts-cache/";
-  const MP3_WAIT_MS = 1400;
-  const MP3_WAIT_WECHAT_MS = 4500;
+  /** 直链 Audio 兜底等待（微信已优先 fetch，不再傻等 4.5s） */
+  const MP3_WAIT_MS = 900;
+  const MP3_WAIT_WECHAT_MS = 1100;
+  const FETCH_MP3_MS = 2800;
+  const FETCH_MP3_MS_DESKTOP = 2200;
   let audioUnlocked = false;
-  const ONLINE_TTS_MS = 4000;
+  const ONLINE_TTS_MS = 2200;
+  let loadingListener = null;
   const ONLINE_TTS_URLS = [
     "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=ja&q=",
     "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=",
@@ -41,6 +45,46 @@ const SpeechEngine = (() => {
   function preferFetchMp3() {
     const ua = navigator.userAgent || "";
     return isWeChatBrowser() || /iPhone|iPad|iPod|Android/i.test(ua);
+  }
+
+  /** 微信内 Google 在线 TTS 几乎不可用，跳过以免拖到 1 分钟+ */
+  function shouldUseOnlineTts() {
+    return !isWeChatBrowser();
+  }
+
+  function notifyLoading(on) {
+    try {
+      loadingListener?.(!!on);
+    } catch (_) {}
+  }
+
+  function setLoadingListener(fn) {
+    loadingListener = typeof fn === "function" ? fn : null;
+  }
+
+  async function fetchMp3Blob(line, token) {
+    if (token != null && token !== speakToken) return null;
+    if (typeof location !== "undefined" && location.protocol === "file:") return null;
+    const url = ttsMp3Url(line);
+    const ms = preferFetchMp3() ? FETCH_MP3_MS : FETCH_MP3_MS_DESKTOP;
+    const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), ms) : null;
+    try {
+      const res = await fetch(url, {
+        cache: "force-cache",
+        credentials: "omit",
+        signal: ctrl?.signal,
+      });
+      if (token != null && token !== speakToken) return null;
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      if (blob.size < 200) return null;
+      return blob;
+    } catch (_) {
+      return null;
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
   }
 
   /** 微信 / 手机：首次点击解锁音频（否则 play() 无声） */
@@ -251,37 +295,22 @@ const SpeechEngine = (() => {
     return `${base}${TTS_CACHE_DIR}${ttsCacheKey(line)}.mp3`;
   }
 
-  /** fetch→blob，微信里比 Audio 直链更稳 */
+  /** fetch→blob（带超时） */
   async function playBundledMp3Fetch(line, token) {
-    if (token != null && token !== speakToken) return false;
-    if (typeof location !== "undefined" && location.protocol === "file:") return false;
-    const url = ttsMp3Url(line);
-    try {
-      const res = await fetch(url, { cache: "force-cache", credentials: "omit" });
-      if (token != null && token !== speakToken) return false;
-      if (!res.ok) return false;
-      const blob = await res.blob();
-      if (blob.size < 200) return false;
-      const blobUrl = URL.createObjectURL(blob);
-      const ok = await playAudioUrl(blobUrl, token);
-      URL.revokeObjectURL(blobUrl);
-      return ok;
-    } catch (_) {
-      return false;
-    }
+    const blob = await fetchMp3Blob(line, token);
+    if (!blob) return false;
+    const blobUrl = URL.createObjectURL(blob);
+    const ok = await playAudioUrl(blobUrl, token);
+    URL.revokeObjectURL(blobUrl);
+    return ok;
   }
 
-  /** ① 嵌入语音包（手机/微信优先 fetch→blob，更稳） */
-  async function playBundledMp3(line, token) {
-    if (preferFetchMp3()) {
-      const ok = await playBundledMp3Fetch(line, token);
-      if (ok) return true;
-    }
+  /** 直链 MP3 短等待兜底 */
+  function playBundledMp3Direct(line, token, waitMs) {
     return new Promise((resolve) => {
       warmPhrase(line);
       const url = ttsMp3Url(line);
       let settled = false;
-      const waitMs = isWeChatBrowser() ? MP3_WAIT_WECHAT_MS : MP3_WAIT_MS;
       const finish = (ok) => {
         if (settled) return;
         settled = true;
@@ -302,27 +331,35 @@ const SpeechEngine = (() => {
           if (currentAudio === audio) currentAudio = null;
           finish(true);
         };
-        audio.onerror = () => {
-          playBundledMp3Fetch(line, token).then((f) => finish(f));
-        };
+        audio.onerror = () => finish(false);
         try {
           const p = audio.play();
-          if (p && typeof p.catch === "function") {
-            p.catch(() => playBundledMp3Fetch(line, token).then((f) => finish(f)));
-          }
+          if (p && typeof p.catch === "function") p.catch(() => finish(false));
         } catch (_) {
-          playBundledMp3Fetch(line, token).then((f) => finish(f));
+          finish(false);
         }
       };
       playNow();
       setTimeout(() => {
-        if (!settled) {
-          playBundledMp3Fetch(line, token).then((f) => {
-            if (!settled) finish(f);
-          });
-        }
+        if (!settled) finish(false);
       }, waitMs);
     });
+  }
+
+  /** ① 嵌入语音包：手机/微信先 fetch（≤3s），再短兜底直链 */
+  async function playBundledMp3(line, token) {
+    if (preferFetchMp3()) {
+      const ok = await playBundledMp3Fetch(line, token);
+      if (ok) return true;
+      return playBundledMp3Direct(
+        line,
+        token,
+        isWeChatBrowser() ? MP3_WAIT_WECHAT_MS : MP3_WAIT_MS
+      );
+    }
+    const okDirect = await playBundledMp3Direct(line, token, MP3_WAIT_MS);
+    if (okDirect) return true;
+    return playBundledMp3Fetch(line, token);
   }
 
   function isMostlyKana(line) {
@@ -362,20 +399,24 @@ const SpeechEngine = (() => {
   }
 
   async function playOnlineJapaneseWithTimeout(line, token) {
+    if (!shouldUseOnlineTts()) return false;
     return Promise.race([
       playOnlineJapanese(line, 0, token),
       new Promise((r) => setTimeout(() => r(false), ONLINE_TTS_MS)),
     ]);
   }
 
-  /** ③ 在线日语 TTS（fetch→blob；消耗用户手机流量，不占 GitHub 语音包带宽） */
+  /** ③ 在线日语 TTS（仅桌面备用；微信内跳过） */
   async function playOnlineJapanese(line, urlIndex = 0, token) {
+    if (!shouldUseOnlineTts()) return false;
     if (token != null && token !== speakToken) return false;
     if (typeof location !== "undefined" && location.protocol === "file:") return false;
     if (urlIndex >= ONLINE_TTS_URLS.length) return false;
     const src = ONLINE_TTS_URLS[urlIndex] + encodeURIComponent(line);
+    const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), ONLINE_TTS_MS) : null;
     try {
-      const res = await fetch(src, { mode: "cors", credentials: "omit" });
+      const res = await fetch(src, { mode: "cors", credentials: "omit", signal: ctrl?.signal });
       if (token != null && token !== speakToken) return false;
       if (res.ok) {
         const blob = await res.blob();
@@ -386,7 +427,10 @@ const SpeechEngine = (() => {
           if (ok) return true;
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
     return playOnlineJapaneseDirect(line, urlIndex, token);
   }
 
@@ -517,11 +561,6 @@ const SpeechEngine = (() => {
       return true;
     }
     if (token != null && token !== speakToken) return false;
-    if (await playBundledMp3Fetch(line, token)) {
-      if (token != null && token !== speakToken) return false;
-      return true;
-    }
-    if (token != null && token !== speakToken) return false;
     if (await playOnlineJapaneseWithTimeout(line, token)) {
       if (token != null && token !== speakToken) return false;
       return true;
@@ -567,16 +606,21 @@ const SpeechEngine = (() => {
   async function speakJa(textOrObj, rate = 0.85) {
     const token = ++speakToken;
     stopAllPlayback();
-    const candidates = fallbackLines(textOrObj);
-    if (!candidates.length) return false;
-    for (const line of candidates) {
-      if (token !== speakToken) return false;
-      if (await trySpeakLine(line, rate, token)) {
+    notifyLoading(true);
+    try {
+      const candidates = fallbackLines(textOrObj);
+      if (!candidates.length) return false;
+      for (const line of candidates) {
         if (token !== speakToken) return false;
-        return true;
+        if (await trySpeakLine(line, rate, token)) {
+          if (token !== speakToken) return false;
+          return true;
+        }
       }
+      return false;
+    } finally {
+      if (token === speakToken) notifyLoading(false);
     }
-    return false;
   }
 
   function speak(text, rate) {
@@ -868,5 +912,6 @@ const SpeechEngine = (() => {
     unlockAudioOnce,
     isWeChatBrowser,
     stopAllPlayback,
+    setLoadingListener,
   };
 })();
