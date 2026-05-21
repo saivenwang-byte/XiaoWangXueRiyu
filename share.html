@@ -62,7 +62,7 @@
     <div class="share-btns">
       <button type="button" class="btn primary" id="btn-copy">复制学习链接（发微信）</button>
       <button type="button" class="btn secondary" id="btn-copy-wx">复制推荐话术（链接+说明）</button>
-      <a href="index.html?v=22" class="btn secondary" id="btn-enter" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
+      <a href="index.html?v=27" class="btn secondary" id="btn-enter" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
     </div>
 
     <ol class="steps" id="deploy-steps" hidden>
@@ -75,8 +75,8 @@
 
     <div class="wechat-tip" id="wechat-tip"></div>
   </div>
-  <script src="js/public-url.config.js?v=22"></script>
-  <script src="js/share-wechat.js?v=22"></script>
+  <script src="js/public-url.config.js?v=27"></script>
+  <script src="js/share-wechat.js?v=27"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistrations().then(function (regs) {
@@ -92,12 +92,16 @@
     document.getElementById("btn-enter").href = learnUrl;
 
     const badge = document.getElementById("status-badge");
-    if (!publicOk) {
-      badge.textContent = "⚠ 本地地址，需先 Netlify 部署";
+    if (!publicOk && netlifyOk) {
+      badge.textContent = "✓ 已配置公网链接（可复制发手机）";
+      badge.className = "status-badge ok";
+      document.getElementById("deploy-steps").hidden = true;
+    } else if (!publicOk) {
+      badge.textContent = "⚠ 本地地址，需配置 public-url.config.js";
       badge.className = "status-badge local";
       document.getElementById("deploy-steps").hidden = false;
     } else if (netlifyOk) {
-      badge.textContent = "✓ 已配置 Netlify，适合微信分享";
+      badge.textContent = "✓ 已配置公网，适合微信分享";
       badge.className = "status-badge ok";
     } else if (gh) {
       badge.textContent = "⚠ GitHub 链接：国内微信常打不开";
@@ -113,9 +117,12 @@
       "请勿分享：<code>github.com/…/仓库名</code> 或 <code>saivenwang-byte.github.io</code>（无项目名会 404）。<br>必须包含：<code>/XiaoWangXueRiyu/index.html</code> 或使用 Netlify 根域名。";
 
     const tip = document.getElementById("wechat-tip");
-    if (!publicOk) {
+    if (!publicOk && netlifyOk) {
       tip.innerHTML =
-        "<strong>为什么微信打不开？</strong><br>微信只能打开 <code>https://</code> 公网页面，本地文件、zip、仓库地址都不行。";
+        "<strong>笔记本预览 + 手机学习</strong><br>① 本机：<code>localhost</code> 仅电脑可用<br>② 手机微信：复制上方 <strong>https</strong> 链接（不要用 localhost）<br>③ 同 WiFi 调试可双击「手机同WiFi预览.bat」";
+    } else if (!publicOk) {
+      tip.innerHTML =
+        "<strong>为什么手机打不开 localhost？</strong><br>手机上的 localhost 是手机自己。请配置公网地址或运行「一键搞定.bat」。";
     } else if (netlifyOk) {
       tip.innerHTML =
         "<strong>发给好友</strong><br>1. 点「复制学习链接」→ 微信粘贴发送<br>2. 对方点蓝色链接即可（推荐 Netlify 域名）<br>3. 第二关跟读需允许麦克风";

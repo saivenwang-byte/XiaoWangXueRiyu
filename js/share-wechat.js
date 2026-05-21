@@ -13,7 +13,16 @@ const ShareWechat = (() => {
     return (location.origin + path).replace(/\/$/, "");
   }
 
+  /** 公网学习链接（配置了 HYOUGA_PUBLIC_ORIGIN 时始终用公网，本地预览也可复制发手机） */
+  function publicLearnUrl() {
+    const base = configuredOrigin() || (isPublicHttps() ? pathBase() : "");
+    if (!base) return "";
+    return `${base.replace(/\/$/, "")}/index.html?v=${CACHE_VER}`;
+  }
+
   function learnUrl() {
+    const pub = publicLearnUrl();
+    if (pub && !isPublicHttps()) return pub;
     return `${pathBase()}/index.html?v=${CACHE_VER}`;
   }
 
@@ -84,7 +93,7 @@ const ShareWechat = (() => {
       alert("不能分享本地文件路径。请先部署到 https（见 微信分享说明.txt）。");
       return;
     }
-    if (!isPublicHttps()) {
+    if (!isPublicHttps() && !configuredOrigin()) {
       showDeployGuide();
       const go = confirm("是否打开 share.html 查看说明？");
       if (go) location.href = "share.html";
@@ -127,7 +136,9 @@ const ShareWechat = (() => {
     if (!btn) return;
     btn.addEventListener("click", shareToWechat);
     if (configuredOrigin()) {
-      btn.title = "复制 Netlify 链接（推荐微信分享）";
+      btn.title = isPublicHttps()
+        ? "复制公网链接发微信"
+        : "复制公网链接（发到手机微信，不要用 localhost）";
     } else if (isPublicHttps()) {
       btn.title = isGithubPages()
         ? "复制链接（微信建议改用 Netlify，见说明）"
@@ -154,6 +165,7 @@ const ShareWechat = (() => {
 
   return {
     learnUrl,
+    publicLearnUrl,
     sharePageUrl,
     pathBase,
     configuredOrigin,

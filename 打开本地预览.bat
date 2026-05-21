@@ -6,7 +6,10 @@ title 情景日语 - 本地预览
 echo.
 echo  正在启动本地服务（端口 8765）...
 echo  浏览器将自动打开；Cursor 里请用此地址预览：
-echo  http://localhost:8765/index.html
+echo  http://localhost:8765/index.html?v=27
+echo.
+echo  手机同 WiFi 预览：双击「手机同WiFi预览.bat」
+echo  公网发微信：双击「一键搞定.bat」或打开 share.html 复制链接
 echo.
 echo  不要直接双击 index.html（会导致列表空白）
 echo.

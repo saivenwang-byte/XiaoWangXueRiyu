@@ -11,11 +11,11 @@
 
 | 渠道 | 地址 |
 |------|------|
-| **Netlify（微信推荐）** | https://qingjing-biaori.netlify.app/index.html?v=27 |
-| 分享页 | https://qingjing-biaori.netlify.app/share.html |
-| GitHub Pages（备份） | https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=27 |
+| **GitHub Pages（当前主链接，手机可用）** | https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=27 |
+| 分享页 | https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html |
+| Netlify（国内微信更稳，待拖拽部署） | https://qingjing-biaori.netlify.app/index.html?v=27 |
 
-> 若 Netlify 尚未拖拽部署，链接会 404；部署步骤见 `docs/发布与知识库同步.md`。
+> 一键脚本：`一键搞定.bat`（本机 + 手机 WiFi + 复制公网链接）
 
 ## 本版要点
 
@@ -28,7 +28,7 @@
 
 ```
 标日课后巩固（第14/16/18课），点开就能学：
-https://qingjing-biaori.netlify.app/index.html?v=27
+https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=27
 
 说明：跟读录不上音时，微信右上角「···」→ 在浏览器中打开。
 ```
