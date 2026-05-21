@@ -20,15 +20,8 @@ const Practice = (() => {
 
   function speakJp(text) {
     if (typeof SpeechEngine !== "undefined") {
-      SpeechEngine.speak(text);
-      return;
+      SpeechEngine.speakJa(text);
     }
-    if (!text || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "ja-JP";
-    u.rate = 0.85;
-    window.speechSynthesis.speak(u);
   }
 
   function normalize(s) {

@@ -122,7 +122,7 @@ const WordGuide = (() => {
     sheet.querySelector(".sheet-kana").textContent = data.kana ? `读法：${data.kana}` : "";
     sheet.querySelector(".sheet-zh").textContent = data.zh || "";
     sheet.querySelector(".sheet-tip").textContent = data.tip ? `💡 ${data.tip}` : "多练几遍，口型放慢。";
-    sheet.querySelector(".sheet-play").onclick = () => SpeechEngine.speak(data.jp || "");
+    sheet.querySelector(".sheet-play").onclick = () => SpeechEngine.speakJa(data.jp || data);
     sheet.classList.add("open");
   }
 

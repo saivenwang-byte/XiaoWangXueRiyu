@@ -39,7 +39,7 @@ const RubyRender = (() => {
     return extensions
       .map(
         (e) =>
-          `<span class="ext-word"><span class="ext-badge">拓</span><span class="ext-jp">${escapeHtml(e.jp)}</span><span class="ext-zh">（${escapeHtml(e.zh)}）</span></span>`
+          `<span class="ext-word"><span class="ext-badge">拓</span><span class="ext-jp">${escapeHtml(e.jp)}</span><span class="ext-zh zh-annotation">（${escapeHtml(e.zh)}）</span></span>`
       )
       .join("");
   }

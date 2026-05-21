@@ -8,8 +8,10 @@ function mvpDefaultState() {
       16: { gate1: false, gate2: false, gate3: false },
       18: { gate1: false, gate2: false, gate3: false },
     },
+    flashProgress: {},
     mistakes: [],
     lastLessonId: 16,
+    showChineseZh: true,
   };
 }
 
@@ -25,6 +27,8 @@ function loadMvpState() {
       lessons: { ...base.lessons, ...(parsed.lessons || {}) },
       mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
       studyDays: Array.isArray(parsed.studyDays) ? parsed.studyDays : [],
+      flashProgress: parsed.flashProgress && typeof parsed.flashProgress === "object" ? parsed.flashProgress : {},
+      showChineseZh: parsed.showChineseZh !== false,
     };
   } catch {
     return mvpDefaultState();
@@ -138,6 +142,14 @@ function weekStudyDays(state) {
     keys.push(`${d.getFullYear()}-${m}-${day}`);
   }
   return keys.map((k) => ({ date: k, studied: state.studyDays.includes(k) }));
+}
+
+function markFlashSeen(state, lessonId, vocabId) {
+  const lid = Number(lessonId);
+  if (!state.flashProgress[lid]) state.flashProgress[lid] = { seen: [] };
+  const seen = state.flashProgress[lid].seen;
+  if (!seen.includes(vocabId)) seen.push(vocabId);
+  touchStudyDay(state);
 }
 
 function clearMvpData() {

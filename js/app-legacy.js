@@ -112,7 +112,7 @@
       `;
       card.querySelector(".btn-listen").addEventListener("click", (e) => {
         e.stopPropagation();
-        if (preview) SpeechEngine.speak(preview);
+        if (preview) SpeechEngine.speakJa(preview);
       });
       card.querySelector(".btn-start").addEventListener("click", () => openScenario(sc.id));
       list.appendChild(card);

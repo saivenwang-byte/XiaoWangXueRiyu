@@ -1,98 +1,210 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+
+<html lang="ja" translate="no">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+
   <meta name="apple-mobile-web-app-capable" content="yes" />
+
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <meta name="theme-color" content="#FF8A80" />
-  <meta name="description" content="标日第14/16/18课课后巩固：语法网络、情景对话、快速测试" />
+
+  <meta name="description" content="標日第14/16/18課：文法ネット・会話・テスト" />
+
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="标日课后巩固 · 第14/16/18课" />
-  <meta property="og:description" content="10分钟课后巩固：串语法、练对话、测考点。微信点开链接即可用，无需安装。" />
+
+  <meta property="og:title" content="標日 あと学習 · 第14/16/18課" />
+
+  <meta property="og:description" content="10分で文法をつなげ、会話を録音してお手本と比べる。リンクを開くだけ。" />
+
   <meta property="og:image" content="icons/icon.svg" />
-  <title>标日课后巩固 · 14/16/18课</title>
+
+  <title>標日 あと学習 · 14/16/18課</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <link rel="manifest" href="manifest.json" />
+
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/mvp.css?v=2" />
+
+  <link rel="stylesheet" href="css/app.css?v=11" />
+
+  <link rel="stylesheet" href="css/mvp.css?v=11" />
+
 </head>
+
 <body class="mvp-app">
+
   <div id="app">
+
     <header class="top-bar">
-      <h1 id="page-title">标日课后巩固</h1>
+
+      <h1 id="page-title">標日 あと学習</h1>
+
       <div class="top-actions">
-        <button type="button" class="icon-btn" id="btn-share-wechat" aria-label="分享到微信">📤</button>
-        <a href="share.html" class="icon-btn" aria-label="分享页" style="text-decoration:none;font-size:14px">⎙</a>
+
+        <button type="button" class="icon-btn" id="btn-share-wechat" aria-label="共有">📤</button>
+
+        <a href="share.html" class="icon-btn" aria-label="共有ページ" style="text-decoration:none;font-size:14px">⎙</a>
+
       </div>
+
     </header>
 
+
+
     <main id="main-content">
-      <section id="view-home" class="view active">
+
+      <section id="view-home" class="view active" aria-hidden="false">
+
         <div class="mvp-hero">
-          <h2>こんにちは！课后 10 分钟</h2>
-          <p>串语法 · 练对话 · 测考点 — 第 14 / 16 / 18 课</p>
-          <p id="home-week-count" style="margin-top:8px;font-size:13px">本周已学 0 天</p>
+
+          <h2>こんにちは！ あと10分</h2>
+
+          <p><strong>会話を中心に</strong> · 録音して話す · 第14 / 16 / 18課</p>
+
+          <p id="home-week-count" style="margin-top:8px;font-size:13px">学習日数（今週）：0 日</p>
+
         </div>
+
+        <article class="flash-home-card">
+          <h3>🃏 気軽に · 単語フラッシュ</h3>
+          <p class="hint-ja">この課の単語だけ · 失敗なし · テストの前にざっと見る</p>
+          <div id="flash-lesson-pick" class="flash-pick-grid"></div>
+        </article>
+
         <div id="lesson-cards"></div>
+
       </section>
 
-      <section id="view-lesson" class="view">
-        <div id="lesson-flow-head"></div>
-        <div id="gate-tabs" class="gate-tabs"></div>
+
+
+      <section id="view-lesson" class="view lesson-cockpit-view" aria-hidden="true">
+
+        <div id="lesson-cockpit" class="lesson-cockpit"></div>
+
+        <div id="lesson-flow-head" class="lesson-flow-head-slim"></div>
+
         <div id="lesson-flow-body"></div>
+
       </section>
 
-      <section id="view-review" class="view">
-        <p class="hint">错题在第 1、3、7 天提醒复习（不发微信通知）</p>
-        <p class="hint" id="review-empty" hidden>暂无待复习错题 🎉</p>
+      <section id="view-review" class="view" aria-hidden="true">
+
+        <p class="hint-ja">まちがえた問題は 1・3・7 日目に復習リストへ（通知なし）</p>
+
+        <p class="hint-ja" id="review-empty" hidden>復習リストは空です 🎉</p>
+
         <ul id="review-list" style="list-style:none;padding:0"></ul>
+
       </section>
 
-      <section id="view-me" class="view">
-        <h3 class="section-title">近 7 天学习</h3>
+
+
+      <section id="view-me" class="view" aria-hidden="true">
+
+        <h3 class="section-title">学習日数</h3>
+
         <div class="heatmap" id="heatmap"></div>
-        <h3 class="section-title">课程进度（三关）</h3>
+
+        <h3 class="section-title">進捗</h3>
+
         <div id="parent-progress"></div>
-        <h3 class="section-title">薄弱知识点 TOP3</h3>
+
+        <h3 class="section-title">にがてポイント TOP3</h3>
+
         <ul id="weak-top3" style="padding-left:18px"></ul>
-        <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:20px;width:100%">清空本机学习记录</button>
-        <button type="button" class="btn primary" id="btn-share-me" style="width:100%;margin-top:12px">📤 复制链接 · 发到微信</button>
-        <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">分享页（二维码）</a>
-        <p class="hint footer-hint" style="margin-top:12px">纯前端离线可用 · 无登录 · 无 AI 评分</p>
-        <a href="legacy.html" class="btn ghost" style="display:block;text-align:center;margin-top:10px;text-decoration:none">打开旧版 24 课情景互动</a>
+
+        <label class="settings-toggle">
+
+          <input type="checkbox" id="toggle-zh" checked />
+
+          <span>中文释义を表示（小さく灰色）</span>
+
+        </label>
+
+        <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:16px;width:100%">学習データを消す</button>
+
+        <button type="button" class="btn primary" id="btn-share-me" style="width:100%;margin-top:12px">📤 リンクをコピー</button>
+
+        <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">共有ページ（QR）</a>
+
+        <p class="hint-ja footer-hint" style="margin-top:12px">オフライン可 · ログイン不要 · AI採点なし</p>
+
+        <a href="legacy.html" class="btn ghost" style="display:block;text-align:center;margin-top:10px;text-decoration:none">旧版：24課シナリオ</a>
+
       </section>
+
     </main>
 
-    <div id="review-modal" class="gn-modal" hidden></div>
 
-    <nav class="bottom-nav" aria-label="主导航">
+
+    <div id="review-modal" class="gn-modal" hidden></div>
+    <div id="lesson-modal" class="gn-modal" hidden aria-hidden="true"></div>
+
+
+
+    <nav class="bottom-nav" aria-label="メインナビ">
+
       <button type="button" class="nav-item active" data-view="home">
-        <span class="nav-icon">🏠</span><span>首页</span>
+
+        <span class="nav-icon">🏠</span><span>ホーム</span>
+
       </button>
+
       <button type="button" class="nav-item" data-view="review">
-        <span class="nav-icon">📝</span><span>复习</span>
+
+        <span class="nav-icon">📝</span><span>復習</span>
+
         <span class="nav-badge" id="review-badge" hidden>0</span>
+
       </button>
+
       <button type="button" class="nav-item" data-view="me">
-        <span class="nav-icon">👤</span><span>我的</span>
+
+        <span class="nav-icon">👤</span><span>マイページ</span>
+
       </button>
+
     </nav>
+
   </div>
 
-  <script src="js/data/lessons-mvp.js"></script>
-  <script src="js/ruby-render.js"></script>
-  <script src="js/mvp-storage.js"></script>
-  <script src="js/speech-engine.js"></script>
-  <script src="js/grammar-network.js"></script>
-  <script src="js/dialogue-gate.js"></script>
-  <script src="js/quiz-gate.js"></script>
-  <script src="js/share-wechat.js"></script>
-  <script src="js/app.js"></script>
+
+
+  <script src="js/data/mini-cards.js?v=11"></script>
+  <script src="js/data/lessons-mvp.js?v=11"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=11"></script>
+  <script src="js/ruby-render.js?v=11"></script>
+  <script src="js/mvp-storage.js?v=11"></script>
+  <script src="js/speech-engine.js?v=11"></script>
+  <script src="js/speak-ui.js?v=11"></script>
+  <script src="js/ui-feedback.js?v=11"></script>
+  <script src="js/grammar-network.js?v=11"></script>
+  <script src="js/dialogue-gate.js?v=11"></script>
+  <script src="js/quiz-gate.js?v=11"></script>
+  <script src="js/vocab-flash.js?v=11"></script>
+  <script src="js/share-wechat.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
   <script>
     ShareWechat.mountButton(document.getElementById("btn-share-wechat"));
     ShareWechat.mountButton(document.getElementById("btn-share-me"));
-    if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.update()));
+      navigator.serviceWorker.register("./sw.js?v=11").catch(() => {});
+    }
   </script>
+
 </body>
+
 </html>
+

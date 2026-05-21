@@ -27,9 +27,9 @@ const QuizGate = (() => {
       container.innerHTML = `
         <div class="qz-wrap celebrate">
           <span class="big-emoji">✅</span>
-          <h3>本课三关全部完成！</h3>
-          <p class="hint">错题已记入「复习」，第1/3/7天会提醒。</p>
-          <button type="button" class="btn primary" id="qz-back">返回首页</button>
+          <h3>3つの関クリア！</h3>
+          <p class="hint-ja">まちがえた問題は「復習」に入ります（1・3・7日目）。</p>
+          <button type="button" class="btn primary" id="qz-back">ホームへ</button>
         </div>
       `;
       container.querySelector("#qz-back").onclick = () => onComplete?.(true);
@@ -43,13 +43,13 @@ const QuizGate = (() => {
         .map((opt, i) => `<button type="button" class="qz-opt" data-i="${i}">${escapeHtml(opt)}</button>`)
         .join("")}</div>`;
     } else {
-      body = `<input type="text" class="qz-input" id="qz-fill" placeholder="请输入答案" autocomplete="off" />
-        <button type="button" class="btn primary" id="qz-submit">提交</button>`;
+      body = `<input type="text" class="qz-input" id="qz-fill" placeholder="答えを入力" autocomplete="off" />
+        <button type="button" class="btn primary" id="qz-submit">送信</button>`;
     }
 
     container.innerHTML = `
       <div class="qz-wrap">
-        <p class="qz-progress">第 ${qIndex + 1} / ${questions.length} 题</p>
+        <p class="qz-progress">問題 ${qIndex + 1} / ${questions.length}</p>
         <p class="qz-question jp">${escapeHtml(q.question)}</p>
         ${body}
         <div id="qz-feedback"></div>
@@ -80,16 +80,16 @@ const QuizGate = (() => {
     } else {
       ok = normalize(userRaw) === normalize(q.answer);
     }
-    const correctText =
-      q.type === "choice" ? q.options[q.answer] : q.answer;
+    const correctText = q.type === "choice" ? q.options[q.answer] : q.answer;
 
     if (ok) {
-      feedback.innerHTML = `<p class="feedback ok">✓ 正确！${escapeHtml(q.explanation)}</p>
-        <button type="button" class="btn primary" id="qz-next">下一题</button>`;
+      feedback.innerHTML = `<p class="feedback ok">✅ せいかい！</p>
+        <p class="hint-ja">${escapeHtml(q.explanation)}</p>
+        <button type="button" class="btn primary" id="qz-next">次へ</button>`;
     } else {
-      feedback.innerHTML = `<p class="feedback err">再想想～ 正确答案：${escapeHtml(correctText)}</p>
-        <p class="hint">${escapeHtml(q.explanation)}</p>
-        <button type="button" class="btn primary" id="qz-next">下一题</button>`;
+      feedback.innerHTML = `<p class="feedback err">❌ ざんねん。正解は「${escapeHtml(correctText)}」です。</p>
+        <p class="hint-ja">${escapeHtml(q.explanation)}</p>
+        <button type="button" class="btn primary" id="qz-next">次へ</button>`;
       addMvpMistake(state, {
         lessonId: lesson.lessonId,
         questionId: q.id,

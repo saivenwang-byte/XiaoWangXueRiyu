@@ -1,37 +1,36 @@
-const CACHE = "hyouga-v3";
-const ASSETS = [
+const CACHE = "hyouga-mvp-v11";
+const PRECACHE = [
   "./",
   "./index.html",
   "./share.html",
+  "./legacy.html",
   "./css/app.css",
-  "./css/scenario.css",
-  "./css/duo.css",
+  "./css/mvp.css",
   "./manifest.json",
   "./icons/icon.svg",
-  "./js/data/lessons-catalog.js",
-  "./js/data/lessons-detailed.js",
-  "./js/data/lessons-build.js",
-  "./js/data/scenarios.js",
-  "./js/storage.js",
-  "./js/speech-engine.js",
-  "./js/word-guide.js",
-  "./js/tools.js",
-  "./js/lesson-view.js",
-  "./js/scenario-player.js",
-  "./js/practice.js",
-  "./js/chat.js",
-  "./js/app.js",
 ];
 
+function isMutableAsset(url) {
+  const p = url.pathname;
+  return p.includes("/js/") || p.includes("/css/") || p.endsWith(".html");
+}
+
+function isTtsCache(url) {
+  return url.pathname.includes("/tts-cache/");
+}
+
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() =>
-      self.clients.claim()
-    )
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
@@ -39,6 +38,14 @@ self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
+
+  if (isMutableAsset(url) || isTtsCache(url)) {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then((cached) => {
       const net = fetch(e.request)

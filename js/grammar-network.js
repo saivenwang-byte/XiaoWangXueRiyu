@@ -5,7 +5,6 @@ const GrammarNetwork = (() => {
   let onGateComplete = null;
   let container = null;
   let state = null;
-  let deepLinks = false;
 
   function escapeHtml(s) {
     const d = document.createElement("div");
@@ -13,8 +12,75 @@ const GrammarNetwork = (() => {
     return d.innerHTML;
   }
 
+  function showZh() {
+    return state?.showChineseZh !== false;
+  }
+
+  function speakJp(textOrNode) {
+    if (typeof SpeechEngine === "undefined") return;
+    const src =
+      textOrNode && typeof textOrNode === "object"
+        ? {
+            title: textOrNode.title,
+            japanese: textOrNode.japanese,
+            jp: textOrNode.jp,
+            example: textOrNode.example,
+            explain: textOrNode.explain,
+          }
+        : textOrNode;
+    SpeechEngine.speakJa(src);
+  }
+
+  function titleHtml(node) {
+    const ruby =
+      node.titleRuby && RubyRender.fromSegments
+        ? RubyRender.fromSegments(node.title, node.titleRuby)
+        : escapeHtml(node.title);
+    const zh =
+      node.titleZh && showZh()
+        ? `<span class="zh-annotation title-zh">（${escapeHtml(node.titleZh)}）</span>`
+        : "";
+    return `${ruby}${zh}`;
+  }
+
   function linkClass(type) {
     return `gn-link gn-link-${type}`;
+  }
+
+  function lessonModalEl() {
+    let el = document.getElementById("lesson-modal");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "lesson-modal";
+      el.className = "gn-modal";
+      el.hidden = true;
+      document.getElementById("app")?.appendChild(el);
+    }
+    return el;
+  }
+
+  function renderDepthHtml(sections) {
+    if (!sections?.length) return "";
+    return sections
+      .map((sec) => {
+        let body = "";
+        (sec.blocks || []).forEach((b) => {
+          if (b.type === "text") body += `<p>${escapeHtml(b.text)}</p>`;
+          if (b.type === "pair")
+            body += `<div class="gn-pair"><p class="bad">❌ ${escapeHtml(b.bad)}</p><p class="good">✅ ${escapeHtml(b.good)}</p></div>`;
+          if (b.type === "list")
+            body += `<ul>${b.items.map((it) => `<li>${escapeHtml(it)}</li>`).join("")}</ul>`;
+          if (b.type === "table" && b.rows)
+            body += `<div class="gn-table">${b.rows
+              .map(
+                (r) =>
+                  `<div class="gn-table-row"><span>${escapeHtml(r[0])}</span><span>${escapeHtml(r[1])}</span></div>`
+              )
+              .join("")}</div>`;
+        });
+        return `<section class="gn-depth-sec"><h4>${escapeHtml(sec.heading)}</h4>${body}</section>`;
+      })
+      .join("");
   }
 
   function mount(el, lessonId, options) {
@@ -22,7 +88,6 @@ const GrammarNetwork = (() => {
     state = options.state;
     onGateComplete = options.onComplete;
     lesson = getLessonMvp(lessonId);
-    deepLinks = lessonId === 16;
     cardIndex = 0;
     flipped = false;
     render();
@@ -35,36 +100,77 @@ const GrammarNetwork = (() => {
   function render() {
     const node = currentNode();
     const total = lesson.grammarNodes.length;
+    const required = lesson.grammarNodes.filter((n) => !n.supplement);
+    const reqTotal = required.length;
+    const reqIdx = required.findIndex((n) => n.id === node.id);
+    const progressLabel = node.supplement
+      ? `補充カード · ${cardIndex + 1}/${total}`
+      : `必学 ${reqIdx >= 0 ? reqIdx + 1 : "?"}/${reqTotal} · 全体 ${cardIndex + 1}/${total}`;
+    const depthBtn = node.depthSections?.length
+      ? `<button type="button" class="btn secondary btn-sm" id="gn-depth">📖 先生の補足</button>`
+      : "";
     container.innerHTML = `
       <div class="gn-wrap">
-        <p class="gn-progress">语法卡片 ${cardIndex + 1} / ${total}${node.core ? " · ★本课核心" : ""}</p>
+        <p class="gn-progress">${progressLabel}${node.core ? " · ★コア" : ""}</p>
         <div class="gn-card ${flipped ? "flipped" : ""}" id="gn-flip">
           <div class="gn-face gn-front">
-            <h3>${escapeHtml(node.title)}</h3>
-            <p class="gn-hint">点击卡片看详解</p>
+            <div class="gn-title-row">
+              <h3>${titleHtml(node)}</h3>
+              <button type="button" class="btn-speak-round" id="gn-speak-title" aria-label="日本語で読む" title="日本語で読む">🔊</button>
+            </div>
+            <p class="gn-hint">タップでくわしく · 🔊＝日本語音声パック</p>
           </div>
           <div class="gn-face gn-back">
             <p class="gn-explain">${escapeHtml(node.explanation)}</p>
             <p class="gn-example jp">${RubyRender.nodeExample(node)}</p>
-            <p class="gn-example zh">${escapeHtml(node.exampleTranslation || "")}</p>
             <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
+            <div class="gn-speak-row">
+              <button type="button" class="btn secondary btn-sm" id="gn-speak-explain">🔊 説明</button>
+              <button type="button" class="btn secondary btn-sm" id="gn-speak-example">🔊 例文</button>
+              ${depthBtn}
+            </div>
           </div>
         </div>
         <div class="gn-links" id="gn-links"></div>
         <div class="gn-tags">${(node.tags || []).map((t) => `<span class="gn-tag">${escapeHtml(t)}</span>`).join("")}</div>
         <div class="gn-nav">
-          <button type="button" class="btn secondary" id="gn-prev" ${cardIndex === 0 ? "disabled" : ""}>上一张</button>
-          <button type="button" class="btn primary" id="gn-next">${cardIndex >= total - 1 ? "完成第一关" : "下一张"}</button>
+          <button type="button" class="btn secondary" id="gn-prev" ${cardIndex === 0 ? "disabled" : ""}>前へ</button>
+          <button type="button" class="btn primary" id="gn-next">${cardIndex >= total - 1 ? "第1関クリア" : "次へ"}</button>
         </div>
       </div>
-      <div id="gn-modal" class="gn-modal" hidden></div>
     `;
 
     const flip = container.querySelector("#gn-flip");
-    flip.onclick = () => {
+    flip.onclick = (e) => {
+      if (e.target.closest("button")) return;
       flipped = !flipped;
       flip.classList.toggle("flipped", flipped);
     };
+
+    container.querySelector("#gn-speak-title").onclick = (e) => {
+      e.stopPropagation();
+      speakJp(node);
+    };
+
+    container.querySelector("#gn-speak-explain").onclick = (e) => {
+      e.stopPropagation();
+      speakJp({ title: node.explanation });
+    };
+
+    container.querySelector("#gn-speak-example").onclick = (e) => {
+      e.stopPropagation();
+      speakJp({ example: node.example });
+    };
+
+    const depthEl = container.querySelector("#gn-depth");
+    if (depthEl) {
+      depthEl.onclick = (e) => {
+        e.stopPropagation();
+        showModal(
+          `<h3>${titleHtml(node)}</h3><p class="mini-label">先生の補足 · 教科書の外</p>${renderDepthHtml(node.depthSections)}`
+        );
+      };
+    }
 
     const linksEl = container.querySelector("#gn-links");
     (node.links || []).forEach((link) => {
@@ -93,18 +199,65 @@ const GrammarNetwork = (() => {
         onGateComplete?.();
       }
     };
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
   }
 
-  function showModal(html) {
-    const modal = container.querySelector("#gn-modal");
+  function showModal(html, onReady) {
+    const modal = lessonModalEl();
     modal.hidden = false;
-    modal.innerHTML = `<div class="gn-modal-inner">${html}<button type="button" class="btn ghost gn-close">关闭</button></div>`;
+    modal.setAttribute("aria-hidden", "false");
+    modal.innerHTML = `<div class="gn-modal-inner">${html}<button type="button" class="btn ghost gn-close">閉じる</button></div>`;
     modal.querySelector(".gn-close").onclick = () => {
       modal.hidden = true;
+      modal.setAttribute("aria-hidden", "true");
     };
     modal.onclick = (e) => {
-      if (e.target === modal) modal.hidden = true;
+      if (e.target === modal) {
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+      }
     };
+    onReady?.(modal);
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(modal);
+  }
+
+  function showMiniCard(link) {
+    const key =
+      typeof miniCardKeyFromLink === "function" ? miniCardKeyFromLink(link) : link.miniCardKey;
+    const card = typeof getMiniCard === "function" ? getMiniCard(key) : null;
+    if (!card) {
+      showModal(
+        `<p class="jp">${escapeHtml(link.label)}</p><p class="hint-ja">ミニカード準備中です。</p>`
+      );
+      return;
+    }
+    const ex =
+      card.exampleRuby && RubyRender.fromSegments
+        ? RubyRender.fromSegments(card.example, card.exampleRuby)
+        : escapeHtml(card.example);
+    const titleRuby =
+      card.titleRuby && RubyRender.fromSegments
+        ? RubyRender.fromSegments(card.title, card.titleRuby)
+        : escapeHtml(card.title);
+    showModal(
+      `
+      <p class="mini-label">ミニカード · 約10秒</p>
+      <div class="mini-head">
+        <h3 class="jp">${titleRuby}</h3>
+        <button type="button" class="btn-speak-round" id="mini-speak-title">🔊</button>
+      </div>
+      <p class="gn-explain">${escapeHtml(card.explain)}</p>
+      <div class="mini-ex-row">
+        <p class="jp">${ex}</p>
+        <button type="button" class="btn-speak-round" id="mini-speak-ex">🔊</button>
+      </div>
+    `,
+      (modal) => {
+        modal.querySelector("#mini-speak-title").onclick = () => speakJp(card);
+        modal.querySelector("#mini-speak-ex").onclick = () => speakJp({ example: card.example });
+        speakJp(card);
+      }
+    );
   }
 
   function handleLink(link, node) {
@@ -112,23 +265,19 @@ const GrammarNetwork = (() => {
       openContrast(link, node);
       return;
     }
-    if (!link.targetNodeId) {
-      showModal(`<p>${escapeHtml(link.external || link.label)}</p><p class="hint">跨课链接将在 V1.1 开放跳转。</p>`);
-      return;
+    if (link.targetNodeId) {
+      const target = findNodeAcrossLessons(link.targetNodeId);
+      if (target && target.lesson.lessonId === lesson.lessonId) {
+        const idx = target.lesson.grammarNodes.findIndex((n) => n.id === link.targetNodeId);
+        if (idx >= 0) {
+          cardIndex = idx;
+          flipped = true;
+          render();
+          return;
+        }
+      }
     }
-    const target = findNodeAcrossLessons(link.targetNodeId);
-    if (!target) return;
-    if (!deepLinks && target.lesson.lessonId !== lesson.lessonId) {
-      showModal(`<p>目标：${escapeHtml(target.node.title)}（第${target.lesson.lessonId}课）</p><p class="hint">第14、18课跨课跳转将在 V1.1 激活；第16课已可点击。</p>`);
-      return;
-    }
-    const idx = target.lesson.grammarNodes.findIndex((n) => n.id === link.targetNodeId);
-    if (idx >= 0) {
-      lesson = target.lesson;
-      cardIndex = idx;
-      flipped = true;
-      render();
-    }
+    showMiniCard(link);
   }
 
   function openContrast(link, node) {
@@ -142,32 +291,45 @@ const GrammarNetwork = (() => {
       preset = CONTRAST_PRESETS[key];
     }
     if (preset) {
-      showModal(`
+      const zh = (col) =>
+        col.exampleZh && showZh()
+          ? `<p class="zh-annotation">${escapeHtml(col.exampleZh)}</p>`
+          : "";
+      showModal(
+        `
         <h3>${escapeHtml(preset.title)}</h3>
         <div class="gn-contrast-grid">
           <div class="gn-contrast-col">
             <h4>${escapeHtml(preset.left.label)}</h4>
-            <p><strong>句型</strong> ${escapeHtml(preset.left.pattern)}</p>
+            <p><strong>文型</strong> ${escapeHtml(preset.left.pattern)}</p>
             <p class="gn-timeline">${escapeHtml(preset.left.timeline)}</p>
             <p class="jp">${escapeHtml(preset.left.example)}</p>
-            <p class="zh">${escapeHtml(preset.left.exampleZh)}</p>
+            ${zh(preset.left)}
             <p class="gn-mistake">${escapeHtml(preset.left.mistake)}</p>
+            <button type="button" class="btn secondary btn-sm gn-contrast-speak" data-jp="${escapeHtml(preset.left.example)}">🔊</button>
           </div>
           <div class="gn-contrast-col">
             <h4>${escapeHtml(preset.right.label)}</h4>
-            <p><strong>句型</strong> ${escapeHtml(preset.right.pattern)}</p>
+            <p><strong>文型</strong> ${escapeHtml(preset.right.pattern)}</p>
             <p class="gn-timeline">${escapeHtml(preset.right.timeline)}</p>
             <p class="jp">${escapeHtml(preset.right.example)}</p>
-            <p class="zh">${escapeHtml(preset.right.exampleZh)}</p>
+            ${zh(preset.right)}
             <p class="gn-mistake">${escapeHtml(preset.right.mistake)}</p>
+            <button type="button" class="btn secondary btn-sm gn-contrast-speak" data-jp="${escapeHtml(preset.right.example)}">🔊</button>
           </div>
         </div>
-      `);
+      `,
+        (modal) => {
+          modal.querySelectorAll(".gn-contrast-speak").forEach((btn) => {
+            btn.onclick = () => speakJp(btn.dataset.jp);
+          });
+        }
+      );
       return;
     }
     if (link.contrastPair) {
       showModal(`
-        <h3>重点辨析</h3>
+        <h3>⚠️ 比べてみよう</h3>
         <ul class="gn-pair-list">
           ${link.contrastPair.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}
         </ul>

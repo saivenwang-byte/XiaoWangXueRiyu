@@ -78,6 +78,11 @@ html, body {
 
 .view.active { display: block; }
 
+.view[aria-hidden="true"] {
+  display: none !important;
+  pointer-events: none;
+}
+
 #view-chat {
   display: none;
   flex-direction: column;

@@ -123,9 +123,9 @@ const ScenarioPlayer = (() => {
       footer.innerHTML = `
         <button type="button" class="btn secondary" id="sc-play">🔊 再听一遍</button>
         <button type="button" class="btn primary sc-next">继续</button>`;
-      footer.querySelector("#sc-play").onclick = () => SpeechEngine.speak(step.jp);
+      footer.querySelector("#sc-play").onclick = () => SpeechEngine.speakJa(step.jp);
       footer.querySelector(".sc-next").onclick = () => next();
-      SpeechEngine.speak(step.jp);
+      SpeechEngine.speakJa(step.jp);
       return;
     }
 
@@ -201,7 +201,7 @@ const ScenarioPlayer = (() => {
     `;
 
     const feedback = stage.querySelector("#sc-feedback");
-    footer.querySelector("#sc-play").onclick = () => SpeechEngine.speak(step.jp);
+    footer.querySelector("#sc-play").onclick = () => SpeechEngine.speakJa(step.jp);
 
     const holdBtn = footer.querySelector("#sc-hold");
     let holdPromise = null;
@@ -273,7 +273,7 @@ const ScenarioPlayer = (() => {
     holdBtn.addEventListener("mouseup", onHoldEnd);
     holdBtn.addEventListener("mouseleave", onHoldEnd);
 
-    SpeechEngine.speak(step.jp);
+    SpeechEngine.speakJa(step.jp);
   }
 
   function showSpeakGuide(feedback, stage, step, heard, result) {
