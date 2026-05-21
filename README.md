@@ -5,7 +5,7 @@
 ## MVP 阶段成果（已冻结 · 2026-05-21）
 
 - **产品** 1.0.1 · **cache** v=46 · **Git 标签** `mvp-v1.0.1-biaori-141618`
-- **冻结说明**：[docs/MVP-FREEZE.md](./docs/MVP-FREEZE.md) · **手机验收**：[docs/MVP收官-手机验收清单.md](./docs/MVP收官-手机验收清单.md)
+- **冻结说明**：[docs/MVP-FREEZE.md](./docs/MVP-FREEZE.md) · **发家长/学员**：[docs/MVP-学员与家长说明.md](./docs/MVP-学员与家长说明.md) · **验收**：[docs/MVP收官-手机验收清单.md](./docs/MVP收官-手机验收清单.md)
 
 ## 正式链接（发给学员 · 已自动发布）
 

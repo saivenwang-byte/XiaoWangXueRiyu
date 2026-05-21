@@ -42,6 +42,7 @@
 | 机器可读沿革 | `docs/version-history.json` → `mvp_freeze` |
 | 迭代 confirmed | `docs/iteration-baseline.json` |
 | 学员话术 | `VERSION.md` |
+| 家长/学员说明（可发微信） | [MVP-学员与家长说明.md](./MVP-学员与家长说明.md) |
 
 ## 下一阶段启动条件
 
