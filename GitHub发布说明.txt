@@ -23,13 +23,16 @@
 4. 等待 Actions 部署完成（约 1～3 分钟）
    仓库 → Actions → 绿色勾
 
-5. 你的永久链接（把「你的用户名」换成实际 GitHub 用户名）：
+5. 你的永久链接（账号 saivenwang-byte）：
 
    学习主页：
-   https://你的用户名.github.io/XiaoWangXueRiyu/index.html
+   https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html
 
    分享页：
-   https://你的用户名.github.io/XiaoWangXueRiyu/share.html
+   https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html
+
+   仓库：
+   https://github.com/saivenwang-byte/XiaoWangXueRiyu
 
 ───────────────────────────────────────────────────────
 若不想用脚本，可手动执行：
