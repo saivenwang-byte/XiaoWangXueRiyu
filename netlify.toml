@@ -1,3 +1,13 @@
-# Netlify 拖拽部署：把整个「日语学习」文件夹拖进 https://app.netlify.com/drop
+# 正式上线：站点名建议 qingjing-biaori → https://qingjing-biaori.netlify.app
 [build]
   publish = "."
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

@@ -1,7 +1,6 @@
 /**
- * 手机 / 微信分享必须用 https 公网地址（不能用 localhost）
- *
- * 当前：GitHub Pages（已部署 build 27，手机可直接打开）
- * 若 Netlify 部署成功，可改为 https://qingjing-biaori.netlify.app（国内微信更稳）
+ * 正式上线 · 唯一对外发行域名（微信发此 https 链接，与是否同一 WiFi 无关）
+ * 部署：双击「打开Netlify拖拽部署.bat」或 scripts/deploy-netlify.ps1
+ * 改域名后须再发布一次 Netlify，并递增 ?v= / CACHE_VER
  */
-window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
+window.HYOUGA_PUBLIC_ORIGIN = "https://qingjing-biaori.netlify.app";
