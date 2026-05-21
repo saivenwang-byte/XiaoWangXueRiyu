@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta property="og:title" content="标日课后巩固 · 分享给好友" />
+  <meta property="og:description" content="第14/16/18课三关巩固，微信点开即用" />
+  <title>分享 · 标日课后巩固</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/mvp.css" />
+  <style>
+    .share-page { padding: 24px 20px; text-align: center; max-width: 420px; margin: 0 auto; }
+    .share-page h1 { font-size: 22px; color: #e57373; margin-bottom: 8px; }
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .status-badge.ok { background: #f0fff4; color: #276749; }
+    .status-badge.local { background: #fff3e0; color: #e65100; }
+    #qrcode { margin: 16px auto; min-height: 200px; }
+    #qrcode img { max-width: 220px; border-radius: 12px; }
+    .link-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: left;
+      margin: 16px 0;
+      border: 1px solid #ffccbc;
+    }
+    .share-btns { display: flex; flex-direction: column; gap: 10px; }
+    .share-btns .btn { width: 100%; }
+    .wechat-tip {
+      text-align: left;
+      background: #fff8e1;
+      border: 1px solid #ffccbc;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #3e2723;
+      margin-top: 16px;
+    }
+    .steps { text-align: left; margin: 16px 0; font-size: 14px; line-height: 1.7; }
+    .steps li { margin: 8px 0; }
+  </style>
+</head>
+<body class="mvp-app">
+  <div class="share-page">
+    <h1>标日课后巩固</h1>
+    <p class="hint">第 14 / 16 / 18 课 · 一课三关</p>
+    <p id="status-badge" class="status-badge">检测中…</p>
+
+    <div id="qrcode"></div>
+    <div class="link-box" id="share-url">正在获取地址…</div>
+
+    <div class="share-btns">
+      <button type="button" class="btn primary" id="btn-copy">复制学习链接（发微信）</button>
+      <button type="button" class="btn secondary" id="btn-copy-wx">复制推荐话术（链接+说明）</button>
+      <a href="index.html" class="btn secondary" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
+    </div>
+
+    <ol class="steps" id="deploy-steps" hidden>
+      <li>电脑双击运行：<strong>打开Netlify拖拽部署.bat</strong></li>
+      <li>登录后，把整个「<strong>日语学习</strong>」文件夹拖进网页虚线框</li>
+      <li>等待出现 Site is live，复制 <code>https://xxx.netlify.app</code></li>
+      <li>手机用流量打开 <code>…/index.html</code> 测一遍</li>
+      <li>把链接发到微信，所有人点开就能用</li>
+    </ol>
+
+    <div class="wechat-tip" id="wechat-tip"></div>
+  </div>
+  <script src="js/share-wechat.js"></script>
+  <script>
+    const learnUrl = ShareWechat.learnUrl();
+    const shareUrl = location.href.split("#")[0];
+    const publicOk = ShareWechat.isPublicHttps();
+
+    document.getElementById("share-url").textContent = learnUrl;
+
+    const badge = document.getElementById("status-badge");
+    if (publicOk) {
+      badge.textContent = "✓ 已是公网 HTTPS，可发给任何人";
+      badge.className = "status-badge ok";
+    } else {
+      badge.textContent = "⚠ 仍是本地地址，需先部署（见下方）";
+      badge.className = "status-badge local";
+      document.getElementById("deploy-steps").hidden = false;
+    }
+
+    const tip = document.getElementById("wechat-tip");
+    if (publicOk) {
+      tip.innerHTML =
+        "<strong>发给好友怎么用</strong><br>" +
+        "1. 点上方「复制学习链接」→ 粘贴到微信聊天 → 发送<br>" +
+        "2. 对方点蓝色链接即可学习（无需安装小程序）<br>" +
+        "3. <strong>第二关录音</strong>：微信内打开后 → 右上角 … →「在浏览器中打开」<br>" +
+        "4. iPhone 可 Safari → 分享 →「添加到主屏幕」，像小程序一样从桌面进<br><br>" +
+        "<strong>说明</strong>：这是网页版，不是微信商店里的小程序；进度保存在各自手机里。";
+    } else {
+      tip.innerHTML =
+        "<strong>为什么现在不能分享？</strong><br>" +
+        "微信只能打开 <code>https://</code> 公网链接，localhost 或双击 html 别人都打不开。<br>" +
+        "按上方 5 步部署一次（免费 Netlify），以后更新文件夹再拖一次即可。";
+    }
+
+    const qr = document.getElementById("qrcode");
+    const img = document.createElement("img");
+    img.alt = "二维码";
+    img.src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
+      encodeURIComponent(learnUrl);
+    qr.appendChild(img);
+
+    const wxText =
+      "【标日课后巩固】第14/16/18课，10分钟三关：语法卡片→情景对话→小测验。点开就能学：\n" +
+      learnUrl;
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("已复制\n\n" + text);
+      } catch {
+        prompt("请手动复制：", text);
+      }
+    }
+
+    document.getElementById("btn-copy").onclick = () => copyText(learnUrl);
+    document.getElementById("btn-copy-wx").onclick = () => copyText(wxText);
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "标日闯关 · 14/16/18课",
+  "short_name": "标日闯关",
+  "description": "知识地图 + 闯关练习，手机微信专用",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#58cc02",
+  "theme_color": "#58cc02",
+  "orientation": "portrait",
+  "lang": "zh-CN"
+}

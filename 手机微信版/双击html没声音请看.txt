@@ -1,0 +1,4 @@
+直接双击 index.html 通常没有声音（浏览器限制 file:// 协议）。
+
+请双击：打开本地预览.bat
+或发 https 链接（Netlify / Gitee Pages），不要只发 zip 让对方双击 html。

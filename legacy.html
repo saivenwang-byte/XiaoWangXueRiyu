@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#58cc02" />
+  <meta name="description" content="标日情景互动：24课、多场景、听说读写（旧版入口）" />
+  <title>情景日语 · 标日初级上（旧版）</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/scenario.css" />
+  <link rel="stylesheet" href="css/duo.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="top-bar">
+      <h1 id="page-title">情景日语</h1>
+      <div class="top-actions">
+        <a href="index.html" class="icon-btn" style="text-decoration:none;font-size:12px;line-height:36px;padding:0 8px">新版</a>
+        <button type="button" class="icon-btn" id="btn-share" aria-label="分享">⎙</button>
+        <button type="button" class="icon-btn" id="btn-settings" aria-label="设置">⚙</button>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <p class="hint" style="margin:0 16px 8px;background:#fff8e0;padding:10px;border-radius:10px">
+        这是 <strong>旧版 24 课情景互动</strong>。PRD 三关巩固请用 <a href="index.html">新版首页</a>。
+      </p>
+
+      <section id="view-scenarios" class="view active">
+        <div class="duo-hero">
+          <div class="duo-mascot" aria-hidden="true">🦉</div>
+          <div class="duo-hero-text">
+            <h2>こんにちは！今天练哪一幕？</h2>
+            <p>像玩游戏一样学标日：先听一句 → 按住说话 → 即时纠错</p>
+            <span class="duo-streak" id="duo-streak">🔥 今日开始</span>
+          </div>
+        </div>
+        <h3 class="section-title">💬 课文情景对话（每课多轮）</h3>
+        <div class="scenario-list" id="dialogue-list"></div>
+        <h3 class="section-title" style="margin-top:20px">🎬 互动场景</h3>
+        <div class="scenario-list" id="scenario-list"></div>
+        <h3 class="section-title" style="margin-top:20px">按课文筛选</h3>
+        <div class="lesson-chips" id="lesson-chips"></div>
+      </section>
+
+      <section id="view-scenario-play" class="view">
+        <div id="scenario-player-root"></div>
+      </section>
+
+      <section id="view-home" class="view">
+        <h3 class="section-title">24 课目录</h3>
+        <div class="lesson-grid" id="lesson-grid"></div>
+      </section>
+
+      <section id="view-lesson" class="view">
+        <div id="lesson-detail"></div>
+      </section>
+
+      <section id="view-practice" class="view">
+        <div class="lesson-picker" style="padding:0 0 12px">
+          <label for="practice-lesson">课文</label>
+          <select id="practice-lesson"></select>
+        </div>
+        <div class="practice-tabs" role="tablist">
+          <button type="button" class="tab active" data-mode="listen">听</button>
+          <button type="button" class="tab" data-mode="speak">说</button>
+          <button type="button" class="tab" data-mode="read">读</button>
+          <button type="button" class="tab" data-mode="write">写</button>
+        </div>
+        <div class="practice-card" id="practice-card"></div>
+      </section>
+
+      <section id="view-chat" class="view">
+        <div class="lesson-picker">
+          <label for="chat-lesson">当前课文</label>
+          <select id="chat-lesson"></select>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <form class="chat-input-bar" id="chat-form">
+          <input type="text" id="chat-input" placeholder="用日语或中文输入…" autocomplete="off" />
+          <button type="submit">发送</button>
+        </form>
+      </section>
+
+      <section id="view-me" class="view">
+        <div class="progress-ring-wrap" style="margin-top:8px">
+          <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52" />
+            <circle class="ring-fill" id="ring-fill-me" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="ring-center">
+            <span id="overall-percent-me">0</span>%
+            <small>总进度</small>
+          </div>
+        </div>
+        <div class="stat-grid" id="stat-grid-me"></div>
+        <button type="button" class="btn secondary me-link" data-go="progress">学习进度详情</button>
+        <button type="button" class="btn secondary me-link" data-go="mistakes">错题本</button>
+        <button type="button" class="btn secondary me-link" data-go="chat">AI 自由对话</button>
+        <button type="button" class="btn ghost me-link" data-go="settings">设置</button>
+      </section>
+
+      <section id="view-mistakes" class="view">
+        <p class="hint" id="mistakes-empty">暂无错题</p>
+        <ul class="mistake-list" id="mistake-list"></ul>
+      </section>
+
+      <section id="view-progress" class="view">
+        <div class="progress-detail" id="progress-detail"></div>
+      </section>
+
+      <section id="view-settings" class="view">
+        <div class="settings-card">
+          <h3>AI 对话（可选）</h3>
+          <p class="hint">仅保存在本机</p>
+          <label for="api-base">API 地址</label>
+          <input type="url" id="api-base" placeholder="https://api.openai.com/v1" />
+          <label for="api-key">API Key</label>
+          <input type="password" id="api-key" placeholder="sk-..." autocomplete="off" />
+          <label for="api-model">模型</label>
+          <input type="text" id="api-model" placeholder="gpt-4o-mini" />
+          <button type="button" class="btn primary" id="btn-save-settings">保存</button>
+          <button type="button" class="btn ghost" id="btn-clear-data">清空数据</button>
+        </div>
+        <p class="hint footer-hint">公网部署见「部署说明.txt」· iPhone 语音建议 Safari 打开</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="主导航">
+      <button type="button" class="nav-item active" data-view="scenarios">
+        <span class="nav-icon">🎬</span><span>情景</span>
+      </button>
+      <button type="button" class="nav-item" data-view="home">
+        <span class="nav-icon">📖</span><span>课文</span>
+      </button>
+      <button type="button" class="nav-item" data-view="practice">
+        <span class="nav-icon">✏️</span><span>练习</span>
+      </button>
+      <button type="button" class="nav-item" data-view="me">
+        <span class="nav-icon">👤</span><span>我的</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="js/data/lessons-catalog.js"></script>
+  <script src="js/data/lessons-detailed.js"></script>
+  <script src="js/data/lessons-build.js"></script>
+  <script src="js/data/lesson-dialogues.js"></script>
+  <script src="js/data/scenarios.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/speech-engine.js"></script>
+  <script src="js/word-guide.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/lesson-view.js"></script>
+  <script src="js/scenario-player.js"></script>
+  <script src="js/practice.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app-legacy.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+  </script>
+</body>
+</html>

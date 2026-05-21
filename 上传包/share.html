@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>分享 · 情景日语</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <style>
+    .share-page { padding: 24px 20px; text-align: center; max-width: 400px; margin: 0 auto; }
+    .share-page h1 { font-size: 22px; color: var(--primary); margin-bottom: 8px; }
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .status-badge.ok { background: #f0fff4; color: #276749; }
+    .status-badge.local { background: #fffbeb; color: #b7791f; }
+    #qrcode { margin: 16px auto; min-height: 200px; }
+    #qrcode img { max-width: 220px; border-radius: 12px; }
+    .link-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: left;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+    }
+    .share-btns { display: flex; flex-direction: column; gap: 10px; }
+    .share-btns .btn { width: 100%; }
+    .wechat-tip {
+      text-align: left;
+      background: #ebf8ff;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #2c5282;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="share-page">
+    <h1>情景日语 · 标日初级上</h1>
+    <p id="status-badge" class="status-badge">检测中…</p>
+    <p class="hint">复制链接或扫码，发到微信即可打开</p>
+    <div id="qrcode"></div>
+    <div class="link-box" id="share-url">正在获取地址…</div>
+    <div class="share-btns">
+      <button type="button" class="btn primary" id="btn-copy">复制链接（发微信）</button>
+      <button type="button" class="btn secondary" id="btn-copy-share">复制分享页链接</button>
+      <a href="index.html" class="btn secondary" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
+    </div>
+    <div class="wechat-tip" id="wechat-tip"></div>
+  </div>
+  <script>
+    const base = location.origin + location.pathname.replace(/[^/]*$/, "");
+    const learnUrl = base + "index.html";
+    const shareUrl = location.href.split("#")[0];
+    const isHttps = location.protocol === "https:";
+    const isLocal =
+      location.hostname === "localhost" ||
+      location.hostname === "127.0.0.1" ||
+      /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(location.hostname);
+
+    document.getElementById("share-url").textContent = learnUrl;
+
+    const badge = document.getElementById("status-badge");
+    if (isHttps && !isLocal) {
+      badge.textContent = "✓ 已是公网 HTTPS，可发微信";
+      badge.className = "status-badge ok";
+    } else {
+      badge.textContent = "当前为本地地址，外网打不开";
+      badge.className = "status-badge local";
+    }
+
+    const tip = document.getElementById("wechat-tip");
+    if (isHttps && !isLocal) {
+      tip.innerHTML =
+        "<strong>微信使用方法</strong><br>" +
+        "1. 把上方链接发给好友或文件传输助手<br>" +
+        "2. 点开链接即可学习<br>" +
+        "3. <strong>按住说话</strong>：点右上角 … →「在 Safari 中打开」<br>" +
+        "4. Safari → 分享 →「添加到主屏幕」，以后像小程序一样用";
+    } else {
+      tip.innerHTML =
+        "<strong>还未部署到公网？</strong><br>" +
+        "请用电脑打开文件夹里的 <strong>部署说明.txt</strong>（或双击「打开部署说明.bat」）<br><br>" +
+        "最快方式：打开 https://app.netlify.com/drop ，把整个「日语学习」文件夹拖进去，" +
+        "得到 https 地址后再回到本页复制链接。";
+    }
+
+    const qr = document.getElementById("qrcode");
+    const img = document.createElement("img");
+    img.alt = "二维码";
+    img.src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
+      encodeURIComponent(learnUrl);
+    qr.appendChild(img);
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("已复制\n\n" + text);
+      } catch {
+        prompt("请手动复制：", text);
+      }
+    }
+
+    document.getElementById("btn-copy").onclick = () => copyText(learnUrl);
+    document.getElementById("btn-copy-share").onclick = () => copyText(shareUrl);
+  </script>
+</body>
+</html>

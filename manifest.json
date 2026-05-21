@@ -1,0 +1,19 @@
+{
+  "name": "情景日语 · 标日初级上",
+  "short_name": "情景日语",
+  "description": "情景互动学日语：按住说话、点词导读、发音纠正",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f5f0",
+  "theme_color": "#FF8A80",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
