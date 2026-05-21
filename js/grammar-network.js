@@ -116,7 +116,7 @@ const GrammarNetwork = (() => {
           <div class="gn-face gn-front">
             <div class="gn-title-row">
               <h3>${titleHtml(node)}</h3>
-              <button type="button" class="btn-speak-round" id="gn-speak-title" aria-label="日本語で読む" title="日本語で読む">🔊</button>
+              <button type="button" class="btn-speak-round" id="gn-speak-title" aria-label="日本語で読む" title="文型名のみ読む" data-jp="${escapeHtml(node.title)}">🔊</button>
             </div>
             <p class="gn-hint">タップでくわしく · 🔊＝日本語音声パック</p>
           </div>
@@ -125,8 +125,8 @@ const GrammarNetwork = (() => {
             <p class="gn-example jp">${RubyRender.nodeExample(node)}</p>
             <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
             <div class="gn-speak-row">
-              <button type="button" class="btn secondary btn-sm" id="gn-speak-explain">🔊 説明</button>
-              <button type="button" class="btn secondary btn-sm" id="gn-speak-example">🔊 例文</button>
+              <button type="button" class="btn secondary btn-sm" id="gn-speak-explain" data-jp="${escapeHtml(node.explanation)}">🔊 説明</button>
+              <button type="button" class="btn secondary btn-sm" id="gn-speak-example" data-jp="${escapeHtml(node.example)}">🔊 例文</button>
               ${depthBtn}
             </div>
           </div>
@@ -145,21 +145,6 @@ const GrammarNetwork = (() => {
       if (e.target.closest("button")) return;
       flipped = !flipped;
       flip.classList.toggle("flipped", flipped);
-    };
-
-    container.querySelector("#gn-speak-title").onclick = (e) => {
-      e.stopPropagation();
-      speakJp(node);
-    };
-
-    container.querySelector("#gn-speak-explain").onclick = (e) => {
-      e.stopPropagation();
-      speakJp({ title: node.explanation });
-    };
-
-    container.querySelector("#gn-speak-example").onclick = (e) => {
-      e.stopPropagation();
-      speakJp({ example: node.example });
     };
 
     const depthEl = container.querySelector("#gn-depth");
@@ -204,18 +189,20 @@ const GrammarNetwork = (() => {
 
   function showModal(html, onReady) {
     const modal = lessonModalEl();
+    modal.innerHTML = `<div class="gn-modal-inner">${html}<button type="button" class="btn ghost gn-close">閉じる</button></div>`;
     modal.hidden = false;
     modal.setAttribute("aria-hidden", "false");
-    modal.innerHTML = `<div class="gn-modal-inner">${html}<button type="button" class="btn ghost gn-close">閉じる</button></div>`;
-    modal.querySelector(".gn-close").onclick = () => {
+    modal.style.removeProperty("display");
+    modal.style.removeProperty("pointer-events");
+    const hideModal = () => {
       modal.hidden = true;
       modal.setAttribute("aria-hidden", "true");
+      modal.style.display = "none";
+      modal.style.pointerEvents = "none";
     };
+    modal.querySelector(".gn-close").onclick = hideModal;
     modal.onclick = (e) => {
-      if (e.target === modal) {
-        modal.hidden = true;
-        modal.setAttribute("aria-hidden", "true");
-      }
+      if (e.target === modal) hideModal();
     };
     onReady?.(modal);
     if (typeof SpeakUI !== "undefined") SpeakUI.bind(modal);
@@ -244,19 +231,14 @@ const GrammarNetwork = (() => {
       <p class="mini-label">ミニカード · 約10秒</p>
       <div class="mini-head">
         <h3 class="jp">${titleRuby}</h3>
-        <button type="button" class="btn-speak-round" id="mini-speak-title">🔊</button>
+        <button type="button" class="btn-speak-round" id="mini-speak-title" data-jp="${escapeHtml(card.title)}">🔊</button>
       </div>
       <p class="gn-explain">${escapeHtml(card.explain)}</p>
       <div class="mini-ex-row">
         <p class="jp">${ex}</p>
-        <button type="button" class="btn-speak-round" id="mini-speak-ex">🔊</button>
+        <button type="button" class="btn-speak-round" id="mini-speak-ex" data-jp="${escapeHtml(card.example)}">🔊</button>
       </div>
-    `,
-      (modal) => {
-        modal.querySelector("#mini-speak-title").onclick = () => speakJp(card);
-        modal.querySelector("#mini-speak-ex").onclick = () => speakJp({ example: card.example });
-        speakJp(card);
-      }
+    `
     );
   }
 
@@ -318,13 +300,7 @@ const GrammarNetwork = (() => {
             <button type="button" class="btn secondary btn-sm gn-contrast-speak" data-jp="${escapeHtml(preset.right.example)}">🔊</button>
           </div>
         </div>
-      `,
-        (modal) => {
-          modal.querySelectorAll(".gn-contrast-speak").forEach((btn) => {
-            btn.onclick = () => speakJp(btn.dataset.jp);
-          });
-        }
-      );
+      `);
       return;
     }
     if (link.contrastPair) {

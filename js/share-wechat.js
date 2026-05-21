@@ -2,7 +2,7 @@
 const ShareWechat = (() => {
   function learnUrl() {
     const base = location.origin + location.pathname.replace(/[^/]*$/, "");
-    return base + "index.html";
+    return base + "index.html?v=13";
   }
 
   function sharePageUrl() {

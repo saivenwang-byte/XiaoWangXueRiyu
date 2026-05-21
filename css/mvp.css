@@ -377,24 +377,30 @@ body.mvp-app .nav-item.active {
 .gn-nav { display: flex; gap: 10px; margin-top: 16px; }
 .gn-nav .btn { flex: 1; }
 
+/* 默认必须隐藏：旧版曾写死 display:flex，会盖住 [hidden]（微信里整页发灰） */
 .gn-modal {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   z-index: 200;
   padding: 16px;
-  pointer-events: auto;
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .gn-modal:not([hidden]) {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
 .gn-modal[hidden] {
   display: none !important;
-  pointer-events: none;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .gn-modal-inner {
@@ -887,6 +893,13 @@ body.mvp-app .gate-tab.active:active {
 
 .lesson-flow-head-slim {
   margin-bottom: 8px;
+}
+
+.lc-headline-note {
+  font-size: 11px;
+  color: var(--mvp-muted);
+  margin: 0 0 8px;
+  line-height: 1.45;
 }
 
 .lc-theme-slim {

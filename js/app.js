@@ -57,11 +57,21 @@
     return state.lessons[Number(lessonId)] || { gate1: false, gate2: false, gate3: false };
   }
 
+  function setModalOpen(m, open) {
+    if (!m) return;
+    m.hidden = !open;
+    m.setAttribute("aria-hidden", open ? "false" : "true");
+    if (open) {
+      m.style.display = "";
+      m.style.pointerEvents = "";
+    } else {
+      m.style.display = "none";
+      m.style.pointerEvents = "none";
+    }
+  }
+
   function closeAllModals() {
-    document.querySelectorAll(".gn-modal").forEach((m) => {
-      m.hidden = true;
-      m.setAttribute("aria-hidden", "true");
-    });
+    document.querySelectorAll(".gn-modal").forEach((m) => setModalOpen(m, false));
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.stopAllPlayback) {
       SpeechEngine.stopAllPlayback();
     }
@@ -270,11 +280,16 @@
         ? `<span class="zh-annotation">（${escapeHtml(L.themeZh)}）</span>`
         : "";
 
+    const headlineNote =
+      activeGate === 1
+        ? `<p class="lc-headline-note">↑ 本課の課文タイトル（会話の導入）。下の文法カードの 🔊 とは別です。</p>`
+        : "";
     head.innerHTML = `
       <div class="headline-row">
         <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
-        <button type="button" class="btn-speak-round" id="lesson-speak-title" aria-label="日本語で読む" data-jp="${escapeHtml(L.lessonTitle)}">🔊</button>
+        <button type="button" class="btn-speak-round" id="lesson-speak-title" aria-label="課文タイトルを読む" title="課文タイトルのみ" data-jp="${escapeHtml(L.lessonTitle)}">🔊</button>
       </div>
+      ${headlineNote}
       ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}
     `;
 
@@ -373,7 +388,7 @@
     const q = lesson?.quizQuestions.find((x) => x.id === m.questionId);
     if (!q) return;
     const modal = document.getElementById("review-modal");
-    modal.hidden = false;
+    setModalOpen(modal, true);
     let body = "";
     if (q.type === "choice") {
       body = q.options
@@ -403,7 +418,7 @@
         fb.innerHTML = `<p class="feedback ok">✅ せいかい！ できた！</p>`;
         updateReviewBadge();
         setTimeout(() => {
-          modal.hidden = true;
+          setModalOpen(modal, false);
           renderReview();
         }, 800);
       } else {
@@ -421,11 +436,9 @@
       modal.querySelector("#rev-submit").onclick = () =>
         grade(modal.querySelector("#rev-fill").value);
     }
-    modal.querySelector("#rev-close").onclick = () => {
-      modal.hidden = true;
-    };
+    modal.querySelector("#rev-close").onclick = () => setModalOpen(modal, false);
     modal.onclick = (e) => {
-      if (e.target === modal) modal.hidden = true;
+      if (e.target === modal) setModalOpen(modal, false);
     };
   }
 

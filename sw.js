@@ -1,4 +1,4 @@
-const CACHE = "hyouga-mvp-v11";
+const CACHE = "hyouga-mvp-v13";
 const PRECACHE = [
   "./",
   "./index.html",
