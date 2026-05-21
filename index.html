@@ -32,9 +32,9 @@
 
   <link rel="apple-touch-icon" href="icons/icon.svg" />
 
-  <link rel="stylesheet" href="css/app.css?v=34" />
+  <link rel="stylesheet" href="css/app.css?v=44" />
 
-  <link rel="stylesheet" href="css/mvp.css?v=34" />
+  <link rel="stylesheet" href="css/mvp.css?v=44" />
 
   <style>
     /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
@@ -50,6 +50,24 @@
 </head>
 
 <body class="mvp-app">
+  <script>
+    (function () {
+      if (location.protocol !== "file:") return;
+      var v = "40";
+      var link = document.querySelector('link[href*="mvp.css"]');
+      if (link) {
+        var m = link.getAttribute("href").match(/[?&]v=(\d+)/);
+        if (m) v = m[1];
+      }
+      var extra = "";
+      if (location.search) {
+        extra = location.search.indexOf("v=") >= 0 ? "" : location.search;
+      }
+      location.replace(
+        "http://localhost:8765/index.html?v=" + v + extra + (location.hash || "")
+      );
+    })();
+  </script>
 
   <div id="app">
 
@@ -198,23 +216,24 @@
 
 
 
-  <script src="js/public-url.config.js?v=34"></script>
-  <script src="js/share-wechat.js?v=34"></script>
-  <script src="js/data/mini-cards.js?v=34"></script>
-  <script src="js/data/lessons-mvp.js?v=34"></script>
-  <script src="js/data/lesson-vocab-biaori.js?v=34"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=34"></script>
-  <script src="js/ruby-render.js?v=34"></script>
-  <script src="js/mvp-storage.js?v=34"></script>
-  <script src="js/speech-engine.js?v=34"></script>
-  <script src="js/speak-ui.js?v=34"></script>
-  <script src="js/shadow-speak.js?v=34"></script>
-  <script src="js/ui-feedback.js?v=34"></script>
-  <script src="js/grammar-network.js?v=34"></script>
-  <script src="js/dialogue-gate.js?v=34"></script>
-  <script src="js/quiz-gate.js?v=34"></script>
-  <script src="js/vocab-flash.js?v=34"></script>
-  <script src="js/app.js?v=34"></script>
+  <script src="js/public-url.config.js?v=44"></script>
+  <script src="js/share-wechat.js?v=44"></script>
+  <script src="js/data/mini-cards.js?v=44"></script>
+  <script src="js/data/lessons-mvp.js?v=44"></script>
+  <script src="js/data/lesson-vocab-biaori.js?v=44"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=44"></script>
+  <script src="js/ruby-render.js?v=44"></script>
+  <script src="js/mvp-storage.js?v=44"></script>
+  <script src="js/speech-engine.js?v=44"></script>
+  <script src="js/speak-ui.js?v=44"></script>
+  <script src="js/shadow-speak.js?v=44"></script>
+  <script src="js/ui-feedback.js?v=44"></script>
+  <script src="js/sensei-tip-card.js?v=44"></script>
+  <script src="js/grammar-network.js?v=44"></script>
+  <script src="js/dialogue-gate.js?v=44"></script>
+  <script src="js/quiz-gate.js?v=44"></script>
+  <script src="js/vocab-flash.js?v=44"></script>
+  <script src="js/app.js?v=44"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -224,7 +243,7 @@
         m.style.pointerEvents = "none";
       });
       if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v32";
+      var key = "hyouga-sw-purged-v44";
       navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (r) { return r.unregister(); }));
       }).then(function () {

@@ -1,0 +1,10 @@
+把下面整行复制到 GitHub（笔记本浏览器，不用手机 App）：
+
+https://github.com/settings/ssh/new
+
+Title 填：xiaowang-laptop
+Key 粘贴下面这一行：
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAK8kLxu23IdqBQ0z45pTlP4thHJb2w/+srw4cqg3nGP xiaowang-laptop
+
+保存后，双击「添加SSH密钥并推送.bat」完成上传。

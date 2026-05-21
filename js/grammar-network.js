@@ -48,7 +48,7 @@ const GrammarNetwork = (() => {
       typeof RubyRender !== "undefined" && node.exampleRuby
         ? RubyRender.toKanaReading(first, node.exampleRuby)
         : first;
-    return { jp: first, kana, ruby: node.exampleRuby, example: node.example };
+    return { jp: first, kana, ruby: node.exampleRuby, example: node.example, ttsLine: first };
   }
 
   function warmNodePhrases(node) {
@@ -171,7 +171,7 @@ const GrammarNetwork = (() => {
       (ruby?.length && typeof RubyRender !== "undefined"
         ? RubyRender.toKanaReading(line, ruby)
         : line);
-    return { jp: line, kana: kanaLine, ruby };
+    return { jp: line, kana: kanaLine, ruby, ttsLine: line };
   }
 
   function speakMini(jp, kana, ruby) {
@@ -187,10 +187,11 @@ const GrammarNetwork = (() => {
     const parsed = typeof item === "string" ? splitParenZh(item) : {};
     const jp =
       typeof item === "object" ? item.jp || item.line || "" : parsed.jp || hintKey;
-    const zh = item.zh || parsed.zh || hint.zh || "";
-    const kana = item.kana || hint.kana || "";
-    const ruby = item.ruby || hint.ruby;
-    const label = item.label || "";
+    const obj = typeof item === "object" && item ? item : null;
+    const zh = (obj && obj.zh) || parsed.zh || hint.zh || "";
+    const kana = (obj && obj.kana) || hint.kana || "";
+    const ruby = (obj && obj.ruby) || hint.ruby;
+    const label = (obj && obj.label) || "";
     const labelHtml = label
       ? `<span class="gn-dense-label">${escapeHtml(label)}</span>`
       : "";
@@ -351,6 +352,28 @@ const GrammarNetwork = (() => {
       .join("");
   }
 
+  function renderSenseiDepthBlocks(node) {
+    const secs = node.depthSections;
+    if (!secs?.length) return "";
+    if (typeof SenseiTipCard === "undefined") {
+      return `<div class="gn-depth-fallback">${renderDepthHtml(secs)}</div>`;
+    }
+    const [first, ...rest] = secs;
+    let html = SenseiTipCard.wrap({
+      bodyHtml: renderDepthHtml([first]),
+      subtitle: first.heading || "",
+      expanded: true,
+    });
+    if (rest.length) {
+      html += SenseiTipCard.wrap({
+        bodyHtml: renderDepthHtml(rest),
+        subtitle: "もっと秘技を見る",
+        expanded: false,
+      });
+    }
+    return html;
+  }
+
   function mount(el, lessonId, options) {
     container = el;
     state = options.state;
@@ -379,29 +402,18 @@ const GrammarNetwork = (() => {
     if (node.depthSections?.length && typeof SpeechEngine !== "undefined" && SpeechEngine.warmPhrases) {
       SpeechEngine.warmPhrases(collectDepthWarmLines(node.depthSections));
     }
-    const depthBtn = node.depthSections?.length
-      ? `<button type="button" class="btn secondary btn-sm" id="gn-depth">📖 先生の補足</button>`
-      : "";
     container.innerHTML = `
-      <div class="gn-wrap gn-compact">
+      <div class="gn-wrap gn-compact gn-scroll">
         <p class="gn-progress">${progressLabel}${node.core ? " · ★コア" : ""}</p>
-        <div class="gn-card ${flipped ? "flipped" : ""}" id="gn-flip">
-          <div class="gn-face gn-front">
-            ${heroRow(node)}
-            <p class="gn-hint">点卡片翻面 · 有「先生の補足」可看高密度讲解</p>
+        <div class="gn-scroll-body">
+          ${heroRow(node)}
+          ${explainBlock(node)}
+          <div class="gn-example-block">
+            <p class="gn-example-label">例句</p>
+            ${exampleBlockHtml(node)}
           </div>
-          <div class="gn-face gn-back">
-            ${heroRow(node)}
-            ${explainBlock(node)}
-            <div class="gn-example-block">
-              <p class="gn-example-label">例句</p>
-              ${exampleBlockHtml(node)}
-            </div>
-            <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
-            <div class="gn-speak-row gn-speak-row-compact">
-              ${depthBtn}
-            </div>
-          </div>
+          <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
+          ${renderSenseiDepthBlocks(node)}
         </div>
         <div class="gn-links" id="gn-links"></div>
         <div class="gn-tags">${(node.tags || []).map((t) => `<span class="gn-tag">${escapeHtml(t)}</span>`).join("")}</div>
@@ -412,23 +424,7 @@ const GrammarNetwork = (() => {
       </div>
     `;
 
-    const flip = container.querySelector("#gn-flip");
-    flip.onclick = (e) => {
-      if (e.target.closest("button")) return;
-      flipped = !flipped;
-      flip.classList.toggle("flipped", flipped);
-    };
-
-    const depthEl = container.querySelector("#gn-depth");
-    if (depthEl) {
-      depthEl.onclick = (e) => {
-        e.stopPropagation();
-        if (typeof SpeechEngine !== "undefined" && SpeechEngine.warmPhrases) {
-          SpeechEngine.warmPhrases(collectDepthWarmLines(node.depthSections));
-        }
-        showModal(renderDepthHtml(node.depthSections));
-      };
-    }
+    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(container);
 
     const linksEl = container.querySelector("#gn-links");
     (node.links || []).forEach((link) => {

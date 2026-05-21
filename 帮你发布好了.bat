@@ -3,7 +3,10 @@ chcp 65001 >nul
 cd /d "%~dp0"
 title 已发布 · 复制链接发微信
 
-set "LINK=https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29"
+for /f "usebackq tokens=2 delims==" %%v in (`findstr /C:"CACHE_VER" "js\share-wechat.js"`) do set "VER=%%~v"
+set "VER=%VER:"=%"
+if not defined VER set "VER=44"
+set "LINK=https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=%VER%"
 
 echo.
 echo   ==========================================

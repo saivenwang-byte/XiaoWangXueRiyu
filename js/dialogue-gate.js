@@ -49,7 +49,7 @@ const DialogueGate = (() => {
   function dialogueSpeakAttrs(reply) {
     const keys = replyKeywords(reply);
     const kw = keys.length ? ` data-ss-keywords="${escapeHtml(JSON.stringify(keys))}"` : "";
-    return `class="dg-reply-speak" data-ss-dialogue="1"${kw}`;
+    return `class="dg-reply-speak" data-ss-dialogue="1" data-ss-score-below="1"${kw}`;
   }
 
   function showZh() {
@@ -61,9 +61,60 @@ const DialogueGate = (() => {
     return `<p class="zh-annotation">${escapeHtml(text)}</p>`;
   }
 
+  function senseiNotes(line, opts = {}) {
+    if (!line?.noteJa && !(line?.noteZh && showZh())) return "";
+    if (typeof SenseiTipCard !== "undefined") {
+      return SenseiTipCard.fromNotes(line.noteJa, line.noteZh, opts);
+    }
+    let h = "";
+    if (line.noteJa) h += `<p class="note-ja">${escapeHtml(line.noteJa)}</p>`;
+    if (line.noteZh && showZh()) h += `<p class="zh-annotation">${escapeHtml(line.noteZh)}</p>`;
+    return h;
+  }
+
+  function lineJapaneseHtml(line) {
+    if (!line) return "";
+    if (typeof RubyRender !== "undefined" && RubyRender.lineJapanese) {
+      return RubyRender.lineJapanese(line);
+    }
+    return escapeHtml(line.japanese || line.jp || "");
+  }
+
+  /** 会話行：正文 + 右侧固定宽操作列（🔊🎤▶ 纵向对齐） */
+  function renderDialogueLine({ speaker, line, speakAttrs = "", rowId = "", listenOnly = false, extraClass = "" }) {
+    const actionsCol = listenOnly ? "dg-actions-col dg-actions-col--listen" : "dg-actions-col";
+    return `
+      <div class="dg-line-row ${extraClass}">
+        <span class="dg-sp">${escapeHtml(speaker || "A")}</span>
+        <div class="dg-line-content">
+          <p class="jp">${lineJapaneseHtml(line)}</p>
+          ${zhLine(line.chinese)}
+          ${senseiNotes(line)}
+        </div>
+        <div class="${actionsCol}">
+          ${speakBtn(linePayload(line), speakAttrs, rowId)}
+        </div>
+      </div>`;
+  }
+
   function sceneBadge(d) {
     if (!d.sceneEmoji && !d.scenePlace) return "";
     return `<span class="dg-scene-badge">${escapeHtml(d.sceneEmoji || "")} ${escapeHtml(d.scenePlace || "")}</span>`;
+  }
+
+  function renderActionLegend() {
+    return `<div class="dg-action-legend" aria-label="操作说明">
+      <span class="dg-leg dg-leg-listen"><i class="dg-leg-ico">🔊</i>导读</span>
+      <span class="dg-leg dg-leg-record"><i class="dg-leg-ico">🎤</i>录音</span>
+      <span class="dg-leg dg-leg-replay"><i class="dg-leg-ico">▶</i>回放</span>
+      <span class="dg-leg dg-leg-eval"><i class="dg-leg-ico">✓</i>评估</span>
+    </div>`;
+  }
+
+  function renderSceneHeader(d) {
+    const badge = sceneBadge(d);
+    const title = escapeHtml(d.title || "");
+    return `<div class="dg-scene-head">${badge ? `${badge} ` : ""}<h3 class="dg-scene-title">${title}</h3></div>`;
   }
 
   function collectWarmLines() {
@@ -129,9 +180,8 @@ const DialogueGate = (() => {
   function renderLegacyLink() {
     const lid = lesson.lessonId;
     return `
-      <div class="dg-legacy-box">
-        <p class="hint-ja"><strong>选修</strong>：更长情景练习（24 课库）</p>
-        <a class="btn secondary" href="legacy.html#l${lid}">打开旧版情景库</a>
+      <div class="dg-legacy-box dg-legacy-compact">
+        <a class="btn secondary" href="legacy.html#l${lid}">选修：24课情景库</a>
       </div>`;
   }
 
@@ -147,22 +197,28 @@ const DialogueGate = (() => {
           const reaction = reply.npcReaction;
           return `
           <div class="dg-reply-block">
-            <div class="dg-reply-head">
+            <div class="dg-reply-head dg-line-row dg-line-row--reply">
               <span class="dg-reply-num">${marks[i] || i + 1}</span>
-              <p class="jp dg-reply-jp">${jp}</p>
-              ${speakBtn(linePayload(reply), dialogueSpeakAttrs(reply), `dg-r-${dialogueIndex}-${i}`)}
+              <div class="dg-line-content">
+                <p class="jp dg-reply-jp">${jp}</p>
+                ${zhLine(reply.chinese)}
+                ${senseiNotes(reply)}
+                <div class="dg-score-slot dg-score-slot--inline" data-dg-score-for="dg-r-${dialogueIndex}-${i}" aria-live="polite" hidden></div>
+              </div>
+              <div class="dg-actions-col">
+                ${speakBtn(linePayload(reply), dialogueSpeakAttrs(reply), `dg-r-${dialogueIndex}-${i}`)}
+              </div>
             </div>
-            ${zhLine(reply.chinese)}
-            ${reply.noteJa ? `<p class="note-ja">${escapeHtml(reply.noteJa)}</p>` : ""}
-            ${reply.noteZh && showZh() ? `<p class="zh-annotation">${escapeHtml(reply.noteZh)}</p>` : ""}
             ${
               reaction
-                ? `<div class="dg-bubble npc dg-reaction-inline">
-                <span class="dg-sp">A</span>
-                <p class="jp">${escapeHtml(reaction.japanese || "")}</p>
-                ${zhLine(reaction.chinese)}
-                ${speakBtn(linePayload(reaction), 'class="dg-react-speak"', `dg-rr-${dialogueIndex}-${i}`)}
-              </div>`
+                ? renderDialogueLine({
+                    speaker: "A",
+                    line: reaction,
+                    speakAttrs: 'class="dg-react-speak"',
+                    rowId: `dg-rr-${dialogueIndex}-${i}`,
+                    listenOnly: true,
+                    extraClass: "dg-line-row--npc dg-line-row--reaction",
+                  })
                 : ""
             }
           </div>`;
@@ -177,17 +233,19 @@ const DialogueGate = (() => {
     let body = `
       <div class="dg-wrap dg-simple">
         ${tabs}
-        <p class="dg-label">② 会話 · 分岐（选一种说法，点 🔊 听）</p>
-        ${sceneBadge(dialogue)}
-        <h3>${escapeHtml(dialogue.title)}</h3>
-        <div class="dg-bubble npc">
-          <span class="dg-sp">${escapeHtml(opener.speaker)}</span>
-          <p class="jp">${typeof RubyRender !== "undefined" ? RubyRender.lineJapanese(opener) : escapeHtml(opener.japanese)}</p>
-          ${zhLine(opener.chinese)}
-          ${speakBtn(linePayload(opener), 'class="dg-play-a"')}
-        </div>
-        <p class="dg-your-turn">── 选一种回答 ──</p>
-        <p class="jp">${escapeHtml(dialogue.choice.japanese)}</p>
+        <p class="dg-label dg-label-compact">② 会話 · 分岐</p>
+        ${renderActionLegend()}
+        ${renderSceneHeader(dialogue)}
+        ${renderDialogueLine({
+          speaker: opener.speaker,
+          line: opener,
+          speakAttrs: 'class="dg-play-a"',
+          rowId: `dg-op-${dialogueIndex}`,
+          listenOnly: true,
+          extraClass: "dg-line-row--npc",
+        })}
+        <p class="dg-your-turn dg-your-turn-compact">B · 选一种回答</p>
+        <p class="jp dg-choice-prompt">${escapeHtml(dialogue.choice.japanese)}</p>
         ${zhLine(dialogue.choice.chinese)}
         <div class="dg-choice-list">
           ${dialogue.choice.options
@@ -198,7 +256,9 @@ const DialogueGate = (() => {
                 <p class="jp">${escapeHtml(opt.japanese)}</p>
                 ${zhLine(opt.chinese)}
               </div>
-              ${speakBtn(linePayload(opt))}
+              <div class="dg-actions-col dg-actions-col--listen">
+                ${speakBtn(linePayload(opt), "", `dg-opt-${dialogueIndex}-${opt.id}`)}
+              </div>
             </div>`
             )
             .join("")}
@@ -207,13 +267,14 @@ const DialogueGate = (() => {
     if (branchChoiceId) {
       const opt = dialogue.choice.options.find((o) => o.id === branchChoiceId);
       if (opt?.npcReaction) {
-        body += `
-          <div class="dg-bubble npc">
-            <span class="dg-sp">A</span>
-            <p class="jp">${escapeHtml(opt.npcReaction.japanese)}</p>
-            ${zhLine(opt.npcReaction.chinese)}
-            ${speakBtn(linePayload(opt.npcReaction))}
-          </div>`;
+        body += renderDialogueLine({
+          speaker: "A",
+          line: opt.npcReaction,
+          speakAttrs: 'class="dg-react-speak"',
+          rowId: `dg-br-${dialogueIndex}`,
+          listenOnly: true,
+          extraClass: "dg-line-row--npc",
+        });
       }
     }
     body += `${renderFooter()}${renderLegacyLink()}</div>`;
@@ -237,7 +298,7 @@ const DialogueGate = (() => {
         <button type="button" class="btn primary" id="dg-scene-done">本场景听完 ✓</button>
         ${hasNext ? `<button type="button" class="btn secondary" id="dg-next-scene">下一场景 →</button>` : ""}
       </div>
-      <p class="hint-ja">上方可切换场景标签；听完点「本场景听完」</p>`;
+      <p class="hint-ja dg-hint-compact">切换场景标签 · 听完点「本场景听完」</p>`;
   }
 
   function bindFooter() {
@@ -273,18 +334,20 @@ const DialogueGate = (() => {
     container.innerHTML = `
       <div class="dg-wrap dg-simple">
         ${renderTabs()}
-        <p class="dg-label">② 会話 · 三种说法（🔊 听 · 🎤 录 · 多维度评分）</p>
-        ${sceneBadge(dialogue)}
-        <h3>${escapeHtml(dialogue.title)}</h3>
+        <p class="dg-label dg-label-compact">② 会話 · 三种说法</p>
+        ${renderActionLegend()}
+        ${renderSceneHeader(dialogue)}
 
-        <div class="dg-bubble npc">
-          <span class="dg-sp">${escapeHtml(opener.speaker || "A")}</span>
-          <p class="jp">${typeof RubyRender !== "undefined" ? RubyRender.lineJapanese(opener) : escapeHtml(opener.japanese)}</p>
-          ${zhLine(opener.chinese)}
-          ${speakBtn(linePayload(opener), 'class="dg-play-a"', `dg-op-${dialogueIndex}`)}
-        </div>
+        ${renderDialogueLine({
+          speaker: opener.speaker || "A",
+          line: opener,
+          speakAttrs: 'class="dg-play-a"',
+          rowId: `dg-op-${dialogueIndex}`,
+          listenOnly: true,
+          extraClass: "dg-line-row--npc",
+        })}
 
-        <p class="dg-your-turn">── B 的三种回答（都在下面）──</p>
+        <p class="dg-your-turn dg-your-turn-compact">B · 三种回答（录完点 ✓ 评估）</p>
         ${renderReplyList(replies)}
         ${renderFooter()}
         ${renderLegacyLink()}
@@ -319,6 +382,7 @@ const DialogueGate = (() => {
   }
 
   function bindSpeak() {
+    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(container);
     if (typeof ShadowSpeak !== "undefined") ShadowSpeak.bind(container);
     else if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
   }

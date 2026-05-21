@@ -1,39 +1,11 @@
 {
-  "pages": [
-    "pages/index/index",
-    "pages/lessonHub/lessonHub",
-    "pages/review/review",
-    "pages/myRecord/myRecord",
-    "pages/courseDetail/knowledgeCards/knowledgeCards",
-    "pages/courseDetail/dialoguePractice/dialoguePractice",
-    "pages/courseDetail/test/test"
-  ],
+  "pages": ["pages/study/study"],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FF8A80",
     "navigationBarTitleText": "标日课后巩固",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#FFF8E1"
-  },
-  "tabBar": {
-    "color": "#6d4c41",
-    "selectedColor": "#e57373",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "white",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/review/review",
-        "text": "复习"
-      },
-      {
-        "pagePath": "pages/myRecord/myRecord",
-        "text": "我的"
-      }
-    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

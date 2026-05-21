@@ -1,6 +1,19 @@
 /** 每课扩展：文法補足 · 会話 · 测验 · 単語（仅当课，不混课） */
 const LESSON_DEPTH_PATCH = {
   14: {
+    lessonCoachSummary: {
+      subtitle: "本課の単語 · 先生まとめ",
+      lines: [
+        {
+          ja: "「買い物をしました」＝ て形で動作をつなぐ。買う→買って、から次の文へ。",
+          zh: "购物这句用て形把动作接上，是第14课的核心。",
+        },
+        {
+          ja: "デパート・駅・バスは会話でそのまま使う。名詞は「を」で動作と結びつける。",
+          zh: "百货、车站、公交在会話里会反复出现，先听熟再跟读。",
+        },
+      ],
+    },
     vocab: [
       { id: "l14_v_dep", jp: "デパート", kana: "デパート", meaningJa: "デパートで買い物をする", meaningZh: "百货商场", example: "昨日デパートへ行きました。", from: "dialogue" },
       { id: "l14_v_kaimono", jp: "買い物", kana: "かいもの", meaningJa: "ものを買うこと", meaningZh: "购物", example: "買い物をしました。", ruby: [{ kanji: "買", reading: "か" }, { kanji: "物", reading: "もの" }], from: "dialogue" },
@@ -435,6 +448,19 @@ const LESSON_DEPTH_PATCH = {
     ],
   },
   16: {
+    lessonCoachSummary: {
+      subtitle: "本課の単語 · 先生まとめ",
+      lines: [
+        {
+          ja: "い形容詞は「くて」でつなぐ。広い→広くて、明るい→明るくて。",
+          zh: "い形并列用「くて」，和动词て形一样能接后半句。",
+        },
+        {
+          ja: "「開いています」は結果の状態。今している「書いています」と区別する。",
+          zh: "门开着＝状态；正在写＝进行，别混。",
+        },
+      ],
+    },
     vocab: [
       { id: "l16_v_hiroi", jp: "広い", kana: "ひろい", meaningJa: "スペースが大きい", meaningZh: "宽敞", example: "部屋は広くて明るいです。", ruby: [{ kanji: "広", reading: "ひろ" }], from: "grammar" },
       { id: "l16_v_akarui", jp: "明るい", kana: "あかるい", meaningJa: "光が多い", meaningZh: "明亮", example: "窓が明るいです。", ruby: [{ kanji: "明", reading: "あか" }], from: "grammar" },
@@ -654,6 +680,19 @@ const LESSON_DEPTH_PATCH = {
     ],
   },
   18: {
+    lessonCoachSummary: {
+      subtitle: "本課の単語 · 先生まとめ",
+      lines: [
+        {
+          ja: "なる＝自然に変わる。する／にする＝人が変える。寒くなる vs 部屋をきれいにする。",
+          zh: "なる 自己变；する/にする 让人变，对照记就不混。",
+        },
+        {
+          ja: "でしょう＝だいたいそうだ。かもしれません＝もっと不確か。",
+          zh: "でしょう 把握大些；かも 更不确定。",
+        },
+      ],
+    },
     vocab: [
       { id: "l18_v_naru", jp: "なる", kana: "なる", meaningJa: "自然に変わる", meaningZh: "变得", example: "小さくなりました。", from: "grammar" },
       { id: "l18_v_suru", jp: "する", kana: "する", meaningJa: "人が変える", meaningZh: "弄成", example: "部屋をきれいにします。", from: "grammar" },
@@ -900,6 +939,10 @@ const LESSON_DEPTH_PATCH = {
 
 function getLessonExtra(lessonId) {
   return LESSON_DEPTH_PATCH[Number(lessonId)] || null;
+}
+
+function getLessonCoachSummary(lessonId) {
+  return getLessonExtra(lessonId)?.lessonCoachSummary || null;
 }
 
 function getLessonVocab(lessonId) {

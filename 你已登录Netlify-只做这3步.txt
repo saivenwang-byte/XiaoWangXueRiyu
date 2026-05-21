@@ -1,0 +1,50 @@
+══════════════════════════════════════
+  你已用 Gmail 登录 Netlify — 只做下面 3 步
+  （不用命令行，不用懂技术）
+══════════════════════════════════════
+
+【第 1 步】打开网站（应已登录）
+
+  https://app.netlify.com/
+
+  若未登录，点「Log in」用 Gmail 登录。
+
+
+【第 2 步】发布学习程序
+
+  1. 点左上角或中间：「Add new site」添加新站点
+  2. 选「Deploy manually」手动部署（或「Try Netlify Drop」拖放）
+  3. 会弹出虚线框 —— 用鼠标把下面整个文件夹拖进去：
+
+     「日语学习」文件夹
+     （双击同目录下的「打开Netlify-拖文件夹.bat」会自动打开这个文件夹）
+
+  4. 等进度条走完，出现 Published / Site is live
+
+
+【第 3 步】改一个好记的网址（重要）
+
+  1. 点进刚建好的站点
+  2. 左侧「Site configuration」站点配置
+  3. 找到「Site name」或「Domain management」
+  4. 把名字改成：qingjing-biaori
+     （改完后地址是 https://qingjing-biaori.netlify.app ）
+
+  5. 用手机 4G（关掉 WiFi）打开：
+
+     https://qingjing-biaori.netlify.app/index.html?v=29
+
+  能打开 = 成功，可以发微信给任何人。
+
+
+══════════════════════════════════════
+  发给别人的链接（改好名字后复制这一行）
+══════════════════════════════════════
+
+https://qingjing-biaori.netlify.app/index.html?v=29
+
+
+说明：我这边无法使用你的 Gmail 替你点网页按钮；
+你在网页上拖一次文件夹，就等于「发布完成」。
+
+══════════════════════════════════════

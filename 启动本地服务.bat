@@ -16,7 +16,9 @@ echo.
 echo   按 Ctrl+C 停止服务
 echo  ========================================
 echo.
-start "" "http://localhost:8765/share.html"
+for /f "usebackq tokens=3 delims=^"" %%v in (`findstr /C:"CACHE_VER" "js\share-wechat.js"`) do set "VER=%%~v"
+if not defined VER set "VER=39"
+start "" "http://localhost:8765/index.html?v=%VER%"
 python -m http.server 8765
 if errorlevel 1 (
   echo.

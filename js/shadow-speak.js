@@ -3,7 +3,10 @@
  */
 const ShadowSpeak = (() => {
   const clips = new Map();
+  const clipsHeard = new Map();
   let mediaRecorder = null;
+  let recordAsr = null;
+  let recordAsrParts = [];
   let recordStream = null;
   let recordChunks = [];
   let recordRowId = null;
@@ -78,6 +81,10 @@ const ShadowSpeak = (() => {
     return /^dg-r-/.test(rowId || "");
   }
 
+  function scoreBelowRow(extraAttrs) {
+    return /data-ss-score-below/.test(extraAttrs || "");
+  }
+
   function rowHtml(payload, rowId, extraAttrs = "") {
     const exp = expectedLine(payload);
     const speakBtn =
@@ -87,15 +94,46 @@ const ShadowSpeak = (() => {
     const mode = isDialogueRow(rowId, extraAttrs) ? "dialogue" : /^vf-/.test(rowId || "") ? "vocab" : "light";
     const kw = parseKeywordsAttr(extraAttrs);
     const kwAttr = kw.length ? ` data-ss-keywords="${escAttr(JSON.stringify(kw))}"` : "";
-    const scoreSlot =
+    const evalBtn =
       mode === "dialogue"
-        ? `<div class="dg-score-slot" data-dg-score-for="${escAttr(rowId)}"></div>`
+        ? `<button type="button" class="btn-ss-evaluate" data-ss-evaluate data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="评估" title="对照本句客观评分">✓</button>`
         : "";
     return `<div class="ss-action-row" data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}">
       ${speakBtn}
       <button type="button" class="btn-ss-record" data-ss-record data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="录音" title="录音">🎤</button>
       <button type="button" class="btn-ss-replay" data-ss-replay data-ss-row="${escAttr(rowId)}" disabled aria-label="回放" title="回放">▶</button>
-    </div>${scoreSlot}`;
+      ${evalBtn}
+    </div>`;
+  }
+
+  function dialogueScoreRoot() {
+    return document.querySelector(".dg-wrap.dg-simple, .dg-wrap, #app");
+  }
+
+  /** 清掉会話区所有评语（含旧版误挂在按钮旁的 panel） */
+  function clearDialogueScores() {
+    const root = dialogueScoreRoot();
+    if (!root) return;
+    root.querySelectorAll("[data-dg-score-for]").forEach((slot) => {
+      slot.innerHTML = "";
+      slot.hidden = true;
+    });
+    root.querySelectorAll(".dg-score-panel, .dg-score-loading").forEach((el) => {
+      const slot = el.closest("[data-dg-score-for]");
+      if (!slot || !slot.innerHTML.trim()) el.remove();
+    });
+    root.querySelectorAll(".dg-actions-col .dg-score-panel, .dg-actions-col .dg-score-loading").forEach(
+      (el) => el.remove()
+    );
+  }
+
+  function showDialogueScoreSlot(rowId, html) {
+    const sel = `[data-dg-score-for="${CSS.escape(rowId)}"]`;
+    const slots = document.querySelectorAll(sel);
+    slots.forEach((slot) => {
+      slot.hidden = false;
+      slot.innerHTML = html;
+    });
   }
 
   function toast(msg) {
@@ -159,6 +197,7 @@ const ShadowSpeak = (() => {
       toast("还没有录音，请先点 🎤");
       return;
     }
+    if (/^dg-r-/.test(rowId || "")) clearDialogueScores();
     stopPlayback();
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.unlockAudioOnce) {
       SpeechEngine.unlockAudioOnce();
@@ -182,6 +221,46 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function stopRecordAsr() {
+    return new Promise((resolve) => {
+      if (!recordAsr) {
+        resolve(recordAsrParts.join("").trim());
+        recordAsrParts = [];
+        return;
+      }
+      const rec = recordAsr;
+      recordAsr = null;
+      const done = () => resolve(recordAsrParts.join("").trim());
+      rec.onend = done;
+      try {
+        rec.stop();
+      } catch (_) {
+        done();
+      }
+      setTimeout(done, 800);
+    });
+  }
+
+  function startRecordAsr() {
+    recordAsrParts = [];
+    if (typeof SpeechEngine === "undefined" || !SpeechEngine.getRecognition) return;
+    const rec = SpeechEngine.getRecognition();
+    if (!rec) return;
+    recordAsr = rec;
+    try {
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) recordAsrParts.push(e.results[i][0].transcript);
+        }
+      };
+      rec.start();
+    } catch (_) {
+      recordAsr = null;
+    }
+  }
+
   function cleanupRecordUi() {
     clearRecordTimers();
     if (activeRecordBtn) {
@@ -192,6 +271,8 @@ const ShadowSpeak = (() => {
     recordRowId = null;
     recordMime = "";
     recordChunks = [];
+    recordAsr = null;
+    recordAsrParts = [];
     releaseStream();
   }
 
@@ -203,13 +284,19 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function isDialogueRowEl(el) {
+    const row = el?.closest?.(".ss-action-row");
+    return row?.dataset?.ssMode === "dialogue" || /^dg-r-/.test(el?.dataset?.ssRow || "");
+  }
+
   function showDialogueScore(rowId, html) {
-    const slot = document.querySelector(`[data-dg-score-for="${rowId}"]`);
-    if (slot) slot.innerHTML = html;
+    clearDialogueScores();
+    showDialogueScoreSlot(rowId, html);
   }
 
   async function finishRecord(btn, rowId, evaluate) {
     const mime = blobMime();
+    const heardDuring = await stopRecordAsr();
     const blob = new Blob(recordChunks, { type: mime });
     const mode = btn?.dataset?.ssMode || btn?.closest(".ss-action-row")?.dataset?.ssMode || "light";
     cleanupRecordUi();
@@ -218,8 +305,17 @@ const ShadowSpeak = (() => {
       return;
     }
     clips.set(rowId, blob);
+    if (heardDuring) clipsHeard.set(rowId, heardDuring);
     enableReplay(btn);
-    if (!evaluate) return;
+    if (mode === "dialogue") {
+      clearDialogueScores();
+      toast("已录音。点右侧紫色 ✓ 对照本句评估");
+      return;
+    }
+    if (!evaluate) {
+      toast("已录音，可点 ▶ 回放");
+      return;
+    }
 
     const exp = btn?.dataset?.speakExpected || "";
     let keywords = [];
@@ -232,27 +328,10 @@ const ShadowSpeak = (() => {
       return;
     }
 
-    if (mode === "dialogue" && SpeechEngine.evaluateDialogueDetailed) {
-      const slot = document.querySelector(`[data-dg-score-for="${rowId}"]`);
-      if (slot) slot.innerHTML = '<p class="dg-score-loading">正在分析发音…</p>';
-      const r = await SpeechEngine.evaluateDialogueDetailed({
-        expected: exp,
-        heard: "",
-        audioBlob: blob,
-        keywords,
-      });
-      if (SpeechEngine.renderDialogueScoreHtml) {
-        showDialogueScore(rowId, SpeechEngine.renderDialogueScoreHtml(r));
-      } else {
-        toast(r.passed ? `会话跟读 ${r.score} 分 ✓` : r.feedback);
-      }
-      return;
-    }
-
     if (SpeechEngine.evaluatePronunciation) {
       const r = await SpeechEngine.evaluatePronunciation({
         expected: exp,
-        heard: "",
+        heard: clipsHeard.get(rowId) || "",
         audioBlob: blob,
         keywords,
       });
@@ -263,6 +342,44 @@ const ShadowSpeak = (() => {
       }
     } else {
       toast("已录音，可点 ▶ 回放");
+    }
+  }
+
+  async function runDialogueEvaluate(btn, rowId) {
+    const blob = clips.get(rowId);
+    if (!blob || blob.size < 200) {
+      toast("请先点 🎤 录完整句，再点 ✓ 评估");
+      return;
+    }
+    const exp = btn?.dataset?.speakExpected || "";
+    let keywords = [];
+    try {
+      if (btn?.dataset?.ssKeywords) keywords = JSON.parse(btn.dataset.ssKeywords);
+    } catch (_) {}
+    if (typeof SpeechEngine === "undefined" || !SpeechEngine.evaluateDialogueDetailed) {
+      toast("评分模块未加载");
+      return;
+    }
+    clearDialogueScores();
+    showDialogueScoreSlot(
+      rowId,
+      '<p class="dg-score-loading">正在对照<strong>本句</strong>发音…</p>'
+    );
+    btn.classList.add("is-evaluating");
+    try {
+      const r = await SpeechEngine.evaluateDialogueDetailed({
+        expected: exp,
+        heard: clipsHeard.get(rowId) || "",
+        audioBlob: blob,
+        keywords,
+      });
+      if (SpeechEngine.renderDialogueScoreHtml) {
+        showDialogueScore(rowId, SpeechEngine.renderDialogueScoreHtml(r));
+      } else {
+        toast(r.passed ? `综合 ${r.score} 分` : r.feedback);
+      }
+    } finally {
+      btn.classList.remove("is-evaluating");
     }
   }
 
@@ -298,30 +415,39 @@ const ShadowSpeak = (() => {
     });
   }
 
+  function shouldAutoEvaluate(btn) {
+    const mode = btn?.dataset?.ssMode || btn?.closest(".ss-action-row")?.dataset?.ssMode || "light";
+    return mode !== "dialogue";
+  }
+
   async function stopRecord(btn) {
     if (!mediaRecorder || recordRowId == null) return;
-    await forceStopRecord(true);
+    await forceStopRecord(shouldAutoEvaluate(btn));
   }
 
   function startSilenceWatch(btn) {
     lastSoundAt = Date.now();
     clearRecordTimers();
+    const autoEval = shouldAutoEvaluate(btn);
     silenceCheckTimer = setInterval(() => {
       if (!mediaRecorder || mediaRecorder.state !== "recording") return;
       if (Date.now() - lastSoundAt >= SILENCE_MS) {
         toast("3 秒无声音，录音已自动结束");
-        forceStopRecord(true);
+        forceStopRecord(autoEval);
       }
     }, 400);
     recordMaxTimer = setTimeout(() => {
       if (mediaRecorder?.state === "recording") {
         toast("已达最长录音时间");
-        forceStopRecord(true);
+        forceStopRecord(autoEval);
       }
     }, MAX_RECORD_MS);
   }
 
   async function startRecord(btn, rowId, payload) {
+    const mode = btn?.dataset?.ssMode || btn?.closest(".ss-action-row")?.dataset?.ssMode || "light";
+    if (mode === "dialogue") clearDialogueScores();
+
     if (mediaRecorder && recordRowId === rowId) {
       await stopRecord(btn);
       return;
@@ -357,8 +483,13 @@ const ShadowSpeak = (() => {
       };
       mediaRecorder.start(200);
       btn.classList.add("is-recording");
+      startRecordAsr();
       startSilenceWatch(btn);
-      toast("录音中… 再点 🎤 结束，静音 3 秒自动停");
+      toast(
+        mode === "dialogue"
+          ? "录音中… 读完点 🎤 结束，再点 ✓ 评估"
+          : "录音中… 再点 🎤 结束，静音 3 秒自动停"
+      );
     } catch (_) {
       cleanupRecordUi();
       toast("请允许麦克风权限");
@@ -373,6 +504,7 @@ const ShadowSpeak = (() => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         e.preventDefault();
+        if (isDialogueRowEl(btn)) clearDialogueScores();
         if (typeof SpeakUI !== "undefined" && SpeakUI.speakFromButton) {
           SpeakUI.speakFromButton(btn);
         }
@@ -387,6 +519,8 @@ const ShadowSpeak = (() => {
       btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         e.preventDefault();
+        const mode = btn.dataset.ssMode || row?.dataset?.ssMode || "";
+        if (mode === "dialogue") clearDialogueScores();
         let payload = playBtn?.dataset.speak || playBtn?.dataset.jp || "";
         try {
           if (playBtn?.dataset.speak) payload = JSON.parse(playBtn.dataset.speak);
@@ -401,6 +535,15 @@ const ShadowSpeak = (() => {
         e.stopPropagation();
         e.preventDefault();
         await playClip(btn.dataset.ssRow);
+      });
+    });
+    root.querySelectorAll("[data-ss-evaluate]").forEach((btn) => {
+      if (btn.dataset.ssEvalBound === "1") return;
+      btn.dataset.ssEvalBound = "1";
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        await runDialogueEvaluate(btn, btn.dataset.ssRow);
       });
     });
     if (typeof SpeakUI !== "undefined") SpeakUI.bind(root);

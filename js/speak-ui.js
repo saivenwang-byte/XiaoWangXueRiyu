@@ -92,7 +92,13 @@ const SpeakUI = (() => {
     } else {
       dataAttr = `data-jp="${escAttr(payload)}"`;
     }
-    return `<button type="button" class="btn-speak-icon" aria-label="朗读" ${extraAttrs} ${dataAttr}>${SPEAKER_SVG}</button>`;
+    const ttsKey =
+      typeof SpeechEngine !== "undefined" && SpeechEngine.primaryTtsKey
+        ? SpeechEngine.primaryTtsKey(payload)
+        : "";
+    const keyAttr = ttsKey ? ` data-tts-key="${escAttr(ttsKey)}"` : "";
+    const titleAttr = ttsKey ? ` title="朗读 #${escAttr(ttsKey)}"` : ' title="朗读"';
+    return `<button type="button" class="btn-speak-icon" aria-label="朗读"${titleAttr} ${extraAttrs} ${dataAttr}${keyAttr}>${SPEAKER_SVG}</button>`;
   }
 
   /** 行内：日文 + 小喇叭 */
@@ -119,7 +125,12 @@ const SpeakUI = (() => {
     clearSpeakingState(btn);
     const payload = parsePayload(btn);
     btn.classList.add("is-speaking");
-    const ok = await SpeechEngine.speakJa(payload);
+    const preferKey = btn.dataset.ttsKey || "";
+    const ok = await SpeechEngine.speakJa(
+      payload,
+      0.85,
+      preferKey ? { preferTtsKey: preferKey } : undefined
+    );
     hideToast();
     btn.classList.remove("is-speaking");
     if (!ok) {
@@ -127,7 +138,7 @@ const SpeakUI = (() => {
       showToast(
         wx
           ? "朗读失败：请连 WiFi/流量；跟读请点右上角「···」→ 在浏览器中打开；也可稍后再点"
-          : "朗读失败：请检查网络；首次加载语音包需稍等 1～2 秒"
+          : "朗读失败：请再点一次；首次加载语音包约 1～2 秒（请用打开本地预览.bat）"
       );
     }
     return ok;

@@ -2,9 +2,17 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+audit-ja-out.txt
+build-id.txt
+_depth_out.txt
+_func_balance.txt
 .env
 .env.*
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+!.cursor/skills/
+!.cursor/skills/**
 .agent-transcripts/
 terminals/
 *.pyc
@@ -17,6 +25,7 @@ _hex.txt
 _err.txt
 _restore_index.html
 创建词汇记忆应用 - 豆包.html
+*副本*.html
 日语学习/.obsidian/
 *.zip
 # v1.0 微信版：根目录 tts-cache 纳入仓库，供 GitHub Pages 离线朗读

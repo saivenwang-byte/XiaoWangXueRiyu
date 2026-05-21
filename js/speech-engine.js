@@ -14,10 +14,12 @@ const SpeechEngine = (() => {
 
   const TTS_CACHE_DIR = "tts-cache/";
   /** 直链 Audio 兜底等待（微信已优先 fetch，不再傻等 4.5s） */
-  const MP3_WAIT_MS = 900;
-  const MP3_WAIT_WECHAT_MS = 1100;
-  const FETCH_MP3_MS = 2800;
-  const FETCH_MP3_MS_DESKTOP = 2200;
+  const MP3_WAIT_MS = 2200;
+  const MP3_WAIT_WECHAT_MS = 3200;
+  const MP3_READY_MS = 2800;
+  const MP3_READY_WECHAT_MS = 3500;
+  const FETCH_MP3_MS = 3200;
+  const FETCH_MP3_MS_DESKTOP = 2600;
   let audioUnlocked = false;
   const ONLINE_TTS_MS = 2200;
   let loadingListener = null;
@@ -102,17 +104,10 @@ const SpeechEngine = (() => {
   }
 
   function stopAllPlayback() {
-    mp3Warm.forEach((entry) => {
-      try {
-        entry.audio.pause();
-        entry.audio.currentTime = 0;
-      } catch (_) {}
-    });
     if (currentAudio) {
       try {
         currentAudio.pause();
         currentAudio.currentTime = 0;
-        currentAudio.src = "";
       } catch (_) {}
       currentAudio = null;
     }
@@ -238,11 +233,23 @@ const SpeechEngine = (() => {
       .filter(Boolean);
   }
 
+  /** 填空题题干：去掉 ＿ 等，避免朗读「带空格的句子」 */
+  function stripFillBlanks(line) {
+    return (line || "")
+      .replace(/[＿_…]+/g, "")
+      .replace(/[「」『』]/g, "")
+      .replace(/\s+/g, "")
+      .trim();
+  }
+
   function prepareJaTtsLine(raw) {
     let line = resolveJaText(raw);
+    line = stripFillBlanks(line);
     line = stripChineseParens(line);
+    /* 与 grammar denseSpeakLine / tts_lib 一致：箭头句读「正确侧」例句 */
     if (/[→⇔]/.test(line)) {
-      line = line.split(/[→⇔]/)[0].trim();
+      const parts = line.split(/[→⇔]/).map((s) => s.trim()).filter(Boolean);
+      line = (parts.length ? parts[parts.length - 1] : line).replace(/。$/, "");
     }
     if (!line || isChineseLearningText(line)) return "";
     return line;
@@ -287,6 +294,13 @@ const SpeechEngine = (() => {
     });
   }
 
+  /** 喇叭按钮 data-tts-key：与 tts-cache/{key}.mp3 同一编号 */
+  function primaryTtsKey(textOrObj) {
+    const candidates = fallbackLines(textOrObj);
+    const line = candidates[0];
+    return line ? ttsCacheKey(line) : "";
+  }
+
   function ttsMp3Url(line) {
     const base =
       typeof location !== "undefined" && location.pathname.includes("/")
@@ -305,10 +319,88 @@ const SpeechEngine = (() => {
     return ok;
   }
 
-  /** 直链 MP3 短等待兜底 */
+  function waitForMp3Ready(entry, maxMs) {
+    return new Promise((resolve) => {
+      if (!entry?.audio) {
+        resolve(false);
+        return;
+      }
+      if (entry.failed) {
+        resolve(false);
+        return;
+      }
+      const a = entry.audio;
+      if (entry.ready || a.readyState >= 3) {
+        resolve(true);
+        return;
+      }
+      const done = (ok) => {
+        a.removeEventListener("canplaythrough", onOk);
+        a.removeEventListener("loadeddata", onOk);
+        a.removeEventListener("error", onErr);
+        resolve(!!ok);
+      };
+      const onOk = () => {
+        entry.ready = true;
+        done(true);
+      };
+      const onErr = () => {
+        entry.failCount = (entry.failCount || 0) + 1;
+        if (entry.failCount >= 2) entry.failed = true;
+        done(false);
+      };
+      a.addEventListener("canplaythrough", onOk, { once: true });
+      a.addEventListener("loadeddata", onOk, { once: true });
+      a.addEventListener("error", onErr, { once: true });
+      try {
+        a.load();
+      } catch (_) {}
+      setTimeout(() => done(entry.ready || a.readyState >= 2), maxMs);
+    });
+  }
+
+  /** 播放已预热的同一条 MP3（避免另起 Audio 导致超时后切本机 TTS 断续） */
+  function playWarmMp3Entry(entry, token) {
+    return new Promise((resolve) => {
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
+      const audio = entry?.audio;
+      if (!audio) {
+        resolve(false);
+        return;
+      }
+      stopAllPlayback();
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
+      let settled = false;
+      const finish = (ok) => {
+        if (settled) return;
+        settled = true;
+        if (currentAudio === audio) currentAudio = null;
+        resolve(!!ok);
+      };
+      audio.currentTime = 0;
+      currentAudio = audio;
+      audio.onended = () => finish(true);
+      audio.onerror = () => finish(false);
+      try {
+        const p = audio.play();
+        if (p && typeof p.then === "function") {
+          p.then(() => {}).catch(() => finish(false));
+        }
+      } catch (_) {
+        finish(false);
+      }
+    });
+  }
+
+  /** 直链 MP3（预热失败时兜底） */
   function playBundledMp3Direct(line, token, waitMs) {
     return new Promise((resolve) => {
-      warmPhrase(line);
       const url = ttsMp3Url(line);
       let settled = false;
       const finish = (ok) => {
@@ -346,8 +438,14 @@ const SpeechEngine = (() => {
     });
   }
 
-  /** ① 嵌入语音包：手机/微信先 fetch（≤3s），再短兜底直链 */
+  /** ① 嵌入语音包：预热 → 同元素播放 → fetch → 直链 */
   async function playBundledMp3(line, token) {
+    const entry = warmPhrase(line);
+    const readyMs = preferFetchMp3() ? MP3_READY_WECHAT_MS : MP3_READY_MS;
+    if (await waitForMp3Ready(entry, readyMs)) {
+      const ok = await playWarmMp3Entry(entry, token);
+      if (ok) return true;
+    }
     if (preferFetchMp3()) {
       const ok = await playBundledMp3Fetch(line, token);
       if (ok) return true;
@@ -574,12 +672,38 @@ const SpeechEngine = (() => {
     return false;
   }
 
+  /** 不得调用 primaryTtsKey（其内部会再调 fallbackLines → 栈溢出） */
+  function preferredTtsKeyFromObj(textOrObj) {
+    if (!textOrObj || typeof textOrObj !== "object") return "";
+    const prefer = [];
+    if (textOrObj.ttsLine) pushLine(prefer, textOrObj.ttsLine);
+    if (textOrObj.questionTts) pushLine(prefer, textOrObj.questionTts);
+    if (textOrObj.kana) pushLine(prefer, textOrObj.kana);
+    return prefer[0] ? ttsCacheKey(prefer[0]) : "";
+  }
+
+  function sortCandidatesByPrimary(lines, textOrObj) {
+    const key = preferredTtsKeyFromObj(textOrObj);
+    if (!key || !lines.length) return lines;
+    const idx = lines.findIndex((l) => ttsCacheKey(l) === key);
+    if (idx <= 0) return lines;
+    const out = lines.slice();
+    const [hit] = out.splice(idx, 1);
+    out.unshift(hit);
+    return out;
+  }
+
   function fallbackLines(textOrObj) {
     const lines = [];
+    if (textOrObj && typeof textOrObj === "object" && textOrObj.onlyTtsLine && textOrObj.ttsLine) {
+      pushLine(lines, textOrObj.ttsLine);
+      return lines;
+    }
     if (textOrObj && typeof textOrObj === "object") {
       const jp = textOrObj.jp || textOrObj.japanese || textOrObj.title || "";
       const ruby =
         textOrObj.ruby || textOrObj.japaneseRuby || textOrObj.titleRuby || textOrObj.lessonTitleRuby;
+      if (textOrObj.ttsLine) pushLine(lines, textOrObj.ttsLine);
       if (textOrObj.questionTts) pushLine(lines, textOrObj.questionTts);
       if (textOrObj.kana) pushLine(lines, textOrObj.kana);
       const fromRuby = rubyKanaLine(jp, ruby);
@@ -597,25 +721,34 @@ const SpeechEngine = (() => {
       const s = String(textOrObj || "");
       if (!/[＿_]{2,}/.test(s)) pushLine(lines, s);
     }
-    return lines;
+    return sortCandidatesByPrimary(lines, textOrObj);
   }
 
   /**
-   * 唯一朗读入口：MP3 → 在线 → 本机；单词失败时尝试例文
+   * 唯一朗读入口：MP3 → 在线 → 本机；优先 data-tts-key 对应的一句，避免多候选切换音色断续
    */
-  async function speakJa(textOrObj, rate = 0.85) {
+  async function speakJa(textOrObj, rate = 0.85, options) {
     const token = ++speakToken;
+    const preferKey = options?.preferTtsKey || "";
     stopAllPlayback();
     notifyLoading(true);
     try {
-      const candidates = fallbackLines(textOrObj);
+      let candidates = fallbackLines(textOrObj);
       if (!candidates.length) return false;
-      for (const line of candidates) {
+      if (preferKey) {
+        const keyed = candidates.filter((l) => ttsCacheKey(l) === preferKey);
+        if (keyed.length) candidates = keyed;
+      }
+      warmPhrases(candidates);
+      for (let i = 0; i < candidates.length; i++) {
         if (token !== speakToken) return false;
+        const line = candidates[i];
         if (await trySpeakLine(line, rate, token)) {
           if (token !== speakToken) return false;
           return true;
         }
+        if (preferKey) break;
+        if (i >= 1) break;
       }
       return false;
     } finally {
@@ -705,43 +838,106 @@ const SpeechEngine = (() => {
     return out;
   }
 
-  function scoreBarHtml(label, got, max) {
-    const pct = max ? Math.round((got / max) * 100) : 0;
-    return `<div class="score-bar-row"><span>${label}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%"></div></div><span>${got}/${max}</span></div>`;
+  const SCORE_DIM_META = [
+    { key: "keyword", label: "关键词", icon: "🏷", tone: "kw" },
+    { key: "clarity", label: "清晰度", icon: "🔉", tone: "cl" },
+    { key: "match", label: "吻合度", icon: "📐", tone: "ma" },
+    { key: "prosody", label: "语调", icon: "🎵", tone: "pr" },
+  ];
+
+  function scoreDimBarHtml(meta, score10) {
+    const s = Math.max(0, Math.min(10, Math.round(score10)));
+    const pct = s * 10;
+    return `<div class="score-dim-row score-dim--${meta.tone}">
+      <span class="score-dim-label">${meta.icon} ${meta.label}</span>
+      <div class="score-bar-track"><div class="score-bar-fill score-bar-fill--${meta.tone}" style="width:${pct}%"></div></div>
+      <span class="score-dim-val">${s}/10</span>
+    </div>`;
   }
 
   function renderDialogueScoreHtml(result) {
     const stars =
-      result.score >= 90 ? "⭐⭐⭐" : result.score >= 75 ? "⭐⭐" : result.score >= 60 ? "⭐" : "";
+      result.score >= 90 ? "⭐⭐⭐" : result.score >= 75 ? "⭐⭐" : result.score >= 50 ? "⭐" : "";
     const bars = result.dims
-      ? `<div class="score-bars">
-            ${scoreBarHtml("关键词", result.dims.keyGot, result.dims.keyMax)}
-            ${scoreBarHtml("清晰度", result.dims.clarityGot, result.dims.clarityMax)}
-            ${scoreBarHtml("吻合度", result.dims.recogGot, result.dims.recogMax)}
+      ? `<div class="score-bars score-bars--ten">
+            ${SCORE_DIM_META.map((m) => scoreDimBarHtml(m, result.dims[m.key] ?? 0)).join("")}
           </div>`
       : "";
     const heard = result.heard
       ? `<p class="dg-score-heard">识别：${result.heard}</p>`
       : result.hasAudio
-        ? `<p class="dg-score-heard">已录到声音（未识别文字时按音量分析）</p>`
+        ? `<p class="dg-score-heard dg-score-heard--warn">未识别到日文，仅分析音量，总分从严压低。</p>`
         : "";
-    return `<div class="dg-score-panel ${result.passed ? "pass" : "retry"}">
-      <div class="dg-score-head">发音 ${result.score} 分 ${stars}</div>
+    return `<div class="dg-score-panel dg-score-panel--inline ${result.passed ? "pass" : "retry"}">
+      <div class="dg-score-head">本句发音 ${result.score} 分 ${stars}<span class="dg-score-sub">（仅针对上一段录音 · 四维各0–10）</span></div>
       <p class="dg-score-tip">${result.feedback}</p>
       ${bars}
       ${heard}
     </div>`;
   }
 
+  function dimScoreFromRatio(ratio) {
+    if (ratio >= 0.95) return 10;
+    if (ratio >= 0.8) return 8;
+    if (ratio >= 0.6) return 6;
+    if (ratio >= 0.4) return 4;
+    if (ratio >= 0.2) return 2;
+    return ratio > 0 ? 1 : 0;
+  }
+
+  function dimKeywordScore(keys, heardNorm, expected, heard) {
+    if (!heardNorm) return 0;
+    if (!keys.length) return Math.min(8, dimMatchScore(heard, expected, heardNorm));
+    const matched = keys.filter((k) => heardNorm.includes(k) || k.includes(heardNorm));
+    return dimScoreFromRatio(matched.length / keys.length);
+  }
+
+  function dimClarityScore(audio, hasAudio) {
+    if (!hasAudio) return 0;
+    if (!audio.ok) return 2;
+    if (audio.tooQuiet) return 1;
+    if (audio.tooShort) return 2;
+    let s = 4;
+    if (audio.avgRms >= 0.018 && audio.avgRms <= 0.38) s += 2;
+    if (audio.speechRatio >= 0.22) s += 1;
+    if (audio.speechRatio >= 0.35) s += 1;
+    if (audio.duration >= 0.75 && audio.duration <= 14) s += 2;
+    return Math.min(10, s);
+  }
+
+  function dimMatchScore(heard, expected, heardNorm) {
+    if (!heardNorm) return 0;
+    const exp = normalizeJa(expected);
+    const sim = similarity(heardNorm, exp);
+    const overlap = textOverlapRatio(heard, expected);
+    const blend = sim * 0.55 + overlap * 0.45;
+    if (blend >= 0.93) return 10;
+    if (blend >= 0.82) return 8;
+    if (blend >= 0.68) return 6;
+    if (blend >= 0.5) return 4;
+    if (blend >= 0.32) return 2;
+    return 1;
+  }
+
+  function dimProsodyScore(audio, heardNorm, expected) {
+    if (!heardNorm) return 0;
+    const expLen = normalizeJa(expected).length || 1;
+    const lenRatio = heardNorm.length / expLen;
+    let s = dimMatchScore(heardNorm, expected, heardNorm) * 0.45;
+    if (lenRatio >= 0.75 && lenRatio <= 1.25) s += 3;
+    else if (lenRatio >= 0.55 && lenRatio <= 1.45) s += 1;
+    if (audio.ok && !audio.tooQuiet && audio.speechRatio >= 0.28 && audio.speechRatio <= 0.82) s += 2;
+    return Math.min(10, Math.round(s));
+  }
+
   /**
-   * ② 会話：关键词 40 + 清晰度 25 + 吻合度 35（与旧版 teacherEvaluate 一致）
+   * ② 会話：四维各 0–10，从严；须先录音再点评估
    */
   async function evaluateDialogueDetailed({
     expected,
     heard = "",
     audioBlob = null,
     keywords = [],
-    asrConfidence = 0,
   }) {
     const keys = (keywords.length ? keywords : extractKeywordsFromJapanese(expected)).map(normalizeJa);
     const heardNorm = normalizeJa(heard);
@@ -753,11 +949,11 @@ const SpeechEngine = (() => {
         score: 0,
         passed: false,
         feedback: isWeChatBrowser()
-          ? "未录到声音。请允许麦克风，靠近手机清晰朗读后再评分。"
-          : "未录到声音。请允许麦克风后重录。",
+          ? "未录到声音。请先 🎤 录音，再点 ✓ 评估。"
+          : "未录到声音。请先录音，再点评估。",
         heard: "",
         matched: [],
-        dims: null,
+        dims: { keyword: 0, clarity: 0, match: 0, prosody: 0 },
         hasAudio: false,
       };
     }
@@ -769,53 +965,35 @@ const SpeechEngine = (() => {
       } catch (_) {}
     }
 
-    const keyMax = 40;
-    const keyGot = keys.length
-      ? Math.round((matched.length / keys.length) * keyMax)
-      : heardNorm
-        ? 28
-        : 0;
+    const dims = {
+      keyword: dimKeywordScore(keys, heardNorm, expected, heard),
+      clarity: dimClarityScore(audio, hasAudio),
+      match: dimMatchScore(heard, expected, heardNorm),
+      prosody: dimProsodyScore(audio, heardNorm, expected),
+    };
 
-    const clarityMax = 25;
-    let clarityGot = 0;
-    if (audio.ok) {
-      if (audio.tooQuiet) clarityGot = 4;
-      else if (audio.tooShort) clarityGot = 8;
-      else {
-        clarityGot = 8 + Math.round(Math.min(12, audio.speechRatio * 14));
-        if (audio.avgRms >= 0.02 && audio.avgRms <= 0.35) clarityGot += 5;
-        if (audio.duration >= 0.7 && audio.duration <= 12) clarityGot += 3;
-      }
-      clarityGot = Math.min(clarityMax, clarityGot);
-    } else if (hasAudio) clarityGot = 10;
-
-    const recogMax = 35;
-    const overlap = textOverlapRatio(heard, expected);
-    let recogGot = Math.round(overlap * 22 + asrConfidence * 13);
-    if (heardNorm && recogGot < 8) recogGot = 8;
-    if (!heardNorm && audio.ok && !audio.tooQuiet && !audio.tooShort) {
-      recogGot = Math.max(recogGot, keys.length ? 14 : 24);
-    }
-    recogGot = Math.min(recogMax, recogGot);
-
-    let score = Math.min(100, keyGot + clarityGot + recogGot);
-    if (audio.ok && audio.tooQuiet) score = Math.min(score, 55);
-    if (!heardNorm && audio.ok && !audio.tooQuiet && !audio.tooShort && audio.duration >= 0.65) {
-      score = Math.max(score, 62);
-    }
-    const passed = score >= 60;
+    let raw40 = dims.keyword + dims.clarity + dims.match + dims.prosody;
+    if (!heardNorm && hasAudio) raw40 = Math.min(raw40, dims.clarity + 4);
+    let score = Math.round((raw40 / 40) * 100);
+    if (!heardNorm) score = Math.min(score, 28);
+    if (audio.ok && audio.tooQuiet) score = Math.min(score, 35);
+    const passed = score >= 70;
 
     let feedback;
-    if (audio.ok && audio.tooQuiet) {
-      feedback = "声音偏小，请靠近麦克风、安静环境再录一次。";
+    if (!heardNorm && hasAudio) {
+      feedback = "只听到声音、未识别日文。请对照上方句子完整朗读后再点 ✓ 评估。";
+    } else if (audio.ok && audio.tooQuiet) {
+      feedback = "音量偏小。靠近麦克风，安静环境，整句读完再评估。";
     } else if (score >= 90) {
-      feedback = "发音完整、清晰，与示范句吻合度高！";
+      feedback = "与示范句高度一致，关键词与语调都很好！";
     } else if (score >= 75) {
-      feedback = `不错！关键词：${matched.join("、") || "—"}。可再听示范微调语调。`;
-    } else if (score >= 60) {
-      feedback = `及格。注意：${keys.slice(0, 4).join("、") || expected.slice(0, 12)}。先听示范再跟读。`;
+      feedback = `较好。已命中：${matched.join("、") || "—"}；可再听 🔊 微调语调。`;
+    } else if (score >= 70) {
+      feedback = `刚及格。薄弱：${SCORE_DIM_META.filter((m) => dims[m.key] < 6).map((m) => m.label).join("、") || "—"}。`;
+    } else if (score >= 45) {
+      feedback = `差距较大。先 🔊 听示范再跟读。注意：${keys.slice(0, 4).join("、") || expected.slice(0, 14)}`;
     } else {
-      feedback = `再练一次～目标词：${keys.slice(0, 4).join("、") || expected.slice(0, 12)}。`;
+      feedback = "与目标句不一致。不要只读一两个音；请整句模仿示范的语气与语调。";
     }
 
     return {
@@ -824,7 +1002,7 @@ const SpeechEngine = (() => {
       feedback,
       heard: heard || "",
       matched,
-      dims: { keyGot, keyMax, clarityGot, clarityMax, recogGot, recogMax },
+      dims,
       hasAudio,
     };
   }
@@ -1090,6 +1268,7 @@ const SpeechEngine = (() => {
     speak,
     prepareJaTtsLine,
     ttsCacheKey,
+    primaryTtsKey,
     warmPhrase,
     warmPhrases,
     listenOnce,

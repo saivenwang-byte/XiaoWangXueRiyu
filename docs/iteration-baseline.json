@@ -1,0 +1,110 @@
+{
+  "schema": "hyouga-iteration-baseline/v1",
+  "updated": "2026-05-21",
+  "paradigm": {
+    "name_cn": "文递自归",
+    "name_en": "Autoregressive Generation",
+    "doc": "docs/项目知识库-文递自归.md",
+    "discipline": "docs/Agent文递自归.md",
+    "project_spec": "PROJECT_SPEC.md",
+    "architecture": "docs/PROJECT_ARCHITECTURE.md",
+    "cursor_rules": ".cursor/rules/wendi-zigui-core.mdc",
+    "agent_pipeline": "docs/agent-pipeline.json",
+    "skills": [
+      "hyouga-orchestrator",
+      "hyouga-author",
+      "hyouga-review",
+      "hyouga-qa",
+      "hyouga-fix",
+      "hyouga-shipper",
+      "hyouga-auditor"
+    ],
+    "agent_rule": "confirmed[] = 已生成上下文；本轮改动 = 下一 token；禁止非自回归式整站重写"
+  },
+  "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
+  "current": {
+    "product": "1.0.1",
+    "cache": "44",
+    "cache_files": [
+      "js/share-wechat.js CACHE_VER",
+      "index.html ?v=",
+      "share.html ?v=",
+      "index.html service worker hyouga-sw-purged-v44"
+    ],
+    "local": "http://localhost:8765/index.html?v=44",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44"
+  },
+  "confirmed": [
+    {
+      "id": "plan-a-sensei-four-gates",
+      "since_cache": "41",
+      "title": "方案A：四关「先生のひとこと」统一卡片",
+      "files": ["js/sensei-tip-card.js", "js/vocab-flash.js", "js/grammar-network.js", "js/dialogue-gate.js", "js/quiz-gate.js"],
+      "acceptance": "四关顶部有先生卡片；文法为 gn-scroll 非翻面弹窗"
+    },
+    {
+      "id": "dialogue-score-single-panel",
+      "since_cache": "40",
+      "title": "会話评语单条、日文下方全宽",
+      "files": ["js/shadow-speak.js", "js/dialogue-gate.js"],
+      "acceptance": "L14 句①评分后点句②🎤，句①评语消失；无右侧旧版双分"
+    },
+    {
+      "id": "tts-prefer-key-warm-mp3",
+      "since_cache": "42",
+      "title": "TTS：preferTtsKey、预热 MP3、箭头句读尾部",
+      "files": ["js/speech-engine.js", "js/speak-ui.js"],
+      "acceptance": "audit-tts-registry 缺失 0；停播不杀全部预热实例"
+    },
+    {
+      "id": "speech-engine-no-recursion",
+      "since_cache": "44",
+      "title": "speech-engine 禁止 fallbackLines↔primaryTtsKey 互调",
+      "files": ["js/speech-engine.js"],
+      "acceptance": "四关不出现「読み込みエラー」；sort 用 preferredTtsKeyFromObj"
+    },
+    {
+      "id": "quiz-tts-question-only",
+      "since_cache": "42",
+      "title": "测验🔊只读 questionTts，不读带＿题干",
+      "files": ["js/quiz-gate.js", "js/speech-engine.js"],
+      "acceptance": "填空题点🔊为完整日文句"
+    },
+    {
+      "id": "local-preview-bat",
+      "since_cache": "40",
+      "title": "本地预览 bat + 8765 探测",
+      "files": ["打开本地预览.bat", "重启本地服务.bat", "scripts/start-local-server.py"],
+      "acceptance": "禁止 file:// 交付；ERR_EMPTY_RESPONSE 用重启 bat"
+    }
+  ],
+  "backlog": [
+    {
+      "id": "p0-grammar-dense-zh-inline",
+      "approved": "2026-05-21 用户：同意全部意见",
+      "status": "partial",
+      "note": "grammar-network renderDenseItem 已加固 obj.zh；全课 denseList 需冒烟确认",
+      "files": ["js/grammar-network.js", "js/data/lessons-mvp-depth.js"]
+    },
+    {
+      "id": "p2-vocab-difficult-hints",
+      "approved": "2026-05-21",
+      "status": "pending",
+      "note": "每课 5～8 难词一行灰字；不做逐词大卡"
+    },
+    {
+      "id": "p3-light-in-lesson-links",
+      "approved": "2026-05-21",
+      "status": "deferred",
+      "note": "轻量课内链接；用户同意但可延后"
+    }
+  ],
+  "forbidden_without_explicit_user_request": [
+    "删除或隐藏已有 Tab/关卡",
+    "全站 giant 点读卡 / 113 词逐词大卡",
+    "重写 app.js 路由或替换 lessons 数据源",
+    "未跑四关回归即改 speech-engine.js 排序/回退链"
+  ],
+  "regression_smoke_lesson": 14,
+  "regression_gates": ["vocab", "grammar", "dialogue", "quiz"]
+}

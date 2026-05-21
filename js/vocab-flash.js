@@ -114,10 +114,26 @@ const VocabFlash = (() => {
           ? SpeakUI.btnHtml(titlePayload, 'id="vf-lesson-speak"')
           : "";
 
+    const coach =
+      typeof getLessonCoachSummary === "function" ? getLessonCoachSummary(lessonId) : null;
+    const coachLines = coach?.lines || [];
+    const coachHtml =
+      coachLines.length && typeof SenseiTipCard !== "undefined"
+        ? SenseiTipCard.fromLines(coachLines, { subtitle: coach.subtitle || "", expanded: true })
+        : coachLines.length && typeof SenseiTipCard === "undefined"
+          ? coachLines
+              .map(
+                (l) =>
+                  `<p class="hint-ja">${escapeHtml(l.ja)}</p>${l.zh && showZh() ? `<p class="zh-annotation">${escapeHtml(l.zh)}</p>` : ""}`
+              )
+              .join("")
+          : "";
+
     container.innerHTML = `
       <div class="vf-wrap vf-list-mode">
         <h2>第${lessonId}課 · 本课单词一览</h2>
         <p class="lc-theme">${escapeHtml(L?.theme || "")}${themeZh}</p>
+        ${coachHtml}
         <div class="vf-lesson-bar">
           <div class="vf-lesson-text">
             <p class="vf-lesson-label">本课课文（点 🔊 听）</p>
@@ -139,6 +155,7 @@ const VocabFlash = (() => {
       }
     };
 
+    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(container);
     if (typeof ShadowSpeak !== "undefined") ShadowSpeak.bind(container);
     else if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
   }

@@ -1,0 +1,4 @@
+{
+  "desc": "标日课后巩固",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

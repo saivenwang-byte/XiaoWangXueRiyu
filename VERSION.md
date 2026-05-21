@@ -1,26 +1,20 @@
-# 正式上线 · MVP build 29（链接转发）
+# 当前正式版 · 产品 1.0.1 · 缓存 build 44
 
 | 项 | 值 |
 |---|---|
-| 资源缓存 | `?v=29` / `CACHE_VER=29` / SW `hyouga-sw-purged-v29` |
-| 课次 | 第 **14 / 16 / 18** 课（MVP 最小集） |
-| **唯一对外链接** | https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29 |
-| 分享页 | https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html |
-| 本机调试 | http://localhost:8765/index.html?v=29（仅作者，不发学员） |
-| 微信小程序 | 暂缓（需企业主体）；见 `docs/微信小程序-发布一次.md` |
-| 完整课程 | 另开新仓库 |
-
-## 发布 / 转发
-
-双击 **`帮你发布好了.bat`** → 链接进剪贴板 → 微信粘贴发送 → 手机 **4G** 验收。
-
-规则：`.cursor/rules/production-netlify.mdc`（链接为主，禁止 WiFi/localhost 当发行方案）。
+| **产品版本** | **1.0.1**（小修；首发冻结见 [VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md) 为 **1.0.0**） |
+| **资源缓存** | `?v=44` / `CACHE_VER=44` |
+| **课次** | 第 **14 / 16 / 18** 课（MVP） |
+| **本地** | http://localhost:8765/index.html?v=44（须先 `打开本地预览.bat` 或 `重启本地服务.bat`） |
+| **公网** | https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44（push 后生效） |
+| **版本沿革** | [docs/version-history.json](./docs/version-history.json) |
+| **总规范** | [PROJECT_SPEC.md](./PROJECT_SPEC.md) |
 
 ## 学员话术（复制发微信）
 
 ```
-【标日课后巩固】第14/16/18课，语法→会話→测试。点开就学，可转发给同学：
-https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29
+【标日课后巩固】第14/16/18课。点开就学：
+https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44
 
 跟读录不上音：微信右上角「···」→ 在浏览器中打开。
 ```

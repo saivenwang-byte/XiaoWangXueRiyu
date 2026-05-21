@@ -325,18 +325,87 @@ body.mvp-app .nav-item.active {
   font-size: 12px;
 }
 
+.dg-wrap.dg-simple {
+  padding-bottom: 8px;
+}
+
+.dg-label-compact {
+  margin: 4px 0 6px;
+  font-size: 12px;
+}
+
+.dg-action-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: var(--mvp-muted);
+}
+
+.dg-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dg-leg-ico {
+  font-style: normal;
+}
+
+.dg-leg-eval {
+  color: #6a3fd6;
+  font-weight: 600;
+}
+
+.dg-scene-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.dg-scene-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  flex: 1;
+  min-width: 0;
+}
+
+.dg-your-turn-compact {
+  margin: 6px 0 4px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.dg-hint-compact {
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.dg-legacy-compact {
+  margin-top: 10px;
+}
+
+.dg-legacy-compact .btn {
+  width: 100%;
+  font-size: 13px;
+}
+
 .dg-simple .dg-reply-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 12px 0;
+  gap: 8px;
+  margin: 6px 0;
 }
 
 .dg-reply-block {
   background: #fff;
   border: 1px solid var(--mvp-border);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 10px;
+  padding: 8px 10px;
 }
 
 .dg-reply-head {
@@ -351,18 +420,97 @@ body.mvp-app .nav-item.active {
   font-size: 15px;
 }
 
+/* 会話：正文 + 右侧固定宽 🔊🎤▶ 列 */
+.dg-line-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.dg-line-row--npc {
+  background: #fafafa;
+}
+
+.dg-line-row--reply {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+  background: transparent;
+}
+
+.dg-line-row--reaction {
+  margin-top: 6px;
+  margin-bottom: 0;
+  padding: 6px 8px;
+}
+
+.dg-line-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dg-line-content .jp {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.dg-line-row--reply .dg-line-content .jp {
+  font-size: 15px;
+}
+
+.dg-actions-col {
+  flex: 0 0 152px;
+  width: 152px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.dg-actions-col .ss-action-row {
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+.dg-actions-col--listen .btn-ss-record,
+.dg-actions-col--listen .btn-ss-replay,
+.dg-actions-col--listen .btn-ss-evaluate {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 评语只允许在日文行下方，禁止叠在按钮列（兼容旧缓存 DOM） */
+.dg-actions-col > .dg-score-slot,
+.dg-actions-col > .dg-score-panel,
+.dg-actions-col > .dg-score-loading,
+.ss-action-row + .dg-score-slot,
+.ss-action-row + .dg-score-panel {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
 .dg-reaction-inline {
   margin-top: 10px;
   padding: 10px;
   background: #fafafa;
   border-radius: 8px;
-  position: relative;
-  padding-right: 36px;
 }
 
 .dg-choice-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 10px 12px;
   border: 1px solid var(--mvp-border);
@@ -612,6 +760,115 @@ body.mvp-app .nav-item.active {
 .gn-wrap.gn-compact .gn-hint {
   font-size: 11px;
   padding-top: 4px;
+}
+
+/* 文法：滚动阅读（无需翻面） */
+.gn-wrap.gn-scroll .gn-scroll-body {
+  background: var(--mvp-surface, #fff);
+  border: 1px solid var(--mvp-border, #e8e4dc);
+  border-radius: 12px;
+  padding: 12px 11px;
+  margin: 8px 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.gn-wrap.gn-scroll .gn-depth-sec {
+  margin-top: 4px;
+}
+
+.gn-wrap.gn-scroll .gn-depth-h {
+  font-size: 13px;
+  margin: 0 0 6px;
+  color: var(--mvp-primary-dark, #8b2942);
+}
+
+/* 先生のひとこと — 四关统一秘技卡 */
+.sensei-tip {
+  margin: 10px 0;
+  border-radius: 12px;
+  border: 1px solid #f0e0c8;
+  background: linear-gradient(165deg, #fffbf5 0%, #fff8ee 100%);
+  box-shadow: 0 1px 3px rgba(139, 90, 43, 0.08);
+  overflow: hidden;
+}
+
+.sensei-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: #6b4a2a;
+}
+
+.sensei-tip-ico {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.sensei-tip-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8b5a2b;
+}
+
+.sensei-tip-sub {
+  flex: 1;
+  font-size: 11px;
+  color: #a08060;
+  text-align: right;
+  margin-right: 4px;
+}
+
+.sensei-tip-chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #b8956a;
+  border-bottom: 2px solid #b8956a;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sensei-tip.is-open .sensei-tip-chevron {
+  transform: rotate(-135deg);
+}
+
+.sensei-tip-body {
+  display: none;
+  padding: 0 12px 12px;
+  border-top: 1px dashed #ecd9c0;
+}
+
+.sensei-tip.is-open .sensei-tip-body {
+  display: block;
+}
+
+.sensei-tip-ja {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 8px 0 4px;
+}
+
+.sensei-tip-zh {
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0 0 6px;
+}
+
+.dg-line-content .sensei-tip,
+.vf-wrap .sensei-tip,
+#qz-feedback .sensei-tip {
+  margin-top: 8px;
+}
+
+.dg-line-content .sensei-tip {
+  margin-bottom: 4px;
 }
 
 .gn-wrap.gn-compact .gn-speak-row-compact {
@@ -1126,7 +1383,8 @@ body.mvp-app .gate-tab.active:active {
 }
 
 .btn-ss-record,
-.btn-ss-replay {
+.btn-ss-replay,
+.btn-ss-evaluate {
   flex-shrink: 0;
   width: 34px;
   height: 34px;
@@ -1137,6 +1395,24 @@ body.mvp-app .gate-tab.active:active {
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
+}
+
+.btn-ss-evaluate {
+  border-color: #b39ddb;
+  background: linear-gradient(180deg, #f3e8ff 0%, #ede7f6 100%);
+  color: #5e35b1;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.btn-ss-evaluate.is-evaluating {
+  animation: speak-pulse 0.55s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.btn-ss-evaluate:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btn-ss-record.is-recording {
@@ -1153,8 +1429,8 @@ body.mvp-app .gate-tab.active:active {
   margin-left: 8px;
 }
 
-.dg-reply-head .ss-action-row {
-  margin-left: auto;
+.dg-reply-head .dg-actions-col {
+  flex-shrink: 0;
 }
 
 .qz-nav {
@@ -1513,13 +1789,10 @@ body.mvp-app .gate-tab.active:active {
 
 .dg-bubble {
   position: relative;
-  padding-right: 36px;
 }
 
-.dg-bubble .btn-speak-icon {
-  position: absolute;
-  right: 8px;
-  top: 8px;
+.dg-bubble:not(.dg-line-row) {
+  padding-right: 12px;
 }
 
 .dg-reply-options {
@@ -1811,20 +2084,40 @@ body.mvp-app .gate-tab.active:active {
   background: #fafafa;
 }
 
-/* ② 会話 · 多维度发音评分 */
+/* ② 会話 · 本句发音评语（全宽，贴在日文行下方） */
 .dg-score-slot {
-  margin: 8px 0 12px 44px;
+  margin: 0;
   min-height: 0;
+  width: 100%;
+}
+
+.dg-score-slot:empty,
+.dg-score-slot[hidden] {
+  display: none !important;
+}
+
+.dg-score-slot--inline {
+  margin-top: 8px;
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
 }
 
 .dg-score-loading {
   font-size: 13px;
   color: #1cb0f6;
   font-weight: 600;
-  margin: 4px 0;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f0f7ff;
 }
 
-.dg-score-panel {
+.dg-score-panel,
+.dg-score-panel--inline {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 10px 12px;
   border-radius: 10px;
   background: #f0f7ff;
@@ -1846,6 +2139,18 @@ body.mvp-app .gate-tab.active:active {
   font-weight: 700;
   color: #1a7f37;
   margin-bottom: 4px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.dg-score-sub {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--mvp-muted);
+}
+
+.dg-score-heard--warn {
+  color: #c45c00;
 }
 
 .dg-score-panel.retry .dg-score-head {
@@ -1870,7 +2175,8 @@ body.mvp-app .gate-tab.active:active {
   color: #555;
 }
 
-.score-bar-row {
+.score-bar-row,
+.score-dim-row {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1880,6 +2186,39 @@ body.mvp-app .gate-tab.active:active {
 .score-bar-row span:first-child {
   width: 52px;
   flex-shrink: 0;
+}
+
+.score-dim-label {
+  width: 72px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.score-dim-val {
+  width: 32px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-dim--kw .score-dim-label { color: #1565c0; }
+.score-dim--cl .score-dim-label { color: #00838f; }
+.score-dim--ma .score-dim-label { color: #e65100; }
+.score-dim--pr .score-dim-label { color: #6a1b9a; }
+
+.score-dim-row .score-bar-track {
+  flex: 1;
+}
+
+.score-bar-fill--kw { background: #42a5f5; }
+.score-bar-fill--cl { background: #26a69a; }
+.score-bar-fill--ma { background: #ff9800; }
+.score-bar-fill--pr { background: #ab47bc; }
+
+.score-bars--ten {
+  margin-top: 6px;
 }
 
 .score-bar-track {
@@ -1896,8 +2235,21 @@ body.mvp-app .gate-tab.active:active {
   border-radius: 4px;
 }
 
-.dg-reply-block .ss-action-row {
-  margin-top: 6px;
+.dg-line-content .dg-score-slot--inline {
+  grid-column: 1 / -1;
+}
+
+.dg-line-content .zh-annotation,
+.dg-reply-block .zh-annotation {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.dg-line-content .note-ja,
+.dg-reply-block .note-ja {
+  margin: 2px 0 0;
+  font-size: 11px;
 }
 
 /* 统一喇叭 */

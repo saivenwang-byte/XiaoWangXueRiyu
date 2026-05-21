@@ -15,9 +15,19 @@ const QuizGate = (() => {
     return state?.showChineseZh !== false;
   }
 
+  function resolveQuestionTts(q) {
+    const tts = (q.questionTts || "").trim();
+    if (tts) return tts;
+    if (typeof SpeechEngine !== "undefined" && SpeechEngine.prepareJaTtsLine) {
+      return SpeechEngine.prepareJaTtsLine(q.question || "");
+    }
+    return (q.question || "").replace(/[＿_…]+/g, "").trim();
+  }
+
+  /** 题干 🔊 只读完整句 questionTts，不读带 ＿ 的显示题干 */
   function questionSpeakPayload(q) {
-    const tts = q.questionTts || q.question;
-    return { jp: q.question, questionTts: tts, kana: q.questionKana || "" };
+    const tts = resolveQuestionTts(q);
+    return { ttsLine: tts, onlyTtsLine: true, questionTts: tts };
   }
 
   function optionSpeakPayload(text) {
@@ -25,13 +35,17 @@ const QuizGate = (() => {
       typeof QUIZ_OPTION_KANA !== "undefined" && QUIZ_OPTION_KANA[text]
         ? QUIZ_OPTION_KANA[text]
         : text;
-    return { jp: text, kana };
+    return { ttsLine: kana, onlyTtsLine: true, jp: text, kana };
   }
 
   function warmQuizQuestion(q) {
     if (typeof SpeechEngine === "undefined" || !SpeechEngine.warmPhrases) return;
-    const lines = [questionSpeakPayload(q)];
-    q.options?.forEach((opt) => lines.push(optionSpeakPayload(opt)));
+    const lines = [resolveQuestionTts(q)];
+    q.options?.forEach((opt) => {
+      const kana =
+        typeof QUIZ_OPTION_KANA !== "undefined" && QUIZ_OPTION_KANA[opt] ? QUIZ_OPTION_KANA[opt] : opt;
+      lines.push(kana);
+    });
     SpeechEngine.warmPhrases(lines);
   }
 
@@ -165,15 +179,19 @@ const QuizGate = (() => {
     }
     const correctText = q.type === "choice" ? q.options[q.answer] : q.answer;
 
+    const senseiTip =
+      typeof SenseiTipCard !== "undefined"
+        ? SenseiTipCard.fromNotes(q.explanation, q.explanationZh, { expanded: true })
+        : `<p class="hint-ja">${escapeHtml(q.explanation)}</p>
+        ${showZh() && q.explanationZh ? `<p class="zh-annotation">${escapeHtml(q.explanationZh)}</p>` : ""}`;
+
     if (ok) {
       feedback.innerHTML = `<p class="feedback ok">✅ せいかい！</p>
-        <p class="hint-ja">${escapeHtml(q.explanation)}</p>
-        ${showZh() && q.explanationZh ? `<p class="zh-annotation">${escapeHtml(q.explanationZh)}</p>` : ""}
+        ${senseiTip}
         <button type="button" class="btn primary" id="qz-next-answer">次へ</button>`;
     } else {
       feedback.innerHTML = `<p class="feedback err">❌ ざんねん。正解は「${escapeHtml(correctText)}」です。</p>
-        <p class="hint-ja">${escapeHtml(q.explanation)}</p>
-        ${showZh() && q.explanationZh ? `<p class="zh-annotation">${escapeHtml(q.explanationZh)}</p>` : ""}
+        ${senseiTip}
         <button type="button" class="btn primary" id="qz-next-answer">次へ</button>`;
       addMvpMistake(state, {
         lessonId: lesson.lessonId,
@@ -185,6 +203,7 @@ const QuizGate = (() => {
         grammarNodeId: q.grammarNodeId,
       });
     }
+    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(feedback);
     feedback.querySelector("#qz-next-answer").onclick = () => {
       qIndex++;
       render();

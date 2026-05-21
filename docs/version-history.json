@@ -1,0 +1,51 @@
+{
+  "schema": "hyouga-version-history/v1",
+  "current": {
+    "product": "1.0.1",
+    "cache": "44",
+    "date": "2026-05-21",
+    "note": "speech-engine 递归修复；迭代基线见 docs/iteration-baseline.json",
+    "baseline": "docs/iteration-baseline.json",
+    "discipline": "docs/Agent文递自归.md",
+    "paradigm": "docs/项目知识库-文递自归.md"
+  },
+  "releases": [
+    {
+      "product": "1.0.0",
+      "cache": "11",
+      "tag": "mvp-v1.0-wechat",
+      "date": "2025",
+      "note": "微信首发冻结版，见 VERSION-WECHAT-v1.md",
+      "local": "http://localhost:8765/index.html?v=11",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=11"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "40",
+      "date": "2026-05-21",
+      "note": "标日三课 MVP 小修：评语生命周期、TTS 编号对账、本地预览 bat",
+      "local": "http://localhost:8765/index.html?v=40",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=40",
+      "git": "main（未 push 时公网仍为旧 cache）"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "44",
+      "date": "2026-05-21",
+      "note": "MVP 收官候选：方案A四关先生卡、speech-engine递归修复、文递自归规范、pre-ship全绿；待手机验收+push后公网生效",
+      "local": "http://localhost:8765/index.html?v=44",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44",
+      "mvp_close_checklist": "docs/MVP收官-手机验收清单.md"
+    }
+  ],
+  "versioning_rules": {
+    "product_semver": "1.0.0 首发 → 小改 1.0.1、1.0.2；大改 1.1.0",
+    "cache_ver": "index.html ?v= 与 js/share-wechat.js CACHE_VER，每次发版 +1，不等于产品小数",
+    "history_source": "Git 提交 + 本文件 + VERSION.md；AI 会话不自动记忆，须读仓库文件"
+  },
+  "cost_model": {
+    "student_runtime": "无 OpenAI/AI 平台按次费用；静态 HTML+MP3+浏览器录音/本地评分",
+    "author_only": "本机 build-tts-cache.py 使用 edge-tts 生成 MP3；git push GitHub Pages 免费托管",
+    "traffic": "学员打开链接消耗手机流量，非 API 账单"
+  }
+}

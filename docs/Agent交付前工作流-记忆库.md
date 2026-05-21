@@ -1,0 +1,119 @@
+# Agent 交付前工作流 · 记忆库（项目级 · 持久）
+
+> **用途**：跨会话、跨 Agent 的「已验收结论与踩坑」。交付前必读本文 + [Agent交付前工作流.md](./Agent交付前工作流.md)。  
+> **版本沿革机器可读**：[version-history.json](./version-history.json)  
+> **已确认功能基线（防遗漏/防回归）**：[iteration-baseline.json](./iteration-baseline.json)  
+> **文递自归**：[项目知识库-文递自归.md](./项目知识库-文递自归.md)（概念）· [Agent文递自归.md](./Agent文递自归.md)（执行纪律）
+
+---
+
+## 1. 版本双轨（勿混淆）
+
+| 轨道 | 当前（2026-05-21） | 说明 |
+|------|-------------------|------|
+| **产品版** | **1.0.1** | 给学员/你的 semver：1.0.0 冻结 → 1.0.1 小修 |
+| **缓存 build** | **v=44** | `?v=44`；方案 A 四关 + **speech-engine 栈溢出已修**（见 §7） |
+
+**不是** 1.38 / 1.40 产品版。查历史：`docs/version-history.json` → `releases[]`；Git 标签 `mvp-v1.0-wechat` = 产品 1.0.0。
+
+---
+
+## 2. 费用模型（已确认）
+
+- 学员微信打开 **GitHub Pages 链接**：下载静态资源 + 本地 MP3，**无** 运行时 AI API 费。
+- MVP `index.html` **未加载** `chat.js` / OpenAI。
+- 🔊 = `tts-cache/*.mp3`；🎤/✓ = 浏览器 + `speech-engine.js` 本地分析。
+- **仅作者本机** `python scripts/build-tts-cache.py` 用 edge-tts 生成语音（开发侧）。
+
+---
+
+## 3. 会話评语「两条同时出现」— 根因与验收
+
+| 项 | 内容 |
+|----|------|
+| **根因** | `js/shadow-speak.js` 内 **`clearDialogueScores` 定义了两次**，后者弱实现覆盖前者，旧 panel 未清 |
+| **修复** | 删除重复函数；评语只在 `dialogue-gate.js` 行下 `[data-dg-score-for]`；新 🎤/▶/🔊/✓ 前 `clearDialogueScores()` |
+| **验收 UI** | 日文**下方**「本句发音」+ 四维 0–10；**不是**右侧旧版「发音 XX分」 |
+| **冒烟** | L14 ②：句① ✓ 出分 → 句② 🎤 → 句① 评语必须消失 |
+
+---
+
+## 4. 本地预览 localhost 打不开（ERR_EMPTY_RESPONSE）
+
+| 现象 | 原因 |
+|------|------|
+| `localhost:8765` Connection Failed / 未发送数据 | **未启动** `http.server`，或 **8765 僵尸进程**（端口 LISTENING 但 HTTP 无响应） |
+
+| 操作 | 命令 |
+|------|------|
+| 推荐 | 双击 **`打开本地预览.bat`**（自动起服务 + 带 `?v=`） |
+| 仍失败 | 双击 **`重启本地服务.bat`**（会结束**所有**占用 8765 的进程），再开预览 bat |
+| 根因补充 | 多次点 bat 会叠 **4 个** `python -m http.server`，端口 LISTENING 但 HTTP 无响应 |
+| 禁止 | 未起服务就发 `localhost:8765` 链接；用 Cursor 内嵌浏览器却不跑 bat |
+
+探测：`python scripts/start-local-server.py --probe`
+
+---
+
+## 5. 发布前全局检查清单（机器 + 人）
+
+### 机器（必跑）
+
+```bat
+发布前自检.bat
+```
+
+等价 `python scripts/pre-ship-check.py`：
+
+1. `?v=` = `CACHE_VER`
+2. 单词 meaningZh、课外 zh、audit-ja-text
+3. `audit-tts-registry.py --write` → **缺失 0**
+4. 存在 `打开本地预览.bat`
+
+### 人工（改会話/语音/UI 后）
+
+1. **先** `重启本地服务.bat` 或 `打开本地预览.bat`
+2. L14 ② 评语切换（见 §3）
+3. L14 ② 文法 🔊 不「朗读失败」
+4. 单词灰字 + 🔊
+
+### 交付反馈块
+
+见 [Agent交付前工作流.md](./Agent交付前工作流.md) 第五节；**本地 HTTP 探测失败时不得写「本地可开」**。
+
+---
+
+## 7. 四关全挂「読み込みエラー」— 根因（勿再犯）
+
+| 项 | 内容 |
+|----|------|
+| **现象** | 単語/文法/会話/テスト 仅显示加载错误，像「界面被删」 |
+| **根因** | `speech-engine.js`：`fallbackLines()` → `sortCandidatesByPrimary()` → `primaryTtsKey()` → 再调 `fallbackLines()` **无限递归** |
+| **修复** | `since_cache=44`：`sort` 用 `preferredTtsKeyFromObj`，禁止在 sort 路径调 `primaryTtsKey` |
+| **纪律** | 改 `speech-engine.js` 必跑 [Agent文递自归.md](./Agent文递自归.md) §五 四关回归；入账 `iteration-baseline.json` |
+
+---
+
+## 8. 文递自归 · ICE 刻度（摘要）
+
+完整见 [Agent文递自归.md](./Agent文递自归.md)：
+
+- **L0～L2**：小改；用户未要求则停在此档  
+- **L3**：动语音/多关 → `pre-ship-check` + 四关冒烟  
+- **L4**：仅做 `iteration-baseline.json` → `backlog` 里用户已批项  
+- **L5**：删功能/大改 UI → **禁止**除非用户逐条点名  
+
+每轮：**C 读基线 → O 本轮 scope → N 最小文件 → F 验证 → I 更新 JSON → R 交付反馈块**
+
+---
+
+## 6. 修订记录（记忆库）
+
+| 日期 | 记入内容 |
+|------|----------|
+| 2026-05-21 | 版本双轨 1.0.1/cache40；费用模型；评语 duplicate 根因；localhost 僵尸端口；全局检查清单 |
+| 2026-05-21 | 方案 A cache41：`sensei-tip-card.js` 四关「先生のひとこと」；文法取消翻面 `gn-scroll` |
+| 2026-05-21 | 朗读 cache42：MP3 预热复用、箭头句与 dense 对齐、preferTtsKey、停播不杀全部预热 |
+| 2026-05-21 | cache44：speech-engine 递归修复；`Agent文递自归` + `iteration-baseline.json` 增量基线 |
+| 2026-05-21 | 用户定名「文递自归」入库；`pre-ship-check` 校验基线文档与 cache 一致 |
+| 2026-05-21 | 名称更正：原「迭代弟子规」→ `Agent文递自归.md` |

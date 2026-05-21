@@ -25,20 +25,23 @@ python scripts/build-tts-cache.py
 - 哈希算法与 `js/speech-engine.js` 的 `ttsCacheKey()` **必须一致**
 - 扫描：`lessons-mvp.js`、`lessons-mvp-depth.js`、**`lesson-vocab-biaori.js`**、`mini-cards.js` 等中的日文 `question` / `japanese` / `kana` / `example` 等字段
 
-## 校验（发布前必须跑）
+## 编号对账（发布前必须跑）
 
 ```bat
-发布前自检.bat
+批量检查语音包.bat
 ```
 
 或：
 
 ```bash
-python scripts/pre-ship-check.py
-python scripts/verify-tts-cache.py
+python scripts/audit-tts-registry.py --write
 ```
 
-会检查：缺文件、哈希冲突、过小/过大异常 MP3。
+- 喇叭侧：扫描所有 `speakJa` 会用到的日文 → 编号 `key`
+- 语音包：`tts-cache/{key}.mp3` 是否齐全（**缺失必须为 0**）
+- 清单：`docs/tts-registry.json`（seq 1…N 与 key 对照）
+
+`发布前自检.bat` 已内置本检查。详见 [TTS-语音包编号规范.md](./TTS-语音包编号规范.md)。
 
 ## 开发约定
 
