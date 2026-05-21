@@ -13,8 +13,8 @@ const SpeechEngine = (() => {
   const mp3Warm = new Map();
 
   const TTS_CACHE_DIR = "tts-cache/";
-  const MP3_WAIT_MS = 380;
-  const ONLINE_TTS_MS = 2200;
+  const MP3_WAIT_MS = 1400;
+  const ONLINE_TTS_MS = 4000;
   const ONLINE_TTS_URLS = [
     "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=ja&q=",
     "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=",
@@ -165,7 +165,8 @@ const SpeechEngine = (() => {
       entry.ready = true;
     };
     const markFail = () => {
-      entry.failed = true;
+      entry.failCount = (entry.failCount || 0) + 1;
+      if (entry.failCount >= 2) entry.failed = true;
     };
     audio.addEventListener("canplaythrough", markReady, { once: true });
     audio.addEventListener("loadeddata", markReady, { once: true });
@@ -187,14 +188,36 @@ const SpeechEngine = (() => {
     });
   }
 
+  function ttsMp3Url(line) {
+    const base =
+      typeof location !== "undefined" && location.pathname.includes("/")
+        ? location.pathname.replace(/[^/]*$/, "")
+        : "./";
+    return `${base}${TTS_CACHE_DIR}${ttsCacheKey(line)}.mp3`;
+  }
+
+  /** fetch→blob，微信里比 Audio 直链更稳 */
+  async function playBundledMp3Fetch(line) {
+    if (typeof location !== "undefined" && location.protocol === "file:") return false;
+    const url = ttsMp3Url(line);
+    try {
+      const res = await fetch(url, { cache: "force-cache", credentials: "omit" });
+      if (!res.ok) return false;
+      const blob = await res.blob();
+      if (blob.size < 200) return false;
+      const blobUrl = URL.createObjectURL(blob);
+      const ok = await playAudioUrl(blobUrl);
+      URL.revokeObjectURL(blobUrl);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /** ① 嵌入语音包（已预热则几乎即时播放） */
   function playBundledMp3(line) {
     return new Promise((resolve) => {
       const entry = warmPhrase(line);
-      if (entry.failed) {
-        resolve(false);
-        return;
-      }
       let settled = false;
       const finish = (ok) => {
         if (settled) return;
@@ -205,10 +228,11 @@ const SpeechEngine = (() => {
         stopAllPlayback();
         const audio = entry.audio;
         currentAudio = audio;
-        audio.onended = () => {
+        const onEnd = () => {
           if (currentAudio === audio) currentAudio = null;
           finish(true);
         };
+        audio.onended = onEnd;
         audio.onerror = () => finish(false);
         try {
           audio.currentTime = 0;
@@ -218,7 +242,7 @@ const SpeechEngine = (() => {
           finish(false);
         }
       };
-      if (entry.ready) {
+      if (entry.ready && !entry.failed) {
         playNow();
         return;
       }
@@ -230,6 +254,13 @@ const SpeechEngine = (() => {
         if (!settled) finish(false);
       }, MP3_WAIT_MS);
     });
+  }
+
+  function isMostlyKana(line) {
+    const t = (line || "").trim();
+    if (!t) return false;
+    const kana = (t.match(/[\u3040-\u309f\u30a0-\u30ff]/g) || []).length;
+    return kana >= Math.max(1, t.length * 0.45);
   }
 
   function playAudioUrl(url) {
@@ -356,28 +387,46 @@ const SpeechEngine = (() => {
     });
   }
 
+  function rubyKanaLine(text, segments) {
+    if (!text || !segments?.length) return "";
+    if (typeof RubyRender !== "undefined" && RubyRender.toKanaReading) {
+      return RubyRender.toKanaReading(text, segments);
+    }
+    let s = text;
+    segments.forEach(({ kanji, reading }) => {
+      if (kanji && reading) s = s.split(kanji).join(reading);
+    });
+    return s;
+  }
+
+  function pushLine(lines, raw) {
+    const line = prepareJaTtsLine(raw);
+    if (line && !lines.includes(line)) lines.push(line);
+  }
+
   async function trySpeakLine(line, rate = 0.85) {
     if (!line) return false;
     if (await playBundledMp3(line)) return true;
-    if (await playLocalSynthesis(line, rate, false)) return true;
-    if (await playLocalSynthesis(line, rate, true)) return true;
+    if (await playBundledMp3Fetch(line)) return true;
     if (await playOnlineJapaneseWithTimeout(line)) return true;
+    if (hasReliableLocalJaVoice() && (await playLocalSynthesis(line, rate, true))) return true;
+    if (isMostlyKana(line) && (await playLocalSynthesis(line, 0.82, false))) return true;
     return false;
   }
 
   function fallbackLines(textOrObj) {
     const lines = [];
-    const primary = prepareJaTtsLine(textOrObj);
-    if (primary) lines.push(primary);
     if (textOrObj && typeof textOrObj === "object") {
-      if (textOrObj.example) {
-        const ex = prepareJaTtsLine(textOrObj.example);
-        if (ex && !lines.includes(ex)) lines.push(ex);
-      }
-      if (textOrObj.kana && textOrObj.kana !== textOrObj.jp) {
-        const kn = prepareJaTtsLine(textOrObj.kana);
-        if (kn && !lines.includes(kn)) lines.push(kn);
-      }
+      const jp = textOrObj.jp || textOrObj.japanese || textOrObj.title || "";
+      const ruby =
+        textOrObj.ruby || textOrObj.japaneseRuby || textOrObj.titleRuby || textOrObj.lessonTitleRuby;
+      if (textOrObj.kana) pushLine(lines, textOrObj.kana);
+      const fromRuby = rubyKanaLine(jp, ruby);
+      if (fromRuby) pushLine(lines, fromRuby);
+      pushLine(lines, jp);
+      if (textOrObj.example) pushLine(lines, textOrObj.example);
+    } else {
+      pushLine(lines, textOrObj);
     }
     return lines;
   }

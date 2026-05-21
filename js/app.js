@@ -287,7 +287,21 @@
     head.innerHTML = `
       <div class="headline-row">
         <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
-        ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(L.lessonTitle, 'id="lesson-speak-title" title="課文タイトル"') : ""}
+        ${
+          typeof SpeakUI !== "undefined"
+            ? SpeakUI.btnHtml(
+                {
+                  jp: L.lessonTitle,
+                  kana:
+                    L.lessonTitleRuby && typeof RubyRender !== "undefined"
+                      ? RubyRender.toKanaReading(L.lessonTitle, L.lessonTitleRuby)
+                      : L.lessonTitle,
+                  ruby: L.lessonTitleRuby,
+                },
+                'id="lesson-speak-title" title="課文タイトル（假名朗读）"'
+              )
+            : ""
+        }
       </div>
       ${headlineNote}
       ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}

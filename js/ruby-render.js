@@ -34,6 +34,18 @@ const RubyRender = (() => {
     return escapeHtml(line.japanese || "");
   }
 
+  /** 把汉字按 ruby 换成假名，供 TTS 朗读（避免读成中文） */
+  function toKanaReading(text, segments) {
+    if (!text) return "";
+    if (!segments?.length) return text;
+    let s = text;
+    segments.forEach(({ kanji, reading }) => {
+      if (!kanji || !reading) return;
+      s = s.split(kanji).join(reading);
+    });
+    return s;
+  }
+
   function extensionsHtml(extensions) {
     if (!extensions?.length) return "";
     return extensions
@@ -44,5 +56,5 @@ const RubyRender = (() => {
       .join("");
   }
 
-  return { escapeHtml, fromSegments, nodeExample, lineJapanese, extensionsHtml };
+  return { escapeHtml, fromSegments, nodeExample, lineJapanese, toKanaReading, extensionsHtml };
 })();

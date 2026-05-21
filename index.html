@@ -32,9 +32,9 @@
 
   <link rel="apple-touch-icon" href="icons/icon.svg" />
 
-  <link rel="stylesheet" href="css/app.css?v=16" />
+  <link rel="stylesheet" href="css/app.css?v=18" />
 
-  <link rel="stylesheet" href="css/mvp.css?v=16" />
+  <link rel="stylesheet" href="css/mvp.css?v=18" />
 
   <style>
     /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
@@ -198,21 +198,21 @@
 
 
 
-  <script src="js/public-url.config.js?v=16"></script>
-  <script src="js/share-wechat.js?v=16"></script>
-  <script src="js/data/mini-cards.js?v=16"></script>
-  <script src="js/data/lessons-mvp.js?v=16"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=16"></script>
-  <script src="js/ruby-render.js?v=16"></script>
-  <script src="js/mvp-storage.js?v=16"></script>
-  <script src="js/speech-engine.js?v=16"></script>
-  <script src="js/speak-ui.js?v=16"></script>
-  <script src="js/ui-feedback.js?v=16"></script>
-  <script src="js/grammar-network.js?v=16"></script>
-  <script src="js/dialogue-gate.js?v=16"></script>
-  <script src="js/quiz-gate.js?v=16"></script>
-  <script src="js/vocab-flash.js?v=16"></script>
-  <script src="js/app.js?v=16"></script>
+  <script src="js/public-url.config.js?v=18"></script>
+  <script src="js/share-wechat.js?v=18"></script>
+  <script src="js/data/mini-cards.js?v=18"></script>
+  <script src="js/data/lessons-mvp.js?v=18"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=18"></script>
+  <script src="js/ruby-render.js?v=18"></script>
+  <script src="js/mvp-storage.js?v=18"></script>
+  <script src="js/speech-engine.js?v=18"></script>
+  <script src="js/speak-ui.js?v=18"></script>
+  <script src="js/ui-feedback.js?v=18"></script>
+  <script src="js/grammar-network.js?v=18"></script>
+  <script src="js/dialogue-gate.js?v=18"></script>
+  <script src="js/quiz-gate.js?v=18"></script>
+  <script src="js/vocab-flash.js?v=18"></script>
+  <script src="js/app.js?v=18"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -222,7 +222,7 @@
         m.style.pointerEvents = "none";
       });
       if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v16";
+      var key = "hyouga-sw-purged-v18";
       navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (r) { return r.unregister(); }));
       }).then(function () {

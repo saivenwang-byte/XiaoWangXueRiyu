@@ -96,7 +96,12 @@ const SpeakUI = (() => {
     const ok = await SpeechEngine.speakJa(payload);
     btn.classList.remove("is-speaking");
     if (!ok) {
-      showToast("正在用本机语音朗读；若无声请检查音量或稍后再试");
+      const wx = /MicroMessenger/i.test(navigator.userAgent || "");
+      showToast(
+        wx
+          ? "朗读失败：微信内请连 WiFi/流量，或部署 Netlify 链接；也可稍后再点一次"
+          : "朗读失败：请检查网络；首次加载语音包需稍等 1～2 秒"
+      );
     }
     return ok;
   }
@@ -104,7 +109,7 @@ const SpeakUI = (() => {
   function bind(root) {
     if (!root) return;
     const sel =
-      "[data-speak], [data-jp], .btn-speak-icon, .btn-speak-round, .btn-speak, .dg-play-a, .dg-model, #dg-model, .gn-contrast-speak, .vf-speak, #vf-speak-jp, #vf-speak-ex, #vf-again, #lesson-speak-title, #gn-speak-title, #gn-speak-explain, #gn-speak-example, #mini-speak-title, #mini-speak-ex";
+      "[data-speak], [data-jp], .btn-speak-icon, .btn-speak-round, .btn-speak, .dg-play-a, .dg-model, #dg-model, .gn-contrast-speak, .vf-speak, #vf-speak-jp, #vf-speak-ex, #vf-speak-repeat, #lesson-speak-title, #gn-speak-title, #gn-speak-explain, #gn-speak-example, #mini-speak-title, #mini-speak-ex";
     root.querySelectorAll(sel).forEach((btn) => {
       if (btn.dataset.speakBound === "1") return;
       if (btn.tagName !== "BUTTON" && !btn.dataset.speak && !btn.dataset.jp) return;

@@ -116,7 +116,7 @@ const GrammarNetwork = (() => {
           <div class="gn-face gn-front">
             <div class="gn-title-row">
               <h3>${titleHtml(node)}</h3>
-              ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(node.title, 'id="gn-speak-title" title="文型名のみ"') : `<button type="button" class="btn-speak-icon" id="gn-speak-title" data-jp="${escapeHtml(node.title)}">🔊</button>`}
+              ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml({ jp: node.title, ruby: node.titleRuby, titleRuby: node.titleRuby }, 'id="gn-speak-title" title="文型名のみ"') : `<button type="button" class="btn-speak-icon" id="gn-speak-title" data-jp="${escapeHtml(node.title)}">🔊</button>`}
             </div>
             <p class="gn-hint">タップでくわしく · 小喇叭＝朗读（优先本机/缓存）</p>
           </div>
@@ -125,8 +125,8 @@ const GrammarNetwork = (() => {
             <p class="gn-example jp">${RubyRender.nodeExample(node)}</p>
             <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
             <div class="gn-speak-row">
-              <button type="button" class="btn secondary btn-sm" id="gn-speak-explain" data-jp="${escapeHtml(node.explanation)}">🔊 説明</button>
-              <button type="button" class="btn secondary btn-sm" id="gn-speak-example" data-jp="${escapeHtml(node.example)}">🔊 例文</button>
+              ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml({ jp: node.example, ruby: node.exampleRuby }, 'id="gn-speak-example" class="btn-sm-inline"') : `<button type="button" class="btn-speak-icon" id="gn-speak-example" data-jp="${escapeHtml(node.example)}">🔊</button>`}
+              <span class="hint-ja btn-sm-hint">例文</span>
               ${depthBtn}
             </div>
           </div>
