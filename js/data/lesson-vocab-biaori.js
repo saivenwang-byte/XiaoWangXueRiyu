@@ -11,7 +11,7 @@ const LESSON_VOCAB_BIAORI = {
     { id: "l14_v_irasshai", jp: "いらっしゃいませ", kana: "いらっしゃいませ", meaningZh: "欢迎光临", meaningJa: "店のあいさつ", example: "いらっしゃいませ。", from: "text" },
     { id: "l14_v_sakki", jp: "さっき", kana: "さっき", meaningZh: "刚才", meaningJa: "ちょっと前", example: "さっき電話がありました。", from: "text" },
     { id: "l14_v_omiyage", jp: "お土産", kana: "おみやげ", meaningZh: "特产、礼物", meaningJa: "旅行のおみやげ", example: "お土産を買いました。", ruby: [{ kanji: "土産", reading: "みやげ" }], from: "text" },
-    { id: "l14_v_nani", jp: "何", kana: "なに／なん", meaningZh: "什么", meaningJa: "なにを／なんの", example: "何を買いましたか。", ruby: [{ kanji: "何", reading: "なに" }], from: "dialogue" },
+    { id: "l14_v_nani", jp: "何", kana: "なに・なん", meaningZh: "什么", meaningJa: "なにを・なんの", example: "何を買いましたか。", ruby: [{ kanji: "何", reading: "なに" }], from: "dialogue" },
     { id: "l14_v_kaimono", jp: "買い物", kana: "かいもの", meaningZh: "购物", meaningJa: "ものを買うこと", example: "買い物をしました。", ruby: [{ kanji: "買", reading: "か" }, { kanji: "物", reading: "もの" }], from: "dialogue" },
     { id: "l14_v_harau", jp: "払う", kana: "はらう", meaningZh: "付款", meaningJa: "お金をはらう", example: "現金で払います。", ruby: [{ kanji: "払", reading: "はら" }], from: "text" },
     { id: "l14_v_mou", jp: "もう", kana: "もう", meaningZh: "已经", meaningJa: "すでに", example: "もう帰りました。", from: "text" },

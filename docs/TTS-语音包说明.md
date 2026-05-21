@@ -23,11 +23,18 @@ python scripts/build-tts-cache.py
 
 - 输出：`tts-cache/*.mp3`（与 `发布包/tts-cache/` 同步）
 - 哈希算法与 `js/speech-engine.js` 的 `ttsCacheKey()` **必须一致**
-- 扫描：`lessons-mvp.js`、`lessons-mvp-depth.js`、`mini-cards.js` 等中的日文 `question` / `japanese` / `kana` 等字段
+- 扫描：`lessons-mvp.js`、`lessons-mvp-depth.js`、**`lesson-vocab-biaori.js`**、`mini-cards.js` 等中的日文 `question` / `japanese` / `kana` / `example` 等字段
 
-## 校验（发布前建议跑）
+## 校验（发布前必须跑）
+
+```bat
+发布前自检.bat
+```
+
+或：
 
 ```bash
+python scripts/pre-ship-check.py
 python scripts/verify-tts-cache.py
 ```
 

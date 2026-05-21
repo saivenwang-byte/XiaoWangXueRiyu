@@ -2,7 +2,7 @@
 const LESSONS_MVP = [
   {
     lessonId: 14,
-    lessonTitle: "昨日デパートへ行って、買い物しました",
+    lessonTitle: "昨日デパートへ行って、買い物をしました",
     lessonTitleRuby: [
       { kanji: "昨日", reading: "きのう" },
       { kanji: "行", reading: "い" },
@@ -19,7 +19,7 @@ const LESSONS_MVP = [
         titleRuby: [{ kanji: "動詞", reading: "どうし" }, { kanji: "形", reading: "けい" }],
         explanation:
           "動詞のて形は、文と文をつなぐときに使う形です。動詞のグループによって作り方が変わります。",
-        example: "書く→書いて / 待つ→待って / 読む→読んで / 食べる→食べて / する→して / 来る→来て",
+        example: "書く→書いて、待つ→待って、読む→読んで、食べる→食べて、する→して、来る→来て",
         links: [
           { type: "prerequisite", label: "📖 前：ます形（第5課）", miniCardKey: "masu_kei" },
           { type: "extension", label: "🔗 後：形容詞のて形（第16課）", targetNodeId: "l16_adj_teform", miniCardKey: "adj_te_l16" },
@@ -104,7 +104,7 @@ const LESSONS_MVP = [
         title: "買い物のあとで",
         opener: {
           speaker: "A",
-          japanese: "昨日デパートへ行って、買い物しました。",
+          japanese: "昨日デパートへ行って、買い物をしました。",
           japaneseRuby: [
             { kanji: "昨日", reading: "きのう" },
             { kanji: "買", reading: "か" },
@@ -329,7 +329,7 @@ const LESSONS_MVP = [
         type: "fill",
         question: "風邪＿＿＿学校を休みました。",
         answer: "で",
-        explanation: "名詞＋で で原因を表す。",
+        explanation: "名詞のあとに「で」を付けて、客観的な原因を表します。",
         grammarNodeId: "l16_de_cause",
       },
     ],
@@ -356,8 +356,8 @@ const LESSONS_MVP = [
           { kanji: "変化", reading: "へんか" },
         ],
         explanation: "自然に、ひとりでに変わること。イ形容詞は「い」→「く」＋なる。ナ形容詞は「に」＋なる。",
-        example: "寒くなりました。 / 元気になりました。",
-        exampleZh: "变冷了。 / 变得有精神了。",
+        example: "寒くなりました。元気になりました。",
+        exampleZh: "变冷了。／变得有精神了。",
         exampleRuby: [{ kanji: "寒", reading: "さむ" }, { kanji: "元気", reading: "げんき" }],
         links: [
           {
@@ -393,7 +393,7 @@ const LESSONS_MVP = [
         titleZh: "自他动词",
         explanation:
           "自動詞は「〜が＋自動詞」、ものが自分で変わる感じ。他動詞は「〜を＋他動詞」、人が動かす・変える。ペアで覚えると便利。",
-        example: "ドアが開く（自動） / ドアを開ける（他動）",
+        example: "ドアが開く（自動詞）／ドアを開ける（他動詞）",
         exampleRuby: [{ kanji: "開", reading: "あ" }],
         links: [
           { type: "prerequisite", label: "📖 前：〜ています（結果の状態）", targetNodeId: "l16_teiru_result" },
@@ -420,11 +420,11 @@ const LESSONS_MVP = [
       },
       {
         id: "l18_deshou",
-        title: "～でしょう / ～かもしれません",
+        title: "～でしょう／～かもしれません",
         titleZh: "大概/也许",
         explanation:
           "確かじゃないけど「たぶん〜」。「でしょう」の方が自信がある。「かもしれません」は「もしかしたら」。",
-        example: "明日は雨でしょう。 / 遅れるかもしれません。",
+        example: "明日は雨でしょう。遅れるかもしれません。",
         exampleRuby: [{ kanji: "明日", reading: "あした" }, { kanji: "雨", reading: "あめ" }, { kanji: "遅", reading: "おく" }],
         links: [
           {
@@ -542,7 +542,7 @@ const CONTRAST_PRESETS = {
     title: "〜なる vs 〜する",
     left: {
       label: "〜なる（自然の変化）",
-      pattern: "イ形「く」＋なる / ナ形「に」＋なる",
+      pattern: "イ形「く」＋なる／ナ形「に」＋なる",
       timeline: "自分で変わる",
       example: "携帯電話は小さくなりました。",
       exampleZh: "手机变小了。",
@@ -550,7 +550,7 @@ const CONTRAST_PRESETS = {
     },
     right: {
       label: "〜する（人が変える）",
-      pattern: "イ形「く」＋する / ナ形「に」＋する",
+      pattern: "イ形「く」＋する／ナ形「に」＋する",
       timeline: "人が変える",
       example: "部屋をきれいにします。",
       exampleZh: "把房间弄干净。",

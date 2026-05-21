@@ -15,7 +15,7 @@ const MINI_CARDS = {
   te_kei_l14: {
     title: "動詞のて形（第14課）",
     explain: "文をつなぐ形。グループによって変化がちがう。",
-    example: "書く→書いて / 食べる→食べて",
+    example: "書く→書いて、食べる→食べて",
     exampleRuby: [{ kanji: "書", reading: "か" }],
   },
   adj_te_l16: {

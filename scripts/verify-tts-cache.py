@@ -11,6 +11,7 @@ CACHE = ROOT / "tts-cache"
 SCAN = [
     ROOT / "js" / "data" / "lessons-mvp.js",
     ROOT / "js" / "data" / "lessons-mvp-depth.js",
+    ROOT / "js" / "data" / "lesson-vocab-biaori.js",
     ROOT / "js" / "data" / "mini-cards.js",
 ]
 
@@ -77,23 +78,26 @@ def main() -> int:
             if sz > 120_000:
                 huge.append((p, k, sz))
 
-    print(f"短语 {len(phrases)} · MP3 文件 {len(list(CACHE.glob('*.mp3')))}")
+    def safe_print(msg: str) -> None:
+        sys.stdout.buffer.write((msg + "\n").encode("utf-8", errors="replace"))
+
+    safe_print(f"短语 {len(phrases)} · MP3 文件 {len(list(CACHE.glob('*.mp3')))}")
     if collisions:
-        print(f"\n[WARN] 哈希冲突 {len(collisions)} 组（需改文案或换 key 算法）:")
+        safe_print(f"\n[WARN] 哈希冲突 {len(collisions)} 组（需改文案或换 key 算法）:")
         for k, arr in list(collisions.items())[:15]:
-            print(f"  {k}: {arr}")
+            safe_print(f"  {k}: {arr}")
     if missing:
-        print(f"\n[MISS] 缺 MP3 {len(missing)} 条（示例 20 条）:")
+        safe_print(f"\n[MISS] 缺 MP3 {len(missing)} 条（示例 20 条）:")
         for p, k in missing[:20]:
-            print(f"  {k}.mp3 ← {p[:60]}")
+            safe_print(f"  {k}.mp3 ← {p[:60]}")
     if tiny:
-        print(f"\n[WARN] 过小文件 {len(tiny)}:")
+        safe_print(f"\n[WARN] 过小文件 {len(tiny)}:")
         for p, k, sz in tiny[:10]:
-            print(f"  {k} ({sz}B) ← {p[:50]}")
+            safe_print(f"  {k} ({sz}B) ← {p[:50]}")
     if huge:
-        print(f"\n[WARN] 过大文件 {len(huge)}:")
+        safe_print(f"\n[WARN] 过大文件 {len(huge)}:")
         for p, k, sz in huge[:10]:
-            print(f"  {k} ({sz}B) ← {p[:50]}")
+            safe_print(f"  {k} ({sz}B) ← {p[:50]}")
 
     # 第14课 Q5 专查
     q5 = "荷物を＿＿＿か。"
@@ -101,8 +105,8 @@ def main() -> int:
     for label, text in [("题干", q5), ("朗读句", q5tts)]:
         k = tts_key(text)
         f = CACHE / f"{k}.mp3"
-        print(f"\n[L14 Q5 {label}] {text}")
-        print(f"  key={k} exists={f.exists()} size={f.stat().st_size if f.exists() else 0}")
+        safe_print(f"\n[L14 Q5 {label}] {text}")
+        safe_print(f"  key={k} exists={f.exists()} size={f.stat().st_size if f.exists() else 0}")
 
     return 1 if missing else 0
 

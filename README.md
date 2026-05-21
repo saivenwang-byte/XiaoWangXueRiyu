@@ -4,8 +4,8 @@
 
 ## 正式链接（发给学员 · 已自动发布）
 
-- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29  
-- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html  
+- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=34  
+- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html?v=34  
 
 双击 **`帮你发布好了.bat`** 可自动复制链接并打开网页。
 
@@ -21,11 +21,17 @@
 python -m http.server 8765
 ```
 
-浏览器：http://localhost:8765/index.html?v=29（不要用 `file://`）
+浏览器：http://localhost:8765/index.html?v=34（不要用 `file://`）
+
+## 项目知识库（首要）
+
+- **标日日文书写与对齐**：[docs/项目知识库-标日日文书写.md](./docs/项目知识库-标日日文书写.md)  
+- **发布前自检**：双击 `发布前自检.bat`（语音包 + 灰字 + 日文标点）  
+- Agent 规则：`.cursor/rules/biaori-japanese-text.mdc`、`.cursor/rules/pre-ship-checklist.mdc`
 
 ## 语音包
 
-见 [docs/TTS-语音包说明.md](./docs/TTS-语音包说明.md)。发布前：`python scripts/verify-tts-cache.py`
+见 [docs/TTS-语音包说明.md](./docs/TTS-语音包说明.md)。发布前：`发布前自检.bat`
 
 ## 版本
 

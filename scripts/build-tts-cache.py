@@ -23,6 +23,7 @@ APP_BUILD = 47
 SCAN_FILES = [
     ROOT / "js" / "data" / "lessons-mvp.js",
     ROOT / "js" / "data" / "lessons-mvp-depth.js",
+    ROOT / "js" / "data" / "lesson-vocab-biaori.js",
     ROOT / "js" / "data" / "mini-cards.js",
     ROOT / "发布包" / "app.js",
     ROOT / "发布包" / "lesson-dialogues.js",

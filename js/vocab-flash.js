@@ -48,14 +48,17 @@ const VocabFlash = (() => {
           ? SpeakUI.btnHtml(payload, `data-vocab-id="${escapeHtml(v.id)}"`)
           : `<button type="button" class="btn-speak-icon" data-jp="${escapeHtml(v.kana || v.jp)}">🔊</button>`;
     const meanZh =
-      v.meaningZh && showZh() ? `<span class="vf-mean-zh">${escapeHtml(v.meaningZh)}</span>` : "";
+      v.meaningZh && showZh()
+        ? `<p class="zh-annotation vf-mean-zh">${escapeHtml(v.meaningZh)}</p>`
+        : "";
     return `
       <li class="vf-word-row" data-idx="${i}">
         <div class="vf-word-main">
           <span class="vf-num">${i + 1}</span>
           <div class="vf-word-text">
             <p class="vf-jp-line jp">${jp}</p>
-            <p class="vf-mean-line">${escapeHtml(v.meaningJa || "")}${meanZh}</p>
+            ${v.meaningJa ? `<p class="vf-mean-line hint-ja">${escapeHtml(v.meaningJa)}</p>` : ""}
+            ${meanZh}
             ${v.example ? `<p class="vf-ex-line hint-ja">例：${escapeHtml(v.example)}</p>` : ""}
           </div>
         </div>
