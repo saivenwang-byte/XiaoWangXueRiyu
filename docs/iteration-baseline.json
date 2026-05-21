@@ -1,6 +1,12 @@
 {
   "schema": "hyouga-iteration-baseline/v1",
   "updated": "2026-05-21",
+  "mvp_status": {
+    "phase": "frozen",
+    "frozen_at": "2026-05-21",
+    "doc": "docs/MVP-FREEZE.md",
+    "git_tag": "mvp-v1.0.1-biaori-141618"
+  },
   "paradigm": {
     "name_cn": "文递自归",
     "name_en": "Autoregressive Generation",

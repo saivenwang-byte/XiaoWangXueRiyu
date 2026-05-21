@@ -4,10 +4,23 @@
     "product": "1.0.1",
     "cache": "46",
     "date": "2026-05-21",
-    "note": "滚动进度条 + 操作引导；见 docs/iteration-baseline.json",
+    "note": "MVP 已冻结；见 docs/MVP-FREEZE.md",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"
+  },
+  "mvp_freeze": {
+    "status": "frozen",
+    "product": "1.0.1",
+    "cache": "46",
+    "date": "2026-05-21",
+    "git_tag": "mvp-v1.0.1-biaori-141618",
+    "commit_note": "af22cac 及此前 main 上 MVP 交付链",
+    "lessons": [14, 16, 18],
+    "doc": "docs/MVP-FREEZE.md",
+    "checklist": "docs/MVP收官-手机验收清单.md",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46",
+    "local": "http://localhost:8765/index.html?v=46"
   },
   "releases": [
     {
@@ -44,6 +57,16 @@
       "note": "补充完整：三课文法補足 zh 灰字、単語难词一行提示；P0/P2 入 confirmed",
       "local": "http://localhost:8765/index.html?v=45",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "46",
+      "tag": "mvp-v1.0.1-biaori-141618",
+      "date": "2026-05-21",
+      "note": "MVP 阶段冻结：滚动进度+引导、难词条、四关全绿；绑定 git tag",
+      "local": "http://localhost:8765/index.html?v=46",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46",
+      "mvp_freeze_doc": "docs/MVP-FREEZE.md"
     }
   ],
   "versioning_rules": {

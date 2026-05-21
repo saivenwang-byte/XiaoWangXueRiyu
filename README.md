@@ -2,10 +2,15 @@
 
 第 14 / 16 / 18 课 H5 巩固练习。**正式上线**：微信发 **公网 https 链接**（任何网络可用，不依赖同一 WiFi）。
 
+## MVP 阶段成果（已冻结 · 2026-05-21）
+
+- **产品** 1.0.1 · **cache** v=46 · **Git 标签** `mvp-v1.0.1-biaori-141618`
+- **冻结说明**：[docs/MVP-FREEZE.md](./docs/MVP-FREEZE.md) · **手机验收**：[docs/MVP收官-手机验收清单.md](./docs/MVP收官-手机验收清单.md)
+
 ## 正式链接（发给学员 · 已自动发布）
 
-- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45  
-- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html?v=45  
+- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46  
+- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html?v=46  
 
 双击 **`帮你发布好了.bat`** 可自动复制链接并打开网页。
 
@@ -21,7 +26,7 @@
 python -m http.server 8765
 ```
 
-浏览器：http://localhost:8765/index.html?v=45（不要用 `file://`）
+浏览器：http://localhost:8765/index.html?v=46（不要用 `file://`）
 
 ## 项目知识库（首要）
 
@@ -37,7 +42,7 @@ python -m http.server 8765
 
 ## 版本
 
-- 当前：[VERSION.md](./VERSION.md)（产品 1.0.1 · cache v=45）  
+- 当前：[VERSION.md](./VERSION.md)（产品 1.0.1 · cache v=46 · MVP 已冻结）  
 - 链接说明：[docs/链接转发.md](./docs/链接转发.md)  
 - 历史冻结：[VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md)  
 - AI/协作规则：`.cursor/rules/production-netlify.mdc`

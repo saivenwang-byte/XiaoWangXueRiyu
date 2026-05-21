@@ -1,7 +1,7 @@
 # 项目全局规范说明书 · Cursor Agent 终极索引
 
 > **地位**：本文件为仓库内 Agent/协作者的**总入口**。细则分册见 `docs/`，禁止在本文件重复粘贴全文。  
-> **当前阶段**：MVP（第 14 / 16 / 18 课）收尾 → 启动完整版 24 课前须读完本文 + [docs/PROJECT_ARCHITECTURE.md](docs/PROJECT_ARCHITECTURE.md)。
+> **当前阶段**：**MVP 已冻结**（2026-05-21，cache v=46，标签 `mvp-v1.0.1-biaori-141618`）→ 见 [docs/MVP-FREEZE.md](docs/MVP-FREEZE.md)。完整版 24 课须单独 PR 后再动代码。
 
 ---
 

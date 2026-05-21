@@ -1,9 +1,10 @@
-# 当前正式版 · 产品 1.0.1 · 缓存 build 46
+# 当前正式版 · 产品 1.0.1 · 缓存 build 46 · MVP 已冻结
 
 | 项 | 值 |
 |---|---|
+| **MVP 冻结** | [docs/MVP-FREEZE.md](./docs/MVP-FREEZE.md) · Git `mvp-v1.0.1-biaori-141618` |
 | **产品版本** | **1.0.1**（小修；首发冻结见 [VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md) 为 **1.0.0**） |
-| **资源缓存** | `?v=46` / `CACHE_VER=45` |
+| **资源缓存** | `?v=46` / `CACHE_VER=46` |
 | **课次** | 第 **14 / 16 / 18** 课（MVP） |
 | **本地** | http://localhost:8765/index.html?v=46（须先 `打开本地预览.bat` 或 `重启本地服务.bat`） |
 | **公网** | https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46（push 后生效） |
