@@ -71,7 +71,7 @@
   }
 
   function closeAllModals() {
-    document.querySelectorAll(".gn-modal").forEach((m) => setModalOpen(m, false));
+    document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach((m) => setModalOpen(m, false));
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.stopAllPlayback) {
       SpeechEngine.stopAllPlayback();
     }

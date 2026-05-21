@@ -62,8 +62,10 @@
     <div class="share-btns">
       <button type="button" class="btn primary" id="btn-copy">复制学习链接（发微信）</button>
       <button type="button" class="btn secondary" id="btn-copy-wx">复制推荐话术（链接+说明）</button>
-      <a href="index.html?v=13" class="btn secondary" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
+      <a href="index.html?v=14" class="btn secondary" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
     </div>
+
+    <p class="hint" style="margin-top:12px;font-size:12px;color:#888">若页面发灰无法点击：请完全关闭后重新打开本链接，或点右上角「在浏览器中打开」。</p>
 
     <ol class="steps" id="deploy-steps" hidden>
       <li>电脑双击运行：<strong>打开Netlify拖拽部署.bat</strong></li>
@@ -75,8 +77,13 @@
 
     <div class="wechat-tip" id="wechat-tip"></div>
   </div>
-  <script src="js/share-wechat.js"></script>
+  <script src="js/share-wechat.js?v=14"></script>
   <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      });
+    }
     const learnUrl = ShareWechat.learnUrl();
     const shareUrl = location.href.split("#")[0];
     const publicOk = ShareWechat.isPublicHttps();

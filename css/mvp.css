@@ -377,8 +377,14 @@ body.mvp-app .nav-item.active {
 .gn-nav { display: flex; gap: 10px; margin-top: 16px; }
 .gn-nav .btn { flex: 1; }
 
-/* 默认必须隐藏：旧版曾写死 display:flex，会盖住 [hidden]（微信里整页发灰） */
+/* 旧版 .gn-modal 常显 — 强制关掉，避免微信缓存 css 整页发灰 */
 .gn-modal {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+.mvp-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
@@ -389,7 +395,7 @@ body.mvp-app .nav-item.active {
   visibility: hidden !important;
 }
 
-.gn-modal:not([hidden]) {
+.mvp-backdrop:not([hidden]) {
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -397,13 +403,14 @@ body.mvp-app .nav-item.active {
   visibility: visible !important;
 }
 
-.gn-modal[hidden] {
+.mvp-backdrop[hidden] {
   display: none !important;
   pointer-events: none !important;
   visibility: hidden !important;
 }
 
-.gn-modal-inner {
+.gn-modal-inner,
+.mvp-backdrop-inner {
   background: #fff;
   border-radius: 14px;
   padding: 16px;

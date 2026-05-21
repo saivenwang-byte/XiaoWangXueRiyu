@@ -36,14 +36,15 @@
 
   <link rel="apple-touch-icon" href="icons/icon.svg" />
 
-  <link rel="stylesheet" href="css/app.css?v=13" />
+  <link rel="stylesheet" href="css/app.css?v=14" />
 
-  <link rel="stylesheet" href="css/mvp.css?v=13" />
+  <link rel="stylesheet" href="css/mvp.css?v=14" />
 
   <style>
-    /* 微信内置浏览器：遮罩层未关闭时整页发灰、无法点击 */
+    /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
-    .gn-modal:not([hidden]) {
+    .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
+    .mvp-backdrop:not([hidden]) {
       display: flex !important;
       pointer-events: auto !important;
       visibility: visible !important;
@@ -53,13 +54,6 @@
 </head>
 
 <body class="mvp-app">
-
-  <script>
-    document.querySelectorAll(".gn-modal").forEach(function (m) {
-      m.hidden = true;
-      m.setAttribute("aria-hidden", "true");
-    });
-  </script>
 
   <div id="app">
 
@@ -165,8 +159,8 @@
 
 
 
-    <div id="review-modal" class="gn-modal" hidden></div>
-    <div id="lesson-modal" class="gn-modal" hidden aria-hidden="true"></div>
+    <div id="review-modal" class="mvp-backdrop" hidden style="display:none!important;pointer-events:none!important" aria-hidden="true"></div>
+    <div id="lesson-modal" class="mvp-backdrop" hidden style="display:none!important;pointer-events:none!important" aria-hidden="true"></div>
 
 
 
@@ -198,27 +192,43 @@
 
 
 
-  <script src="js/data/mini-cards.js?v=13"></script>
-  <script src="js/data/lessons-mvp.js?v=13"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=13"></script>
-  <script src="js/ruby-render.js?v=13"></script>
-  <script src="js/mvp-storage.js?v=13"></script>
-  <script src="js/speech-engine.js?v=13"></script>
-  <script src="js/speak-ui.js?v=13"></script>
-  <script src="js/ui-feedback.js?v=13"></script>
-  <script src="js/grammar-network.js?v=13"></script>
-  <script src="js/dialogue-gate.js?v=13"></script>
-  <script src="js/quiz-gate.js?v=13"></script>
-  <script src="js/vocab-flash.js?v=13"></script>
-  <script src="js/share-wechat.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
+  <script src="js/data/mini-cards.js?v=14"></script>
+  <script src="js/data/lessons-mvp.js?v=14"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=14"></script>
+  <script src="js/ruby-render.js?v=14"></script>
+  <script src="js/mvp-storage.js?v=14"></script>
+  <script src="js/speech-engine.js?v=14"></script>
+  <script src="js/speak-ui.js?v=14"></script>
+  <script src="js/ui-feedback.js?v=14"></script>
+  <script src="js/grammar-network.js?v=14"></script>
+  <script src="js/dialogue-gate.js?v=14"></script>
+  <script src="js/quiz-gate.js?v=14"></script>
+  <script src="js/vocab-flash.js?v=14"></script>
+  <script src="js/share-wechat.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
   <script>
+    (function purgeSwAndModals() {
+      document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
+        m.hidden = true;
+        m.setAttribute("aria-hidden", "true");
+        m.style.display = "none";
+        m.style.pointerEvents = "none";
+      });
+      if (!("serviceWorker" in navigator)) return;
+      var key = "hyouga-sw-purged-v14";
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      }).then(function () {
+        if (sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key, "1");
+        if (!/\breloaded=1\b/.test(location.search)) {
+          var q = location.search ? location.search + "&reloaded=1" : "?reloaded=1";
+          location.replace(location.pathname + q + location.hash);
+        }
+      });
+    })();
     ShareWechat.mountButton(document.getElementById("btn-share-wechat"));
     ShareWechat.mountButton(document.getElementById("btn-share-me"));
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.update()));
-      navigator.serviceWorker.register("./sw.js?v=13").catch(() => {});
-    }
   </script>
 
 </body>

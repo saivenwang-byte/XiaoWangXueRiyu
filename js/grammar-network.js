@@ -52,7 +52,7 @@ const GrammarNetwork = (() => {
     if (!el) {
       el = document.createElement("div");
       el.id = "lesson-modal";
-      el.className = "gn-modal";
+      el.className = "mvp-backdrop";
       el.hidden = true;
       document.getElementById("app")?.appendChild(el);
     }
