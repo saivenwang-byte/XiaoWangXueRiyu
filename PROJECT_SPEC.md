@@ -77,7 +77,7 @@
 | 轨道 | 位置 | 说明 |
 |------|------|------|
 | 产品 semver | `docs/version-history.json` · `VERSION.md` | 如 1.0.1 |
-| 资源 cache | `js/share-wechat.js` `CACHE_VER` · `index.html` `?v=` · `iteration-baseline.json` `current.cache` | 如 44 |
+| 资源 cache | `js/share-wechat.js` `CACHE_VER` · `index.html` `?v=` · `iteration-baseline.json` `current.cache` | 如 45 |
 | 作者文案 | bump 后运行 **`同步作者链接.bat`**（或 `python scripts/sync-cache-ver-hints.py`） | `怎么用.txt` 等 |
 
 ---

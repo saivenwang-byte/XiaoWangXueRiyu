@@ -129,11 +129,29 @@ const VocabFlash = (() => {
               .join("")
           : "";
 
+    const diffHints =
+      typeof getLessonDifficultVocabHints === "function"
+        ? getLessonDifficultVocabHints(lessonId)
+        : null;
+    const diffHtml =
+      diffHints?.lineJa
+        ? `<div class="vf-difficult-strip" role="note">
+        <p class="vf-difficult-label hint-ja">${escapeHtml(diffHints.subtitle || "難しめ · 先生メモ")}</p>
+        <p class="vf-difficult-ja hint-ja jp">${escapeHtml(diffHints.lineJa)}</p>
+        ${
+          showZh() && diffHints.lineZh
+            ? `<p class="zh-annotation vf-difficult-zh">${escapeHtml(diffHints.lineZh)}</p>`
+            : ""
+        }
+      </div>`
+        : "";
+
     container.innerHTML = `
       <div class="vf-wrap vf-list-mode">
         <h2>第${lessonId}課 · 本课单词一览</h2>
         <p class="lc-theme">${escapeHtml(L?.theme || "")}${themeZh}</p>
         ${coachHtml}
+        ${diffHtml}
         <div class="vf-lesson-bar">
           <div class="vf-lesson-text">
             <p class="vf-lesson-label">本课课文（点 🔊 听）</p>

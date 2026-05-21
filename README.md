@@ -4,8 +4,8 @@
 
 ## 正式链接（发给学员 · 已自动发布）
 
-- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44  
-- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html?v=44  
+- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45  
+- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html?v=45  
 
 双击 **`帮你发布好了.bat`** 可自动复制链接并打开网页。
 
@@ -21,7 +21,7 @@
 python -m http.server 8765
 ```
 
-浏览器：http://localhost:8765/index.html?v=44（不要用 `file://`）
+浏览器：http://localhost:8765/index.html?v=45（不要用 `file://`）
 
 ## 项目知识库（首要）
 
@@ -37,7 +37,7 @@ python -m http.server 8765
 
 ## 版本
 
-- 当前：[VERSION.md](./VERSION.md)（产品 1.0.1 · cache v=44）  
+- 当前：[VERSION.md](./VERSION.md)（产品 1.0.1 · cache v=45）  
 - 链接说明：[docs/链接转发.md](./docs/链接转发.md)  
 - 历史冻结：[VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md)  
 - AI/协作规则：`.cursor/rules/production-netlify.mdc`

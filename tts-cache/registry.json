@@ -1,7 +1,7 @@
 {
   "schema": "tts-registry-v1",
-  "requiredCount": 845,
-  "mp3FileCount": 1412,
+  "requiredCount": 846,
+  "mp3FileCount": 1413,
   "missingCount": 0,
   "keys": [
     "57e29975",
@@ -798,6 +798,7 @@
     "124c24",
     "4e3075da",
     "2376925",
+    "2007fd3f",
     "d6a8c98d",
     "fe709815",
     "817483bb",

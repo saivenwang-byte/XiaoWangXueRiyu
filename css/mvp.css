@@ -307,6 +307,27 @@ body.mvp-app .nav-item.active {
   margin: 0 0 4px;
 }
 
+.vf-difficult-strip {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #f4f4f2;
+  border-radius: 8px;
+  border-left: 3px solid #c8c8c4;
+}
+.vf-difficult-label {
+  font-size: 0.82rem;
+  opacity: 0.88;
+  margin: 0 0 6px;
+}
+.vf-difficult-ja {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.vf-difficult-zh {
+  margin: 6px 0 0;
+}
+
 .vf-mean-line {
   font-size: 13px;
   color: var(--mvp-muted);

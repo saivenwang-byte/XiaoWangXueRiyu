@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.1",
-    "cache": "44",
+    "cache": "45",
     "date": "2026-05-21",
-    "note": "speech-engine 递归修复；迭代基线见 docs/iteration-baseline.json",
+    "note": "MVP 补充：文法灰字齐全 + 単語难词提示条；见 docs/iteration-baseline.json",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"
@@ -36,6 +36,14 @@
       "local": "http://localhost:8765/index.html?v=44",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44",
       "mvp_close_checklist": "docs/MVP收官-手机验收清单.md"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "45",
+      "date": "2026-05-21",
+      "note": "补充完整：三课文法補足 zh 灰字、単語难词一行提示；P0/P2 入 confirmed",
+      "local": "http://localhost:8765/index.html?v=45",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45"
     }
   ],
   "versioning_rules": {

@@ -14,6 +14,11 @@ const LESSON_DEPTH_PATCH = {
         },
       ],
     },
+    difficultVocabHints: {
+      subtitle: "難しめ · ここを意識",
+      lineJa: "て形・てから・ています（進行）・てください／ましょうか・を＋散歩",
+      lineZh: "易混：て形接续、先后顺序、进行态、礼貌请求、助词を表经过",
+    },
     vocab: [
       { id: "l14_v_dep", jp: "デパート", kana: "デパート", meaningJa: "デパートで買い物をする", meaningZh: "百货商场", example: "昨日デパートへ行きました。", from: "dialogue" },
       { id: "l14_v_kaimono", jp: "買い物", kana: "かいもの", meaningJa: "ものを買うこと", meaningZh: "购物", example: "買い物をしました。", ruby: [{ kanji: "買", reading: "か" }, { kanji: "物", reading: "もの" }], from: "dialogue" },
@@ -73,7 +78,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "② ます形接続とて形接続",
             blocks: [
-              { type: "pair", bad: "家へ帰ります、勉強します。（ロボットみたい）", good: "家へ帰って、勉強します。（自然）" },
+              {
+                type: "pair",
+                bad: "家へ帰ります、勉強します。（ロボットみたい）",
+                good: "家へ帰って、勉強します。（自然）",
+                badZh: "两个ます连用，像机器人一样生硬",
+                goodZh: "用て形连接，更自然",
+              },
               {
                 type: "text",
                 text: "文をつなぐときは「て形」が基本です。",
@@ -136,7 +147,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "② 「すみませんが」",
             blocks: [
-              { type: "pair", bad: "ちょっと待ってください。（命令っぽい）", good: "すみませんが、ちょっと待ってください。" },
+              {
+                type: "pair",
+                bad: "ちょっと待ってください。（命令っぽい）",
+                good: "すみませんが、ちょっと待ってください。",
+                badZh: "直接请求，略像命令",
+                goodZh: "加「不好意思」作缓冲，更礼貌",
+              },
             ],
           },
         ],
@@ -155,6 +172,8 @@ const LESSON_DEPTH_PATCH = {
                 type: "pair",
                 bad: "昨日、映画を見てから、家へ帰りました。（単発の過去には不自然）",
                 good: "毎日、宿題をしてから、ゲームをします。（習慣にピッタリ）",
+                badZh: "单次过去事件用てから略别扭",
+                goodZh: "表习惯、固定顺序时てから很自然",
               },
             ],
           },
@@ -186,7 +205,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "① ましょう vs ましょうか",
             blocks: [
-              { type: "pair", bad: "一緒に映画を見ましょう。→ 一緒にする", good: "傘を貸しましょうか。→ 自分がする申し出" },
+              {
+                type: "pair",
+                bad: "一緒に映画を見ましょう。→ 一緒にする",
+                good: "傘を貸しましょうか。→ 自分がする申し出",
+                badZh: "ましょう＝一起做",
+                goodZh: "ましょうか＝我来帮你做",
+              },
             ],
           },
         ],
@@ -207,7 +232,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "テストのポイント",
             blocks: [
-              { type: "pair", bad: "公園で散歩します。（移動のニュアンスが弱い）", good: "公園を散歩します。（中を通る）" },
+              {
+                type: "pair",
+                bad: "公園で散歩します。（移動のニュアンスが弱い）",
+                good: "公園を散歩します。（中を通る）",
+                badZh: "で只表场所，移动感弱",
+                goodZh: "を表穿过、在里面走",
+              },
             ],
           },
         ],
@@ -461,6 +492,11 @@ const LESSON_DEPTH_PATCH = {
         },
       ],
     },
+    difficultVocabHints: {
+      subtitle: "難しめ · ここを意識",
+      lineJa: "広くて（い形て）・割れている（結果）・風邪で（原因）・が（逆接）・という",
+      lineZh: "易混：い形て形、结果ている、で表原因、转折が、名称という",
+    },
     vocab: [
       { id: "l16_v_hiroi", jp: "広い", kana: "ひろい", meaningJa: "スペースが大きい", meaningZh: "宽敞", example: "部屋は広くて明るいです。", ruby: [{ kanji: "広", reading: "ひろ" }], from: "grammar" },
       { id: "l16_v_akarui", jp: "明るい", kana: "あかるい", meaningJa: "光が多い", meaningZh: "明亮", example: "窓が明るいです。", ruby: [{ kanji: "明", reading: "あか" }], from: "grammar" },
@@ -496,7 +532,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "結果の状態",
             blocks: [
-              { type: "pair", bad: "窓を割れています。", good: "窓が割れています。（自動詞）" },
+              {
+                type: "pair",
+                bad: "窓を割れています。",
+                good: "窓が割れています。（自動詞）",
+                badZh: "他动词を误用",
+                goodZh: "破裂用自动词が",
+              },
               {
                 type: "text",
                 text: "第14課の「今している」とは違い、今見える結果に焦点。",
@@ -511,7 +553,13 @@ const LESSON_DEPTH_PATCH = {
           {
             heading: "〜で vs 〜から",
             blocks: [
-              { type: "pair", bad: "風邪から休みました。（感情っぽい）", good: "風邪で休みました。（客観的原因）" },
+              {
+                type: "pair",
+                bad: "風邪から休みました。（感情っぽい）",
+                good: "風邪で休みました。（客観的原因）",
+                badZh: "から偏主观、情绪感",
+                goodZh: "で表客观原因（生病等）",
+              },
             ],
           },
         ],
@@ -692,6 +740,11 @@ const LESSON_DEPTH_PATCH = {
           zh: "でしょう 把握大些；かも 更不确定。",
         },
       ],
+    },
+    difficultVocabHints: {
+      subtitle: "難しめ · ここを意識",
+      lineJa: "なる／にする・開く／開ける・ほうがいい・でしょう・かもしれません",
+      lineZh: "易混：自然变化vs人为、自他动词对、建议、推测语气强弱",
     },
     vocab: [
       { id: "l18_v_naru", jp: "なる", kana: "なる", meaningJa: "自然に変わる", meaningZh: "变得", example: "小さくなりました。", from: "grammar" },
@@ -943,6 +996,10 @@ function getLessonExtra(lessonId) {
 
 function getLessonCoachSummary(lessonId) {
   return getLessonExtra(lessonId)?.lessonCoachSummary || null;
+}
+
+function getLessonDifficultVocabHints(lessonId) {
+  return getLessonExtra(lessonId)?.difficultVocabHints || null;
 }
 
 function getLessonVocab(lessonId) {

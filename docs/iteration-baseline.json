@@ -24,15 +24,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.1",
-    "cache": "44",
+    "cache": "45",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
-      "index.html service worker hyouga-sw-purged-v44"
+      "index.html service worker hyouga-sw-purged-v45"
     ],
-    "local": "http://localhost:8765/index.html?v=44",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=44"
+    "local": "http://localhost:8765/index.html?v=45",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45"
   },
   "confirmed": [
     {
@@ -76,22 +76,23 @@
       "title": "本地预览 bat + 8765 探测",
       "files": ["打开本地预览.bat", "重启本地服务.bat", "scripts/start-local-server.py"],
       "acceptance": "禁止 file:// 交付；ERR_EMPTY_RESPONSE 用重启 bat"
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "p0-grammar-dense-zh-inline",
-      "approved": "2026-05-21 用户：同意全部意见",
-      "status": "partial",
-      "note": "grammar-network renderDenseItem 已加固 obj.zh；全课 denseList 需冒烟确认",
-      "files": ["js/grammar-network.js", "js/data/lessons-mvp-depth.js"]
+      "since_cache": "45",
+      "title": "文法補足 denseList/pair 中文灰字齐全",
+      "files": ["js/grammar-network.js", "js/data/lessons-mvp-depth.js"],
+      "acceptance": "L14/16/18 先生の補足内 ❌✅ 与列表项均有 zh（设置开时可见）"
     },
     {
       "id": "p2-vocab-difficult-hints",
-      "approved": "2026-05-21",
-      "status": "pending",
-      "note": "每课 5～8 难词一行灰字；不做逐词大卡"
-    },
+      "since_cache": "45",
+      "title": "単語关难词一行灰字提示条",
+      "files": ["js/vocab-flash.js", "js/data/lessons-mvp-depth.js", "css/mvp.css"],
+      "acceptance": "三课単語顶部 vf-difficult-strip；每课一行难词メモ"
+    }
+  ],
+  "backlog": [
     {
       "id": "p3-light-in-lesson-links",
       "approved": "2026-05-21",
