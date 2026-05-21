@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.1",
-    "cache": "45",
+    "cache": "46",
     "date": "2026-05-21",
-    "note": "MVP 补充：文法灰字齐全 + 単語难词提示条；见 docs/iteration-baseline.json",
+    "note": "滚动进度条 + 操作引导；见 docs/iteration-baseline.json",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"

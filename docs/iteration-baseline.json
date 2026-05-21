@@ -24,15 +24,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.1",
-    "cache": "45",
+    "cache": "46",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
-      "index.html service worker hyouga-sw-purged-v45"
+      "index.html service worker hyouga-sw-purged-v46"
     ],
-    "local": "http://localhost:8765/index.html?v=45",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=45"
+    "local": "http://localhost:8765/index.html?v=46",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46"
   },
   "confirmed": [
     {
@@ -90,6 +90,13 @@
       "title": "単語关难词一行灰字提示条",
       "files": ["js/vocab-flash.js", "js/data/lessons-mvp-depth.js", "css/mvp.css"],
       "acceptance": "三课単語顶部 vf-difficult-strip；每课一行难词メモ"
+    },
+    {
+      "id": "gate-scroll-hint",
+      "since_cache": "46",
+      "title": "四关固定滚动区 + 进度条 + 可见滚动条",
+      "files": ["js/scroll-hint.js", "js/app.js", "css/mvp.css"],
+      "acceptance": "単語/会話/文法/テスト 顶部 N/M 与底部↓あと；中间区域 overflow-y"
     }
   ],
   "backlog": [

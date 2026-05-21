@@ -93,14 +93,20 @@
       ruby: L.lessonTitleRuby,
     };
     if (activeGate === 0) {
-      head.innerHTML = `<p class="hint-ja lc-head-slim">单词页：听读音请用下方列表每行右侧 🔊；课文朗读在列表顶部。</p>`;
+      head.innerHTML = `<p class="hint-ja lc-head-slim">① 上の数字で「あと何語」がわかります。② 各行の右 🔊 で聞く。③ 下まで見たら「看完了 → 会話」。</p>`;
     } else if (activeGate === 2) {
       head.innerHTML = `
         <div class="headline-row">
           <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
           ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(titleSpeakPayload, 'id="lesson-speak-title" title="听本课课文"') : ""}
         </div>
-        ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}`;
+        ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}
+        <p class="hint-ja lc-head-slim">① 上のタブでシーン切替。② A の 🔊 → B の 🎤 → ✓。③ 上の数字と右のバーで残りがわかります。</p>`;
+    } else if (activeGate === 1) {
+      head.innerHTML = `
+        <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
+        ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}
+        <p class="hint-ja lc-head-slim">卡片をめくる · 下にスクロールで残り枚数を確認 · 🔊 で例文。</p>`;
     } else {
       head.innerHTML = `
         <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
@@ -118,7 +124,9 @@
     renderLessonCockpit(lessonProgress(activeLessonId));
     renderLessonFlowHead(L);
     mountGate();
-    document.getElementById("lesson-flow-body")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (typeof ScrollHint !== "undefined") {
+      ScrollHint.scrollRegionTop(document.getElementById("lesson-flow-body"));
+    }
   }
 
   function enterLesson(lessonId, gate) {
@@ -344,19 +352,24 @@
     };
 
     try {
+      const useScroll =
+        typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
+      const host = useScroll ? ScrollHint.setupForGate(body, activeGate) : null;
+      const mountEl = host?.region || body;
+
       if (activeGate === 0) {
         if (typeof VocabFlash === "undefined") {
           body.innerHTML = `<p class="hint-ja">単語モジュールを読み込めません。ページを更新してください。</p>`;
         } else {
-          VocabFlash.mount(body, activeLessonId, { state, fromLesson: true });
+          VocabFlash.mount(mountEl, activeLessonId, { state, fromLesson: true });
         }
       } else if (activeGate === 1) {
-        GrammarNetwork.mount(body, activeLessonId, opts);
-        if (typeof SpeakUI !== "undefined") SpeakUI.bind(body);
+        GrammarNetwork.mount(mountEl, activeLessonId, opts);
+        if (typeof SpeakUI !== "undefined") SpeakUI.bind(mountEl);
       } else if (activeGate === 2) {
-        DialogueGate.mount(body, activeLessonId, opts);
+        DialogueGate.mount(mountEl, activeLessonId, opts);
       } else {
-        QuizGate.mount(body, activeLessonId, {
+        QuizGate.mount(mountEl, activeLessonId, {
           ...opts,
           onComplete: (finished) => {
             if (finished) showView("home");

@@ -1958,6 +1958,87 @@ body.mvp-app .gate-tab.active:active {
 /* --- 学习舱导航 A + 首页路径 B --- */
 .lesson-cockpit-view.active {
   padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lesson-cockpit-view.active #lesson-flow-head,
+.lesson-cockpit-view.active #lesson-flow-body {
+  flex-shrink: 0;
+}
+
+.lesson-cockpit-view.active #lesson-flow-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gate-scroll-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gate-scroll-progress {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mvp-primary-dark);
+  background: #f8f6f2;
+  border: 1px solid var(--mvp-border);
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.gate-scroll-region {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #b0aea8 #eceae6;
+  padding-right: 2px;
+}
+
+.gate-scroll-region::-webkit-scrollbar {
+  width: 7px;
+}
+
+.gate-scroll-region::-webkit-scrollbar-track {
+  background: #eceae6;
+  border-radius: 4px;
+}
+
+.gate-scroll-region::-webkit-scrollbar-thumb {
+  background: #a8a6a0;
+  border-radius: 4px;
+}
+
+.gate-scroll-more {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mvp-muted);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 28%);
+  border-radius: 0 0 10px 10px;
+  pointer-events: none;
+}
+
+.gate-scroll-region .vf-wrap,
+.gate-scroll-region .dg-wrap,
+.gate-scroll-region .gn-wrap {
+  padding-bottom: 8px;
 }
 
 .lesson-cockpit {
