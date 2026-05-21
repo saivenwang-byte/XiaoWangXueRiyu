@@ -3,4 +3,4 @@
  * 部署完成后把下面改成你的 https 地址，不要末尾斜杠，例如：
  * window.HYOUGA_PUBLIC_ORIGIN = "https://qingjing-biaori.netlify.app";
  */
-window.HYOUGA_PUBLIC_ORIGIN = "";
+window.HYOUGA_PUBLIC_ORIGIN = "https://qingjing-biaori.netlify.app";

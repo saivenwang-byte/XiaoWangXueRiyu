@@ -33,9 +33,16 @@ const SpeechEngine = (() => {
   }
 
   function stopAllPlayback() {
+    mp3Warm.forEach((entry) => {
+      try {
+        entry.audio.pause();
+        entry.audio.currentTime = 0;
+      } catch (_) {}
+    });
     if (currentAudio) {
       try {
         currentAudio.pause();
+        currentAudio.currentTime = 0;
         currentAudio.src = "";
       } catch (_) {}
       currentAudio = null;
@@ -141,10 +148,30 @@ const SpeechEngine = (() => {
     return false;
   }
 
+  /** 只去掉纯中文括号注，保留含假名的日文括号（如「自然の変化」） */
+  function stripChineseParens(line) {
+    const stripIfChinese = (inner) => {
+      const t = (inner || "").trim();
+      if (!t) return true;
+      if (/[\u3040-\u309f\u30a0-\u30ff]/.test(t)) return false;
+      if (/[\u4e00-\u9fff]/.test(t) && !/[\u3040-\u309f\u30a0-\u30ff]/.test(t)) return true;
+      return false;
+    };
+    return line
+      .replace(/（([^）]*)）/g, (m, inner) => (stripIfChinese(inner) ? "" : m))
+      .replace(/\(([^)]*)\)/g, (m, inner) => (stripIfChinese(inner) ? "" : m));
+  }
+
+  function splitExampleParts(text) {
+    return (text || "")
+      .split(/[/／]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
   function prepareJaTtsLine(raw) {
     let line = resolveJaText(raw);
-    line = line.replace(/（[^）]*[\u4e00-\u9fff]{2,}[^）]*）/g, "");
-    line = line.replace(/\([^)]*[\u4e00-\u9fff]{2,}[^)]*\)/g, "");
+    line = stripChineseParens(line);
     if (/[→⇔]/.test(line)) {
       line = line.split(/[→⇔]/)[0].trim();
     }
@@ -181,10 +208,13 @@ const SpeechEngine = (() => {
   function warmPhrases(lines) {
     const seen = new Set();
     (lines || []).forEach((raw) => {
-      const line = prepareJaTtsLine(raw);
-      if (!line || seen.has(line)) return;
-      seen.add(line);
-      warmPhrase(line);
+      const candidates =
+        raw && typeof raw === "object" ? fallbackLines(raw) : [prepareJaTtsLine(raw)];
+      candidates.forEach((line) => {
+        if (!line || seen.has(line)) return;
+        seen.add(line);
+        warmPhrase(line);
+      });
     });
   }
 
@@ -197,16 +227,18 @@ const SpeechEngine = (() => {
   }
 
   /** fetch→blob，微信里比 Audio 直链更稳 */
-  async function playBundledMp3Fetch(line) {
+  async function playBundledMp3Fetch(line, token) {
+    if (token != null && token !== speakToken) return false;
     if (typeof location !== "undefined" && location.protocol === "file:") return false;
     const url = ttsMp3Url(line);
     try {
       const res = await fetch(url, { cache: "force-cache", credentials: "omit" });
+      if (token != null && token !== speakToken) return false;
       if (!res.ok) return false;
       const blob = await res.blob();
       if (blob.size < 200) return false;
       const blobUrl = URL.createObjectURL(blob);
-      const ok = await playAudioUrl(blobUrl);
+      const ok = await playAudioUrl(blobUrl, token);
       URL.revokeObjectURL(blobUrl);
       return ok;
     } catch (_) {
@@ -214,10 +246,11 @@ const SpeechEngine = (() => {
     }
   }
 
-  /** ① 嵌入语音包（已预热则几乎即时播放） */
-  function playBundledMp3(line) {
+  /** ① 嵌入语音包（预热缓存；播放用独立 Audio，避免多句叠音） */
+  function playBundledMp3(line, token) {
     return new Promise((resolve) => {
       const entry = warmPhrase(line);
+      const url = ttsMp3Url(line);
       let settled = false;
       const finish = (ok) => {
         if (settled) return;
@@ -225,8 +258,19 @@ const SpeechEngine = (() => {
         resolve(!!ok);
       };
       const playNow = () => {
+        if (token != null && token !== speakToken) {
+          finish(false);
+          return;
+        }
         stopAllPlayback();
-        const audio = entry.audio;
+        if (token != null && token !== speakToken) {
+          finish(false);
+          return;
+        }
+        const audio = new Audio(url);
+        audio.setAttribute("playsinline", "true");
+        audio.playsInline = true;
+        audio.preload = "auto";
         currentAudio = audio;
         const onEnd = () => {
           if (currentAudio === audio) currentAudio = null;
@@ -235,7 +279,6 @@ const SpeechEngine = (() => {
         audio.onended = onEnd;
         audio.onerror = () => finish(false);
         try {
-          audio.currentTime = 0;
           const p = audio.play();
           if (p && typeof p.catch === "function") p.catch(() => finish(false));
         } catch (_) {
@@ -263,9 +306,17 @@ const SpeechEngine = (() => {
     return kana >= Math.max(1, t.length * 0.45);
   }
 
-  function playAudioUrl(url) {
+  function playAudioUrl(url, token) {
     return new Promise((resolve) => {
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
       stopAllPlayback();
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
       const audio = new Audio(url);
       audio.setAttribute("playsinline", "true");
       audio.playsInline = true;
@@ -284,36 +335,47 @@ const SpeechEngine = (() => {
     });
   }
 
-  async function playOnlineJapaneseWithTimeout(line) {
+  async function playOnlineJapaneseWithTimeout(line, token) {
     return Promise.race([
-      playOnlineJapanese(line),
+      playOnlineJapanese(line, 0, token),
       new Promise((r) => setTimeout(() => r(false), ONLINE_TTS_MS)),
     ]);
   }
 
   /** ③ 在线日语 TTS（fetch→blob；消耗用户手机流量，不占 GitHub 语音包带宽） */
-  async function playOnlineJapanese(line, urlIndex = 0) {
+  async function playOnlineJapanese(line, urlIndex = 0, token) {
+    if (token != null && token !== speakToken) return false;
     if (typeof location !== "undefined" && location.protocol === "file:") return false;
     if (urlIndex >= ONLINE_TTS_URLS.length) return false;
     const src = ONLINE_TTS_URLS[urlIndex] + encodeURIComponent(line);
     try {
       const res = await fetch(src, { mode: "cors", credentials: "omit" });
+      if (token != null && token !== speakToken) return false;
       if (res.ok) {
         const blob = await res.blob();
         if (blob.size > 256) {
           const blobUrl = URL.createObjectURL(blob);
-          const ok = await playAudioUrl(blobUrl);
+          const ok = await playAudioUrl(blobUrl, token);
           URL.revokeObjectURL(blobUrl);
           if (ok) return true;
         }
       }
     } catch (_) {}
-    return playOnlineJapaneseDirect(line, urlIndex);
+    return playOnlineJapaneseDirect(line, urlIndex, token);
   }
 
-  function playOnlineJapaneseDirect(line, urlIndex = 0) {
+  function playOnlineJapaneseDirect(line, urlIndex = 0, token) {
     return new Promise((resolve) => {
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
       if (urlIndex >= ONLINE_TTS_URLS.length) {
+        resolve(false);
+        return;
+      }
+      stopAllPlayback();
+      if (token != null && token !== speakToken) {
         resolve(false);
         return;
       }
@@ -328,24 +390,32 @@ const SpeechEngine = (() => {
         if (currentAudio === audio) currentAudio = null;
         resolve(!!ok);
       };
-      stopAllPlayback();
       audio.onended = () => finish(true);
-      audio.onerror = () => playOnlineJapaneseDirect(line, urlIndex + 1).then(resolve);
+      audio.onerror = () => playOnlineJapaneseDirect(line, urlIndex + 1, token).then(resolve);
       const p = audio.play();
       if (p && typeof p.catch === "function") {
-        p.catch(() => playOnlineJapaneseDirect(line, urlIndex + 1).then(resolve));
+        p.catch(() => playOnlineJapaneseDirect(line, urlIndex + 1, token).then(resolve));
       }
     });
   }
 
   /** ③ 本机日语（宽松：有 ja 就用） */
-  function playLocalSynthesis(line, rate = 0.85, strict = true) {
+  function playLocalSynthesis(line, rate = 0.85, strict = true, token) {
     return new Promise((resolve) => {
+      if (token != null && token !== speakToken) {
+        resolve(false);
+        return;
+      }
       if (!window.speechSynthesis) {
         resolve(false);
         return;
       }
       if (strict && !hasReliableLocalJaVoice()) {
+        resolve(false);
+        return;
+      }
+      stopAllPlayback();
+      if (token != null && token !== speakToken) {
         resolve(false);
         return;
       }
@@ -356,6 +426,10 @@ const SpeechEngine = (() => {
       const finish = (ok) => {
         if (done) return;
         done = true;
+        if (token != null && token !== speakToken) {
+          resolve(false);
+          return;
+        }
         resolve(!!ok);
       };
       const u = new SpeechSynthesisUtterance(line);
@@ -382,6 +456,10 @@ const SpeechEngine = (() => {
         return;
       }
       setTimeout(() => {
+        if (token != null && token !== speakToken) {
+          finish(false);
+          return;
+        }
         if (!started && !done && !window.speechSynthesis.speaking) finish(false);
       }, 900);
     });
@@ -404,13 +482,29 @@ const SpeechEngine = (() => {
     if (line && !lines.includes(line)) lines.push(line);
   }
 
-  async function trySpeakLine(line, rate = 0.85) {
+  async function trySpeakLine(line, rate = 0.85, token) {
     if (!line) return false;
-    if (await playBundledMp3(line)) return true;
-    if (await playBundledMp3Fetch(line)) return true;
-    if (await playOnlineJapaneseWithTimeout(line)) return true;
-    if (hasReliableLocalJaVoice() && (await playLocalSynthesis(line, rate, true))) return true;
-    if (isMostlyKana(line) && (await playLocalSynthesis(line, 0.82, false))) return true;
+    if (token != null && token !== speakToken) return false;
+    if (await playBundledMp3(line, token)) {
+      if (token != null && token !== speakToken) return false;
+      return true;
+    }
+    if (token != null && token !== speakToken) return false;
+    if (await playBundledMp3Fetch(line, token)) {
+      if (token != null && token !== speakToken) return false;
+      return true;
+    }
+    if (token != null && token !== speakToken) return false;
+    if (await playOnlineJapaneseWithTimeout(line, token)) {
+      if (token != null && token !== speakToken) return false;
+      return true;
+    }
+    if (token != null && token !== speakToken) return false;
+    /* 中文 Windows 上无日语包时会把汉字读成中文，禁止宽松本机 TTS */
+    if (hasReliableLocalJaVoice() && (await playLocalSynthesis(line, rate, true, token))) {
+      if (token != null && token !== speakToken) return false;
+      return true;
+    }
     return false;
   }
 
@@ -420,13 +514,22 @@ const SpeechEngine = (() => {
       const jp = textOrObj.jp || textOrObj.japanese || textOrObj.title || "";
       const ruby =
         textOrObj.ruby || textOrObj.japaneseRuby || textOrObj.titleRuby || textOrObj.lessonTitleRuby;
+      if (textOrObj.questionTts) pushLine(lines, textOrObj.questionTts);
       if (textOrObj.kana) pushLine(lines, textOrObj.kana);
       const fromRuby = rubyKanaLine(jp, ruby);
       if (fromRuby) pushLine(lines, fromRuby);
-      pushLine(lines, jp);
-      if (textOrObj.example) pushLine(lines, textOrObj.example);
+      if (!/[＿_]{2,}/.test(jp)) pushLine(lines, jp);
+      if (textOrObj.example) {
+        const parts = splitExampleParts(textOrObj.example);
+        if (parts.length > 1) {
+          parts.forEach((part) => pushLine(lines, { jp: part, ruby: textOrObj.exampleRuby }));
+        } else {
+          pushLine(lines, textOrObj.example);
+        }
+      }
     } else {
-      pushLine(lines, textOrObj);
+      const s = String(textOrObj || "");
+      if (!/[＿_]{2,}/.test(s)) pushLine(lines, s);
     }
     return lines;
   }
@@ -441,7 +544,7 @@ const SpeechEngine = (() => {
     if (!candidates.length) return false;
     for (const line of candidates) {
       if (token !== speakToken) return false;
-      if (await trySpeakLine(line, rate)) {
+      if (await trySpeakLine(line, rate, token)) {
         if (token !== speakToken) return false;
         return true;
       }

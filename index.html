@@ -20,7 +20,7 @@
 
   <meta property="og:title" content="標日 あと学習 · 第14/16/18課" />
 
-  <meta property="og:description" content="10分で文法をつなげ、会話を録音してお手本と比べる。リンクを開くだけ。" />
+  <meta property="og:description" content="10分で単語・会話・文法をつなげ、🔊で听读音。リンクを開くだけ。" />
 
   <meta property="og:image" content="icons/icon.svg" />
 
@@ -32,9 +32,9 @@
 
   <link rel="apple-touch-icon" href="icons/icon.svg" />
 
-  <link rel="stylesheet" href="css/app.css?v=18" />
+  <link rel="stylesheet" href="css/app.css?v=27" />
 
-  <link rel="stylesheet" href="css/mvp.css?v=18" />
+  <link rel="stylesheet" href="css/mvp.css?v=27" />
 
   <style>
     /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
@@ -77,7 +77,7 @@
 
           <h2>こんにちは！ あと10分</h2>
 
-          <p><strong>会話を中心に</strong> · 録音して話す · 第14 / 16 / 18課</p>
+          <p><strong>会話を中心に</strong> · 点 🔊 听读音 · 第14 / 16 / 18課</p>
 
           <p id="home-week-count" style="margin-top:8px;font-size:13px">学習日数（今週）：0 日</p>
 
@@ -155,7 +155,7 @@
 
         <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">共有ページ（QR）</a>
 
-        <p class="hint-ja footer-hint" style="margin-top:12px">朗读优先本机语音/浏览器缓存 · 会話支持录音+发音评分 · 无需登录</p>
+        <p class="hint-ja footer-hint" style="margin-top:12px">朗读优先缓存 MP3 · 单词/会話/测试可 🔊🎤▶ 跟读 · 无需登录</p>
 
         <a href="legacy.html" class="btn ghost" style="display:block;text-align:center;margin-top:10px;text-decoration:none">旧版：24課シナリオ</a>
 
@@ -198,21 +198,22 @@
 
 
 
-  <script src="js/public-url.config.js?v=18"></script>
-  <script src="js/share-wechat.js?v=18"></script>
-  <script src="js/data/mini-cards.js?v=18"></script>
-  <script src="js/data/lessons-mvp.js?v=18"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=18"></script>
-  <script src="js/ruby-render.js?v=18"></script>
-  <script src="js/mvp-storage.js?v=18"></script>
-  <script src="js/speech-engine.js?v=18"></script>
-  <script src="js/speak-ui.js?v=18"></script>
-  <script src="js/ui-feedback.js?v=18"></script>
-  <script src="js/grammar-network.js?v=18"></script>
-  <script src="js/dialogue-gate.js?v=18"></script>
-  <script src="js/quiz-gate.js?v=18"></script>
-  <script src="js/vocab-flash.js?v=18"></script>
-  <script src="js/app.js?v=18"></script>
+  <script src="js/public-url.config.js?v=27"></script>
+  <script src="js/share-wechat.js?v=27"></script>
+  <script src="js/data/mini-cards.js?v=27"></script>
+  <script src="js/data/lessons-mvp.js?v=27"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=27"></script>
+  <script src="js/ruby-render.js?v=27"></script>
+  <script src="js/mvp-storage.js?v=27"></script>
+  <script src="js/speech-engine.js?v=27"></script>
+  <script src="js/speak-ui.js?v=27"></script>
+  <script src="js/shadow-speak.js?v=27"></script>
+  <script src="js/ui-feedback.js?v=27"></script>
+  <script src="js/grammar-network.js?v=27"></script>
+  <script src="js/dialogue-gate.js?v=27"></script>
+  <script src="js/quiz-gate.js?v=27"></script>
+  <script src="js/vocab-flash.js?v=27"></script>
+  <script src="js/app.js?v=27"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -222,7 +223,7 @@
         m.style.pointerEvents = "none";
       });
       if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v18";
+      var key = "hyouga-sw-purged-v27";
       navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (r) { return r.unregister(); }));
       }).then(function () {

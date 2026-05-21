@@ -11,6 +11,30 @@ const QuizGate = (() => {
     return d.innerHTML;
   }
 
+  function showZh() {
+    return state?.showChineseZh !== false;
+  }
+
+  function questionSpeakPayload(q) {
+    const tts = q.questionTts || q.question;
+    return { jp: q.question, questionTts: tts, kana: q.questionKana || "" };
+  }
+
+  function optionSpeakPayload(text) {
+    const kana =
+      typeof QUIZ_OPTION_KANA !== "undefined" && QUIZ_OPTION_KANA[text]
+        ? QUIZ_OPTION_KANA[text]
+        : text;
+    return { jp: text, kana };
+  }
+
+  function warmQuizQuestion(q) {
+    if (typeof SpeechEngine === "undefined" || !SpeechEngine.warmPhrases) return;
+    const lines = [questionSpeakPayload(q)];
+    q.options?.forEach((opt) => lines.push(optionSpeakPayload(opt)));
+    SpeechEngine.warmPhrases(lines);
+  }
+
   function mount(el, lessonId, options) {
     container = el;
     state = options.state;
@@ -18,6 +42,29 @@ const QuizGate = (() => {
     lesson = getLessonMvp(lessonId);
     qIndex = 0;
     render();
+  }
+
+  function renderChoiceOptions(q) {
+    const zhList = q.optionsZh || [];
+    return q.options
+      .map((opt, i) => {
+        const speak =
+          typeof SpeakUI !== "undefined"
+            ? SpeakUI.btnHtml(optionSpeakPayload(opt), `class="qz-opt-speak" data-opt-i="${i}"`)
+            : "";
+        const optZh =
+          showZh() && zhList[i]
+            ? `<p class="qz-opt-zh zh-annotation">${escapeHtml(zhList[i])}</p>`
+            : "";
+        return `<div class="qz-opt-item">
+          <div class="qz-opt-top">
+            <button type="button" class="qz-opt" data-i="${i}">${escapeHtml(opt)}</button>
+            ${speak}
+          </div>
+          ${optZh}
+        </div>`;
+      })
+      .join("");
   }
 
   function render() {
@@ -37,34 +84,64 @@ const QuizGate = (() => {
     }
 
     const q = questions[qIndex];
+    const questionZh =
+      showZh() && q.questionZh
+        ? `<p class="qz-question-zh zh-annotation">${escapeHtml(q.questionZh)}</p>`
+        : "";
+
     let body = "";
     if (q.type === "choice") {
-      body = `<div class="qz-options">${q.options
-        .map((opt, i) => `<button type="button" class="qz-opt" data-i="${i}">${escapeHtml(opt)}</button>`)
-        .join("")}</div>`;
+      body = `<div class="qz-options">${renderChoiceOptions(q)}</div>`;
     } else {
       body = `<input type="text" class="qz-input" id="qz-fill" placeholder="答えを入力" autocomplete="off" />
         <button type="button" class="btn primary" id="qz-submit">送信</button>`;
     }
 
     const speakQ =
-      typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(q.question) : "";
+      typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(questionSpeakPayload(q), 'class="qz-q-speak"') : "";
+
     container.innerHTML = `
       <div class="qz-wrap">
-        <p class="qz-progress">問題 ${qIndex + 1} / ${questions.length}</p>
-        <div class="qz-question-row">
-          <p class="qz-question jp">${escapeHtml(q.question)}</p>
-          ${speakQ}
+        <div class="qz-nav">
+          <button type="button" class="btn secondary" id="qz-prev" ${qIndex === 0 ? "disabled" : ""}>← 上一题</button>
+          <span class="qz-progress">問題 ${qIndex + 1} / ${questions.length}</span>
+          <button type="button" class="btn secondary" id="qz-next" ${qIndex >= questions.length - 1 ? "disabled" : ""}>下一题 →</button>
         </div>
+        <div class="qz-question-block">
+          <div class="qz-question-row">
+            <p class="qz-question jp">${escapeHtml(q.question)}</p>
+            ${speakQ}
+          </div>
+          ${questionZh}
+        </div>
+        <p class="hint-ja qz-speak-hint">题干 🔊 读完整日文句；各选项旁 🔊 可重复听</p>
         ${body}
         <div id="qz-feedback"></div>
       </div>
     `;
+
+    warmQuizQuestion(q);
     if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
+
+    container.querySelector("#qz-prev")?.addEventListener("click", () => {
+      if (qIndex > 0) {
+        qIndex--;
+        render();
+      }
+    });
+    container.querySelector("#qz-next")?.addEventListener("click", () => {
+      if (qIndex < questions.length - 1) {
+        qIndex++;
+        render();
+      }
+    });
 
     if (q.type === "choice") {
       container.querySelectorAll(".qz-opt").forEach((btn) => {
-        btn.onclick = () => grade(String(btn.dataset.i), q);
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          grade(String(btn.dataset.i), q);
+        };
       });
     } else {
       container.querySelector("#qz-submit").onclick = () => {
@@ -91,11 +168,13 @@ const QuizGate = (() => {
     if (ok) {
       feedback.innerHTML = `<p class="feedback ok">✅ せいかい！</p>
         <p class="hint-ja">${escapeHtml(q.explanation)}</p>
-        <button type="button" class="btn primary" id="qz-next">次へ</button>`;
+        ${showZh() && q.explanationZh ? `<p class="zh-annotation">${escapeHtml(q.explanationZh)}</p>` : ""}
+        <button type="button" class="btn primary" id="qz-next-answer">次へ</button>`;
     } else {
       feedback.innerHTML = `<p class="feedback err">❌ ざんねん。正解は「${escapeHtml(correctText)}」です。</p>
         <p class="hint-ja">${escapeHtml(q.explanation)}</p>
-        <button type="button" class="btn primary" id="qz-next">次へ</button>`;
+        ${showZh() && q.explanationZh ? `<p class="zh-annotation">${escapeHtml(q.explanationZh)}</p>` : ""}
+        <button type="button" class="btn primary" id="qz-next-answer">次へ</button>`;
       addMvpMistake(state, {
         lessonId: lesson.lessonId,
         questionId: q.id,
@@ -106,7 +185,7 @@ const QuizGate = (() => {
         grammarNodeId: q.grammarNodeId,
       });
     }
-    feedback.querySelector("#qz-next").onclick = () => {
+    feedback.querySelector("#qz-next-answer").onclick = () => {
       qIndex++;
       render();
     };

@@ -85,12 +85,21 @@ const SpeakUI = (() => {
     return `<span class="speak-line ${extraClass}"><span class="speak-line-text">${jpText}</span>${btnHtml(p)}</span>`;
   }
 
+  function clearSpeakingState(exceptBtn) {
+    document.querySelectorAll(".btn-speak-icon.is-speaking, .is-speaking.btn-speak-icon").forEach((el) => {
+      if (el !== exceptBtn) el.classList.remove("is-speaking");
+    });
+  }
+
   async function speakFromButton(btn) {
     if (!btn || btn.disabled) return false;
     if (typeof SpeechEngine === "undefined" || !SpeechEngine.speakJa) {
       showToast("音声模块未加载");
       return false;
     }
+    if (typeof SpeechEngine.stopAllPlayback === "function") SpeechEngine.stopAllPlayback();
+    if (typeof ShadowSpeak !== "undefined" && ShadowSpeak.stopReplay) ShadowSpeak.stopReplay();
+    clearSpeakingState(btn);
     const payload = parsePayload(btn);
     btn.classList.add("is-speaking");
     const ok = await SpeechEngine.speakJa(payload);
@@ -109,9 +118,11 @@ const SpeakUI = (() => {
   function bind(root) {
     if (!root) return;
     const sel =
-      "[data-speak], [data-jp], .btn-speak-icon, .btn-speak-round, .btn-speak, .dg-play-a, .dg-model, #dg-model, .gn-contrast-speak, .vf-speak, #vf-speak-jp, #vf-speak-ex, #vf-speak-repeat, #lesson-speak-title, #gn-speak-title, #gn-speak-explain, #gn-speak-example, #mini-speak-title, #mini-speak-ex";
+      "[data-speak], [data-jp], .btn-speak-icon, .btn-speak-round, .btn-speak, .dg-play-a, .dg-model, #dg-model, .gn-contrast-speak, .gn-hero-speak, .gn-ex-speak-inline, .gn-dense-speak, .qz-opt-speak, .qz-q-speak, .vf-speak, #vf-lesson-speak, #vf-speak-jp, #vf-speak-ex, #vf-speak-repeat, #lesson-speak-title, #gn-speak-explain, #gn-speak-example, #mini-speak-title, #mini-speak-ex";
     root.querySelectorAll(sel).forEach((btn) => {
       if (btn.dataset.speakBound === "1") return;
+      /* 跟读行 🔊 由 ShadowSpeak 绑定，避免双重点击叠音 */
+      if (btn.dataset.ssPlay === "1") return;
       if (btn.tagName !== "BUTTON" && !btn.dataset.speak && !btn.dataset.jp) return;
       btn.dataset.speakBound = "1";
       if (btn.classList.contains("btn-speak-round") && !btn.querySelector(".speak-icon-svg")) {

@@ -1,143 +1,143 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta property="og:title" content="标日课后巩固 · 分享给好友" />
-  <meta property="og:description" content="第14/16/18课三关巩固，微信点开即用" />
-  <title>分享 · 标日课后巩固</title>
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/mvp.css" />
-  <style>
-    .share-page { padding: 24px 20px; text-align: center; max-width: 420px; margin: 0 auto; }
-    .share-page h1 { font-size: 22px; color: #e57373; margin-bottom: 8px; }
-    .status-badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-    .status-badge.ok { background: #f0fff4; color: #276749; }
-    .status-badge.warn { background: #fff3e0; color: #e65100; }
-    .status-badge.local { background: #fff3e0; color: #e65100; }
-    .link-box {
-      background: #fff;
-      border-radius: 12px;
-      padding: 12px;
-      word-break: break-all;
-      font-size: 14px;
-      text-align: left;
-      margin: 16px 0;
-      border: 1px solid #ffccbc;
-    }
-    .share-btns { display: flex; flex-direction: column; gap: 10px; }
-    .share-btns .btn { width: 100%; }
-    .wechat-tip {
-      text-align: left;
-      background: #fff8e1;
-      border: 1px solid #ffccbc;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 13px;
-      line-height: 1.65;
-      color: #3e2723;
-      margin-top: 16px;
-    }
-    .steps { text-align: left; margin: 16px 0; font-size: 14px; line-height: 1.7; }
-    .steps li { margin: 8px 0; }
-    .wrong-url { color: #c62828; font-size: 12px; margin-top: 8px; text-align: left; }
-  </style>
-</head>
-<body class="mvp-app">
-  <div class="share-page">
-    <h1>标日课后巩固</h1>
-    <p class="hint">第 14 / 16 / 18 课 · 一课三关</p>
-    <p id="status-badge" class="status-badge">检测中…</p>
-
-    <div class="link-box" id="share-url">正在获取地址…</div>
-    <p class="wrong-url" id="wrong-url-hint" hidden></p>
-
-    <div class="share-btns">
-      <button type="button" class="btn primary" id="btn-copy">复制学习链接（发微信）</button>
-      <button type="button" class="btn secondary" id="btn-copy-wx">复制推荐话术（链接+说明）</button>
-      <a href="index.html?v=16" class="btn secondary" id="btn-enter" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
-    </div>
-
-    <ol class="steps" id="deploy-steps" hidden>
-      <li>电脑双击：<strong>打开Netlify拖拽部署.bat</strong></li>
-      <li>把整个「<strong>日语学习</strong>」文件夹拖进 Netlify 网页</li>
-      <li>得到 <code>https://xxx.netlify.app</code></li>
-      <li>打开 <code>js/public-url.config.js</code> 填入该地址，保存后再拖一次发布</li>
-      <li>复制本页显示的 Netlify 链接发微信（不要用 github.io）</li>
-    </ol>
-
-    <div class="wechat-tip" id="wechat-tip"></div>
-  </div>
-  <script src="js/public-url.config.js?v=16"></script>
-  <script src="js/share-wechat.js?v=16"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      });
-    }
-    const learnUrl = ShareWechat.learnUrl();
-    const publicOk = ShareWechat.isPublicHttps();
-    const netlifyOk = !!ShareWechat.configuredOrigin();
-    const gh = ShareWechat.isGithubPages();
-
-    document.getElementById("share-url").textContent = learnUrl;
-    document.getElementById("btn-enter").href = learnUrl;
-
-    const badge = document.getElementById("status-badge");
-    if (!publicOk) {
-      badge.textContent = "⚠ 本地地址，需先 Netlify 部署";
-      badge.className = "status-badge local";
-      document.getElementById("deploy-steps").hidden = false;
-    } else if (netlifyOk) {
-      badge.textContent = "✓ 已配置 Netlify，适合微信分享";
-      badge.className = "status-badge ok";
-    } else if (gh) {
-      badge.textContent = "⚠ GitHub 链接：国内微信常打不开";
-      badge.className = "status-badge warn";
-      document.getElementById("deploy-steps").hidden = false;
-    } else {
-      badge.textContent = "✓ 公网 HTTPS";
-      badge.className = "status-badge ok";
-    }
-
-    document.getElementById("wrong-url-hint").hidden = false;
-    document.getElementById("wrong-url-hint").innerHTML =
-      "请勿分享：<code>github.com/…/仓库名</code> 或 <code>saivenwang-byte.github.io</code>（无项目名会 404）。<br>必须包含：<code>/XiaoWangXueRiyu/index.html</code> 或使用 Netlify 根域名。";
-
-    const tip = document.getElementById("wechat-tip");
-    if (!publicOk) {
-      tip.innerHTML =
-        "<strong>为什么微信打不开？</strong><br>微信只能打开 <code>https://</code> 公网页面，本地文件、zip、仓库地址都不行。";
-    } else if (netlifyOk) {
-      tip.innerHTML =
-        "<strong>发给好友</strong><br>1. 点「复制学习链接」→ 微信粘贴发送<br>2. 对方点蓝色链接即可（推荐 Netlify 域名）<br>3. 第二关跟读需允许麦克风";
-    } else {
-      tip.innerHTML =
-        "<strong>微信打不开 github.io？</strong><br>国内很常见。请按上方步骤部署 <strong>Netlify</strong>（免费），把地址写入 <code>public-url.config.js</code> 后重新发布，再分享 Netlify 链接。";
-    }
-
-    const wxText =
-      "【标日课后巩固】第14/16/18课，语法→会話→测试。点开就学：\n" + learnUrl;
-
-    async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        alert("已复制\n\n" + text + (ShareWechat.isWeChat() && gh && !netlifyOk ? "\n\n提示：github 链接在微信里可能仍打不开，请改用 Netlify。" : ""));
-      } catch {
-        prompt("请手动复制：", text);
-      }
-    }
-
-    document.getElementById("btn-copy").onclick = () => copyText(learnUrl);
-    document.getElementById("btn-copy-wx").onclick = () => copyText(wxText);
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta property="og:title" content="标日课后巩固 · 分享给好友" />
+  <meta property="og:description" content="第14/16/18课三关巩固，微信点开即用" />
+  <title>分享 · 标日课后巩固</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/mvp.css" />
+  <style>
+    .share-page { padding: 24px 20px; text-align: center; max-width: 420px; margin: 0 auto; }
+    .share-page h1 { font-size: 22px; color: #e57373; margin-bottom: 8px; }
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .status-badge.ok { background: #f0fff4; color: #276749; }
+    .status-badge.warn { background: #fff3e0; color: #e65100; }
+    .status-badge.local { background: #fff3e0; color: #e65100; }
+    .link-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: left;
+      margin: 16px 0;
+      border: 1px solid #ffccbc;
+    }
+    .share-btns { display: flex; flex-direction: column; gap: 10px; }
+    .share-btns .btn { width: 100%; }
+    .wechat-tip {
+      text-align: left;
+      background: #fff8e1;
+      border: 1px solid #ffccbc;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #3e2723;
+      margin-top: 16px;
+    }
+    .steps { text-align: left; margin: 16px 0; font-size: 14px; line-height: 1.7; }
+    .steps li { margin: 8px 0; }
+    .wrong-url { color: #c62828; font-size: 12px; margin-top: 8px; text-align: left; }
+  </style>
+</head>
+<body class="mvp-app">
+  <div class="share-page">
+    <h1>标日课后巩固</h1>
+    <p class="hint">第 14 / 16 / 18 课 · 一课三关</p>
+    <p id="status-badge" class="status-badge">检测中…</p>
+
+    <div class="link-box" id="share-url">正在获取地址…</div>
+    <p class="wrong-url" id="wrong-url-hint" hidden></p>
+
+    <div class="share-btns">
+      <button type="button" class="btn primary" id="btn-copy">复制学习链接（发微信）</button>
+      <button type="button" class="btn secondary" id="btn-copy-wx">复制推荐话术（链接+说明）</button>
+      <a href="index.html?v=22" class="btn secondary" id="btn-enter" style="text-decoration:none;display:block;line-height:44px">进入学习</a>
+    </div>
+
+    <ol class="steps" id="deploy-steps" hidden>
+      <li>电脑双击：<strong>打开Netlify拖拽部署.bat</strong></li>
+      <li>把整个「<strong>日语学习</strong>」文件夹拖进 Netlify 网页</li>
+      <li>得到 <code>https://xxx.netlify.app</code></li>
+      <li>打开 <code>js/public-url.config.js</code> 填入该地址，保存后再拖一次发布</li>
+      <li>复制本页显示的 Netlify 链接发微信（不要用 github.io）</li>
+    </ol>
+
+    <div class="wechat-tip" id="wechat-tip"></div>
+  </div>
+  <script src="js/public-url.config.js?v=22"></script>
+  <script src="js/share-wechat.js?v=22"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      });
+    }
+    const learnUrl = ShareWechat.learnUrl();
+    const publicOk = ShareWechat.isPublicHttps();
+    const netlifyOk = !!ShareWechat.configuredOrigin();
+    const gh = ShareWechat.isGithubPages();
+
+    document.getElementById("share-url").textContent = learnUrl;
+    document.getElementById("btn-enter").href = learnUrl;
+
+    const badge = document.getElementById("status-badge");
+    if (!publicOk) {
+      badge.textContent = "⚠ 本地地址，需先 Netlify 部署";
+      badge.className = "status-badge local";
+      document.getElementById("deploy-steps").hidden = false;
+    } else if (netlifyOk) {
+      badge.textContent = "✓ 已配置 Netlify，适合微信分享";
+      badge.className = "status-badge ok";
+    } else if (gh) {
+      badge.textContent = "⚠ GitHub 链接：国内微信常打不开";
+      badge.className = "status-badge warn";
+      document.getElementById("deploy-steps").hidden = false;
+    } else {
+      badge.textContent = "✓ 公网 HTTPS";
+      badge.className = "status-badge ok";
+    }
+
+    document.getElementById("wrong-url-hint").hidden = false;
+    document.getElementById("wrong-url-hint").innerHTML =
+      "请勿分享：<code>github.com/…/仓库名</code> 或 <code>saivenwang-byte.github.io</code>（无项目名会 404）。<br>必须包含：<code>/XiaoWangXueRiyu/index.html</code> 或使用 Netlify 根域名。";
+
+    const tip = document.getElementById("wechat-tip");
+    if (!publicOk) {
+      tip.innerHTML =
+        "<strong>为什么微信打不开？</strong><br>微信只能打开 <code>https://</code> 公网页面，本地文件、zip、仓库地址都不行。";
+    } else if (netlifyOk) {
+      tip.innerHTML =
+        "<strong>发给好友</strong><br>1. 点「复制学习链接」→ 微信粘贴发送<br>2. 对方点蓝色链接即可（推荐 Netlify 域名）<br>3. 第二关跟读需允许麦克风";
+    } else {
+      tip.innerHTML =
+        "<strong>微信打不开 github.io？</strong><br>国内很常见。请按上方步骤部署 <strong>Netlify</strong>（免费），把地址写入 <code>public-url.config.js</code> 后重新发布，再分享 Netlify 链接。";
+    }
+
+    const wxText =
+      "【标日课后巩固】第14/16/18课，语法→会話→测试。点开就学：\n" + learnUrl;
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("已复制\n\n" + text + (ShareWechat.isWeChat() && gh && !netlifyOk ? "\n\n提示：github 链接在微信里可能仍打不开，请改用 Netlify。" : ""));
+      } catch {
+        prompt("请手动复制：", text);
+      }
+    }
+
+    document.getElementById("btn-copy").onclick = () => copyText(learnUrl);
+    document.getElementById("btn-copy-wx").onclick = () => copyText(wxText);
+  </script>
+</body>
+</html>

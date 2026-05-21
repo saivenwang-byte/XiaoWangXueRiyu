@@ -30,7 +30,7 @@ SCAN_FILES = [
 ]
 
 STRING_KEYS = re.compile(
-    r"(?:lessonTitle|title|example|explain|explanation|japanese|question|pattern|timeline|mistake|jp|kana|meaningJa)"
+    r"(?:lessonTitle|title|example|explain|explanation|japanese|question|questionTts|pattern|timeline|mistake|jp|kana|meaningJa)"
     r'\s*:\s*"((?:\\.|[^"\\])*)"',
     re.MULTILINE,
 )

@@ -77,12 +77,46 @@
     }
   }
 
+  function renderLessonFlowHead(L) {
+    const head = document.getElementById("lesson-flow-head");
+    if (!head || !L) return;
+    const themeZh =
+      state.showChineseZh !== false && L.themeZh
+        ? `<span class="zh-annotation">（${escapeHtml(L.themeZh)}）</span>`
+        : "";
+    const titleSpeakPayload = {
+      jp: L.lessonTitle,
+      kana:
+        L.lessonTitleRuby && typeof RubyRender !== "undefined"
+          ? RubyRender.toKanaReading(L.lessonTitle, L.lessonTitleRuby)
+          : L.lessonTitle,
+      ruby: L.lessonTitleRuby,
+    };
+    if (activeGate === 0) {
+      head.innerHTML = `<p class="hint-ja lc-head-slim">单词页：听读音请用下方列表每行右侧 🔊；课文朗读在列表顶部。</p>`;
+    } else if (activeGate === 2) {
+      head.innerHTML = `
+        <div class="headline-row">
+          <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
+          ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(titleSpeakPayload, 'id="lesson-speak-title" title="听本课课文"') : ""}
+        </div>
+        ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}`;
+    } else {
+      head.innerHTML = `
+        <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
+        ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}`;
+    }
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(head);
+  }
+
   function switchGate(k) {
     const next = Number(k);
     if (Number.isNaN(next) || next < 0 || next > 3 || next === activeGate) return;
     activeGate = next;
     closeAllModals();
+    const L = getLessonMvp(activeLessonId);
     renderLessonCockpit(lessonProgress(activeLessonId));
+    renderLessonFlowHead(L);
     mountGate();
     document.getElementById("lesson-flow-body")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
@@ -274,44 +308,11 @@
       return;
     }
     const g = lessonProgress(L.lessonId);
-    const head = document.getElementById("lesson-flow-head");
-    const themeZh =
-      state.showChineseZh !== false && L.themeZh
-        ? `<span class="zh-annotation">（${escapeHtml(L.themeZh)}）</span>`
-        : "";
-
-    const headlineNote =
-      activeGate === 1
-        ? `<p class="lc-headline-note">↑ 本課の課文タイトル（会話の導入）。下の文法カードの 🔊 とは別です。</p>`
-        : "";
-    head.innerHTML = `
-      <div class="headline-row">
-        <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
-        ${
-          typeof SpeakUI !== "undefined"
-            ? SpeakUI.btnHtml(
-                {
-                  jp: L.lessonTitle,
-                  kana:
-                    L.lessonTitleRuby && typeof RubyRender !== "undefined"
-                      ? RubyRender.toKanaReading(L.lessonTitle, L.lessonTitleRuby)
-                      : L.lessonTitle,
-                  ruby: L.lessonTitleRuby,
-                },
-                'id="lesson-speak-title" title="課文タイトル（假名朗读）"'
-              )
-            : ""
-        }
-      </div>
-      ${headlineNote}
-      ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}
-    `;
-
     if (activeGate < 0 || activeGate > 3) activeGate = defaultGateForLesson(g);
+    renderLessonFlowHead(L);
     renderLessonCockpit(g);
     mountGate();
     if (typeof SpeakUI !== "undefined") {
-      SpeakUI.bind(head);
       SpeakUI.bind(document.getElementById("lesson-cockpit"));
     }
   }

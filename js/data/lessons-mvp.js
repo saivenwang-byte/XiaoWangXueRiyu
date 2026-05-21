@@ -347,10 +347,17 @@ const LESSONS_MVP = [
     grammarNodes: [
       {
         id: "l18_naru",
-        title: "～なる（自然の変化）",
+        title: "～になる（自然の変化）",
         titleZh: "变得（自然）",
+        titleSpeak: "なる",
+        titleKana: "なる",
+        titleRuby: [
+          { kanji: "自然", reading: "しぜん" },
+          { kanji: "変化", reading: "へんか" },
+        ],
         explanation: "自然に、ひとりでに変わること。イ形容詞は「い」→「く」＋なる。ナ形容詞は「に」＋なる。",
         example: "寒くなりました。 / 元気になりました。",
+        exampleZh: "变冷了。 / 变得有精神了。",
         exampleRuby: [{ kanji: "寒", reading: "さむ" }, { kanji: "元気", reading: "げんき" }],
         links: [
           {

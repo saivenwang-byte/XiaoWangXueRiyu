@@ -23,8 +23,10 @@ python -m http.server 8766
 
 ## 语音包
 
-仓库已包含 `tts-cache/`。若需重新生成：双击 `生成语音包.bat` 或运行 `python scripts/build-tts-cache.py`。
+仓库已包含 `tts-cache/`。说明见 **`docs/TTS-语音包说明.md`**。若需重新生成：双击 `生成语音包.bat` 或运行 `python scripts/build-tts-cache.py`；发布前可运行 `python scripts/verify-tts-cache.py` 检查缺文件与异常 MP3。
 
 ## 版本
 
-当前冻结版说明见 [VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md)。后续大版本请另开新仓库开发。
+- **当前开发/发行说明**：[VERSION.md](./VERSION.md)（build 26+）
+- **历史微信冻结版**：[VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md)（build 11，仅作回滚参考）
+- **发布与知识库怎么同步**：[docs/发布与知识库同步.md](./docs/发布与知识库同步.md)
