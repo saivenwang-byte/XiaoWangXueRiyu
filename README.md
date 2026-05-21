@@ -21,7 +21,7 @@
 python -m http.server 8765
 ```
 
-浏览器：http://localhost:8765/index.html?v=28（不要用 `file://`）
+浏览器：http://localhost:8765/index.html?v=29（不要用 `file://`）
 
 ## 语音包
 
@@ -29,6 +29,7 @@ python -m http.server 8765
 
 ## 版本
 
-- 当前：[VERSION.md](./VERSION.md)（build 28 · Netlify）  
+- 当前：[VERSION.md](./VERSION.md)（build 29 · 链接转发）  
+- 链接说明：[docs/链接转发.md](./docs/链接转发.md)  
 - 历史冻结：[VERSION-WECHAT-v1.md](./VERSION-WECHAT-v1.md)  
 - AI/协作规则：`.cursor/rules/production-netlify.mdc`
