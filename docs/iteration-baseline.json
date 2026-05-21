@@ -105,12 +105,54 @@
       "acceptance": "単語/会話/文法/テスト 顶部 N/M 与底部↓あと；中间区域 overflow-y"
     }
   ],
+  "roadmap": {
+    "doc": "docs/FULL-VERSION-ROADMAP.md",
+    "user_confirmed": "2026-05-21",
+    "priority": ["stage-2-lessons-13-15-17-19-20", "prd-lessons-21-24", "part-0-intro-a", "stage-3-lessons-1-12", "stage-4-lessons-21-24-code"]
+  },
   "backlog": [
+    {
+      "id": "stage-2-lessons-13-15-17-19-20",
+      "status": "next",
+      "note": "PRD 第2阶段 txt → 种子包数据；优先于 Part-0 编码"
+    },
+    {
+      "id": "part-0-intro-a",
+      "approved": "2026-05-21",
+      "status": "planned",
+      "note": "lessonId:0 入門；不锁课；表格五十音+3会話+5测验；见 docs/Part-0-播种检查表.md",
+      "doc": "docs/Part-0-播种检查表.md"
+    },
+    {
+      "id": "part-0-gojuon-grid-ui",
+      "status": "deferred",
+      "note": "B期：五十音点阵交互，A期用 denseList 表"
+    },
+    {
+      "id": "stage-3-lessons-1-12",
+      "status": "planned",
+      "note": "阶段三；零基础路径闭环"
+    },
+    {
+      "id": "stage-4-lessons-21-24",
+      "status": "planned",
+      "note": "作者增补 PRD 后按课播种"
+    },
     {
       "id": "p3-light-in-lesson-links",
       "approved": "2026-05-21",
       "status": "deferred",
-      "note": "轻量课内链接；用户同意但可延后"
+      "note": "轻量课内链接；全课 mini 覆盖后激活"
+    },
+    {
+      "id": "home-24-units-nav",
+      "status": "deferred",
+      "note": "24课分单元首页；数据齐后做"
+    },
+    {
+      "id": "parent-dashboard-full",
+      "status": "deferred",
+      "note": "24课进度+にがて Top3+热力图"
     }
   ],
   "forbidden_without_explicit_user_request": [
