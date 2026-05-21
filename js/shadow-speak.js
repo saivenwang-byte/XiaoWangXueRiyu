@@ -7,8 +7,10 @@ const ShadowSpeak = (() => {
   let recordStream = null;
   let recordChunks = [];
   let recordRowId = null;
+  let recordMime = "";
   let activeRecordBtn = null;
   let playbackAudio = null;
+  let playbackObjectUrl = null;
   let silenceCheckTimer = null;
   let recordMaxTimer = null;
   let lastSoundAt = 0;
@@ -21,6 +23,33 @@ const ShadowSpeak = (() => {
       .replace(/&/g, "&amp;")
       .replace(/"/g, "&quot;")
       .replace(/</g, "&lt;");
+  }
+
+  function isWeChat() {
+    return /MicroMessenger/i.test(navigator.userAgent || "");
+  }
+
+  function isIOS() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+  }
+
+  /** 微信 / iPhone 优先 mp4，避免录 webm 却无法回放 */
+  function pickRecordMime() {
+    const iosFirst = isIOS() || isWeChat();
+    const candidates = iosFirst
+      ? ["audio/mp4", "audio/aac", "audio/webm;codecs=opus", "audio/webm", ""]
+      : ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/aac", ""];
+    for (const t of candidates) {
+      if (!t) return "";
+      if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t)) return t;
+    }
+    return "";
+  }
+
+  function blobMime() {
+    if (recordMime) return recordMime;
+    if (mediaRecorder?.mimeType) return mediaRecorder.mimeType;
+    return isIOS() ? "audio/mp4" : "audio/webm";
   }
 
   function expectedLine(payload) {
@@ -60,13 +89,25 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function revokePlaybackUrl() {
+    if (playbackObjectUrl) {
+      try {
+        URL.revokeObjectURL(playbackObjectUrl);
+      } catch (_) {}
+      playbackObjectUrl = null;
+    }
+  }
+
   function stopPlayback() {
     if (playbackAudio) {
       try {
         playbackAudio.pause();
+        playbackAudio.removeAttribute("src");
+        playbackAudio.load();
       } catch (_) {}
       playbackAudio = null;
     }
+    revokePlaybackUrl();
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.stopAllPlayback) {
       SpeechEngine.stopAllPlayback();
     }
@@ -79,21 +120,41 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function setupPlaybackAudio(audio, url) {
+    audio.setAttribute("playsinline", "true");
+    audio.setAttribute("webkit-playsinline", "true");
+    audio.playsInline = true;
+    audio.preload = "auto";
+    audio.volume = 1;
+    audio.src = url;
+  }
+
   async function playClip(rowId) {
     const blob = clips.get(rowId);
-    if (!blob) {
+    if (!blob || blob.size < 80) {
       toast("还没有录音，请先点 🎤");
       return;
     }
     stopPlayback();
-    const url = URL.createObjectURL(blob);
-    playbackAudio = new Audio(url);
-    playbackAudio.onended = () => URL.revokeObjectURL(url);
+    if (typeof SpeechEngine !== "undefined" && SpeechEngine.unlockAudioOnce) {
+      SpeechEngine.unlockAudioOnce();
+    }
+    playbackObjectUrl = URL.createObjectURL(blob);
+    playbackAudio = new Audio();
+    setupPlaybackAudio(playbackAudio, playbackObjectUrl);
+    playbackAudio.onended = () => {
+      stopPlayback();
+    };
     try {
       await playbackAudio.play();
-    } catch (_) {
-      toast("回放失败");
-      URL.revokeObjectURL(url);
+    } catch (err) {
+      stopPlayback();
+      const wx = isWeChat();
+      toast(
+        wx
+          ? "回放失败：请再点一次 ▶；仍不行请右上角「···」→ 在浏览器中打开"
+          : "回放失败：请再点一次 ▶"
+      );
     }
   }
 
@@ -105,20 +166,29 @@ const ShadowSpeak = (() => {
     }
     mediaRecorder = null;
     recordRowId = null;
+    recordMime = "";
     recordChunks = [];
     releaseStream();
   }
 
+  function enableReplay(btn) {
+    const replay = btn.closest(".ss-action-row")?.querySelector("[data-ss-replay]");
+    if (replay) {
+      replay.disabled = false;
+      replay.removeAttribute("aria-disabled");
+    }
+  }
+
   async function finishRecord(btn, rowId, evaluate) {
-    const blob = new Blob(recordChunks, { type: "audio/webm" });
+    const mime = blobMime();
+    const blob = new Blob(recordChunks, { type: mime });
     cleanupRecordUi();
     if (blob.size < 200) {
       if (evaluate) toast("录音太短，请再说一次");
       return;
     }
     clips.set(rowId, blob);
-    const replay = btn.closest(".ss-action-row")?.querySelector("[data-ss-replay]");
-    if (replay) replay.disabled = false;
+    enableReplay(btn);
     if (!evaluate) return;
 
     let payload = btn.dataset.speakExpected || "";
@@ -138,6 +208,13 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function flushRecorder() {
+    if (!mediaRecorder || mediaRecorder.state !== "recording") return;
+    try {
+      mediaRecorder.requestData();
+    } catch (_) {}
+  }
+
   function forceStopRecord(evaluate) {
     return new Promise((resolve) => {
       if (!mediaRecorder || mediaRecorder.state === "inactive") {
@@ -147,7 +224,9 @@ const ShadowSpeak = (() => {
       }
       const btn = activeRecordBtn;
       const rowId = recordRowId;
+      flushRecorder();
       mediaRecorder.onstop = async () => {
+        releaseStream();
         if (btn && rowId != null) await finishRecord(btn, rowId, evaluate);
         else cleanupRecordUi();
         resolve();
@@ -196,6 +275,9 @@ const ShadowSpeak = (() => {
       toast("当前环境不支持录音，请用微信打开");
       return;
     }
+    if (typeof SpeechEngine !== "undefined" && SpeechEngine.unlockAudioOnce) {
+      SpeechEngine.unlockAudioOnce();
+    }
     stopPlayback();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -203,14 +285,18 @@ const ShadowSpeak = (() => {
       recordChunks = [];
       recordRowId = rowId;
       activeRecordBtn = btn;
+      recordMime = pickRecordMime();
       btn.dataset.speakExpected =
         typeof payload === "object" ? JSON.stringify(payload) : String(payload || "");
-      mediaRecorder = new MediaRecorder(stream);
+      const opts = recordMime ? { mimeType: recordMime } : undefined;
+      mediaRecorder = opts ? new MediaRecorder(stream, opts) : new MediaRecorder(stream);
+      if (!recordMime && mediaRecorder.mimeType) recordMime = mediaRecorder.mimeType;
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 80) lastSoundAt = Date.now();
-        recordChunks.push(e.data);
+        if (e.data && e.data.size > 0) {
+          if (e.data.size > 80) lastSoundAt = Date.now();
+          recordChunks.push(e.data);
+        }
       };
-      mediaRecorder.onstop = () => releaseStream();
       mediaRecorder.start(200);
       btn.classList.add("is-recording");
       startSilenceWatch(btn);
@@ -253,10 +339,10 @@ const ShadowSpeak = (() => {
     root.querySelectorAll("[data-ss-replay]").forEach((btn) => {
       if (btn.dataset.ssReplayBound === "1") return;
       btn.dataset.ssReplayBound = "1";
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         e.preventDefault();
-        playClip(btn.dataset.ssRow);
+        await playClip(btn.dataset.ssRow);
       });
     });
     if (typeof SpeakUI !== "undefined") SpeakUI.bind(root);
