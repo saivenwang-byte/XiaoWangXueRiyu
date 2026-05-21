@@ -178,10 +178,18 @@ body.mvp-app .nav-item.active {
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   z-index: 100;
+  padding: 16px;
+}
+
+.gn-modal:not([hidden]) {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+}
+
+.gn-modal[hidden] {
+  display: none !important;
+  pointer-events: none;
 }
 
 .gn-modal-inner {
