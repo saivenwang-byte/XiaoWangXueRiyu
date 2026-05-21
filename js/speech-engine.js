@@ -14,6 +14,8 @@ const SpeechEngine = (() => {
 
   const TTS_CACHE_DIR = "tts-cache/";
   const MP3_WAIT_MS = 1400;
+  const MP3_WAIT_WECHAT_MS = 4500;
+  let audioUnlocked = false;
   const ONLINE_TTS_MS = 4000;
   const ONLINE_TTS_URLS = [
     "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=ja&q=",
@@ -30,6 +32,29 @@ const SpeechEngine = (() => {
       h = ((h << 5) - h + s.charCodeAt(i)) | 0;
     }
     return (h >>> 0).toString(16);
+  }
+
+  function isWeChatBrowser() {
+    return /MicroMessenger/i.test(navigator.userAgent || "");
+  }
+
+  function preferFetchMp3() {
+    const ua = navigator.userAgent || "";
+    return isWeChatBrowser() || /iPhone|iPad|iPod|Android/i.test(ua);
+  }
+
+  /** 微信 / 手机：首次点击解锁音频（否则 play() 无声） */
+  function unlockAudioOnce() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    try {
+      const silent = new Audio(
+        "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"
+      );
+      silent.volume = 0.01;
+      const p = silent.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch (_) {}
   }
 
   function stopAllPlayback() {
@@ -246,12 +271,17 @@ const SpeechEngine = (() => {
     }
   }
 
-  /** ① 嵌入语音包（预热缓存；播放用独立 Audio，避免多句叠音） */
-  function playBundledMp3(line, token) {
+  /** ① 嵌入语音包（手机/微信优先 fetch→blob，更稳） */
+  async function playBundledMp3(line, token) {
+    if (preferFetchMp3()) {
+      const ok = await playBundledMp3Fetch(line, token);
+      if (ok) return true;
+    }
     return new Promise((resolve) => {
-      const entry = warmPhrase(line);
+      warmPhrase(line);
       const url = ttsMp3Url(line);
       let settled = false;
+      const waitMs = isWeChatBrowser() ? MP3_WAIT_WECHAT_MS : MP3_WAIT_MS;
       const finish = (ok) => {
         if (settled) return;
         settled = true;
@@ -263,39 +293,35 @@ const SpeechEngine = (() => {
           return;
         }
         stopAllPlayback();
-        if (token != null && token !== speakToken) {
-          finish(false);
-          return;
-        }
         const audio = new Audio(url);
         audio.setAttribute("playsinline", "true");
         audio.playsInline = true;
         audio.preload = "auto";
         currentAudio = audio;
-        const onEnd = () => {
+        audio.onended = () => {
           if (currentAudio === audio) currentAudio = null;
           finish(true);
         };
-        audio.onended = onEnd;
-        audio.onerror = () => finish(false);
+        audio.onerror = () => {
+          playBundledMp3Fetch(line, token).then((f) => finish(f));
+        };
         try {
           const p = audio.play();
-          if (p && typeof p.catch === "function") p.catch(() => finish(false));
+          if (p && typeof p.catch === "function") {
+            p.catch(() => playBundledMp3Fetch(line, token).then((f) => finish(f)));
+          }
         } catch (_) {
-          finish(false);
+          playBundledMp3Fetch(line, token).then((f) => finish(f));
         }
       };
-      if (entry.ready && !entry.failed) {
-        playNow();
-        return;
-      }
-      const onReady = () => playNow();
-      entry.audio.addEventListener("canplaythrough", onReady, { once: true });
-      entry.audio.addEventListener("loadeddata", onReady, { once: true });
-      entry.audio.addEventListener("error", () => finish(false), { once: true });
+      playNow();
       setTimeout(() => {
-        if (!settled) finish(false);
-      }, MP3_WAIT_MS);
+        if (!settled) {
+          playBundledMp3Fetch(line, token).then((f) => {
+            if (!settled) finish(f);
+          });
+        }
+      }, waitMs);
     });
   }
 
@@ -485,6 +511,7 @@ const SpeechEngine = (() => {
   async function trySpeakLine(line, rate = 0.85, token) {
     if (!line) return false;
     if (token != null && token !== speakToken) return false;
+    unlockAudioOnce();
     if (await playBundledMp3(line, token)) {
       if (token != null && token !== speakToken) return false;
       return true;
@@ -838,6 +865,8 @@ const SpeechEngine = (() => {
     bindHoldButton,
     getRecognition,
     pickJapaneseVoice,
+    unlockAudioOnce,
+    isWeChatBrowser,
     stopAllPlayback,
   };
 })();

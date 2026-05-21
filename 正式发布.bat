@@ -4,7 +4,7 @@ cd /d "%~dp0"
 title 标日课后巩固 · 正式发布（Netlify）
 
 set "ORIGIN=https://qingjing-biaori.netlify.app"
-set "LEARN=%ORIGIN%/index.html?v=28"
+set "LEARN=%ORIGIN%/index.html?v=29"
 set "SHARE=%ORIGIN%/share.html"
 
 echo.

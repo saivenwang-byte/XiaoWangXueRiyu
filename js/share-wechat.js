@@ -1,6 +1,6 @@
 /** 微信分享：公网链接（优先 Netlify 配置）· 避免错误 GitHub 仓库链接 */
 const ShareWechat = (() => {
-  const CACHE_VER = "28";
+  const CACHE_VER = "29";
 
   function configuredOrigin() {
     const o = (window.HYOUGA_PUBLIC_ORIGIN || "").trim().replace(/\/$/, "");

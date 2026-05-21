@@ -83,6 +83,13 @@ def collect_phrases() -> set[str]:
     phrases.add("こんにちは。音声のテストです。")
     phrases.add("動詞のて形")
     phrases.add("昨日デパートへ行って、買い物しました")
+    depth = ROOT / "js" / "data" / "lessons-mvp-depth.js"
+    if depth.exists():
+        for m in re.finditer(r':\s*"([\u3040-\u30ff\u4e00-\u9fffA-Za-zも、／\s]+)"', depth.read_text(encoding="utf-8")):
+            raw = m.group(1).strip()
+            if raw.startswith("か") or raw.startswith("さ") or "もC" in raw:
+                if looks_japanese(raw):
+                    phrases.add(raw)
     return phrases
 
 

@@ -97,6 +97,7 @@ const SpeakUI = (() => {
       showToast("音声模块未加载");
       return false;
     }
+    if (typeof SpeechEngine.unlockAudioOnce === "function") SpeechEngine.unlockAudioOnce();
     if (typeof SpeechEngine.stopAllPlayback === "function") SpeechEngine.stopAllPlayback();
     if (typeof ShadowSpeak !== "undefined" && ShadowSpeak.stopReplay) ShadowSpeak.stopReplay();
     clearSpeakingState(btn);
