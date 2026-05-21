@@ -1,14 +1,20 @@
 /**
- * 日语朗读：嵌入语音包（tts-cache MP3）+ 在线日语 TTS + 本机 ja 语音（末位）
- * 中文 Windows 上系统 speechSynthesis 常把汉字读成中文，故优先 MP3 / 在线。
+ * 日语朗读：本地 MP3（预加载）→ 手机本机日语 TTS → 在线 TTS（短超时，走用户流量）
+ * 发音评分：语音识别 + 音量分析（微信内无识别时仍可评分）
  */
 const SpeechEngine = (() => {
   let recognition = null;
   let listening = false;
   let cachedJaVoices = null;
   let currentAudio = null;
+  /** 取消并发朗读（双重点击 / 重复绑定） */
+  let speakToken = 0;
+  /** 已预热的 MP3：hash → { audio, ready, failed } */
+  const mp3Warm = new Map();
 
   const TTS_CACHE_DIR = "tts-cache/";
+  const MP3_WAIT_MS = 380;
+  const ONLINE_TTS_MS = 2200;
   const ONLINE_TTS_URLS = [
     "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=ja&q=",
     "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=",
@@ -146,29 +152,83 @@ const SpeechEngine = (() => {
     return line;
   }
 
-  /** ① 嵌入语音包：tts-cache/{hash}.mp3（edge-tts ja-JP-NanamiNeural 预生成） */
+  function warmPhrase(line) {
+    const key = ttsCacheKey(line);
+    if (mp3Warm.has(key)) return mp3Warm.get(key);
+    const url = `${TTS_CACHE_DIR}${key}.mp3`;
+    const audio = new Audio(url);
+    audio.setAttribute("playsinline", "true");
+    audio.playsInline = true;
+    audio.preload = "auto";
+    const entry = { audio, ready: false, failed: false, key };
+    const markReady = () => {
+      entry.ready = true;
+    };
+    const markFail = () => {
+      entry.failed = true;
+    };
+    audio.addEventListener("canplaythrough", markReady, { once: true });
+    audio.addEventListener("loadeddata", markReady, { once: true });
+    audio.addEventListener("error", markFail, { once: true });
+    try {
+      audio.load();
+    } catch (_) {}
+    mp3Warm.set(key, entry);
+    return entry;
+  }
+
+  function warmPhrases(lines) {
+    const seen = new Set();
+    (lines || []).forEach((raw) => {
+      const line = prepareJaTtsLine(raw);
+      if (!line || seen.has(line)) return;
+      seen.add(line);
+      warmPhrase(line);
+    });
+  }
+
+  /** ① 嵌入语音包（已预热则几乎即时播放） */
   function playBundledMp3(line) {
     return new Promise((resolve) => {
-      const url = `${TTS_CACHE_DIR}${ttsCacheKey(line)}.mp3`;
-      stopAllPlayback();
-      const audio = new Audio(url);
-      audio.setAttribute("playsinline", "true");
-      audio.playsInline = true;
-      audio.preload = "auto";
-      currentAudio = audio;
+      const entry = warmPhrase(line);
+      if (entry.failed) {
+        resolve(false);
+        return;
+      }
       let settled = false;
       const finish = (ok) => {
         if (settled) return;
         settled = true;
-        if (currentAudio === audio) currentAudio = null;
         resolve(!!ok);
       };
-      audio.onended = () => finish(true);
-      audio.onerror = () => finish(false);
-      const p = audio.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => finish(false));
+      const playNow = () => {
+        stopAllPlayback();
+        const audio = entry.audio;
+        currentAudio = audio;
+        audio.onended = () => {
+          if (currentAudio === audio) currentAudio = null;
+          finish(true);
+        };
+        audio.onerror = () => finish(false);
+        try {
+          audio.currentTime = 0;
+          const p = audio.play();
+          if (p && typeof p.catch === "function") p.catch(() => finish(false));
+        } catch (_) {
+          finish(false);
+        }
+      };
+      if (entry.ready) {
+        playNow();
+        return;
       }
+      const onReady = () => playNow();
+      entry.audio.addEventListener("canplaythrough", onReady, { once: true });
+      entry.audio.addEventListener("loadeddata", onReady, { once: true });
+      entry.audio.addEventListener("error", () => finish(false), { once: true });
+      setTimeout(() => {
+        if (!settled) finish(false);
+      }, MP3_WAIT_MS);
     });
   }
 
@@ -193,7 +253,14 @@ const SpeechEngine = (() => {
     });
   }
 
-  /** ② 在线日语 TTS（fetch→blob 优先，避免部分环境 Audio 直链失败） */
+  async function playOnlineJapaneseWithTimeout(line) {
+    return Promise.race([
+      playOnlineJapanese(line),
+      new Promise((r) => setTimeout(() => r(false), ONLINE_TTS_MS)),
+    ]);
+  }
+
+  /** ③ 在线日语 TTS（fetch→blob；消耗用户手机流量，不占 GitHub 语音包带宽） */
   async function playOnlineJapanese(line, urlIndex = 0) {
     if (typeof location !== "undefined" && location.protocol === "file:") return false;
     if (urlIndex >= ONLINE_TTS_URLS.length) return false;
@@ -291,11 +358,10 @@ const SpeechEngine = (() => {
 
   async function trySpeakLine(line, rate = 0.85) {
     if (!line) return false;
-    stopAllPlayback();
     if (await playBundledMp3(line)) return true;
-    if (await playOnlineJapanese(line)) return true;
-    if (await playLocalSynthesis(line, rate, true)) return true;
     if (await playLocalSynthesis(line, rate, false)) return true;
+    if (await playLocalSynthesis(line, rate, true)) return true;
+    if (await playOnlineJapaneseWithTimeout(line)) return true;
     return false;
   }
 
@@ -320,10 +386,16 @@ const SpeechEngine = (() => {
    * 唯一朗读入口：MP3 → 在线 → 本机；单词失败时尝试例文
    */
   async function speakJa(textOrObj, rate = 0.85) {
+    const token = ++speakToken;
+    stopAllPlayback();
     const candidates = fallbackLines(textOrObj);
     if (!candidates.length) return false;
     for (const line of candidates) {
-      if (await trySpeakLine(line, rate)) return true;
+      if (token !== speakToken) return false;
+      if (await trySpeakLine(line, rate)) {
+        if (token !== speakToken) return false;
+        return true;
+      }
     }
     return false;
   }
@@ -339,6 +411,105 @@ const SpeechEngine = (() => {
       .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
       .replace(/[ァ-ン]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60))
       .toLowerCase();
+  }
+
+  async function analyzeAudioBlob(blob) {
+    if (!blob || !blob.size) return { ok: false, reason: "empty" };
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return { ok: false, reason: "no-ctx" };
+      const ctx = new Ctx();
+      const buf = await blob.arrayBuffer();
+      const audioBuf = await ctx.decodeAudioData(buf.slice(0));
+      const ch = audioBuf.getChannelData(0);
+      const sr = audioBuf.sampleRate;
+      const duration = audioBuf.duration;
+      let i = 0;
+      const frame = Math.floor(sr * 0.04);
+      let rmsSum = 0;
+      let voiced = 0;
+      let frames = 0;
+      while (i < ch.length) {
+        const end = Math.min(i + frame, ch.length);
+        let e = 0;
+        for (let j = i; j < end; j++) e += ch[j] * ch[j];
+        const rms = Math.sqrt(e / (end - i));
+        frames++;
+        rmsSum += rms;
+        if (rms > 0.018) voiced++;
+        i = end;
+      }
+      const avgRms = frames ? rmsSum / frames : 0;
+      const speechRatio = frames ? voiced / frames : 0;
+      try {
+        ctx.close();
+      } catch (_) {}
+      return {
+        ok: true,
+        duration,
+        avgRms,
+        speechRatio,
+        tooQuiet: avgRms < 0.012 || speechRatio < 0.12,
+        tooShort: duration < 0.45,
+      };
+    } catch (_) {
+      return { ok: false, reason: "decode" };
+    }
+  }
+
+  /**
+   * 综合评分：语音识别文本 + 录音音量（微信内无识别时仍可凭音量及格）
+   */
+  async function evaluatePronunciation({ expected, heard = "", audioBlob = null, keywords = [] }) {
+    const textResult = scorePronunciation(expected, heard, keywords);
+    let audio = { ok: false };
+    if (audioBlob) {
+      try {
+        audio = await analyzeAudioBlob(audioBlob);
+      } catch (_) {}
+    }
+
+    let score = textResult.score;
+    let ok = textResult.ok;
+    let tip = textResult.tip;
+
+    if (audio.ok) {
+      if (audio.tooQuiet) {
+        score = Math.min(score, 48);
+        ok = false;
+        tip = tip || "声音偏小，请靠近麦克风再录一次。";
+      } else if (audio.tooShort) {
+        score = Math.min(score, 52);
+        ok = false;
+        tip = tip || "录音太短，请把整句说完。";
+      } else if (!heard && audio.duration >= 0.65 && !audio.tooQuiet) {
+        score = Math.max(score, 62);
+        ok = true;
+        tip = "音量清晰。若需更准，可再听示范跟读一遍。";
+      } else if (heard && score < 55 && audio.duration >= 0.5) {
+        score = Math.max(score, 58);
+      }
+    }
+
+    if (!heard && !audio.ok && !audioBlob) {
+      return {
+        score: 0,
+        ok: false,
+        tip: "未录到声音。请允许麦克风后，按住「说话」或点「录音」。",
+        heard: "",
+        expected: textResult.expected,
+        mode: "none",
+      };
+    }
+
+    return {
+      score: Math.min(100, score),
+      ok,
+      tip: ok ? (tip || "很棒！") : tip || textResult.tip,
+      heard: textResult.heard,
+      expected: textResult.expected,
+      mode: heard ? (ok ? "speech" : "speech+audio") : audio.ok ? "audio" : "weak",
+    };
   }
 
   function scorePronunciation(expected, heard, keywords = []) {
@@ -503,10 +674,14 @@ const SpeechEngine = (() => {
     speak,
     prepareJaTtsLine,
     ttsCacheKey,
+    warmPhrase,
+    warmPhrases,
     listenOnce,
     startHoldListen,
     stopHoldListen,
     scorePronunciation,
+    evaluatePronunciation,
+    analyzeAudioBlob,
     normalizeJa,
     bindHoldButton,
     getRecognition,

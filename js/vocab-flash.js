@@ -69,14 +69,14 @@ const VocabFlash = (() => {
           <div class="vf-face vf-front">
             <p class="vf-label">日本語 · タップで意味</p>
             <p class="vf-jp jp">${frontHtml(v)}</p>
-            <button type="button" class="btn-speak-round vf-speak" id="vf-speak-jp" aria-label="日本語で読む" data-jp="">🔊</button>
+            ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml("", 'id="vf-speak-jp" class="vf-speak"') : `<button type="button" class="btn-speak-icon vf-speak" id="vf-speak-jp" data-jp="">🔊</button>`}
           </div>
           <div class="vf-face vf-back">
             <p class="vf-label">意味</p>
             <p class="vf-mean jp">${escapeHtml(v.meaningJa || "")}</p>
             ${v.meaningZh && showZh() ? `<p class="zh-annotation">${escapeHtml(v.meaningZh)}</p>` : ""}
             ${v.example ? `<p class="vf-ex jp">${escapeHtml(v.example)}</p>` : ""}
-            <button type="button" class="btn secondary btn-sm" id="vf-speak-ex">🔊 例文</button>
+            <span id="vf-speak-ex-wrap"></span>
           </div>
         </div>
 
@@ -103,8 +103,13 @@ const VocabFlash = (() => {
 
     const btnJp = container.querySelector("#vf-speak-jp");
     if (btnJp) btnJp.dataset.jp = v.jp;
-    const btnSpeakEx = container.querySelector("#vf-speak-ex");
-    if (btnSpeakEx && v.example) btnSpeakEx.dataset.jp = v.example;
+    const exWrap = container.querySelector("#vf-speak-ex-wrap");
+    if (exWrap && v.example) {
+      exWrap.innerHTML =
+        typeof SpeakUI !== "undefined"
+          ? SpeakUI.btnHtml(v.example, 'id="vf-speak-ex"') + ` <span class="hint-ja">例文</span>`
+          : `<button type="button" class="btn-speak-icon" id="vf-speak-ex" data-jp="${escapeHtml(v.example)}">🔊</button>`;
+    }
     container.querySelector("#vf-again")?.setAttribute("data-jp", v.jp);
 
     container.querySelector("#vf-ok").onclick = () => {

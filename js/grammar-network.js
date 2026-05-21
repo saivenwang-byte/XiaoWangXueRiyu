@@ -116,9 +116,9 @@ const GrammarNetwork = (() => {
           <div class="gn-face gn-front">
             <div class="gn-title-row">
               <h3>${titleHtml(node)}</h3>
-              <button type="button" class="btn-speak-round" id="gn-speak-title" aria-label="日本語で読む" title="文型名のみ読む" data-jp="${escapeHtml(node.title)}">🔊</button>
+              ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(node.title, 'id="gn-speak-title" title="文型名のみ"') : `<button type="button" class="btn-speak-icon" id="gn-speak-title" data-jp="${escapeHtml(node.title)}">🔊</button>`}
             </div>
-            <p class="gn-hint">タップでくわしく · 🔊＝日本語音声パック</p>
+            <p class="gn-hint">タップでくわしく · 小喇叭＝朗读（优先本机/缓存）</p>
           </div>
           <div class="gn-face gn-back">
             <p class="gn-explain">${escapeHtml(node.explanation)}</p>
@@ -231,12 +231,12 @@ const GrammarNetwork = (() => {
       <p class="mini-label">ミニカード · 約10秒</p>
       <div class="mini-head">
         <h3 class="jp">${titleRuby}</h3>
-        <button type="button" class="btn-speak-round" id="mini-speak-title" data-jp="${escapeHtml(card.title)}">🔊</button>
+        ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(card.title, 'id="mini-speak-title"') : ""}
       </div>
       <p class="gn-explain">${escapeHtml(card.explain)}</p>
       <div class="mini-ex-row">
         <p class="jp">${ex}</p>
-        <button type="button" class="btn-speak-round" id="mini-speak-ex" data-jp="${escapeHtml(card.example)}">🔊</button>
+        ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(card.example, 'id="mini-speak-ex"') : ""}
       </div>
     `
     );
@@ -288,7 +288,7 @@ const GrammarNetwork = (() => {
             <p class="jp">${escapeHtml(preset.left.example)}</p>
             ${zh(preset.left)}
             <p class="gn-mistake">${escapeHtml(preset.left.mistake)}</p>
-            <button type="button" class="btn secondary btn-sm gn-contrast-speak" data-jp="${escapeHtml(preset.left.example)}">🔊</button>
+            ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(preset.left.example, 'class="gn-contrast-speak"') : `<button type="button" class="btn-speak-icon gn-contrast-speak" data-jp="${escapeHtml(preset.left.example)}">🔊</button>`}
           </div>
           <div class="gn-contrast-col">
             <h4>${escapeHtml(preset.right.label)}</h4>
@@ -297,7 +297,7 @@ const GrammarNetwork = (() => {
             <p class="jp">${escapeHtml(preset.right.example)}</p>
             ${zh(preset.right)}
             <p class="gn-mistake">${escapeHtml(preset.right.mistake)}</p>
-            <button type="button" class="btn secondary btn-sm gn-contrast-speak" data-jp="${escapeHtml(preset.right.example)}">🔊</button>
+            ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(preset.right.example, 'class="gn-contrast-speak"') : `<button type="button" class="btn-speak-icon gn-contrast-speak" data-jp="${escapeHtml(preset.right.example)}">🔊</button>`}
           </div>
         </div>
       `);

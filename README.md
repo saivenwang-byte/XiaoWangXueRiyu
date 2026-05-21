@@ -4,8 +4,12 @@
 
 ## 在线地址
 
-- 学习：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html  
-- 分享：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html  
+- GitHub Pages（电脑浏览器可用；**国内微信常打不开**）：  
+  - 学习：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html  
+  - 分享：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html  
+
+- **微信分享给好友**：请用 **Netlify**（见 `微信分享说明.txt`）→ 把 `https://xxx.netlify.app` 写入 `js/public-url.config.js` 后再发布。  
+  **不要**发 `github.com/仓库` 链接，也**不要**发缺少 `XiaoWangXueRiyu` 的 `saivenwang-byte.github.io` 根地址（会 404）。
 
 ## 本地打开
 

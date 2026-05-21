@@ -655,15 +655,116 @@ body.mvp-app .gate-tab.active:active {
   filter: brightness(0.95);
 }
 
+.btn-speak-icon,
 .btn-speak-round {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--mvp-border);
-  background: #fff;
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
   cursor: pointer;
+  vertical-align: middle;
+  touch-action: manipulation;
+}
+
+.speak-icon-svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--mvp-muted);
+  display: block;
+}
+
+.btn-speak-icon.is-speaking .speak-icon-svg,
+.btn-speak-round.is-speaking .speak-icon-svg {
+  fill: var(--mvp-primary-dark);
+  animation: speak-pulse 0.55s ease-in-out infinite;
+}
+
+@keyframes speak-pulse {
+  50% { opacity: 0.45; transform: scale(0.92); }
+}
+
+.speak-line {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.speak-line-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.speak-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 72px;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: 90%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(62, 39, 35, 0.92);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.review-help {
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--mvp-text);
+}
+
+.review-help summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--mvp-primary-dark);
+}
+
+.wechat-github-banner {
+  background: #fff3e0;
+  border: 2px solid #ff9800;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #3e2723;
+}
+
+.wechat-github-banner p {
+  margin: 6px 0;
+}
+
+.wechat-github-banner code {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.review-help ol {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.review-item .review-q-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  justify-content: space-between;
 }
 
 .gn-title-row,
@@ -809,6 +910,156 @@ body.mvp-app .gate-tab.active:active {
   font-weight: 700;
   margin: 10px 0;
   font-size: 16px;
+}
+
+.dg-bubble {
+  position: relative;
+  padding-right: 36px;
+}
+
+.dg-bubble .btn-speak-icon {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+.dg-reply-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.dg-reply-row {
+  border: 1px solid var(--mvp-border);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.dg-reply-row-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.dg-reply-num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mvp-primary-dark);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dg-reply-row-head .jp {
+  flex: 1;
+  margin: 0;
+  font-size: 15px;
+}
+
+.dg-read-hint {
+  font-size: 12px;
+  color: var(--mvp-muted);
+  padding: 0 12px 8px;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.dg-reply-row.expanded {
+  border-color: var(--mvp-primary);
+  box-shadow: 0 0 0 1px rgba(255, 138, 128, 0.35);
+}
+
+.dg-reply-row.done .dg-reply-num::after {
+  content: " ✓";
+  color: #2e7d32;
+}
+
+.dg-practice-panel {
+  padding: 0 12px 12px;
+  border-top: 1px dashed var(--mvp-border);
+  background: #fffaf5;
+}
+
+.dg-practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dg-hold-mic {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid var(--mvp-primary);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+.dg-hold-mic.recording {
+  background: #ffebee;
+  border-color: #e53935;
+  color: #c62828;
+}
+
+.dg-score-box {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  font-size: 13px;
+}
+
+.dg-score-box.ok {
+  border-color: #a5d6a7;
+  background: #f1f8e9;
+}
+
+.dg-score-box.warn {
+  border-color: #ffcc80;
+  background: #fff8e1;
+}
+
+.dg-legacy-box {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fafafa;
+  border: 1px dashed var(--mvp-border);
+}
+
+.dg-legacy-box .hint-ja {
+  margin-bottom: 8px;
+}
+
+.dg-choice-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dg-choice-item.selected .dg-choice-opt {
+  border-color: var(--mvp-primary);
+  background: #ffebee;
+}
+
+.dg-choice-item .dg-choice-opt {
+  flex: 1;
+}
+
+.qz-question-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  justify-content: space-between;
 }
 
 /* --- 学习舱导航 A + 首页路径 B --- */

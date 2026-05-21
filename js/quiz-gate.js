@@ -47,14 +47,20 @@ const QuizGate = (() => {
         <button type="button" class="btn primary" id="qz-submit">送信</button>`;
     }
 
+    const speakQ =
+      typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(q.question) : "";
     container.innerHTML = `
       <div class="qz-wrap">
         <p class="qz-progress">問題 ${qIndex + 1} / ${questions.length}</p>
-        <p class="qz-question jp">${escapeHtml(q.question)}</p>
+        <div class="qz-question-row">
+          <p class="qz-question jp">${escapeHtml(q.question)}</p>
+          ${speakQ}
+        </div>
         ${body}
         <div id="qz-feedback"></div>
       </div>
     `;
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
 
     if (q.type === "choice") {
       container.querySelectorAll(".qz-opt").forEach((btn) => {

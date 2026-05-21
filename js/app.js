@@ -287,7 +287,7 @@
     head.innerHTML = `
       <div class="headline-row">
         <p class="headline-jp jp">${lessonTitleHtml(L)}</p>
-        <button type="button" class="btn-speak-round" id="lesson-speak-title" aria-label="課文タイトルを読む" title="課文タイトルのみ" data-jp="${escapeHtml(L.lessonTitle)}">🔊</button>
+        ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(L.lessonTitle, 'id="lesson-speak-title" title="課文タイトル"') : ""}
       </div>
       ${headlineNote}
       ${themeZh ? `<p class="lc-theme-slim">${escapeHtml(L.theme)}${themeZh}</p>` : ""}
@@ -374,13 +374,17 @@
       li.className = "review-item";
       const day = daysSinceWrong(m.wrongAt);
       li.innerHTML = `
-        <p class="review-q jp">${escapeHtml(m.question)}</p>
-        <p class="hint-ja">第${m.lessonId}課 · ${day}日目 · あなたの答え：${escapeHtml(m.userAnswer)}</p>
-        <button type="button" class="btn primary btn-review-go">もう一度</button>
+        <div class="review-q-row">
+          <p class="review-q jp">${escapeHtml(m.question)}</p>
+          ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(m.question) : ""}
+        </div>
+        <p class="hint-ja">第${m.lessonId}課 · 第${day}天复习 · 你的答案：${escapeHtml(m.userAnswer)}</p>
+        <button type="button" class="btn primary btn-review-go">再做一次</button>
       `;
       li.querySelector(".btn-review-go").onclick = () => openReviewModal(m);
       list.appendChild(li);
     });
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(list);
   }
 
   function openReviewModal(m) {
@@ -401,7 +405,10 @@
     modal.innerHTML = `
       <div class="gn-modal-inner">
         <h3>復習</h3>
-        <p class="jp">${escapeHtml(m.question)}</p>
+        <div class="qz-question-row">
+          <p class="jp">${escapeHtml(m.question)}</p>
+          ${typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(m.question) : ""}
+        </div>
         <div class="qz-options">${body}</div>
         <div id="rev-feedback"></div>
         <button type="button" class="btn ghost" id="rev-close">閉じる</button>
@@ -440,6 +447,7 @@
     modal.onclick = (e) => {
       if (e.target === modal) setModalOpen(modal, false);
     };
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(modal);
   }
 
   function renderMe() {

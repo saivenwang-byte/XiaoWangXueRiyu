@@ -26,19 +26,15 @@
 
   <title>標日 あと学習 · 14/16/18課</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
 
   <link rel="manifest" href="manifest.json" />
 
   <link rel="apple-touch-icon" href="icons/icon.svg" />
 
-  <link rel="stylesheet" href="css/app.css?v=14" />
+  <link rel="stylesheet" href="css/app.css?v=16" />
 
-  <link rel="stylesheet" href="css/mvp.css?v=14" />
+  <link rel="stylesheet" href="css/mvp.css?v=16" />
 
   <style>
     /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
@@ -111,9 +107,19 @@
 
       <section id="view-review" class="view" aria-hidden="true">
 
-        <p class="hint-ja">まちがえた問題は 1・3・7 日目に復習リストへ（通知なし）</p>
+        <details class="review-help" open>
+          <summary>复习怎么用？（点这里收起/展开）</summary>
+          <ol>
+            <li>只复习你在 <strong>第③关测试</strong> 里答错的题。</li>
+            <li>错题会在错的那天起 <strong>第 1、3、7 天</strong> 出现在本页（不会发微信通知）。</li>
+            <li>点「再做一次」重做；答对会从列表移除，答错会显示正解。</li>
+            <li>题目旁小喇叭可朗读题干（走你手机流量/本机语音，不额外扣开发者 GitHub 流量）。</li>
+          </ol>
+        </details>
 
-        <p class="hint-ja" id="review-empty" hidden>復習リストは空です 🎉</p>
+        <p class="hint-ja">今日到期的错题会显示在下方</p>
+
+        <p class="hint-ja" id="review-empty" hidden>复习列表为空 🎉（先去测试里做错几题试试）</p>
 
         <ul id="review-list" style="list-style:none;padding:0"></ul>
 
@@ -149,7 +155,7 @@
 
         <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">共有ページ（QR）</a>
 
-        <p class="hint-ja footer-hint" style="margin-top:12px">オフライン可 · ログイン不要 · AI採点なし</p>
+        <p class="hint-ja footer-hint" style="margin-top:12px">朗读优先本机语音/浏览器缓存 · 会話支持录音+发音评分 · 无需登录</p>
 
         <a href="legacy.html" class="btn ghost" style="display:block;text-align:center;margin-top:10px;text-decoration:none">旧版：24課シナリオ</a>
 
@@ -192,20 +198,21 @@
 
 
 
-  <script src="js/data/mini-cards.js?v=14"></script>
-  <script src="js/data/lessons-mvp.js?v=14"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=14"></script>
-  <script src="js/ruby-render.js?v=14"></script>
-  <script src="js/mvp-storage.js?v=14"></script>
-  <script src="js/speech-engine.js?v=14"></script>
-  <script src="js/speak-ui.js?v=14"></script>
-  <script src="js/ui-feedback.js?v=14"></script>
-  <script src="js/grammar-network.js?v=14"></script>
-  <script src="js/dialogue-gate.js?v=14"></script>
-  <script src="js/quiz-gate.js?v=14"></script>
-  <script src="js/vocab-flash.js?v=14"></script>
-  <script src="js/share-wechat.js?v=14"></script>
-  <script src="js/app.js?v=14"></script>
+  <script src="js/public-url.config.js?v=16"></script>
+  <script src="js/share-wechat.js?v=16"></script>
+  <script src="js/data/mini-cards.js?v=16"></script>
+  <script src="js/data/lessons-mvp.js?v=16"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=16"></script>
+  <script src="js/ruby-render.js?v=16"></script>
+  <script src="js/mvp-storage.js?v=16"></script>
+  <script src="js/speech-engine.js?v=16"></script>
+  <script src="js/speak-ui.js?v=16"></script>
+  <script src="js/ui-feedback.js?v=16"></script>
+  <script src="js/grammar-network.js?v=16"></script>
+  <script src="js/dialogue-gate.js?v=16"></script>
+  <script src="js/quiz-gate.js?v=16"></script>
+  <script src="js/vocab-flash.js?v=16"></script>
+  <script src="js/app.js?v=16"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -215,20 +222,27 @@
         m.style.pointerEvents = "none";
       });
       if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v14";
+      var key = "hyouga-sw-purged-v16";
       navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (r) { return r.unregister(); }));
       }).then(function () {
         if (sessionStorage.getItem(key)) return;
         sessionStorage.setItem(key, "1");
         if (!/\breloaded=1\b/.test(location.search)) {
-          var q = location.search ? location.search + "&reloaded=1" : "?reloaded=1";
-          location.replace(location.pathname + q + location.hash);
+          try {
+            var u = new URL(location.href);
+            u.searchParams.set("reloaded", "1");
+            location.replace(u.pathname + u.search + u.hash);
+          } catch (e) {
+            var q = location.search ? location.search + "&reloaded=1" : "?reloaded=1";
+            location.replace(location.pathname + q + location.hash);
+          }
         }
       });
     })();
     ShareWechat.mountButton(document.getElementById("btn-share-wechat"));
     ShareWechat.mountButton(document.getElementById("btn-share-me"));
+    ShareWechat.mountWechatBanner(document.getElementById("app"));
   </script>
 
 </body>
