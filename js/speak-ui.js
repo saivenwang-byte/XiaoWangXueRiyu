@@ -109,7 +109,7 @@ const SpeakUI = (() => {
       const wx = /MicroMessenger/i.test(navigator.userAgent || "");
       showToast(
         wx
-          ? "朗读失败：微信内请连 WiFi/流量，或部署 Netlify 链接；也可稍后再点一次"
+          ? "朗读失败：请连 WiFi/流量；跟读请点右上角「···」→ 在浏览器中打开；也可稍后再点"
           : "朗读失败：请检查网络；首次加载语音包需稍等 1～2 秒"
       );
     }

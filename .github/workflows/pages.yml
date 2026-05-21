@@ -19,12 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare static site
+        run: |
+          touch .nojekyll
+          echo "deploy-v30-$(date -u +%Y%m%d%H%M%S)" > build-id.txt
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
+          retention-days: 1
       - uses: actions/deploy-pages@v4
         id: deployment
       - run: echo "url=${{ steps.deployment.outputs.page_url }}" >> $GITHUB_OUTPUT
