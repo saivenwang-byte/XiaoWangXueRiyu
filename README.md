@@ -1,19 +1,17 @@
 # 标日课后巩固（小王日语学习）
 
-第 14 / 16 / 18 课 H5 巩固练习。**正式上线**：微信发 **Netlify https 链接**（任何网络可用，不依赖同一 WiFi）。
+第 14 / 16 / 18 课 H5 巩固练习。**正式上线**：微信发 **公网 https 链接**（任何网络可用，不依赖同一 WiFi）。
 
-## 正式链接（发给学员）
+## 正式链接（发给学员 · 已自动发布）
 
-- **学习**：https://qingjing-biaori.netlify.app/index.html?v=28  
-- **分享页**：https://qingjing-biaori.netlify.app/share.html  
+- **学习**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29  
+- **分享页**：https://saivenwang-byte.github.io/XiaoWangXueRiyu/share.html  
 
-配置见 `js/public-url.config.js`（`HYOUGA_PUBLIC_ORIGIN`）。
+双击 **`帮你发布好了.bat`** 可自动复制链接并打开网页。
 
-## 作者发布
+## 作者更新内容后
 
-1. 双击 **`正式发布.bat`**（校验 TTS → Netlify 发布 → 复制正式链接）  
-2. 或 **`打开Netlify拖拽部署.bat`** 拖入本文件夹 → 站点名 `qingjing-biaori`  
-3. 手机用 **4G** 打开正式链接验收  
+改完代码并 `git push` 后，等约 1～2 分钟 GitHub 自动更新；再双击 **`帮你发布好了.bat`** 验收。
 
 详细流程：[docs/发布与知识库同步.md](./docs/发布与知识库同步.md)
 

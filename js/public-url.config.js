@@ -1,6 +1,6 @@
 /**
- * 正式上线 · 唯一对外发行域名（微信发此 https 链接，与是否同一 WiFi 无关）
- * 部署：双击「打开Netlify拖拽部署.bat」或 scripts/deploy-netlify.ps1
- * 改域名后须再发布一次 Netlify，并递增 ?v= / CACHE_VER
+ * 正式对外链接（微信发给任何人，WiFi / 5G 都能用）
+ * 已自动发布到 GitHub Pages；推送代码后会自动更新。
+ * 若你日后在 Netlify 建好站点，可改回 https://qingjing-biaori.netlify.app
  */
-window.HYOUGA_PUBLIC_ORIGIN = "https://qingjing-biaori.netlify.app";
+window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
