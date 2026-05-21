@@ -847,6 +847,10 @@ function getLessonExtra(lessonId) {
 }
 
 function getLessonVocab(lessonId) {
+  const id = Number(lessonId);
+  if (typeof LESSON_VOCAB_BIAORI !== "undefined" && LESSON_VOCAB_BIAORI[id]?.length) {
+    return LESSON_VOCAB_BIAORI[id];
+  }
   return getLessonExtra(lessonId)?.vocab || [];
 }
 
@@ -1024,7 +1028,10 @@ function applyLessonDepthPatches() {
       lesson.dialogues.push(...p.dialoguesAdd);
     }
     if (p.quizReplace?.length) lesson.quizQuestions = p.quizReplace;
-    if (p.vocab?.length) lesson.vocab = p.vocab;
+    const biaori =
+      typeof LESSON_VOCAB_BIAORI !== "undefined" ? LESSON_VOCAB_BIAORI[lesson.lessonId] : null;
+    if (biaori?.length) lesson.vocab = biaori;
+    else if (p.vocab?.length) lesson.vocab = p.vocab;
   });
 }
 

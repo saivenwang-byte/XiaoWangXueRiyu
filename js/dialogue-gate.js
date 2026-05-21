@@ -37,6 +37,21 @@ const DialogueGate = (() => {
     };
   }
 
+  function replyKeywords(reply) {
+    if (reply?.keywords?.length) return reply.keywords;
+    const jp = reply?.japanese || reply?.jp || "";
+    if (typeof SpeechEngine !== "undefined" && SpeechEngine.extractKeywordsFromJapanese) {
+      return SpeechEngine.extractKeywordsFromJapanese(jp);
+    }
+    return [];
+  }
+
+  function dialogueSpeakAttrs(reply) {
+    const keys = replyKeywords(reply);
+    const kw = keys.length ? ` data-ss-keywords="${escapeHtml(JSON.stringify(keys))}"` : "";
+    return `class="dg-reply-speak" data-ss-dialogue="1"${kw}`;
+  }
+
   function showZh() {
     return state?.showChineseZh !== false;
   }
@@ -135,7 +150,7 @@ const DialogueGate = (() => {
             <div class="dg-reply-head">
               <span class="dg-reply-num">${marks[i] || i + 1}</span>
               <p class="jp dg-reply-jp">${jp}</p>
-              ${speakBtn(linePayload(reply), 'class="dg-reply-speak"', `dg-r-${dialogueIndex}-${i}`)}
+              ${speakBtn(linePayload(reply), dialogueSpeakAttrs(reply), `dg-r-${dialogueIndex}-${i}`)}
             </div>
             ${zhLine(reply.chinese)}
             ${reply.noteJa ? `<p class="note-ja">${escapeHtml(reply.noteJa)}</p>` : ""}
@@ -258,7 +273,7 @@ const DialogueGate = (() => {
     container.innerHTML = `
       <div class="dg-wrap dg-simple">
         ${renderTabs()}
-        <p class="dg-label">② 会話 · 同一场景 · 三种说法（点 🔊 听读音）</p>
+        <p class="dg-label">② 会話 · 三种说法（🔊 听 · 🎤 录 · 多维度评分）</p>
         ${sceneBadge(dialogue)}
         <h3>${escapeHtml(dialogue.title)}</h3>
 

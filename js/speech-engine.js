@@ -636,6 +636,199 @@ const SpeechEngine = (() => {
       .toLowerCase();
   }
 
+  const KEYWORD_STOP = new Set([
+    "です",
+    "ます",
+    "ました",
+    "でした",
+    "ですか",
+    "ません",
+    "から",
+    "けど",
+    "でも",
+    "とても",
+    "ちょっと",
+    "そう",
+    "はい",
+    "あの",
+    "この",
+    "その",
+    "また",
+    "もう",
+    "まだ",
+    "ので",
+    "には",
+    "では",
+    "へ",
+    "を",
+    "に",
+    "が",
+    "は",
+    "の",
+    "と",
+    "も",
+    "て",
+    "で",
+    "い",
+    "な",
+    "だ",
+    "する",
+    "なる",
+    "ある",
+    "いる",
+    "れる",
+    "られる",
+    "ください",
+    "ましょう",
+  ]);
+
+  function textOverlapRatio(spoken, target) {
+    const A = normalizeJa(spoken);
+    const B = normalizeJa(target);
+    if (!A || !B) return 0;
+    let hit = 0;
+    for (const ch of B) if (A.includes(ch)) hit++;
+    return hit / B.length;
+  }
+
+  /** 从会话句自动提取关键词（② 会話评分用） */
+  function extractKeywordsFromJapanese(jp, max = 6) {
+    if (!jp) return [];
+    const chunks = jp.match(/[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9fafー]{2,10}/g) || [];
+    const out = [];
+    for (const w of chunks) {
+      const n = normalizeJa(w);
+      if (n.length < 2 || KEYWORD_STOP.has(n)) continue;
+      if (!out.includes(n)) out.push(n);
+      if (out.length >= max) break;
+    }
+    return out;
+  }
+
+  function scoreBarHtml(label, got, max) {
+    const pct = max ? Math.round((got / max) * 100) : 0;
+    return `<div class="score-bar-row"><span>${label}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%"></div></div><span>${got}/${max}</span></div>`;
+  }
+
+  function renderDialogueScoreHtml(result) {
+    const stars =
+      result.score >= 90 ? "⭐⭐⭐" : result.score >= 75 ? "⭐⭐" : result.score >= 60 ? "⭐" : "";
+    const bars = result.dims
+      ? `<div class="score-bars">
+            ${scoreBarHtml("关键词", result.dims.keyGot, result.dims.keyMax)}
+            ${scoreBarHtml("清晰度", result.dims.clarityGot, result.dims.clarityMax)}
+            ${scoreBarHtml("吻合度", result.dims.recogGot, result.dims.recogMax)}
+          </div>`
+      : "";
+    const heard = result.heard
+      ? `<p class="dg-score-heard">识别：${result.heard}</p>`
+      : result.hasAudio
+        ? `<p class="dg-score-heard">已录到声音（未识别文字时按音量分析）</p>`
+        : "";
+    return `<div class="dg-score-panel ${result.passed ? "pass" : "retry"}">
+      <div class="dg-score-head">发音 ${result.score} 分 ${stars}</div>
+      <p class="dg-score-tip">${result.feedback}</p>
+      ${bars}
+      ${heard}
+    </div>`;
+  }
+
+  /**
+   * ② 会話：关键词 40 + 清晰度 25 + 吻合度 35（与旧版 teacherEvaluate 一致）
+   */
+  async function evaluateDialogueDetailed({
+    expected,
+    heard = "",
+    audioBlob = null,
+    keywords = [],
+    asrConfidence = 0,
+  }) {
+    const keys = (keywords.length ? keywords : extractKeywordsFromJapanese(expected)).map(normalizeJa);
+    const heardNorm = normalizeJa(heard);
+    const hasAudio = !!(audioBlob && audioBlob.size > 200);
+    const matched = keys.filter((k) => heardNorm.includes(k) || k.includes(heardNorm));
+
+    if (!hasAudio && !heardNorm) {
+      return {
+        score: 0,
+        passed: false,
+        feedback: isWeChatBrowser()
+          ? "未录到声音。请允许麦克风，靠近手机清晰朗读后再评分。"
+          : "未录到声音。请允许麦克风后重录。",
+        heard: "",
+        matched: [],
+        dims: null,
+        hasAudio: false,
+      };
+    }
+
+    let audio = { ok: false };
+    if (hasAudio) {
+      try {
+        audio = await analyzeAudioBlob(audioBlob);
+      } catch (_) {}
+    }
+
+    const keyMax = 40;
+    const keyGot = keys.length
+      ? Math.round((matched.length / keys.length) * keyMax)
+      : heardNorm
+        ? 28
+        : 0;
+
+    const clarityMax = 25;
+    let clarityGot = 0;
+    if (audio.ok) {
+      if (audio.tooQuiet) clarityGot = 4;
+      else if (audio.tooShort) clarityGot = 8;
+      else {
+        clarityGot = 8 + Math.round(Math.min(12, audio.speechRatio * 14));
+        if (audio.avgRms >= 0.02 && audio.avgRms <= 0.35) clarityGot += 5;
+        if (audio.duration >= 0.7 && audio.duration <= 12) clarityGot += 3;
+      }
+      clarityGot = Math.min(clarityMax, clarityGot);
+    } else if (hasAudio) clarityGot = 10;
+
+    const recogMax = 35;
+    const overlap = textOverlapRatio(heard, expected);
+    let recogGot = Math.round(overlap * 22 + asrConfidence * 13);
+    if (heardNorm && recogGot < 8) recogGot = 8;
+    if (!heardNorm && audio.ok && !audio.tooQuiet && !audio.tooShort) {
+      recogGot = Math.max(recogGot, keys.length ? 14 : 24);
+    }
+    recogGot = Math.min(recogMax, recogGot);
+
+    let score = Math.min(100, keyGot + clarityGot + recogGot);
+    if (audio.ok && audio.tooQuiet) score = Math.min(score, 55);
+    if (!heardNorm && audio.ok && !audio.tooQuiet && !audio.tooShort && audio.duration >= 0.65) {
+      score = Math.max(score, 62);
+    }
+    const passed = score >= 60;
+
+    let feedback;
+    if (audio.ok && audio.tooQuiet) {
+      feedback = "声音偏小，请靠近麦克风、安静环境再录一次。";
+    } else if (score >= 90) {
+      feedback = "发音完整、清晰，与示范句吻合度高！";
+    } else if (score >= 75) {
+      feedback = `不错！关键词：${matched.join("、") || "—"}。可再听示范微调语调。`;
+    } else if (score >= 60) {
+      feedback = `及格。注意：${keys.slice(0, 4).join("、") || expected.slice(0, 12)}。先听示范再跟读。`;
+    } else {
+      feedback = `再练一次～目标词：${keys.slice(0, 4).join("、") || expected.slice(0, 12)}。`;
+    }
+
+    return {
+      score,
+      passed,
+      feedback,
+      heard: heard || "",
+      matched,
+      dims: { keyGot, keyMax, clarityGot, clarityMax, recogGot, recogMax },
+      hasAudio,
+    };
+  }
+
   async function analyzeAudioBlob(blob) {
     if (!blob || !blob.size) return { ok: false, reason: "empty" };
     try {
@@ -904,6 +1097,9 @@ const SpeechEngine = (() => {
     stopHoldListen,
     scorePronunciation,
     evaluatePronunciation,
+    evaluateDialogueDetailed,
+    extractKeywordsFromJapanese,
+    renderDialogueScoreHtml,
     analyzeAudioBlob,
     normalizeJa,
     bindHoldButton,

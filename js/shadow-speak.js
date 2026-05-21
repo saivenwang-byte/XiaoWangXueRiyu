@@ -62,16 +62,40 @@ const ShadowSpeak = (() => {
     return payload.jp || payload.japanese || "";
   }
 
+  function parseKeywordsAttr(attrs) {
+    const m = /data-ss-keywords=['"]([^'"]*)['"]/.exec(attrs || "");
+    if (!m) return [];
+    try {
+      const arr = JSON.parse(m[1].replace(/&quot;/g, '"'));
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function isDialogueRow(rowId, extraAttrs) {
+    if (/data-ss-dialogue/.test(extraAttrs || "")) return true;
+    return /^dg-r-/.test(rowId || "");
+  }
+
   function rowHtml(payload, rowId, extraAttrs = "") {
+    const exp = expectedLine(payload);
     const speakBtn =
       typeof SpeakUI !== "undefined"
         ? SpeakUI.btnHtml(payload, `data-ss-play="1" ${extraAttrs}`)
-        : `<button type="button" class="btn-speak-icon" data-ss-play="1" data-jp="${escAttr(expectedLine(payload))}">🔊</button>`;
-    return `<div class="ss-action-row" data-ss-row="${escAttr(rowId)}">
+        : `<button type="button" class="btn-speak-icon" data-ss-play="1" data-jp="${escAttr(exp)}">🔊</button>`;
+    const mode = isDialogueRow(rowId, extraAttrs) ? "dialogue" : /^vf-/.test(rowId || "") ? "vocab" : "light";
+    const kw = parseKeywordsAttr(extraAttrs);
+    const kwAttr = kw.length ? ` data-ss-keywords="${escAttr(JSON.stringify(kw))}"` : "";
+    const scoreSlot =
+      mode === "dialogue"
+        ? `<div class="dg-score-slot" data-dg-score-for="${escAttr(rowId)}"></div>`
+        : "";
+    return `<div class="ss-action-row" data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}">
       ${speakBtn}
-      <button type="button" class="btn-ss-record" data-ss-record data-ss-row="${escAttr(rowId)}" aria-label="录音" title="录音">🎤</button>
+      <button type="button" class="btn-ss-record" data-ss-record data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="录音" title="录音">🎤</button>
       <button type="button" class="btn-ss-replay" data-ss-replay data-ss-row="${escAttr(rowId)}" disabled aria-label="回放" title="回放">▶</button>
-    </div>`;
+    </div>${scoreSlot}`;
   }
 
   function toast(msg) {
@@ -179,9 +203,15 @@ const ShadowSpeak = (() => {
     }
   }
 
+  function showDialogueScore(rowId, html) {
+    const slot = document.querySelector(`[data-dg-score-for="${rowId}"]`);
+    if (slot) slot.innerHTML = html;
+  }
+
   async function finishRecord(btn, rowId, evaluate) {
     const mime = blobMime();
     const blob = new Blob(recordChunks, { type: mime });
+    const mode = btn?.dataset?.ssMode || btn?.closest(".ss-action-row")?.dataset?.ssMode || "light";
     cleanupRecordUi();
     if (blob.size < 200) {
       if (evaluate) toast("录音太短，请再说一次");
@@ -191,18 +221,46 @@ const ShadowSpeak = (() => {
     enableReplay(btn);
     if (!evaluate) return;
 
-    let payload = btn.dataset.speakExpected || "";
+    const exp = btn?.dataset?.speakExpected || "";
+    let keywords = [];
     try {
-      payload = JSON.parse(payload);
+      if (btn?.dataset?.ssKeywords) keywords = JSON.parse(btn.dataset.ssKeywords);
     } catch (_) {}
-    const exp = expectedLine(payload);
-    if (typeof SpeechEngine !== "undefined" && SpeechEngine.evaluatePronunciation) {
+
+    if (typeof SpeechEngine === "undefined") {
+      toast("已录音，可点 ▶ 回放");
+      return;
+    }
+
+    if (mode === "dialogue" && SpeechEngine.evaluateDialogueDetailed) {
+      const slot = document.querySelector(`[data-dg-score-for="${rowId}"]`);
+      if (slot) slot.innerHTML = '<p class="dg-score-loading">正在分析发音…</p>';
+      const r = await SpeechEngine.evaluateDialogueDetailed({
+        expected: exp,
+        heard: "",
+        audioBlob: blob,
+        keywords,
+      });
+      if (SpeechEngine.renderDialogueScoreHtml) {
+        showDialogueScore(rowId, SpeechEngine.renderDialogueScoreHtml(r));
+      } else {
+        toast(r.passed ? `会话跟读 ${r.score} 分 ✓` : r.feedback);
+      }
+      return;
+    }
+
+    if (SpeechEngine.evaluatePronunciation) {
       const r = await SpeechEngine.evaluatePronunciation({
         expected: exp,
         heard: "",
         audioBlob: blob,
+        keywords,
       });
-      toast(r.ok ? `跟读不错（${r.score}分）` : r.tip || "再听示范读一遍");
+      if (mode === "vocab") {
+        toast(r.ok ? `发音 OK（${r.score}分）` : r.tip || "再听一遍跟读");
+      } else {
+        toast(r.ok ? `跟读不错（${r.score}分）` : r.tip || "再听示范读一遍");
+      }
     } else {
       toast("已录音，可点 ▶ 回放");
     }

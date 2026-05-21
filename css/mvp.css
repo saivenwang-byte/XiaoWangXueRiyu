@@ -1811,6 +1811,95 @@ body.mvp-app .gate-tab.active:active {
   background: #fafafa;
 }
 
+/* ② 会話 · 多维度发音评分 */
+.dg-score-slot {
+  margin: 8px 0 12px 44px;
+  min-height: 0;
+}
+
+.dg-score-loading {
+  font-size: 13px;
+  color: #1cb0f6;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.dg-score-panel {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f0f7ff;
+  border: 1px solid #c8e0ff;
+  font-size: 13px;
+}
+
+.dg-score-panel.pass {
+  background: #eefbf0;
+  border-color: #b8e6c0;
+}
+
+.dg-score-panel.retry {
+  background: #fff8f0;
+  border-color: #ffd9b8;
+}
+
+.dg-score-head {
+  font-weight: 700;
+  color: #1a7f37;
+  margin-bottom: 4px;
+}
+
+.dg-score-panel.retry .dg-score-head {
+  color: #c45c00;
+}
+
+.dg-score-tip {
+  margin: 4px 0 8px;
+  color: #444;
+  line-height: 1.45;
+}
+
+.dg-score-heard {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.score-bars {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #555;
+}
+
+.score-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.score-bar-row span:first-child {
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.score-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #e5e5e5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: #58cc02;
+  border-radius: 4px;
+}
+
+.dg-reply-block .ss-action-row {
+  margin-top: 6px;
+}
+
 /* 统一喇叭 */
 .speak-toast {
   position: fixed;

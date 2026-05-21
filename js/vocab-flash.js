@@ -16,7 +16,8 @@ const VocabFlash = (() => {
   }
 
   function vocabList() {
-    return typeof getLessonVocab === "function" ? getLessonVocab(lessonId) : [];
+    const raw = typeof getLessonVocab === "function" ? getLessonVocab(lessonId) : [];
+    return raw.filter((v) => v.from !== "grammar" && !/形$|ください$|ましょう/.test(v.jp || ""));
   }
 
   function speakPayload(v) {
