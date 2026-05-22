@@ -28,8 +28,9 @@
     return n >= 0 && n <= 3 ? n : null;
   }
 
-  /** 会話中心：未完了なら②会話を優先 */
+  /** 单词→会話→文法→テスト；会話未过则优先会話 */
   function defaultGateForLesson(g) {
+    if (!g.gate0) return 0;
     if (!g.gate2) return 2;
     if (!g.gate1) return 1;
     if (!g.gate3) return 3;
@@ -54,7 +55,15 @@
   }
 
   function lessonProgress(lessonId) {
-    return state.lessons[Number(lessonId)] || { gate1: false, gate2: false, gate3: false };
+    return (
+      state.lessons[Number(lessonId)] || {
+        gate0: false,
+        gate1: false,
+        gate2: false,
+        gate3: false,
+        touched: {},
+      }
+    );
   }
 
   function setModalOpen(m, open) {
@@ -118,6 +127,9 @@
   function switchGate(k) {
     const next = Number(k);
     if (Number.isNaN(next) || next < 0 || next > 3 || next === activeGate) return;
+    if (activeLessonId != null && typeof touchLessonGate === "function") {
+      touchLessonGate(state, activeLessonId, next);
+    }
     activeGate = next;
     closeAllModals();
     const L = getLessonMvp(activeLessonId);
@@ -132,8 +144,16 @@
   function enterLesson(lessonId, gate) {
     activeLessonId = Number(lessonId);
     state.lastLessonId = activeLessonId;
+    if (typeof touchCurriculumUnit === "function" && typeof getUnitIdForLesson === "function") {
+      touchCurriculumUnit(state, getUnitIdForLesson(activeLessonId));
+      saveMvpState(state);
+    }
     const resolved = resolveGate(gate);
     activeGate = resolved != null ? resolved : defaultGateForLesson(lessonProgress(activeLessonId));
+    if (typeof touchLessonGate === "function") touchLessonGate(state, activeLessonId, activeGate);
+    if (typeof applyUnitThemeToView === "function") {
+      applyUnitThemeToView(activeLessonId);
+    }
     saveMvpState(state);
     showView("lesson");
   }
@@ -185,11 +205,14 @@
 
   function updateReviewBadge() {
     const n = dueMistakes(state).length;
-    const badge = document.getElementById("review-badge");
-    if (badge) {
-      badge.hidden = n === 0;
-      badge.textContent = n > 9 ? "9+" : String(n);
-    }
+    const label = n > 9 ? "9+" : String(n);
+    ["review-badge", "review-badge-me"].forEach((id) => {
+      const badge = document.getElementById(id);
+      if (badge) {
+        badge.hidden = n === 0;
+        badge.textContent = label;
+      }
+    });
   }
 
   function gateLabels() {
@@ -201,7 +224,6 @@
   }
 
   function renderHome() {
-    const grid = document.getElementById("lesson-cards");
     const weekEl = document.getElementById("home-week-count");
     const studied = state.studyDays.filter((d) => {
       const wkAgo = new Date();
@@ -210,24 +232,20 @@
     }).length;
     if (weekEl) weekEl.textContent = `学習日数（今週）：${studied} 日`;
 
-    const flashPick = document.getElementById("flash-lesson-pick");
-    if (flashPick) {
-      flashPick.innerHTML = LESSONS_MVP.map((L) => {
-        const n = (getLessonVocab(L.lessonId) || []).length;
-        return `<button type="button" class="btn secondary flash-pick-btn" data-lid="${L.lessonId}">第${L.lessonId}課 · ${n}語</button>`;
-      }).join("");
-      flashPick.querySelectorAll(".flash-pick-btn").forEach((btn) => {
-        btn.onclick = () => enterLesson(Number(btn.dataset.lid), 0);
+    if (typeof JourneyHome !== "undefined" && typeof getCurriculumUnitsForHome === "function") {
+      JourneyHome.render({
+        state,
+        onEnterLesson: (id, gate) => enterLesson(id, gate),
+        lessonProgress,
       });
+      return;
     }
 
+    const grid = document.getElementById("lesson-cards");
+    if (!grid) return;
     grid.innerHTML = "";
     LESSONS_MVP.forEach((L) => {
       const g = lessonProgress(L.lessonId);
-      const gates = gateLabels().map((x) => ({
-        ...x,
-        done: g[`gate${x.k}`],
-      }));
       const themeZh =
         state.showChineseZh !== false && L.themeZh
           ? `<span class="zh-annotation">（${escapeHtml(L.themeZh)}）</span>`
@@ -235,20 +253,14 @@
       const card = document.createElement("article");
       card.className = "lesson-card-mvp";
       card.innerHTML = `
-        <div class="lc-head">
-          <span class="lc-num">第${L.lessonId}課</span>
-          ${L.lessonId === 16 ? '<span class="lc-badge">文法ネット深め</span>' : ""}
-        </div>
+        <div class="lc-head"><span class="lc-num">第${L.lessonId}課</span></div>
         <h3 class="jp">${lessonTitleHtml(L)}</h3>
         <p class="lc-theme">${escapeHtml(L.theme)}${themeZh}</p>
-        <div class="lc-path-rail" aria-label="学習の道">
-          ${pathRailHtml(g)}
-        </div>
+        <div class="lc-path-rail">${pathRailHtml(g)}</div>
         <div class="lc-actions">
-          <button type="button" class="btn primary">会話からスタート</button>
-          <button type="button" class="btn secondary btn-flash-link">🃏 単語</button>
-        </div>
-      `;
+          <button type="button" class="btn primary">会話</button>
+          <button type="button" class="btn secondary btn-flash-link">単語</button>
+        </div>`;
       card.querySelector(".btn.primary").onclick = () => enterLesson(L.lessonId, defaultGateForLesson(g));
       card.querySelector(".btn-flash-link").onclick = (e) => {
         e.stopPropagation();
@@ -259,16 +271,19 @@
   }
 
   function pathRailHtml(g) {
+    if (typeof formatLessonFourSeaStars === "function" && activeLessonId != null) {
+      return formatLessonFourSeaStars(state, activeLessonId);
+    }
     const steps = [
-      { k: 0, label: "単語", done: false },
-      { k: 2, label: "会話", done: g.gate2 },
-      { k: 1, label: "文法", done: g.gate1 },
-      { k: 3, label: "テスト", done: g.gate3 },
+      { label: "単語", done: g.gate0 },
+      { label: "会話", done: g.gate2 },
+      { label: "文法", done: g.gate1 },
+      { label: "テスト", done: g.gate3 },
     ];
     return steps
       .map(
         (s, i) =>
-          `<span class="lc-path-step ${s.done ? "done" : ""}">${s.done ? "✅" : "○"} ${s.label}</span>${i < steps.length - 1 ? '<span class="lc-path-arrow">→</span>' : ""}`
+          `<span class="lc-path-step ${s.done ? "done" : ""}">${s.done ? "★" : "○"} ${s.label}</span>${i < steps.length - 1 ? '<span class="lc-path-arrow">→</span>' : ""}`
       )
       .join("");
   }
@@ -288,7 +303,7 @@
     el.querySelector("#cockpit-exit").onclick = () => showView("home");
     const tabs = el.querySelector("#cockpit-tabs");
     cockpitTabs.forEach((t) => {
-      const done = t.k === 0 ? false : g[`gate${t.k}`];
+      const done = !!g[`gate${t.k}`];
       const b = document.createElement("button");
       b.type = "button";
       b.className =
@@ -309,9 +324,45 @@
     });
   }
 
+  function renderLessonStub(lessonId) {
+    const id = Number(lessonId);
+    const meta =
+      typeof getCurriculumLessonDisplay === "function"
+        ? getCurriculumLessonDisplay(id)
+        : { headline: `第${id}課`, themeZh: "" };
+    const cockpit = document.getElementById("lesson-cockpit");
+    const head = document.getElementById("lesson-flow-head");
+    const body = document.getElementById("lesson-flow-body");
+    if (cockpit) {
+      cockpit.innerHTML = `
+        <div class="cockpit-top">
+          <button type="button" class="btn-back" id="cockpit-exit">← ホーム</button>
+          <span class="cockpit-lesson">第${id}課 · 準備中</span>
+        </div>`;
+      cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => showView("home"));
+    }
+    if (head) {
+      head.innerHTML = `<p class="headline-jp jp">${escapeHtml(meta.headline)}</p>
+        ${meta.themeZh ? `<p class="zh-annotation">（${escapeHtml(meta.themeZh)}）</p>` : ""}`;
+    }
+    if (body) {
+      body.innerHTML = `
+        <div class="lesson-stub-card">
+          <p class="jp">この課のコンテンツはまだ準備中です。</p>
+          <p class="zh-annotation">开发目录可进入占位页；种子课 13–20 已有四关正文。</p>
+          <button type="button" class="btn primary" id="stub-back-home">← 学習の道</button>
+        </div>`;
+      body.querySelector("#stub-back-home")?.addEventListener("click", () => showView("home"));
+    }
+  }
+
   function renderLessonFlow() {
     const L = getLessonMvp(activeLessonId);
     if (!L) {
+      if (typeof curriculumDevCatalogMode === "function" && curriculumDevCatalogMode()) {
+        renderLessonStub(activeLessonId);
+        return;
+      }
       showView("home");
       return;
     }
@@ -490,15 +541,26 @@
       })
       .join("");
 
-    progress.innerHTML = LESSONS_MVP.map((L) => {
-      const g = lessonProgress(L.lessonId);
-      const all = g.gate1 && g.gate2 && g.gate3;
-      return `<div class="parent-row">
-        <span>第${L.lessonId}課</span>
-        <span>${g.gate1 ? "✅" : "⬜"} ${g.gate2 ? "✅" : "⬜"} ${g.gate3 ? "✅" : "⬜"}</span>
+    const progressIds =
+      typeof CURRICULUM_RELEASED_IDS !== "undefined"
+        ? [...CURRICULUM_RELEASED_IDS].sort((a, b) => a - b)
+        : LESSONS_MVP.map((L) => L.lessonId).sort((a, b) => a - b);
+    progress.innerHTML = progressIds
+      .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
+      .map((id) => {
+        const g = lessonProgress(id);
+        const all = g.gate0 && g.gate1 && g.gate2 && g.gate3;
+        const stars =
+          typeof formatLessonFourSeaStars === "function"
+            ? formatLessonFourSeaStars(state, id)
+            : `${g.gate0 ? "★" : "○"}${g.gate2 ? "★" : "○"}${g.gate1 ? "★" : "○"}${g.gate3 ? "★" : "○"}`;
+        return `<div class="parent-row">
+        <span>第${id}課</span>
+        <span class="parent-row-stars">${stars}</span>
         <span class="${all ? "done-tag" : ""}">${all ? "完了" : "学習中"}</span>
       </div>`;
-    }).join("");
+      })
+      .join("");
 
     const tops = weakGrammarTop3(state);
     weak.innerHTML = tops.length
@@ -527,10 +589,32 @@
     };
   }
 
-  document.querySelectorAll(".nav-item").forEach((btn) => {
+  document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
     btn.addEventListener("click", () => showView(btn.dataset.view));
   });
 
+  document.getElementById("btn-me-review")?.addEventListener("click", () => showView("review"));
+
+  /** 本地/控制台调试：与 loadMvpState 同步 */
+  window.MvpDev = {
+    getState: () => state,
+    setState: (next) => {
+      state = next;
+      saveMvpState(state);
+      return state;
+    },
+    reloadState: () => {
+      state = loadMvpState();
+      return state;
+    },
+    renderHome: () => renderHome(),
+    showView,
+  };
+
   applyZhSetting();
   showView("home");
+
+  if (typeof StoryRewardDev !== "undefined") {
+    StoryRewardDev.bootFromUrl(window.MvpDev);
+  }
 })();

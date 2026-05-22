@@ -2380,3 +2380,3910 @@ button.is-speaking {
     opacity: 0.85;
   }
 }
+
+/* —— 学习の道 · 新干线封面骨架（v52 · 9:16 竖屏） —— */
+.journey-board-slot {
+  margin-bottom: 8px;
+}
+
+.mvp-hero--hidden-title {
+  padding: 4px 14px 0;
+  min-height: 0;
+}
+
+.journey-shinkansen {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  max-height: min(82vh, calc(100vw * 16 / 9));
+  min-height: 360px;
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #fffaf6 0%, #f5f0ff 48%, #f0f7ff 100%);
+  border: 1px solid #e8e0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(55, 71, 79, 0.08);
+}
+
+.journey-frame-head {
+  flex: 0 0 auto;
+  padding: 10px 12px 6px;
+  text-align: center;
+  border-bottom: 1px solid #eceff1;
+  background: #fff;
+}
+
+.journey-frame-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #37474f;
+}
+
+#view-home.view.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 6px 2px;
+}
+
+#view-home.view.active .mvp-hero--hidden-title {
+  display: none;
+}
+
+#view-home.view.active #journey-board-slot {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.journey-frame-head--slim {
+  padding: 4px 10px 2px;
+  flex: 0 0 auto;
+}
+
+.journey-frame-head--slim .journey-frame-tagline {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #455a64;
+}
+
+.journey-frame-head--slim .journey-frame-sub {
+  display: none;
+}
+
+.journey-frame-tagline {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #90a4ae;
+  letter-spacing: 0.02em;
+}
+
+.journey-frame-sub {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #78909c;
+}
+
+.journey-frame-body {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  gap: 4px;
+  min-height: 0;
+  padding: 6px 4px;
+}
+
+.journey-frame-body--units {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.05fr) minmax(0, 0.92fr);
+  gap: 5px;
+  padding: 4px 3px;
+}
+
+.journey-unit-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.journey-side {
+  min-width: 0;
+  min-height: 0;
+}
+
+.journey-shinkansen .journey-stage-panel {
+  padding: 5px 5px 6px;
+  min-height: 0;
+  flex: 1 1 0;
+}
+
+.journey-shinkansen .journey-stage-panel-head {
+  margin-bottom: 3px;
+}
+
+.journey-shinkansen .journey-stage-unit {
+  font-size: 10px;
+}
+
+.journey-shinkansen .journey-stage-tag {
+  font-size: 8px;
+}
+
+.journey-shinkansen .journey-pills {
+  gap: 3px;
+}
+
+.journey-shinkansen .journey-pill {
+  padding: 3px 4px;
+  align-items: center;
+}
+
+.journey-shinkansen .journey-pill .pill-dot {
+  width: 18px;
+  height: 18px;
+  font-size: 9px;
+}
+
+.journey-shinkansen .journey-pill .pill-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.journey-shinkansen .journey-pill .pill-name {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+.journey-shinkansen .journey-pill .pill-stars {
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #f9a825;
+  line-height: 1;
+}
+
+.journey-shinkansen .journey-pill.is-cleared .pill-stars {
+  color: #f57f17;
+}
+
+.journey-shinkansen .journey-stage-zh {
+  font-size: 8px;
+  flex: 1 1 100%;
+}
+
+.journey-shinkansen .journey-pill.is-focus {
+  box-shadow: 0 0 0 2px rgba(255, 138, 128, 0.55);
+}
+
+.journey-part0-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px dashed #ef9a9a;
+  background: linear-gradient(90deg, #ffebee, #fff);
+  text-decoration: none;
+  color: inherit;
+}
+
+.journey-part0-badge {
+  flex-shrink: 0;
+  font-weight: 800;
+  color: #c62828;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.journey-part0-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.journey-part0-text .journey-part0-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.journey-part0-desc {
+  display: block;
+  font-size: 10px;
+  color: #78909c;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.journey-part0-desc em {
+  font-style: normal;
+  color: #d84315;
+  font-weight: 600;
+}
+
+.intro-list--ol {
+  padding-left: 20px;
+}
+
+.intro-card--verify {
+  border-left: 3px solid #ff8a80;
+}
+
+.journey-rail-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px;
+  min-height: 0;
+}
+
+.station-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #cfd8dc;
+  background: #eceff1;
+  color: #78909c;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.station-btn.is-unreleased,
+.station-btn.is-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #e0e0e0;
+  border-color: #bdbdbd;
+  color: #9e9e9e;
+}
+
+.station-btn.is-unlocked {
+  background: #fff;
+  border-color: #ff8a80;
+  color: #d84315;
+}
+
+.station-btn.is-cleared {
+  background: #fff8e1;
+  border-color: #ffc107;
+  color: #f57f17;
+  box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.35);
+}
+
+.station-btn.is-focus {
+  background: #ff8a80;
+  border-color: #e53935;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.45);
+  transform: scale(1.08);
+}
+
+.journey-map-core {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.journey-map-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.journey-map-svg--ghost {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 100%;
+}
+
+.journey-map-svg--ghost .japan-land {
+  fill: url(#landGhost);
+  stroke: #78909c;
+  stroke-width: 0.8;
+}
+
+.shinkansen-track {
+  fill: none;
+  stroke: #1565c0;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8 6;
+  opacity: 0.85;
+}
+
+.shinkansen-term-start {
+  fill: #ff8f00;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.shinkansen-term-end {
+  fill: #5c6bc0;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.shinkansen-legend {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  margin: 0;
+  font-size: 9px;
+  color: #90a4ae;
+  background: rgba(255, 255, 255, 0.75);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.journey-map-stations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-station {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.map-station .station-ring {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #bdbdbd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.map-station .station-num {
+  display: none;
+}
+
+.map-station.is-unlocked .station-ring {
+  background: #42a5f5;
+}
+
+.map-station.is-cleared .station-ring {
+  background: #ffc107;
+}
+
+.map-station.is-focus .station-ring {
+  background: #ff8a80;
+  box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.5);
+  transform: scale(1.15);
+}
+
+.map-station.is-unreleased .station-ring,
+.map-station.is-locked .station-ring {
+  background: #e0e0e0;
+}
+
+.journey-frame-foot {
+  flex: 0 0 auto;
+  padding: 8px 10px 10px;
+  border-top: 1px solid #eceff1;
+  background: #fff;
+}
+
+.journey-part0-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px dashed #ef9a9a;
+  background: linear-gradient(90deg, #ffebee, #fff);
+  text-decoration: none;
+  color: inherit;
+  font-size: 12px;
+}
+
+.journey-part0-num {
+  font-weight: 800;
+  color: #c62828;
+  font-size: 14px;
+}
+
+.journey-part0-title {
+  font-weight: 700;
+  flex: 1;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mvp-hero-compact {
+  padding: 10px 14px 6px;
+}
+
+.mvp-hero-compact h2 {
+  font-size: 1.15rem;
+  margin: 0 0 4px;
+}
+
+.mvp-hero-compact p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--mvp-muted);
+}
+
+.journey-cover-wireframe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "l1 map r4"
+    "l2 map r5"
+    "l3 map r6"
+    "part0 part0 part0";
+  gap: 5px;
+  max-height: min(78vh, 560px);
+  min-height: 340px;
+  padding: 2px 0 6px;
+  align-items: stretch;
+}
+
+.journey-stage-panel.slot-l1 {
+  grid-area: l1;
+}
+.journey-stage-panel.slot-l2 {
+  grid-area: l2;
+}
+.journey-stage-panel.slot-l3 {
+  grid-area: l3;
+}
+.journey-stage-panel.slot-r1 {
+  grid-area: r4;
+}
+.journey-stage-panel.slot-r2 {
+  grid-area: r5;
+}
+.journey-stage-panel.slot-r3 {
+  grid-area: r6;
+}
+
+.journey-part0-slot {
+  grid-area: part0;
+}
+
+.journey-stage-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 6px 8px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.journey-stage-panel.is-current {
+  border-color: var(--stage-accent, #ff8a80);
+}
+
+.journey-stage-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 4px;
+  line-height: 1.2;
+}
+
+.journey-stage-panel-head .journey-stage-unit {
+  font-size: 11px;
+}
+
+.journey-stage-panel-head .journey-stage-zh {
+  font-size: 9px;
+  flex: 1 1 100%;
+}
+
+.journey-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.journey-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.journey-pill .pill-dot {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  background: #eceff1;
+  color: #78909c;
+}
+
+.journey-pill .pill-name {
+  font-size: 9px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  color: #546e7a;
+}
+
+.journey-pill.is-unreleased,
+.journey-pill.is-locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.journey-pill.is-dev-stub {
+  opacity: 0.92;
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.journey-pill.is-dev-stub .pill-dot {
+  background: #eceff1;
+  color: #78909c;
+}
+
+.pill-tag--stub {
+  font-size: 9px;
+  color: #78909c;
+  font-weight: 700;
+}
+
+.map-station.is-dev-stub .station-ring {
+  background: #cfd8dc;
+  box-shadow: 0 0 0 2px rgba(120, 144, 156, 0.35);
+}
+
+/* —— 开发期封面：全单元纵向目录 —— */
+.journey-shinkansen--dev-catalog {
+  aspect-ratio: auto;
+  max-height: none;
+  min-height: min(85vh, 720px);
+  height: auto;
+}
+
+.journey-shinkansen--dev-catalog .journey-frame-body--dev {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 6px 8px 8px;
+}
+
+.journey-map-core--compact {
+  flex: 0 0 auto;
+  max-height: 26vh;
+  min-height: 132px;
+  margin: 0 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.journey-map-core--compact .journey-map-canvas {
+  max-height: 28vh;
+}
+
+.journey-catalog-lead {
+  flex: 0 0 auto;
+}
+
+.journey-part0-bar--spectrum {
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--unit-border, #d1c4e9);
+  border-left-width: 5px;
+  border-left-color: var(--stage-accent, #8e6ec0);
+}
+
+.journey-part0-bar--spectrum .journey-part0-badge {
+  color: var(--stage-accent, #5e35b1);
+  font-weight: 800;
+  min-width: 2.2em;
+  text-align: center;
+}
+
+.journey-dev-banner {
+  margin: 8px 4px 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.journey-catalog-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+.journey-catalog-scroll--uniform,
+.journey-catalog-scroll--accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journey-unit-details {
+  border: 1px solid var(--unit-border, var(--mvp-border));
+  border-left: 5px solid var(--stage-accent, #ff8a80);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  background: var(--unit-bg, #fff);
+  overflow: hidden;
+}
+
+.journey-unit-details:not([open]) {
+  min-height: 0;
+}
+
+.journey-unit-details[open] {
+  padding-bottom: 10px;
+}
+
+.journey-unit-summary {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  min-height: 32px;
+  cursor: pointer;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.journey-unit-summary::-webkit-details-marker {
+  display: none;
+}
+
+.journey-unit-chevron {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0;
+  align-self: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.journey-unit-chevron::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  width: 5px;
+  height: 5px;
+  border-right: 2px solid #78909c;
+  border-bottom: 2px solid #78909c;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+
+.journey-unit-details[open] .journey-unit-chevron::after {
+  transform: rotate(45deg);
+  top: 7px;
+}
+
+.journey-unit-summary-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.journey-unit-summary-main .journey-stage-tag {
+  display: none;
+}
+
+.journey-unit-summary-main .journey-stage-unit {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.journey-unit-summary-main .journey-stage-zh {
+  font-size: 10px;
+  color: #90a4ae;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.journey-unit-summary-end {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.journey-unit-prog {
+  font-size: 9px;
+  font-weight: 700;
+  color: #90a4ae;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.journey-unit-summary-end .journey-unit-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.3;
+  min-width: 0;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+}
+
+.journey-unit-body {
+  padding: 0 10px 2px;
+}
+
+.journey-catalog-unit {
+  border: 1px solid var(--unit-border, var(--mvp-border));
+  border-left: 5px solid var(--stage-accent, #ff8a80);
+  border-radius: 12px;
+  padding: 10px 12px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.journey-catalog-unit.is-unit-dormant {
+  background: #eceff1 !important;
+  border-color: #cfd8dc !important;
+  border-left-color: #bdbdbd !important;
+  opacity: 1;
+  filter: none;
+}
+
+.journey-catalog-unit.is-current-unit {
+  box-shadow: 0 0 0 2px var(--stage-accent), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.journey-stage-tag--spectrum {
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--stage-accent);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--unit-border);
+}
+
+.journey-now-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--stage-accent);
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.journey-catalog-unit-head {
+  flex: 0 0 auto;
+  min-height: 72px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.unit-head-line1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.journey-catalog-unit-head .journey-stage-unit {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.unit-head-line2 {
+  margin: 0;
+  min-height: 18px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unit-head-line3 {
+  margin: 0;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.journey-unit-badge {
+  display: inline-block;
+  min-width: 4.5em;
+  text-align: center;
+}
+
+.journey-lesson-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(76px, 1fr));
+  gap: 8px;
+  align-content: stretch;
+}
+
+.lesson-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 8px;
+  align-items: center;
+  min-height: 72px;
+  height: 100%;
+  width: 100%;
+  padding: 8px 10px 8px 8px;
+  margin: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.lesson-row-badge {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eceff1;
+  font-size: 13px;
+  font-weight: 800;
+  color: #455a64;
+  line-height: 1;
+  align-self: center;
+}
+
+.lesson-row-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lesson-row-zh {
+  display: block;
+  font-size: 10px;
+  line-height: 1.25;
+  color: #90a4ae;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lesson-row-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--mvp-text);
+}
+
+.lesson-row-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.lesson-row-status {
+  font-size: 10px;
+  font-weight: 700;
+  color: #78909c;
+  line-height: 1.2;
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lesson-sea-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.sea-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sea-star--gold {
+  color: #f57f17;
+  text-shadow: 0 0 1px #ffecb3;
+}
+
+.sea-star--tried {
+  color: #ff8f00;
+  -webkit-text-stroke: 0.6px #ff8f00;
+  color: transparent;
+}
+
+.sea-star--ghost {
+  color: #cfd8dc;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.lesson-row-stars,
+.lesson-row .lesson-sea-stars {
+  font-size: inherit;
+}
+
+.lesson-row.is-lesson-cleared .sea-star--gold {
+  color: #f57f17;
+}
+
+.parent-row-stars .lesson-sea-stars {
+  margin-left: 4px;
+}
+
+.lesson-carrots {
+  display: inline-flex;
+  gap: 2px;
+  line-height: 1;
+}
+
+.lesson-carrots .carrot {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.carrot--gray {
+  filter: grayscale(1);
+  opacity: 0.32;
+}
+
+.carrot--silver {
+  filter: grayscale(0.2) brightness(1.05);
+  opacity: 0.78;
+}
+
+.carrot--gold {
+  filter: saturate(1.2);
+  opacity: 1;
+}
+
+.lesson-row.is-lesson-stub {
+  background: #fafafa;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.lesson-row.is-lesson-stub .lesson-row-status {
+  color: #90a4ae;
+}
+
+.lesson-row.is-lesson-locked {
+  background: #f5f5f5;
+  opacity: 0.72;
+  cursor: default;
+}
+
+.lesson-row.is-lesson-idle .lesson-row-status {
+  color: #90a4ae;
+}
+
+.lesson-row.is-lesson-active {
+  border-color: var(--stage-accent, #b0bec5);
+  box-shadow: inset 3px 0 0 var(--stage-accent, #90a4ae);
+}
+
+.lesson-row.is-lesson-cleared {
+  border-color: #ffc107;
+  background: #fffdf5;
+  box-shadow: inset 3px 0 0 #ffc107;
+}
+
+.lesson-row.is-lesson-cleared .lesson-row-status {
+  color: #f57f17;
+}
+
+.lesson-row.is-lesson-cleared .lesson-row-stars {
+  color: #f57f17;
+}
+
+.journey-catalog-unit.is-unit-dormant .lesson-row.is-lesson-locked {
+  opacity: 0.65;
+}
+
+.lesson-stub-card {
+  margin: 16px 12px;
+  padding: 16px;
+  background: var(--mvp-card);
+  border: 1px dashed var(--mvp-border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.lesson-stub-card .btn {
+  margin-top: 14px;
+  width: 100%;
+}
+
+/* —— 探索地图 · 灰→START→弱彩→通关 —— */
+.journey-board-slot {
+  max-height: calc(100dvh - 52px - 56px - 8px);
+  overflow: hidden;
+}
+
+.journey-shinkansen--explore {
+  aspect-ratio: auto;
+  max-height: 100%;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.journey-frame-body--explore {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 8px 6px;
+}
+
+.journey-catalog-lead {
+  flex: 0 0 auto;
+}
+
+.journey-frame-body--explore .journey-part0-bar {
+  padding: 6px 10px;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.journey-frame-body--explore .journey-part0-desc {
+  display: none;
+}
+
+.journey-catalog-scroll--accordion {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.journey-map-core--explore {
+  flex: 0 0 auto;
+  position: relative;
+  max-height: min(18dvh, 148px);
+  min-height: 100px;
+  margin: 0 2px;
+  border-radius: 12px;
+  background: #eceff1;
+  border: 1px solid #cfd8dc;
+  overflow: hidden;
+}
+
+.journey-map-svg--explore .japan-ghost-layer .japan-land {
+  fill: #e0e0e0;
+  stroke: #bdbdbd;
+  stroke-width: 0.8;
+}
+
+.journey-map-svg--explore .japan-land-layer.is-land-revealed .japan-land {
+  fill: #f5f5f5;
+  stroke: #9e9e9e;
+}
+
+.journey-map-svg--explore .shinkansen-track--main {
+  fill: none;
+  stroke: var(--mvp-primary, #ff8a80);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.95;
+}
+
+.journey-map-stations--units {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.journey-map-stations--units .unit-station {
+  pointer-events: auto;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.unit-station.is-map-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.6);
+}
+
+.unit-station--part0.is-part0-start .unit-station-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--mvp-primary, #ff8a80);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  box-shadow: 0 0 0 4px rgba(255, 138, 128, 0.35);
+  animation: journey-start-pulse 1.6s ease-in-out infinite;
+}
+
+.unit-station--part0.is-part0-done .unit-station-label {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #8e6ec0;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unit-station-ring {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #bdbdbd;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.unit-station-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: #9e9e9e;
+}
+
+.unit-station.is-unit-start .unit-station-ring {
+  border-color: var(--mvp-primary, #ff8a80);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 138, 128, 0.4);
+  width: 28px;
+  height: 28px;
+  animation: journey-start-pulse 1.6s ease-in-out infinite;
+}
+
+.unit-station.is-unit-start .unit-station-num {
+  color: var(--mvp-primary-dark, #e57373);
+}
+
+.unit-station.is-unit-active .unit-station-ring {
+  border-color: var(--stage-accent, #90a4ae);
+  background: #fff;
+  opacity: 0.85;
+}
+
+.unit-station.is-unit-active .unit-station-num {
+  color: var(--stage-accent, #546e7a);
+}
+
+.unit-station.is-unit-cleared .unit-station-ring {
+  border: 3px solid #ffc107;
+  background: var(--stage-accent, #ff8a80);
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.45);
+}
+
+.unit-station.is-unit-cleared .unit-station-num {
+  color: #fff;
+}
+
+@keyframes journey-start-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 138, 128, 0.45);
+  }
+}
+
+.journey-map-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 6px 2px;
+  font-size: 9px;
+  color: #78909c;
+  line-height: 1.25;
+}
+
+.journey-legend-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
+}
+
+.journey-legend-heading {
+  font-weight: 800;
+  color: #607d8b;
+  margin-right: 2px;
+}
+
+.journey-legend-sep {
+  color: #cfd8dc;
+  margin: 0 2px;
+}
+
+.journey-legend-nav {
+  gap: 12px;
+}
+
+.journey-legend-nav .journey-legend-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #e0e0e0;
+}
+
+.journey-legend-nav .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.journey-part0-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--stage-accent, #5e35b1);
+}
+
+.journey-part0-icon .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.ui-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+body.mvp-app .nav-item .ui-icon {
+  width: 22px;
+  height: 22px;
+  margin: 0 auto 1px;
+}
+
+body.mvp-app .nav-item .nav-label {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+body.mvp-app .nav-item.active .ui-icon {
+  color: var(--mvp-primary-dark);
+}
+
+.journey-map-legend--legacy {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
+  padding: 6px 4px 2px;
+  font-size: 10px;
+  color: #78909c;
+}
+
+.journey-map-legend .leg {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.leg--cleared {
+  background: #ffc107;
+  border: 1px solid #f57f17;
+}
+
+.leg--active {
+  background: #fff;
+  border: 2px solid #90a4ae;
+}
+
+.leg--start {
+  background: var(--mvp-primary, #ff8a80);
+}
+
+.leg--dormant {
+  background: #eee;
+  border: 1px solid #bdbdbd;
+}
+
+.journey-catalog-hint {
+  margin: 0 4px 4px;
+  text-align: center;
+}
+
+.journey-catalog-unit.is-unit-dormant .journey-stage-tag {
+  color: #9e9e9e;
+  background: #e0e0e0;
+  border-color: #bdbdbd;
+}
+
+.journey-catalog-unit.is-unit-active {
+  background: var(--unit-bg, #fff) !important;
+}
+
+.journey-catalog-unit.is-unit-cleared,
+.journey-catalog-unit.is-unit-start {
+  background: var(--unit-bg, #fff) !important;
+}
+
+.journey-catalog-unit.is-map-reveal-flash {
+  animation: catalog-flash 1.2s ease;
+}
+
+@keyframes catalog-flash {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  40% {
+    box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.55);
+  }
+}
+
+.journey-unit-badge.is-unit-start {
+  background: var(--mvp-primary, #ff8a80);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.journey-unit-badge.is-unit-active {
+  background: #fff;
+  color: #546e7a;
+  border: 1px solid #b0bec5;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.journey-unit-badge.is-unit-cleared {
+  background: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffc107;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.journey-unit-badge.is-unit-dormant {
+  background: #e0e0e0;
+  color: #757575;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.journey-shinkansen--dev-catalog .lesson-row.is-lesson-locked {
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.journey-part0-bar.is-part0-start {
+  border: 2px solid var(--mvp-primary, #ff8a80);
+  background: linear-gradient(90deg, #fff5f3, #fff) !important;
+  box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.2);
+}
+
+.journey-part0-bar.is-part0-start .journey-part0-badge {
+  background: var(--mvp-primary, #ff8a80);
+  color: #fff;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+
+.journey-pill.is-unreleased .pill-dot,
+.journey-pill.is-locked .pill-dot {
+  background: #e0e0e0;
+  color: #9e9e9e;
+}
+
+.journey-pill.is-unlocked {
+  border-color: var(--stage-accent, #ff8a80);
+  background: #fff;
+}
+
+.journey-pill.is-unlocked .pill-dot {
+  background: var(--stage-accent, #ff8a80);
+  color: #fff;
+}
+
+.journey-pill.is-cleared .pill-dot {
+  background: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffc107;
+}
+
+.journey-part0-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px dashed #e57373;
+  background: linear-gradient(90deg, #ffebee, #fff);
+  text-decoration: none;
+  color: inherit;
+  font-size: 12px;
+}
+
+.journey-part0-num {
+  font-weight: 800;
+  color: #c62828;
+}
+
+.journey-part0-title {
+  font-weight: 700;
+}
+
+.journey-part0-zh {
+  font-size: 11px;
+  flex: 1;
+}
+
+.guide-flash {
+  animation: journey-guide-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes journey-guide-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.65);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 193, 7, 0);
+  }
+}
+
+.journey-map-svg--explore .japan-land {
+  fill: url(#landGray);
+  stroke: #9e9e9e;
+  opacity: 0.92;
+}
+
+.journey-route-line--dim {
+  stroke: #bdbdbd;
+  stroke-dasharray: 6 5;
+  filter: none;
+}
+
+.map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  max-width: 52px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.map-node-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #bdbdbd;
+  color: #616161;
+  font-size: 8px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.map-node-label {
+  font-size: 6px;
+  line-height: 1.1;
+  color: #757575;
+  max-width: 52px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-node.is-unreleased,
+.map-node.is-locked {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.map-node.is-unlocked .map-node-dot {
+  background: #ffc107;
+  color: #5d4037;
+}
+
+.map-node.is-cleared .map-node-dot {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.map-node.is-unlocked .map-node-label,
+.map-node.is-cleared .map-node-label {
+  color: #455a64;
+}
+
+.journey-map-center {
+  grid-area: map;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  background: linear-gradient(160deg, #fafafa 0%, #eceff1 100%);
+  border: 1px solid #cfd8dc;
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.journey-map-canvas--wide {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 100%;
+  margin: 0 auto;
+}
+
+.journey-map-pins {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.journey-kana-pin,
+.journey-flash-pin {
+  pointer-events: auto;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.journey-kana-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 8px;
+  background: linear-gradient(135deg, #ffcdd2, #fff);
+  border: 2px solid #e53935;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #b71c1c;
+  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.25);
+  line-height: 1.15;
+}
+
+.journey-kana-num {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.journey-kana-label {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.journey-flash-pin {
+  width: 36px;
+  height: 32px;
+  border-radius: 8px;
+  background: #fff8e1;
+  border: 1px solid #ffc107;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.journey-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1px;
+  padding: 8px 8px 10px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.journey-stage:active {
+  transform: scale(0.98);
+}
+
+.journey-stage.is-current {
+  border-color: var(--stage-accent, #ff8a80);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--stage-accent) 35%, transparent),
+    0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.journey-stage.is-muted {
+  opacity: 0.72;
+}
+
+.journey-stage-tag {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--stage-accent);
+  letter-spacing: 0.04em;
+}
+
+.journey-stage-unit {
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.journey-stage-zh {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.journey-stage-prog {
+  font-size: 9px;
+  color: #78909c;
+  margin-top: 2px;
+}
+
+.journey-stage-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--stage-accent);
+  opacity: 0.55;
+  border-radius: 0 2px 0 0;
+}
+
+/* 第二屏 · 单元课次 */
+.journey-unit-sheet .journey-sheet-panel {
+  width: min(100%, 420px);
+  max-height: 85vh;
+  margin: auto;
+  background: var(--mvp-card);
+  border-radius: 16px 16px 0 0;
+  padding: 0 0 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.journey-sheet-open {
+  overflow: hidden;
+}
+
+.journey-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--mvp-border);
+  background: linear-gradient(180deg, #fff 0%, #faf8f6 100%);
+}
+
+.journey-sheet-head h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.journey-sheet-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+}
+
+#journey-sheet-body {
+  overflow-y: auto;
+  padding: 12px 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.journey-sheet-grammar {
+  margin: 0 0 6px;
+  font-size: 12px;
+}
+
+.journey-sheet-prog {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--mvp-muted);
+}
+
+.journey-sheet-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.journey-sheet-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--mvp-border);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  min-height: 64px;
+}
+
+.journey-sheet-chip .chip-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--stage-accent, var(--mvp-primary-dark));
+}
+
+.journey-sheet-chip .chip-title {
+  font-size: 11px;
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.journey-sheet-chip.cleared {
+  border-color: #ffc107;
+  background: #fffde7;
+}
+
+.journey-sheet-chip.locked {
+  opacity: 0.45;
+  cursor: default;
+  border-style: dashed;
+}
+
+.journey-sheet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--mvp-border);
+}
+
+@media (max-width: 380px) {
+  .journey-cover {
+    grid-template-columns: 0.88fr 1.2fr 0.88fr;
+    gap: 4px;
+    min-height: 300px;
+  }
+
+  .journey-stage-unit {
+    font-size: 11px;
+  }
+}
+
+.journey-map-canvas {
+  position: relative;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.journey-map-svg {
+  width: 100%;
+  display: block;
+}
+
+.japan-land {
+  fill: url(#landGray);
+  stroke: #90a4ae;
+  stroke-width: 1.2;
+  opacity: 0.95;
+}
+
+.journey-route-line {
+  fill: none;
+  stroke: #ffc107;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(255, 193, 7, 0.5));
+}
+
+.journey-route-start {
+  fill: #ff8f00;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.journey-map-nodes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #ffc107;
+  color: #5d4037;
+  font-size: 11px;
+  font-weight: 800;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.map-node.cleared {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.journey-map-legend {
+  font-size: 10px;
+  color: #78909c;
+  text-align: center;
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+.journey-legend-dot {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  background: #ffc107;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.journey-board-regions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.journey-region {
+  background: var(--mvp-card);
+  border: 1px solid var(--mvp-border);
+  border-radius: 14px;
+  padding: 10px 10px 8px;
+  min-height: 120px;
+  box-shadow: 0 2px 10px rgba(255, 138, 128, 0.1);
+}
+
+.journey-region--shikoku {
+  border-top: 3px solid #ef9a9a;
+}
+
+.journey-region--kyushu {
+  border-top: 3px solid #80cbc4;
+}
+
+.journey-region--honshu {
+  border-top: 3px solid #90caf9;
+}
+
+.journey-region--hokkaido {
+  border-top: 3px solid #b39ddb;
+}
+
+.journey-region-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.journey-region-emoji {
+  font-size: 18px;
+}
+
+.journey-region-label {
+  font-weight: 700;
+  font-size: 15px;
+  flex: 1;
+}
+
+.journey-region-count {
+  font-size: 10px;
+  color: var(--mvp-muted);
+}
+
+.journey-intro-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #ffebee, #fff);
+  border: 1px dashed #e53935;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 12px;
+}
+
+.journey-intro-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #c62828;
+  background: #ffcdd2;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.journey-region-unit {
+  margin-bottom: 6px;
+  border-top: 1px solid #f0ebe6;
+}
+
+.journey-region-unit summary {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 0;
+  list-style: none;
+}
+
+.journey-region-unit summary::-webkit-details-marker {
+  display: none;
+}
+
+.journey-unit-n {
+  float: right;
+  font-size: 10px;
+  color: var(--mvp-muted);
+}
+
+.journey-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.journey-chip {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--mvp-primary);
+  background: #fff;
+  color: var(--mvp-primary-dark);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.journey-chip.cleared {
+  background: #fff8e1;
+  border-color: #ffc107;
+}
+
+.journey-chip.locked {
+  opacity: 0.4;
+  cursor: default;
+  border-style: dashed;
+  background: #f5f5f5;
+}
+
+.journey-region-lessons {
+  margin-top: 4px;
+}
+
+.journey-lesson-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto auto;
+  gap: 4px 6px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f0eb;
+  font-size: 12px;
+}
+
+.journey-lesson-row:last-child {
+  border-bottom: none;
+}
+
+.journey-lesson-row.locked {
+  opacity: 0.5;
+}
+
+.journey-lesson-row.cleared {
+  background: #f9fbe7;
+  border-radius: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.journey-lesson-num {
+  font-weight: 700;
+  color: var(--mvp-primary-dark);
+}
+
+.journey-lesson-body {
+  min-width: 0;
+}
+
+.journey-lesson-title {
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journey-lesson-meta {
+  margin: 0;
+}
+
+.journey-lock-tag {
+  font-size: 10px;
+  color: #999;
+}
+
+.journey-rail {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.journey-rail-dot {
+  font-size: 9px;
+  color: #ccc;
+}
+
+.journey-rail-dot.done {
+  color: #f9a825;
+}
+
+.journey-lesson-stars {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.journey-lesson-row .btn-sm {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.intro-page {
+  padding: 12px 16px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.intro-hero h2 {
+  font-size: 18px;
+}
+
+.intro-card {
+  background: var(--mvp-card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--mvp-border);
+}
+
+.intro-list {
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* —— 00 入門 · 三阶段引导（intro.html） —— */
+.intro-body .intro-page {
+  padding-bottom: 24px;
+}
+
+.intro-hero-lead {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.intro-root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intro-welcome-banner {
+  background: linear-gradient(135deg, #e3f2fd, #fff);
+  border: 1px solid #90caf9;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.intro-welcome-banner p {
+  margin: 0;
+  flex: 1;
+  font-size: 14px;
+}
+
+.intro-app-guide {
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.intro-app-guide h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.intro-app-step {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.intro-app-step:last-child {
+  margin-bottom: 0;
+}
+
+.intro-app-n {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--mvp-primary);
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.intro-progress-wrap {
+  font-size: 12px;
+  color: var(--mvp-muted);
+}
+
+.intro-progress-track {
+  height: 6px;
+  background: #eceff1;
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.intro-progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--mvp-primary), #ffb74d);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.intro-phase-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.intro-phase-tab {
+  flex: 1;
+  padding: 8px 4px;
+  border: 1px solid var(--mvp-border);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.intro-phase-tab.active {
+  border-color: var(--mvp-primary);
+  background: #ffebee;
+  color: var(--mvp-primary-dark);
+}
+
+.intro-phase-tab.done {
+  color: #2e7d32;
+}
+
+.intro-phase-meta {
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.intro-phase-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.intro-phase-steps li {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  align-items: flex-start;
+}
+
+.intro-phase-steps .step-n {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #eceff1;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.intro-phase-panel {
+  background: var(--mvp-card);
+  border: 1px solid var(--mvp-border);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.intro-what-box,
+.intro-how-box,
+.intro-check-box {
+  margin-bottom: 14px;
+}
+
+.intro-what-box h3,
+.intro-how-box h3,
+.intro-check-box h3,
+.intro-practice-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.intro-method-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.intro-visual-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  gap: 4px;
+  font-size: 10px;
+  margin-top: 8px;
+  max-width: 280px;
+}
+
+.intro-visual-cell {
+  background: #f5f5f5;
+  padding: 4px 6px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.intro-visual-cell.head {
+  background: #e0e0e0;
+  font-weight: 700;
+}
+
+.gojuon-row {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 6px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.gojuon-row-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mvp-muted);
+  padding-top: 8px;
+}
+
+.gojuon-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gojuon-cell {
+  position: relative;
+  min-width: 52px;
+  padding: 6px 6px 4px;
+  border: 1px solid #cfd8dc;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+  cursor: default;
+  font-family: inherit;
+}
+
+.gojuon-cell.is-special {
+  border-color: #ff8f00;
+  background: #fff8e1;
+}
+
+.gojuon-kana {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.gojuon-roma {
+  display: block;
+  font-size: 10px;
+  color: #78909c;
+}
+
+.gojuon-hint {
+  display: block;
+  font-size: 9px;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.gojuon-speak,
+.greet-speak {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  transform: scale(0.85);
+}
+
+.gojuon-empty {
+  width: 52px;
+}
+
+.gojuon-cell--mini {
+  min-width: 44px;
+  padding: 6px 4px;
+}
+
+.intro-special-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.intro-special-card {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+.intro-special-kana {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.intro-pair-card {
+  background: #f3e5f5;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.pair-line .pair-a,
+.pair-line .pair-b {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pair-vs {
+  text-align: center;
+  color: #c62828;
+  font-weight: 800;
+  margin: 4px 0;
+}
+
+.intro-script-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-script-card {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 4px 8px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.intro-script-icon {
+  font-size: 22px;
+  grid-row: span 2;
+}
+
+.intro-mixed-sentence {
+  font-size: 16px;
+  margin: 10px 0 4px;
+  font-weight: 700;
+}
+
+.intro-greet-item {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.intro-greet-item .jp {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.intro-classroom-list {
+  font-size: 13px;
+  line-height: 1.6;
+  padding-left: 18px;
+}
+
+.intro-phase-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-phase-actions .btn {
+  width: 100%;
+  text-align: center;
+}
+
+.intro-finish-banner,
+.intro-finish-cta {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.intro-footer-note {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 16px;
+  padding: 0 12px;
+}
+
+@media (max-width: 380px) {
+  .intro-special-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* —— v57 · 五十音能力全景模型 —— */
+.intro-hero-sub {
+  margin: 4px 0 0;
+  font-size: 15px;
+  color: var(--mvp-muted);
+  font-weight: 600;
+}
+
+.intro-hermes {
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.intro-hermes.is-compact .intro-hermes-body {
+  display: none;
+}
+
+.intro-hermes-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.intro-hermes-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--mvp-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.intro-hermes-oneline {
+  margin: 4px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--mvp-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.intro-wf-chip {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  white-space: nowrap;
+}
+
+.intro-wf-chip.active {
+  background: #ffebee;
+  color: var(--mvp-primary-dark);
+  font-weight: 700;
+}
+
+.intro-layer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.intro-layer-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border: 2px solid var(--mvp-border);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  position: relative;
+}
+
+.intro-layer-tab.active {
+  font-weight: 800;
+}
+
+.intro-layer--foundation.active {
+  border-color: #1976d2;
+  background: #e3f2fd;
+}
+
+.intro-layer--synergy.active {
+  border-color: #ef6c00;
+  background: #fff3e0;
+}
+
+.intro-layer--core.active {
+  border-color: #c2185b;
+  background: #fce4ec;
+}
+
+.intro-layer-ja {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.intro-layer-zh {
+  font-size: 10px;
+  color: var(--mvp-muted);
+  font-weight: 600;
+}
+
+.intro-layer-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.intro-layer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cfd8dc;
+}
+
+.intro-layer-dot.current {
+  background: var(--mvp-primary);
+  box-shadow: 0 0 0 2px #ffebee;
+}
+
+.intro-layer-dot.done {
+  background: #43a047;
+}
+
+.intro-layer-fraction {
+  font-size: 12px;
+  color: var(--mvp-muted);
+  font-weight: 700;
+}
+
+.intro-layer-check {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 800;
+}
+
+.intro-layer-banner {
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.intro-layer--foundation.intro-layer-banner {
+  background: #e3f2fd;
+}
+
+.intro-layer--synergy.intro-layer-banner {
+  background: #fff3e0;
+}
+
+.intro-layer--core.intro-layer-banner {
+  background: #fce4ec;
+}
+
+.intro-layer-banner-label {
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.intro-anchor {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.intro-domain-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.intro-domain-chip {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eceff1;
+  color: #546e7a;
+}
+
+.intro-panorama-wrap {
+  margin-bottom: 12px;
+}
+
+.intro-panorama-lead,
+.intro-panorama-foot {
+  font-size: 11px;
+  margin: 0 0 6px;
+}
+
+.intro-panorama-scroll {
+  max-height: 52vh;
+  overflow: auto;
+  border: 1px solid #cfd8dc;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.intro-panorama-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.intro-panorama-table th,
+.intro-panorama-table td {
+  border: 1px solid #eceff1;
+  padding: 2px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.panorama-corner,
+.panorama-row-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mvp-muted);
+  background: #fafafa;
+  white-space: nowrap;
+  padding: 4px !important;
+}
+
+.panorama-dan {
+  font-size: 10px;
+  background: #e8eaf6;
+}
+
+.intro-panorama-scroll .panorama-cell {
+  position: relative;
+}
+
+.panorama-cell {
+  position: relative;
+  width: 100%;
+  min-width: 48px;
+  padding: 4px 2px 14px;
+  border: none;
+  background: transparent;
+  cursor: default;
+  font-family: inherit;
+}
+
+.panorama-cell.is-special {
+  background: #fffef5;
+}
+
+.panorama-cell.is-special::after {
+  content: "易";
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 1;
+  color: #bcaaa4;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.intro-panorama-legend {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: #90a4ae;
+  line-height: 1.4;
+}
+
+.panorama-cell .gojuon-kana {
+  font-size: 16px;
+}
+
+.panorama-empty {
+  background: #fafafa;
+}
+
+.intro-skill-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intro-skill-wall-lead {
+  font-size: 12px;
+  margin: 0 0 8px;
+  color: var(--mvp-muted);
+}
+
+.intro-skill-card {
+  border: 1px solid #cfd8dc;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.intro-skill-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.intro-skill-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #eceff1;
+}
+
+.intro-skill-id {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.intro-skill-summary {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.intro-skill-verify {
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px dashed #e0e0e0;
+}
+
+.intro-skill-details {
+  margin: 10px 0;
+  font-size: 13px;
+}
+
+.intro-skill-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.intro-rule-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.intro-rule-card {
+  background: #f3e5f5;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.intro-rule-card strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.intro-rule-inline {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.gojuon-cells--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.intro-pair-card.compact {
+  margin-bottom: 6px;
+  padding: 8px;
+}
+
+.intro-special-card.compact {
+  padding: 6px;
+}
+
+/* —— v58 · 少文字 · 分色块 · 浅喇叭 —— */
+.intro-hero--minimal {
+  padding: 10px 0 4px;
+}
+
+.intro-hero--minimal h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.intro-hero--minimal .intro-hero-sub {
+  margin: 2px 0 0;
+}
+
+.intro-body .panorama-cell .btn-speak-icon.intro-speak-cell {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+}
+
+.intro-top-chrome {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.intro-flow-dots {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.intro-flow-dot {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 0;
+  border-radius: 6px;
+  background: #eceff1;
+  color: #90a4ae;
+}
+
+.intro-flow-dot.active {
+  background: var(--mvp-primary);
+  color: #fff;
+}
+
+.intro-tip-block--sound {
+  background: #e8f5e9;
+  border-color: #c8e6c9;
+}
+
+.intro-tip-sound-icon {
+  font-size: 28px;
+  display: block;
+  margin: 4px 0;
+}
+
+.intro-skill-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #37474f;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.intro-block {
+  background: var(--mvp-card);
+  border: 1px solid var(--mvp-border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.intro-block-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.intro-block-title {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.intro-check-line {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--mvp-muted);
+  text-align: center;
+}
+
+.intro-check-line::before {
+  content: "✓ ";
+  color: #43a047;
+}
+
+.intro-synergy-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intro-cat-block {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.intro-cat-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.intro-cat-label {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  writing-mode: horizontal-tb;
+}
+
+.intro-cat--trap .intro-cat-rail {
+  background: #ffe0b2;
+  color: #e65100;
+}
+
+.intro-cat--dakuon .intro-cat-rail {
+  background: #e1bee7;
+  color: #6a1b9a;
+}
+
+.intro-cat--youon .intro-cat-rail {
+  background: #b2dfdb;
+  color: #00695c;
+}
+
+.intro-cat--rhythm .intro-cat-rail {
+  background: #f8bbd0;
+  color: #ad1457;
+}
+
+.intro-cat-body {
+  background: #fff;
+  padding: 8px 10px;
+}
+
+.intro-trap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-trap-row {
+  display: grid;
+  grid-template-columns: 72px 56px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.intro-trap-row:last-child {
+  border-bottom: none;
+}
+
+.intro-trap-main {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.intro-trap-kana {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.intro-trap-homophone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #fff8e1, #ffecb3);
+  border: 1px solid #ffe082;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.intro-homophone-han {
+  font-size: 22px;
+  font-weight: 800;
+  color: #f57c00;
+  line-height: 1.1;
+}
+
+.intro-homophone-note {
+  font-size: 9px;
+  color: #8d6e63;
+}
+
+.intro-trap-demo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.intro-demo-kana {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.intro-rule-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intro-rule-row {
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.intro-rule-row:last-child {
+  border-bottom: none;
+}
+
+.intro-rule-text {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #455a64;
+}
+
+.intro-rule-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.intro-kana-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px 4px 8px;
+  border-radius: 8px;
+  background: #fafafa;
+  border: 1px solid #eceff1;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.intro-pair-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.intro-pair-inline .pair-vs {
+  color: #c62828;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.intro-script-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.intro-script-mini {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+  padding: 8px 4px;
+  background: #fafafa;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.intro-script-mini .intro-script-icon {
+  display: block;
+  font-size: 20px;
+}
+
+.intro-mixed-line {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+}
+
+.intro-greet-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-greet-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fafafa;
+  border-radius: 10px;
+}
+
+.intro-greet-actions {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.intro-greet-row .ss-action-row {
+  gap: 4px;
+}
+
+.intro-mixed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.intro-mixed-row .intro-mixed-line {
+  margin: 0;
+  flex: 1;
+}
+
+.me-review-entry {
+  margin-bottom: 14px;
+}
+
+.me-review-entry .me-review-badge {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+body.mvp-app .bottom-nav a.nav-item--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.intro-phrase-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.intro-greet-jp {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  line-height: 1.35;
+}
+
+.intro-phrase-zh {
+  margin: 0;
+}
+
+.intro-phrase-scene {
+  margin: 2px 0 0;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #90a4ae;
+}
+
+.intro-exit {
+  margin-top: 14px;
+  padding: 12px 0 8px;
+  text-align: center;
+  border-top: 1px dashed #e0e0e0;
+}
+
+.intro-exit-btn {
+  width: 100%;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.intro-exit-hint {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--mvp-muted);
+}
+
+.intro-phase-actions {
+  margin-top: 8px;
+}
+
+.intro-phase-actions .btn {
+  width: 100%;
+}
+
+.intro-finish-banner {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.intro-finish-banner .btn {
+  width: 100%;
+  text-decoration: none;
+}
+
+@media (max-width: 360px) {
+  .intro-trap-row {
+    grid-template-columns: 64px 48px 1fr;
+  }
+
+  .intro-trap-kana {
+    font-size: 24px;
+  }
+}
+
+/* —— v59 · 点字弹出 先生のひとこと —— */
+.intro-hero-hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--mvp-muted);
+}
+
+.panorama-cell.has-sensei-tip,
+.intro-kana-chip[data-kana-tip],
+.intro-trap-main[data-kana-tip] {
+  cursor: pointer;
+}
+
+.panorama-cell.has-sensei-tip:active,
+.intro-kana-chip[data-kana-tip]:active {
+  background: #fff8e1;
+}
+
+.intro-kana-chip {
+  cursor: pointer;
+  position: relative;
+}
+
+.intro-kana-chip-text {
+  font-weight: 700;
+}
+
+.intro-tip-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9000;
+}
+
+.intro-tip-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9001;
+  max-height: 72vh;
+  overflow: auto;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(165deg, #fffbf5 0%, #fff 40%);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0));
+}
+
+body.intro-tip-open {
+  overflow: hidden;
+}
+
+.intro-tip-sheet-inner {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.intro-tip-sheet-drag {
+  display: block;
+  width: 40px;
+  height: 4px;
+  margin: 6px auto 10px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: #cfd8dc;
+  cursor: pointer;
+}
+
+.intro-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  color: #8b5a2b;
+}
+
+.intro-tip-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.intro-tip-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.intro-tip-tag--trap,
+.intro-tip-tag--易错 {
+  background: #ffe0b2;
+  color: #e65100;
+}
+
+.intro-tip-tag--浊音 {
+  background: #e1bee7;
+  color: #6a1b9a;
+}
+
+.intro-tip-tag--半浊 {
+  background: #d1c4e9;
+  color: #4527a0;
+}
+
+.intro-tip-tag--拗音 {
+  background: #b2dfdb;
+  color: #00695c;
+}
+
+.intro-tip-tag--促音 {
+  background: #f8bbd0;
+  color: #ad1457;
+}
+
+.intro-tip-hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #f0e0c8;
+}
+
+.intro-tip-kana {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.intro-tip-roma {
+  font-size: 14px;
+  color: #90a4ae;
+}
+
+.intro-tip-block {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #eceff1;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.intro-tip-block--warn {
+  background: #fff8e1;
+  border-color: #ffe082;
+}
+
+.intro-tip-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #8b5a2b;
+  margin-bottom: 4px;
+}
+
+.intro-tip-homophone {
+  margin-top: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #fff8e1, #ffecb3);
+  border: 1px solid #ffe082;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f57c00;
+}
+
+.intro-tip-note {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #5d4037;
+}
+
+.intro-tip-demo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.intro-tip-close {
+  width: 100%;
+}
+
+/* v61 · 协同手风琴 · 拍子点 */
+.intro-synergy-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro-cat-accordion {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.intro-cat-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+}
+
+.intro-cat-summary::-webkit-details-marker {
+  display: none;
+}
+
+.intro-cat--trap .intro-cat-summary {
+  background: #ffe0b2;
+}
+
+.intro-cat--dakuon .intro-cat-summary {
+  background: #e1bee7;
+}
+
+.intro-cat--youon .intro-cat-summary {
+  background: #b2dfdb;
+}
+
+.intro-cat--rhythm .intro-cat-summary {
+  background: #f8bbd0;
+}
+
+.intro-cat-accordion-body {
+  padding: 8px 10px 10px;
+  background: #fff;
+}
+
+.intro-beat-compare {
+  margin: 6px 0 8px;
+}
+
+.intro-beat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.intro-beat-label {
+  min-width: 5.5em;
+  font-weight: 700;
+}
+
+.intro-beats {
+  display: flex;
+  gap: 4px;
+}
+
+.intro-beat {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #eceff1;
+}
+
+.intro-beat.on {
+  background: var(--mvp-primary);
+}
+
+/* —— 单元四格漫画 · story-reward —— */
+.journey-unit-gift {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.journey-unit-gift:hover,
+.journey-unit-gift:focus-visible {
+  background: rgba(255, 193, 7, 0.25);
+  outline: none;
+}
+
+.journey-unit-gift--dev {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.journey-story-dev {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fff8e1;
+  border: 1px dashed #ffb74d;
+}
+
+.journey-story-dev-title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #5d4037;
+}
+
+.journey-story-dev-title code {
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.journey-story-dev-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.story-dev-btn {
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  min-height: 0;
+}
+
+.story-reward-modal .mvp-backdrop-inner,
+.story-reward-sheet {
+  max-width: min(96vw, 440px);
+  width: 100%;
+}
+
+.story-reward-inner {
+  border-top: 4px solid var(--stage-accent, var(--mvp-primary));
+}
+
+.story-reward-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.story-reward-eyebrow {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #90a4ae;
+  letter-spacing: 0.04em;
+}
+
+.story-reward-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #37474f;
+}
+
+.story-reward-close {
+  flex-shrink: 0;
+  min-width: 36px;
+  padding: 6px 10px;
+}
+
+.story-reward-narrator {
+  margin: 0 0 10px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.story-reward-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.story-reward-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 88px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  border: 1px solid var(--unit-border, #ffcdd2);
+  background: var(--panel-bg, #fff5f5);
+  box-sizing: border-box;
+  gap: 2px;
+}
+
+.story-reward-panel.is-locked {
+  opacity: 0.45;
+  filter: grayscale(0.85);
+}
+
+.story-reward-panel.is-locked .story-reward-panel-caption,
+.story-reward-panel.is-locked .story-gurumi-icon {
+  opacity: 0.5;
+}
+
+.story-reward-strip.is-unit-complete .story-reward-panel.is-unlocked {
+  box-shadow: 0 0 0 2px var(--panel-accent, var(--mvp-primary));
+}
+
+.story-reward-panel-slot {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--panel-accent, #e57373);
+}
+
+.story-gurumi-icon {
+  width: 28px;
+  height: 34px;
+  color: var(--panel-accent, #81c784);
+}
+
+.story-reward-panel-lesson {
+  font-size: 10px;
+  font-weight: 800;
+  color: #455a64;
+}
+
+.story-reward-panel-caption {
+  font-size: 8px;
+  line-height: 1.25;
+  color: #78909c;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.story-reward-foot {
+  margin: 0;
+  font-size: 10px;
+  text-align: center;
+}

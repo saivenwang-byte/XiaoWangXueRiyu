@@ -1,41 +1,22 @@
 <!DOCTYPE html>
-
 <html lang="ja" translate="no">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-
   <meta name="apple-mobile-web-app-capable" content="yes" />
-
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
   <meta name="theme-color" content="#FF8A80" />
-
-  <meta name="description" content="標日第14/16/18課：文法ネット・会話・テスト" />
-
+  <meta name="description" content="標日初级上·学习の道：四岛路径·单元课序·会話中心" />
   <meta property="og:type" content="website" />
-
-  <meta property="og:title" content="標日 あと学習 · 第14/16/18課" />
-
+  <meta property="og:title" content="標日 あと学習 · 学习の道" />
   <meta property="og:description" content="10分で単語・会話・文法をつなげ、🔊で听读音。リンクを開くだけ。" />
-
   <meta property="og:image" content="icons/icon.svg" />
-
-  <title>標日 あと学習 · 14/16/18課</title>
-
+  <title>標日 あと学習 · 学习の道</title>
   <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
-
   <link rel="manifest" href="manifest.json" />
-
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-
-  <link rel="stylesheet" href="css/app.css?v=46" />
-
-  <link rel="stylesheet" href="css/mvp.css?v=46" />
-
+  <link rel="stylesheet" href="css/app.css?v=76" />
+  <link rel="stylesheet" href="css/mvp.css?v=76" />
   <style>
     /* 旧缓存 css 曾让 .gn-modal 常显 flex，整页发灰 */
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -46,14 +27,12 @@
       visibility: visible !important;
     }
   </style>
-
 </head>
-
 <body class="mvp-app">
   <script>
     (function () {
       if (location.protocol !== "file:") return;
-      var v = "40";
+      var v = "69";
       var link = document.querySelector('link[href*="mvp.css"]');
       if (link) {
         var m = link.getAttribute("href").match(/[?&]v=(\d+)/);
@@ -70,61 +49,31 @@
   </script>
 
   <div id="app">
-
     <header class="top-bar">
-
       <h1 id="page-title">標日 あと学習</h1>
-
       <div class="top-actions">
-
         <button type="button" class="icon-btn" id="btn-share-wechat" aria-label="共有">📤</button>
-
         <a href="share.html" class="icon-btn" aria-label="共有ページ" style="text-decoration:none;font-size:14px">⎙</a>
-
       </div>
-
     </header>
 
-
-
     <main id="main-content">
-
       <section id="view-home" class="view active" aria-hidden="false">
-
-        <div class="mvp-hero">
-
-          <h2>こんにちは！ あと10分</h2>
-
-          <p><strong>会話を中心に</strong> · 点 🔊 听读音 · 第14 / 16 / 18課</p>
-
-          <p id="home-week-count" style="margin-top:8px;font-size:13px">学習日数（今週）：0 日</p>
-
+        <div class="mvp-hero mvp-hero-compact mvp-hero--hidden-title">
+          <h2 class="sr-only">学習の道</h2>
+          <p id="home-path-progress" class="sr-only">進捗 —</p>
+          <p id="home-week-count" hidden>学習日数（今週）：0 日</p>
         </div>
-
-        <article class="flash-home-card">
-          <h3>🃏 気軽に · 単語フラッシュ</h3>
-          <p class="hint-ja">この課の単語だけ · 失敗なし · テストの前にざっと見る</p>
-          <div id="flash-lesson-pick" class="flash-pick-grid"></div>
-        </article>
-
-        <div id="lesson-cards"></div>
-
+        <div id="journey-board-slot" class="journey-board-slot"></div>
       </section>
 
-
-
       <section id="view-lesson" class="view lesson-cockpit-view" aria-hidden="true">
-
         <div id="lesson-cockpit" class="lesson-cockpit"></div>
-
         <div id="lesson-flow-head" class="lesson-flow-head-slim"></div>
-
         <div id="lesson-flow-body"></div>
-
       </section>
 
       <section id="view-review" class="view" aria-hidden="true">
-
         <details class="review-help" open>
           <summary>复习怎么用？（点这里收起/展开）</summary>
           <ol>
@@ -134,107 +83,73 @@
             <li>题目旁小喇叭可朗读题干（走你手机流量/本机语音，不额外扣开发者 GitHub 流量）。</li>
           </ol>
         </details>
-
         <p class="hint-ja">今日到期的错题会显示在下方</p>
-
         <p class="hint-ja" id="review-empty" hidden>复习列表为空 🎉（先去测试里做错几题试试）</p>
-
         <ul id="review-list" style="list-style:none;padding:0"></ul>
-
       </section>
-
-
 
       <section id="view-me" class="view" aria-hidden="true">
-
         <h3 class="section-title">学習日数</h3>
-
         <div class="heatmap" id="heatmap"></div>
-
         <h3 class="section-title">進捗</h3>
-
         <div id="parent-progress"></div>
-
         <h3 class="section-title">にがてポイント TOP3</h3>
-
         <ul id="weak-top3" style="padding-left:18px"></ul>
-
         <label class="settings-toggle">
-
           <input type="checkbox" id="toggle-zh" checked />
-
           <span>中文释义を表示（小さく灰色）</span>
-
         </label>
-
         <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:16px;width:100%">学習データを消す</button>
-
         <button type="button" class="btn primary" id="btn-share-me" style="width:100%;margin-top:12px">📤 リンクをコピー</button>
-
         <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">共有ページ（QR）</a>
-
         <p class="hint-ja footer-hint" style="margin-top:12px">朗读优先缓存 MP3 · 单词/会話/测试可 🔊🎤▶ 跟读 · 无需登录</p>
-
         <a href="legacy.html" class="btn ghost" style="display:block;text-align:center;margin-top:10px;text-decoration:none">旧版：24課シナリオ</a>
-
       </section>
-
     </main>
-
-
 
     <div id="review-modal" class="mvp-backdrop" hidden style="display:none!important;pointer-events:none!important" aria-hidden="true"></div>
     <div id="lesson-modal" class="mvp-backdrop" hidden style="display:none!important;pointer-events:none!important" aria-hidden="true"></div>
-
-
+    <div id="story-reward-modal" class="mvp-backdrop story-reward-modal" hidden aria-hidden="true"></div>
 
     <nav class="bottom-nav" aria-label="メインナビ">
-
-      <button type="button" class="nav-item active" data-view="home">
-
-        <span class="nav-icon">🏠</span><span>ホーム</span>
-
+      <button type="button" class="nav-item active" data-view="home" title="课程">
+        <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 4h9l3 3v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path fill="none" stroke="currentColor" stroke-width="2" d="M15 4v4h4"/><path fill="none" stroke="currentColor" stroke-width="1.5" d="M8 11h8M8 14h6"/></svg></span>
+        <span class="nav-label">课程</span>
       </button>
-
-      <button type="button" class="nav-item" data-view="review">
-
-        <span class="nav-icon">📝</span><span>復習</span>
-
-        <span class="nav-badge" id="review-badge" hidden>0</span>
-
+      <button type="button" class="nav-item" data-view="me" title="我的">
+        <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 19c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span>
+        <span class="nav-label">我的</span>
       </button>
-
-      <button type="button" class="nav-item" data-view="me">
-
-        <span class="nav-icon">👤</span><span>マイページ</span>
-
-      </button>
-
+      <a href="intro.html?v=76" class="nav-item nav-item--link" id="nav-intro" title="五十音">
+        <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700" font-family="sans-serif">あ</text></svg></span>
+        <span class="nav-label">五十音</span>
+      </a>
     </nav>
-
   </div>
 
-
-
-  <script src="js/public-url.config.js?v=46"></script>
-  <script src="js/share-wechat.js?v=46"></script>
-  <script src="js/data/mini-cards.js?v=46"></script>
-  <script src="js/data/lessons-mvp.js?v=46"></script>
-  <script src="js/data/lesson-vocab-biaori.js?v=46"></script>
-  <script src="js/data/lessons-mvp-depth.js?v=46"></script>
-  <script src="js/ruby-render.js?v=46"></script>
-  <script src="js/mvp-storage.js?v=46"></script>
-  <script src="js/speech-engine.js?v=46"></script>
-  <script src="js/speak-ui.js?v=46"></script>
-  <script src="js/shadow-speak.js?v=46"></script>
-  <script src="js/ui-feedback.js?v=46"></script>
-  <script src="js/sensei-tip-card.js?v=46"></script>
-  <script src="js/grammar-network.js?v=46"></script>
-  <script src="js/dialogue-gate.js?v=46"></script>
-  <script src="js/quiz-gate.js?v=46"></script>
-  <script src="js/vocab-flash.js?v=46"></script>
-  <script src="js/scroll-hint.js?v=46"></script>
-  <script src="js/app.js?v=46"></script>
+  <script src="js/public-url.config.js?v=76"></script>
+  <script src="js/share-wechat.js?v=76"></script>
+  <script src="js/data/mini-cards.js?v=76"></script>
+  <script src="js/data/lessons-mvp.js?v=76"></script>
+  <script src="js/data/lesson-vocab-biaori.js?v=76"></script>
+  <script src="js/data/lessons-mvp-depth.js?v=76"></script>
+  <script src="js/data/curriculum-catalog.js?v=76"></script>
+  <script src="js/ruby-render.js?v=76"></script>
+  <script src="js/mvp-storage.js?v=76"></script>
+  <script src="js/speech-engine.js?v=76"></script>
+  <script src="js/speak-ui.js?v=76"></script>
+  <script src="js/shadow-speak.js?v=76"></script>
+  <script src="js/ui-feedback.js?v=76"></script>
+  <script src="js/sensei-tip-card.js?v=76"></script>
+  <script src="js/grammar-network.js?v=76"></script>
+  <script src="js/dialogue-gate.js?v=76"></script>
+  <script src="js/quiz-gate.js?v=76"></script>
+  <script src="js/vocab-flash.js?v=76"></script>
+  <script src="js/scroll-hint.js?v=76"></script>
+  <script src="js/nav-icons.js?v=76"></script>
+  <script src="js/story-reward.js?v=76"></script>
+  <script src="js/journey-home.js?v=76"></script>
+  <script src="js/app.js?v=76"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -244,7 +159,7 @@
         m.style.pointerEvents = "none";
       });
       if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v45";
+      var key = "hyouga-sw-purged-v69";
       navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (r) { return r.unregister(); }));
       }).then(function () {
@@ -266,8 +181,5 @@
     ShareWechat.mountButton(document.getElementById("btn-share-me"));
     ShareWechat.mountWechatBanner(document.getElementById("app"));
   </script>
-
 </body>
-
 </html>
-
