@@ -1,6 +1,8 @@
 /**
  * 六单元 · 24 格分镜文案（审阅真源）
- * 混合：单元旅行情绪弧 + 每格课文会話泡（lesson-dialogues.js）
+ * 精神原型：docs/story-strip-soul-lock.md（单元弧 + 标日 headline 画面 + 课文型泡）
+ * 配角：风影/背影/剪影 only — 禁止他人正面（仅グルミ可正面）
+ * 混合：P1 定稿 — 情绪弧 + visualBeat + 会話泡
  * 预览：storyboard-preview.html
  */
 const UNIT_STRIP_STORYBOARD = [
@@ -8,65 +10,90 @@ const UNIT_STRIP_STORYBOARD = [
     unitId: 1,
     stripTitle: "はじめまして、東京！",
     unitZh: "小李赴日",
-    unitArcZh: "抵日兴奋 → 认路标これ/それ → 浅草ここ/あそこ → 酒店安顿",
-    source: "storyboard-P1-第1单元-定稿.md v3 混合",
+    unitArcZh: "成田抵日 → 売店これ/それ → 浅草ここ/あそこ → 酒店机・いす",
+    source: "彩蛋/单元1/彩蛋-单元1（1-4）md.txt · 2026-05-21 样张重绘",
     panels: [
       {
         lessonId: 1,
-        sceneCloud: "成田空港 · はじめまして",
+        sceneCloud: "成田空港 · 李さんは中国人です",
         dialogueId: "l1-d1",
         visualBeat:
-          "到达大厅；グルミ拖小行李箱；背景「東京へようこそ」；接機の田中さん鞠躬",
+          "成田到达大厅中央；握红色护照；迷你行李箱；风影站员陪跑；抽象欢迎色块（无字）",
+        layers: {
+          L1: "成田空港到達ロビー・明亮现代",
+          L2: "窗外东京塔剪影·樱花瓣",
+          L3: "グルミ旅行帽+背包·ワクワク·站员仅背影/剪影",
+          L4: "红色护照·橙色四轮箱",
+        },
         bubbles: [
           { role: "田中", side: "left", jp: "はじめまして。わたしは田中です。", zh: "初次见面，我是田中。" },
           { role: "李", side: "right", isGurumi: true, jp: "はじめまして。わたしは李です。中国人です。", zh: "初次见面，我是小李，中国人。" },
           { role: "田中", side: "left", jp: "李さんは学生ですか。", zh: "你是学生吗？" },
           { role: "李", side: "right", isGurumi: true, jp: "いいえ、学生じゃありません。会社員です。", zh: "不，是公司职员。" },
         ],
+        note: "条带零字；泡里「田中」=风影接机人，不必写实脸",
       },
       {
         lessonId: 2,
-        sceneCloud: "空港外 · これは本です",
+        sceneCloud: "空港売店 · これは本です",
         dialogueId: "l2-d1",
         visualBeat:
-          "站外路标（東京駅・浅草）；站員小姐；グルミ指これ/それ/あれ（地图・案内板・远处站牌）",
+          "机场内小卖店；踮脚指风铃；风影站员弯腰；货架扇子招き猫",
+        layers: {
+          L1: "成田空港内売店・日式杂货货架",
+          L2: "窗外停机坪 ANA 飞机蓝尾翼",
+          L3: "グルミ踮脚指风铃·站员侧后弯腰无正脸",
+          L4: "玻璃风铃",
+        },
         bubbles: [
           { role: "站員", side: "left", jp: "これは何ですか。", zh: "这是什么？" },
           { role: "李", side: "right", isGurumi: true, jp: "これは本です。", zh: "这是书。" },
           { role: "站員", side: "left", jp: "それは何ですか。", zh: "那是什么？" },
           { role: "李", side: "right", isGurumi: true, jp: "それはノートです。", zh: "那是笔记本。" },
         ],
-        note: "泡为课文原句；美工把「本/ノート」画在地图册与行程本（不是教室课桌）",
+        note: "课文「本」=风铃/和杂货（指示词场景），非教室",
       },
       {
         lessonId: 3,
-        sceneCloud: "浅草 · ここはデパートです",
+        sceneCloud: "浅草駅前 · ここはデパートです",
         dialogueId: "l3-d1",
         visualBeat:
-          "雷門前；グルミ胜利手势；远处百货楼剪影=あそこ；指ここ=雷門",
-        captionSmall: "ここはデパートです。（第3課标题句·指远景）",
+          "浅草站前观光地图看板；歪头指图；风影站员指雷门方向；远景红色大灯笼（无字）",
+        layers: {
+          L1: "浅草駅前広場·路线牌·交番",
+          L2: "远处雷门红灯笼虚化",
+          L3: "グルミ围巾·困惑歪头·站员侧影指路无正脸",
+          L4: "折叠观光地图",
+        },
+        captionSmall: "ここはデパートです。（点格说明·指远景百货剪影时可叠）",
         bubbles: [
           { role: "同行", side: "left", jp: "すみません、図書館はどこですか。", zh: "图书馆在哪儿？" },
           { role: "李", side: "right", isGurumi: true, jp: "図書館はあそこです。", zh: "在那儿。" },
           { role: "同行", side: "left", jp: "食堂はどこですか。", zh: "食堂呢？" },
           { role: "李", side: "right", isGurumi: true, jp: "食堂はここです。", zh: "在这里。" },
         ],
-        note: "会話原文不变；视觉在浅草，手势表达ここ/あそこ",
+        note: "会話=场所询问；条带禁止可读招牌",
       },
       {
         lessonId: 4,
         sceneCloud: "ホテル · 部屋に机といすがあります",
         dialogueId: "l4-d1",
         visualBeat:
-          "夜晚酒店房间；グルミ躺床；地图与日语书散落；机・いす・テレビ",
-        captionSmall: "表情：明日も頑張ろう（心情，不进主泡）",
+          "商务酒店房间；床·机·椅子·电视·衣柜；坐床边环视满意；窗外晴空塔夜景",
+        layers: {
+          L1: "東京ビジネスホテル室内",
+          L2: "窗外晴空塔+隅田川灯光",
+          L3: "グルミ室内服·坐床环视",
+          L4: "房卡",
+        },
+        captionSmall: "表情：ここが今日の部屋（心情，不进条带）",
         bubbles: [
           { role: "朋友", side: "left", jp: "部屋に何がありますか。", zh: "房间里有什么？" },
           { role: "李", side: "right", isGurumi: true, jp: "机と椅子があります。", zh: "有桌子和椅子。" },
           { role: "朋友", side: "left", jp: "テレビはありますか。", zh: "有电视吗？" },
           { role: "李", side: "right", isGurumi: true, jp: "はい、あります。パソコンもあります。", zh: "有，还有电脑。" },
         ],
-        note: "朋友=电话/视频剪影或门外简笔，不必画第二主角脸",
+        note: "朋友=风影门外/手机光；条带无泡无字",
       },
     ],
   },
@@ -126,51 +153,64 @@ const UNIT_STRIP_STORYBOARD = [
     unitId: 3,
     stripTitle: "旅行の思い出",
     unitZh: "箱根旅行",
+    unitArcZh:
+      "李（グルミ）第一次去箱根放松：辣便当→京都红叶→车里唱歌→温泉街挑明信片",
+    source: "story-strip-soul-lock · 备案 P3 · curriculum-catalog headline",
     panels: [
       {
         lessonId: 9,
-        sceneCloud: "教室 · あの人はだれですか",
-        dialogueId: "l9-d1",
+        sceneCloud: "旅行 · 四川料理は辛いです",
+        dialogueId: "l9-biaori",
+        headline: "四川料理は辛いです",
+        visualBeat:
+          "箱根旅行休息站/巴士旁；便当盒四川料理红椒；仅1グルミ扇嘴「辛い」；同伴=风影",
         bubbles: [
-          { role: "朋友", side: "left", jp: "あの人はだれですか。", zh: "那个人是谁？" },
-          { role: "李", side: "right", isGurumi: true, jp: "あの人は田中さんです。先生です。", zh: "是田中老师。" },
-          { role: "朋友", side: "left", jp: "隣の人はだれですか。", zh: "旁边是谁？" },
-          { role: "李", side: "right", isGurumi: true, jp: "森さんです。会社員です。", zh: "森先生，公司职员。" },
+          { role: "同伴", side: "left", jp: "この四川料理は辛いですか。", zh: "这川菜辣吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、とても辛いです。", zh: "嗯，很辣。" },
+          { role: "同伴", side: "left", jp: "おいしいですか。", zh: "好吃吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、おいしいです。", zh: "好吃。" },
         ],
-        note: "标题「四川料理は辛い」待补旅行便当场景",
       },
       {
         lessonId: 10,
-        sceneCloud: "公園 · 散歩しましょう",
-        dialogueId: "l10-d1",
+        sceneCloud: "京都 · 紅葉は有名です",
+        dialogueId: "l10-biaori",
+        headline: "京都の紅葉は有名です",
+        visualBeat:
+          "红叶山道（京都旅行）；仅1グルミ举相机/赏红叶；风影同伴拍照；飘落もみじ",
         bubbles: [
-          { role: "朋友", side: "left", jp: "今日は天気がいいですね。", zh: "天气真好。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、公園で散歩しましょう。", zh: "在公园散步吧。" },
-          { role: "朋友", side: "left", jp: "コーヒーを飲みませんか。", zh: "喝咖啡吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "いいですね。", zh: "好啊。" },
+          { role: "同伴", side: "left", jp: "京都の紅葉は有名ですね。", zh: "京都红叶很有名呢。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、とても有名です。", zh: "嗯，很有名。" },
+          { role: "同伴", side: "left", jp: "きれいですね。", zh: "好漂亮。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、とてもきれいです。", zh: "非常漂亮。" },
         ],
-        note: "标题「京都の紅葉」待补红叶场景",
       },
       {
         lessonId: 11,
-        sceneCloud: "教室 · 日本語で話します",
-        dialogueId: "l11-d1",
+        sceneCloud: "バス · 歌が好きです",
+        dialogueId: "l11-biaori",
+        headline: "小野さんは歌が好きです",
+        visualBeat:
+          "旅行巴士内；风影同事唱歌（音符）；仅1グルミ拍手；热闹不写实人脸",
         bubbles: [
-          { role: "老师", side: "left", jp: "日本語で話してください。", zh: "请用日语说。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、日本語で話します。", zh: "好的。" },
-          { role: "老师", side: "left", jp: "もう一度言ってください。", zh: "请再说一遍。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、もう一度言います。", zh: "好的，再说一遍。" },
+          { role: "同伴", side: "left", jp: "小野さんは歌が好きです。", zh: "小野喜欢唱歌。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、歌が上手です。", zh: "嗯，唱得好。" },
+          { role: "同伴", side: "left", jp: "李さんも歌が好きですか。", zh: "你也喜欢唱吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、聞くのが好きです。", zh: "不，我喜欢听。" },
         ],
       },
       {
         lessonId: 12,
-        sceneCloud: "办公室 · より若いです",
-        dialogueId: "l12-d1",
+        sceneCloud: "温泉街 · より若いです",
+        dialogueId: "l12-biaori",
+        headline: "李さんは森さんより若いです",
+        visualBeat:
+          "温泉街明信片架；仅1グルミ挑明信片；两风影一高一矮（より若い/背）幽默",
         bubbles: [
-          { role: "同事", side: "left", jp: "李さんと王さんとどちらが若いですか。", zh: "谁更年轻？" },
-          { role: "李", side: "right", isGurumi: true, jp: "李さんは王さんより若いです。", zh: "小李更年轻。" },
-          { role: "同事", side: "left", jp: "どちらが背が高いですか。", zh: "谁更高？" },
-          { role: "李", side: "right", isGurumi: true, jp: "王さんのほうが高いです。", zh: "小王更高。" },
+          { role: "同伴", side: "left", jp: "李さんと森さんとどちらが若いですか。", zh: "你和森谁更年轻？" },
+          { role: "李", side: "right", isGurumi: true, jp: "李さんは森さんより若いです。", zh: "我比森更年轻。" },
+          { role: "同伴", side: "left", jp: "どちらが背が高いですか。", zh: "谁更高？" },
+          { role: "李", side: "right", isGurumi: true, jp: "森さんのほうが高いです。", zh: "森更高。" },
         ],
       },
     ],
