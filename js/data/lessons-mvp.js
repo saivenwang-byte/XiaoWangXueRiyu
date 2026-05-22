@@ -1,4 +1,4 @@
-/** PRD V1.0：第14/16/18課 · 三関 · 日本語データ */
+/** PRD V1.0：第13–20課（MVP 8課）· 四関 · 日本語データ */
 const LESSONS_MVP = [
   {
     lessonId: 14,
@@ -511,6 +511,19 @@ const LESSONS_MVP = [
   },
 ];
 
+function mergeStageLessonsIntoMvp(stageList) {
+  if (!Array.isArray(stageList)) return;
+  stageList.forEach((lesson) => {
+    const idx = LESSONS_MVP.findIndex((x) => x.lessonId === lesson.lessonId);
+    if (idx >= 0) LESSONS_MVP[idx] = lesson;
+    else LESSONS_MVP.push(lesson);
+  });
+  LESSONS_MVP.sort((a, b) => a.lessonId - b.lessonId);
+}
+
+if (typeof LESSONS_STAGE2_MVP !== "undefined") mergeStageLessonsIntoMvp(LESSONS_STAGE2_MVP);
+if (typeof LESSONS_PRD_UNRELEASED_MVP !== "undefined") mergeStageLessonsIntoMvp(LESSONS_PRD_UNRELEASED_MVP);
+
 const LINK_STYLES = {
   prerequisite: { color: "#4A90D9", icon: "📖" },
   contrast: { color: "#E53935", icon: "⚠️" },
@@ -536,6 +549,25 @@ const CONTRAST_PRESETS = {
       example: "窓が割れています。",
       exampleZh: "窗户破了（状态还在）。",
       mistake: "× 今、手紙を書いています（今しているは進行）",
+    },
+  },
+  "l17_hoshii+l17_tai": {
+    title: "〜がほしい vs 〜たい",
+    left: {
+      label: "がほしい（名詞）",
+      pattern: "名詞 ＋ がほしい",
+      timeline: "欲しいもの",
+      example: "新しい洋服がほしいです。",
+      exampleZh: "想要新衣服。",
+      mistake: "× 日本へ行きがほしい",
+    },
+    right: {
+      label: "たい（動作）",
+      pattern: "ます形−ます ＋ たい",
+      timeline: "したいこと",
+      example: "日本へ行きたいです。",
+      exampleZh: "想去日本。",
+      mistake: "× 靴を行きたい",
     },
   },
   "l18_naru+l18_suru": {

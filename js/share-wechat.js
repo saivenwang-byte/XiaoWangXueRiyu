@@ -1,6 +1,6 @@
 /** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发；小程序等企业后再上 */
 const ShareWechat = (() => {
-  const CACHE_VER = "46";
+  const CACHE_VER = "79";
 
   const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
 
@@ -97,7 +97,7 @@ const ShareWechat = (() => {
       return;
     }
 
-    const title = "标日课后巩固 · 第14/16/18课";
+    const title = "标日课后巩固 · 学习の道";
     const text = "10分钟课后巩固：语法→会話→测试。点开链接就能学，可继续转发给好友。\n" + url;
 
     if (navigator.share && !isWeChat()) {
