@@ -1,3 +1,6 @@
+@import url("story-egg-caption.css");
+@import url("story-egg-typography.css");
+
 :root {
   --mvp-primary: #ff8a80;
   --mvp-primary-dark: #e57373;
@@ -3090,13 +3093,51 @@ button.is-speaking {
 
 .journey-unit-summary {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
   min-height: 32px;
   cursor: pointer;
   list-style: none;
   box-sizing: border-box;
+}
+
+.journey-unit-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  min-height: 32px;
+}
+
+.journey-unit-details:not([open]) .journey-unit-strip--full {
+  display: none;
+}
+
+.journey-unit-strip {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #121218;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.journey-unit-strip--full {
+  margin: 0 10px 10px;
+  border-radius: 10px;
+  max-height: min(50dvh, 480px);
+}
+
+.journey-unit-strip--full img {
+  display: block;
+  width: 100%;
+  max-height: min(50dvh, 480px);
+  object-fit: contain;
+  object-position: center top;
 }
 
 .journey-unit-summary::-webkit-details-marker {
@@ -3280,10 +3321,147 @@ button.is-speaking {
 .journey-lesson-grid {
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(2, minmax(76px, 1fr));
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-content: start;
+}
+
+.journey-lesson-slot {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  align-content: stretch;
+  min-width: 0;
+}
+
+.journey-lesson-recap {
+  border-radius: 12px;
+  border: 1px solid var(--unit-border, #ffcdd2);
+  background: linear-gradient(165deg, #fffefb 0%, #fff8f0 100%);
+  padding: 10px 12px 12px;
+  box-shadow: 0 2px 10px rgba(38, 50, 56, 0.06);
+  transition: box-shadow 0.35s ease, outline 0.35s ease;
+}
+
+.journey-lesson-recap.is-recap-highlight {
+  outline: 2px solid var(--stage-accent, var(--mvp-primary));
+  box-shadow: 0 4px 18px rgba(229, 115, 115, 0.25);
+}
+
+.journey-recap-head {
+  margin-bottom: 8px;
+}
+
+.journey-recap-eyebrow {
+  margin: 0 0 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--stage-accent, #e57373);
+}
+
+.journey-recap-crumb {
+  margin: 0 0 4px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #78909c;
+}
+
+.journey-recap-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.journey-recap-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journey-recap-art-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fcf8f5;
+  cursor: zoom-in;
+  aspect-ratio: 1080 / 608;
+  max-height: min(42dvh, 280px);
+}
+
+.journey-recap-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.journey-recap-art-tag {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(38, 50, 56, 0.45);
+}
+
+.journey-recap-know {
+  margin: 0;
+  padding: 0 0 0 1em;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #37474f;
+}
+
+.journey-recap-know li {
+  margin-bottom: 6px;
+}
+
+.journey-recap-know .jp {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.journey-recap-dialogue-label {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.journey-recap-dialogue ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journey-recap-dialogue li {
+  margin-bottom: 6px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.journey-recap-role {
+  display: inline-block;
+  min-width: 2.2em;
+  margin-right: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #90a4ae;
+}
+
+.journey-recap-dlg-zh {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
 }
 
 .lesson-row {
@@ -4603,6 +4781,13 @@ body.journey-sheet-open {
   padding: 12px 16px 24px;
   max-width: 480px;
   margin: 0 auto;
+  /* 易错/清音易错（SK-04）· 全景淡黄格 · 点字弹层 tag 共用 */
+  --intro-trap-bg: #fff8e1;
+  --intro-trap-bg-mid: #ffecb3;
+  --intro-trap-rail: #ffe0b2;
+  --intro-trap-border: #ffe082;
+  --intro-trap-accent: #e65100;
+  --intro-trap-kana: #f57c00;
 }
 
 .intro-hero h2 {
@@ -4859,8 +5044,12 @@ body.journey-sheet-open {
 }
 
 .gojuon-cell.is-special {
-  border-color: #ff8f00;
-  background: #fff8e1;
+  border-color: var(--intro-trap-border, #ffe082);
+  background: linear-gradient(
+    145deg,
+    var(--intro-trap-bg, #fff8e1),
+    var(--intro-trap-bg-mid, #ffecb3)
+  );
 }
 
 .gojuon-kana {
@@ -5271,7 +5460,12 @@ body.journey-sheet-open {
 }
 
 .panorama-cell.is-special {
-  background: #fffef5;
+  background: linear-gradient(
+    145deg,
+    var(--intro-trap-bg, #fff8e1),
+    var(--intro-trap-bg-mid, #ffecb3)
+  );
+  box-shadow: inset 0 0 0 1px var(--intro-trap-border, #ffe082);
 }
 
 .panorama-cell.is-special::after {
@@ -5282,8 +5476,8 @@ body.journey-sheet-open {
   font-size: 7px;
   font-weight: 700;
   line-height: 1;
-  color: #bcaaa4;
-  opacity: 0.85;
+  color: var(--intro-trap-accent, #e65100);
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -5540,8 +5734,8 @@ body.journey-sheet-open {
 }
 
 .intro-cat--trap .intro-cat-rail {
-  background: #ffe0b2;
-  color: #e65100;
+  background: var(--intro-trap-rail, #ffe0b2);
+  color: var(--intro-trap-accent, #e65100);
 }
 
 .intro-cat--dakuon .intro-cat-rail {
@@ -5603,15 +5797,19 @@ body.journey-sheet-open {
   width: 52px;
   height: 52px;
   border-radius: 10px;
-  background: linear-gradient(145deg, #fff8e1, #ffecb3);
-  border: 1px solid #ffe082;
+  background: linear-gradient(
+    145deg,
+    var(--intro-trap-bg, #fff8e1),
+    var(--intro-trap-bg-mid, #ffecb3)
+  );
+  border: 1px solid var(--intro-trap-border, #ffe082);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .intro-homophone-han {
   font-size: 22px;
   font-weight: 800;
-  color: #f57c00;
+  color: var(--intro-trap-kana, #f57c00);
   line-height: 1.1;
 }
 
@@ -5853,7 +6051,11 @@ body.mvp-app .bottom-nav a.nav-item--link {
 
 .panorama-cell.has-sensei-tip:active,
 .intro-kana-chip[data-kana-tip]:active {
-  background: #fff8e1;
+  background: linear-gradient(
+    145deg,
+    var(--intro-trap-bg-mid, #ffecb3),
+    var(--intro-trap-bg, #fff8e1)
+  );
 }
 
 .intro-kana-chip {
@@ -5930,8 +6132,8 @@ body.intro-tip-open {
 
 .intro-tip-tag--trap,
 .intro-tip-tag--易错 {
-  background: #ffe0b2;
-  color: #e65100;
+  background: var(--intro-trap-rail, #ffe0b2);
+  color: var(--intro-trap-accent, #e65100);
 }
 
 .intro-tip-tag--浊音 {
@@ -6160,10 +6362,47 @@ body.intro-tip-open {
   border-radius: 4px;
 }
 
+.journey-story-dev-hint {
+  margin: 0 0 8px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #6d4c41;
+}
+
+.journey-story-dev-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.journey-story-dev-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.journey-story-dev-label {
+  flex: 0 0 1.6rem;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5d4037;
+}
+
 .journey-story-dev-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+a.story-dev-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
 }
 
 .story-dev-btn {
@@ -6174,7 +6413,7 @@ body.intro-tip-open {
 
 .story-reward-modal .mvp-backdrop-inner,
 .story-reward-sheet {
-  max-width: min(96vw, 440px);
+  max-width: min(96vw, 720px);
   width: 100%;
 }
 
@@ -6211,75 +6450,1073 @@ body.intro-tip-open {
   padding: 6px 10px;
 }
 
-.story-reward-narrator {
+.story-reward-comic {
+  margin-bottom: 8px;
+}
+
+/* 通关全家福 · 4×6 竖屏一屏（1080×1620） */
+.story-reward-sheet--grand .story-reward-comic {
+  margin-bottom: 4px;
+  max-height: min(72dvh, calc(100dvh - 11rem));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-reward-sheet--grand .story-reward-comic-img {
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: min(72dvh, calc(100dvh - 11rem));
+  object-fit: contain;
+  opacity: 1;
+  border-radius: 10px;
+}
+
+.story-reward-comic-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--unit-border, #ffcdd2);
+  background: #fcf8f5;
+}
+
+/* 竖排条带 · 画册满宽（无黑边 letterbox） */
+.story-reward-comic-frame--album.story-reward-comic-frame--vertical.has-art {
+  aspect-ratio: auto;
+  max-height: min(78dvh, calc(100dvh - 7.5rem));
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.story-reward-comic-frame--album.story-reward-comic-frame--vertical.has-art .story-reward-comic-img {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  max-height: min(78dvh, calc(100dvh - 7.5rem));
+  object-fit: contain;
+}
+
+.story-reward-title--album {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.story-reward-inner--album .story-reward-head {
+  margin-bottom: 6px;
+}
+
+.story-reward-unit-recap {
   margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--unit-border, #ffcdd2);
   font-size: 11px;
+}
+
+.story-reward-unit-recap-title {
+  margin: 0 0 4px;
+  font-weight: 700;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-reward-unit-recap-crumb {
+  margin: 0 0 6px;
+  color: #78909c;
+}
+
+.story-reward-unit-recap-list {
+  margin: 0;
+  padding: 0 0 0 1.2em;
+}
+
+.story-reward-unit-recap-list li {
+  margin-bottom: 4px;
   line-height: 1.4;
 }
 
-.story-reward-strip {
+.story-unit-recap-idx {
+  display: inline-block;
+  min-width: 1.2em;
+  font-weight: 800;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-unit-recap-label {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.story-unit-recap-zh {
+  font-size: 10px;
+  color: #607d8b;
+}
+
+/* —— L1 单课完成彩蛋（产品稿） —— */
+.story-egg-sheet--l1 .story-egg-inner {
+  max-height: min(92dvh, 100%);
+  overflow-y: auto;
+  padding: 12px 14px 16px;
+}
+
+.story-egg-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.story-egg-eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-egg-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.story-egg-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #78909c;
+}
+
+.story-egg-title-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #78909c;
+}
+
+.story-egg-block-label {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-egg-lesson-block {
+  margin-bottom: 12px;
+}
+
+.story-egg-lesson-headline {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--mvp-text, #37474f);
+}
+
+.story-egg-lesson-theme {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #546e7a;
+}
+
+.story-egg-lesson-crumb {
+  margin: 4px 0 0;
+  font-size: 10px;
+  color: #90a4ae;
+}
+
+.story-egg-points {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 248, 240, 0.96);
+  border: 1px solid var(--unit-border, #ffcdd2);
+}
+
+.story-egg-points-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story-egg-points-list li {
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.story-egg-points-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* 要点中日层级见 story-egg-typography.css */
+
+.story-egg-points-empty {
+  margin: 0;
+  font-size: 11px;
+  color: #90a4ae;
+}
+
+.story-egg-know-card {
+  margin-bottom: 4px;
+}
+
+.story-egg-know-card-inner {
+  position: relative;
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1080 / 608;
+  max-height: min(48dvh, 380px);
+  background: #fcf8f5;
+  border: 1px solid var(--unit-border, #ffcdd2);
+}
+
+.story-egg-know-card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.story-egg-know-card-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px 8px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.story-egg-know-card-jp {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.story-egg-know-card-zh {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.story-egg-unit-recap {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--unit-border, #ffcdd2);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.story-egg-unit-recap-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-egg-unit-recap-crumb {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #78909c;
+}
+
+.story-egg-unit-recap-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story-egg-unit-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.story-egg-unit-item.is-current {
+  font-weight: 600;
+}
+
+.story-egg-unit-idx {
+  flex-shrink: 0;
+  min-width: 1.1em;
+  font-weight: 800;
+  color: var(--stage-accent, #e57373);
+}
+
+.story-egg-unit-label {
+  font-weight: 600;
+}
+
+.story-egg-unit-zh {
+  flex: 1 1 100%;
+  font-size: 11px;
+  color: #607d8b;
+  padding-left: 1.4em;
+}
+
+.story-egg-art-wrap {
+  position: relative;
+  margin: 0 0 14px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fcf8f5;
+  aspect-ratio: 1080 / 608;
+  max-height: min(52dvh, 420px);
+}
+
+.story-egg-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.story-egg-art-tag {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(38, 50, 56, 0.5);
+}
+
+.story-egg-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-egg-actions .btn {
+  width: 100%;
+}
+
+/* L2 单元拼图 · 全屏黑底 · 无标题 */
+.story-egg-modal--fullscreen {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.story-egg-modal--fullscreen .mvp-backdrop-inner {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.story-egg-sheet--l2,
+.story-egg-sheet--l3 {
+  width: 100%;
+  height: 100%;
+  max-height: 100dvh;
+  background: #000;
+}
+
+.story-egg-inner--l2,
+.story-egg-inner--l3 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+.story-egg-close--float,
+.story-egg-continue--float {
+  position: absolute;
+  z-index: 4;
+}
+
+.story-egg-close--float {
+  top: max(8px, env(safe-area-inset-top));
+  right: 8px;
+}
+
+.story-egg-continue--float {
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 8em;
+}
+
+.story-egg-l2-strip-stage {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  padding: max(6px, env(safe-area-inset-top)) 0 max(10px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.story-egg-l2-strip-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.journey-lesson-row-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.journey-lesson-row-wrap > .lesson-row {
+  min-width: 0;
+}
+
+.journey-lesson-egg-btn {
+  flex-shrink: 0;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  background: #fafafa;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.journey-lesson-egg-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journey-unit-gift--strip {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.story-egg-l2-strip-caps {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(52px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 8px;
+  padding: 0 8px;
+  pointer-events: none;
+}
+
+.story-egg-l2-strip-cap {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.story-egg-l2-strip-stage--grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  padding: 48px 0 64px;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+@media (orientation: landscape) {
+  .story-egg-l2-strip-stage--grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+  }
+}
+
+.story-egg-l2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+@media (orientation: landscape) {
+  .story-egg-l2-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+  }
+}
+
+.story-egg-l2-cell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.story-egg-l2-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-egg-l2-cap {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  max-width: calc(100% - 12px);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  text-align: right;
+}
+
+/* L3 · 4×6 地理序 */
+.story-egg-l3-stage {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  padding: 44px 8px 56px;
+  box-sizing: border-box;
+}
+
+.story-egg-l3-composite {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.story-egg-l3-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-bottom: 10px;
+  grid-template-rows: repeat(6, 1fr);
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 横屏：保持 4×6 地理序，整体缩放适配（勿改为 6×4，否则会打乱行列） */
+@media (orientation: landscape) {
+  .story-egg-l3-stage {
+    padding: max(36px, env(safe-area-inset-top)) 10px max(48px, env(safe-area-inset-bottom));
+  }
+
+  .story-egg-l3-grid {
+    width: min(100%, calc(var(--egg-vv-h, 100dvh) * 4 / 6));
+    height: min(100%, var(--egg-vv-h, 100dvh));
+    max-height: calc(var(--egg-vv-h, 100dvh) - 88px);
+    margin: 0 auto;
+    aspect-ratio: 4 / 6;
+  }
+}
+
+.story-egg-modal--fullscreen[data-egg-orientation="landscape"] .story-egg-l2-strip-img {
+  max-height: min(100%, calc(var(--egg-vv-h, 100dvh) - 72px));
+  max-width: min(100%, var(--egg-vv-w, 100vw));
+}
+
+.story-egg-l3-cell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #12121a;
+}
+
+.story-egg-l3-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.story-egg-l3-cap {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-size: 7px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-reward-comic-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: #fcf8f5;
+}
+
+.story-reward-comic-img.is-loaded {
+  opacity: 1;
+}
+
+.story-reward-strip--grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+  box-sizing: border-box;
+  background: linear-gradient(145deg, #eceff1 0%, #fafafa 100%);
+}
+
+.story-reward-strip--grid.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.story-reward-rotate-hint {
+  margin: 6px 0 0;
+  font-size: 10px;
+  text-align: center;
+  color: #78909c;
 }
 
 .story-reward-panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 88px;
-  padding: 6px 4px;
-  border-radius: 10px;
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  min-height: 0;
+  height: 100%;
+  padding: 3px;
+  border-radius: 6px;
   border: 1px solid var(--unit-border, #ffcdd2);
   background: var(--panel-bg, #fff5f5);
   box-sizing: border-box;
   gap: 2px;
+  overflow: hidden;
+  font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  cursor: default;
+}
+
+button.story-reward-panel {
+  appearance: none;
+  margin: 0;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.story-reward-panel.is-unlocked:focus-visible {
+  outline: 2px solid var(--panel-accent, var(--mvp-primary));
+  outline-offset: 1px;
 }
 
 .story-reward-panel.is-locked {
-  opacity: 0.45;
-  filter: grayscale(0.85);
+  opacity: 0.42;
+  filter: grayscale(0.9);
+  pointer-events: none;
 }
 
-.story-reward-panel.is-locked .story-reward-panel-caption,
-.story-reward-panel.is-locked .story-gurumi-icon {
-  opacity: 0.5;
-}
-
-.story-reward-strip.is-unit-complete .story-reward-panel.is-unlocked {
-  box-shadow: 0 0 0 2px var(--panel-accent, var(--mvp-primary));
+.story-reward-strip--grid.is-unit-complete .story-reward-panel.is-unlocked {
+  box-shadow: inset 0 0 0 2px var(--panel-accent, var(--mvp-primary));
 }
 
 .story-reward-panel-slot {
-  font-size: 9px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  font-size: 8px;
   font-weight: 800;
-  color: var(--panel-accent, #e57373);
+  line-height: 1;
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--panel-accent, #e57373);
 }
 
-.story-gurumi-icon {
-  width: 28px;
-  height: 34px;
-  color: var(--panel-accent, #81c784);
+.story-reward-panel-manga {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.story-reward-panel-lesson {
-  font-size: 10px;
-  font-weight: 800;
+.story-reward-passage {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 248, 240, 0.95));
+  border: 1px solid var(--unit-border, #ffcdd2);
+  font-size: 13px;
+  line-height: 1.55;
   color: #455a64;
 }
 
+.story-reward-passage p {
+  margin: 0;
+}
+
+.story-reward-strip-title {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stage-accent, var(--mvp-primary));
+}
+
+.story-reward-comic-frame--gallery.has-art {
+  box-shadow: 0 4px 14px rgba(38, 50, 56, 0.1);
+}
+
+.story-reward-comic-frame--album.has-art {
+  box-shadow: none;
+}
+
+.story-reward-comic-frame.has-art {
+  cursor: zoom-in;
+}
+
+.story-reward-comic-frame.has-art .story-reward-strip--grid {
+  pointer-events: none;
+}
+
+.story-reward-quad-hits {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  pointer-events: none;
+}
+
+.story-reward-quad-hits--vertical {
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4, 1fr);
+}
+
 .story-reward-panel-caption {
-  font-size: 8px;
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  max-width: 42%;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
   line-height: 1.25;
-  color: #78909c;
+  color: rgba(255, 255, 255, 0.96);
+  background: rgba(38, 50, 56, 0.42);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.story-reward-quad-hit {
+  position: relative;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.story-reward-quad-hit:focus-visible {
+  outline: 2px solid var(--stage-accent, var(--mvp-primary));
+  outline-offset: -2px;
+}
+
+.story-reward-comic-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.story-comic-fullscreen-btn {
+  font-size: 11px !important;
+  padding: 5px 12px !important;
+}
+
+/* —— 格内漫画泡（仅日文） —— */
+.manga-panel-scene {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+  align-items: center;
+  max-width: 100%;
+}
+
+.manga-scene-place {
+  font-size: clamp(6px, 1.6vw, 9px);
+  font-weight: 700;
+  color: #546e7a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.manga-scene-tag {
+  font-size: clamp(5px, 1.4vw, 8px);
+  color: #90a4ae;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.manga-panel-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.manga-panel-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.manga-bubble {
+  max-width: 94%;
+  padding: 2px 4px;
+  border: 1.5px solid #37474f;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.manga-bubble.is-right {
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.manga-bubble.is-left {
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.manga-bubble.is-gurumi {
+  background: #fffde7;
+}
+
+.manga-bubble--thought {
+  border-radius: 12px;
+}
+
+.manga-bubble--narration {
+  border-style: dashed;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.manga-bubble-jp {
+  display: block;
+  font-size: clamp(6px, 1.85vw, 10px);
+  font-weight: 600;
+  line-height: 1.28;
+  overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+.manga-narration {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 1px 3px;
+  font-size: clamp(5px, 1.35vw, 8px);
+  line-height: 1.25;
+  color: #455a64;
+  border: 1px dashed #90a4ae;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.85);
   overflow: hidden;
-  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+/* —— 单格 / 四格满屏 —— */
+.story-comic-zoom {
+  z-index: 1200;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.story-comic-zoom-sheet {
+  position: relative;
+  width: min(96vw, calc(92vh * 16 / 9));
+  max-height: 92vh;
+  background: #1a1a2e;
+  border-radius: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.story-comic-zoom-sheet--strip {
+  width: min(96vw, 96vh * 16 / 9);
+}
+
+.story-comic-zoom-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+}
+
+.story-comic-zoom-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #eceff1;
+}
+
+.story-comic-zoom-headline {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: #37474f;
+}
+
+.story-comic-zoom-art-mat {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  background: #fffdf8;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(38, 50, 56, 0.12);
+  box-sizing: border-box;
+}
+
+.story-comic-zoom-panel-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.story-comic-zoom-dialogue {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px dashed #cfd8dc;
+}
+
+.story-comic-zoom-unit-arc {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: #78909c;
+}
+
+.story-comic-zoom-body--panel .story-comic-zoom-frame {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #fff5f5 0%, #fafafa 100%);
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.story-comic-zoom-body--panel .manga-bubble-jp {
+  font-size: clamp(14px, 4vw, 22px);
+  -webkit-line-clamp: 3;
+}
+
+.story-comic-zoom-body--panel .manga-scene-place {
+  font-size: clamp(11px, 3vw, 16px);
+}
+
+.story-comic-zoom-body--strip {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-comic-zoom-strip-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .story-reward-foot {

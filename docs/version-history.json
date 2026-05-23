@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.1",
-    "cache": "46",
+    "cache": "93",
     "date": "2026-05-21",
-    "note": "MVP 已冻结；见 docs/MVP-FREEZE.md",
+    "note": "三级彩蛋收官：单元条带+单课彩蛋+通关24格(确认版裁切)；v93",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"
@@ -67,6 +67,32 @@
       "local": "http://localhost:8765/index.html?v=46",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46",
       "mvp_freeze_doc": "docs/MVP-FREEZE.md"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "47",
+      "date": "2026-05-21",
+      "note": "阶段二种子包：第13/15/17/19/20课四关数据+depth+vocab；+139 TTS",
+      "lessons": [13, 14, 15, 16, 17, 18, 19, 20],
+      "local": "http://localhost:8765/index.html?v=47",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=47"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "48",
+      "date": "2026-05-21",
+      "note": "学习の道 P0：curriculum-catalog、journey-home、intro.html",
+      "local": "http://localhost:8765/index.html?v=48",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=48"
+    },
+    {
+      "product": "1.0.1",
+      "cache": "93",
+      "date": "2026-05-21",
+      "note": "课程插画+三级彩蛋：L1/L2/L3、确认版24格裁切、单元1-6条带、真机排版与viewport",
+      "doc": "docs/story-egg-phase-ship.md",
+      "local": "http://localhost:8765/index.html?v=93",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=93"
     }
   ],
   "versioning_rules": {

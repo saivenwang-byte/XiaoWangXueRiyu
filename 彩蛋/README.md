@@ -13,7 +13,10 @@
 | `单元5/` | 第 17–20 課 | `--unit 5` |
 | `单元6/` | 第 21–24 課 | `--unit 6` |
 
-各单元内另有 `彩蛋-单元N….txt` 为分镜/提示词真源。
+各单元内另有 `彩蛋-单元N….txt` 为分镜/提示词真源（**每单元一套**）。
+
+**制作前必读**：[`docs/story-unit-production-workflow.md`](../docs/story-unit-production-workflow.md)（开工校对 + 六单元索引）  
+**校对命令**：`python scripts/preflight-unit-strip.py --unit N`
 
 ## 同步后常见文件
 

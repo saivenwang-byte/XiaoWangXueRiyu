@@ -42,15 +42,9 @@ const JourneyHome = (function () {
     return typeof curriculumMapFullyRevealed === "function" && curriculumMapFullyRevealed(state);
   }
 
-  /** P0：仅展开当前主攻单元（与 getCurrentStageUnitId 一致） */
-  function getExpandedUnitId(state) {
-    if (typeof getCurrentStageUnitId === "function") return getCurrentStageUnitId(state);
-    const units = typeof getCurriculumUnitsForHome === "function" ? getCurriculumUnitsForHome() : [];
-    for (const u of units) {
-      const uv = unitVisual(state, u.id);
-      if (uv === "active" || uv === "start") return u.id;
-    }
-    return units[0]?.id || 1;
+  /** 首页默认：六单元全部折叠；仅点地图站或课次后再展开 */
+  function getExpandedUnitId() {
+    return null;
   }
 
   function unitProgressLabel(state, unit) {
@@ -58,6 +52,25 @@ const JourneyHome = (function () {
       typeof curriculumUnitProgress === "function" ? curriculumUnitProgress(state, unit) : null;
     if (!prog || !prog.total) return "";
     return `${prog.cleared}/${prog.total} 課`;
+  }
+
+  function lessonEggThumbHtml(state, unitId, lessonId) {
+    if (typeof curriculumLessonCleared !== "function" || !curriculumLessonCleared(state, lessonId)) {
+      return "";
+    }
+    const uid = Number(unitId);
+    const lid = Number(lessonId);
+    const slot = (() => {
+      if (typeof UNIT_STRIP_STORYBOARD === "undefined") return 1;
+      const sb = UNIT_STRIP_STORYBOARD.find((u) => u.unitId === uid);
+      const i = sb?.panels?.findIndex((p) => p.lessonId === lid) ?? -1;
+      return i >= 0 ? i + 1 : 1;
+    })();
+    const primary = `assets/story/lesson-${lid}-egg.webp`;
+    const fallbacks = `assets/story/lesson-${lid}-egg.png,assets/story/unit-${uid}-panel-${slot}-clean.png`;
+    return `<button type="button" class="journey-lesson-egg-btn" data-lesson-egg="${lid}" title="本课插画" aria-label="第${lid}課 插画">
+      <img src="${escapeHtml(primary)}" alt="" loading="lazy" decoding="async" data-fallbacks="${escapeHtml(fallbacks)}" />
+    </button>`;
   }
 
   function stationClass(state, lessonId) {
@@ -150,7 +163,13 @@ const JourneyHome = (function () {
         const uv = unitVisual(state, unit.id);
         const isOpen = unit.id === expandedId;
         const rows = unit.lessons
-          .map((L, i) => renderLessonRow(L, state, unit.id, i + 1))
+          .map((L, i) => {
+            const row = renderLessonRow(L, state, unit.id, i + 1);
+            const eggBtn = lessonEggThumbHtml(state, unit.id, L.lessonId);
+            return `<div class="journey-lesson-slot">
+              <div class="journey-lesson-row-wrap">${row}${eggBtn}</div>
+            </div>`;
+          })
           .join("");
         const badge =
           uv === "cleared"
@@ -164,19 +183,23 @@ const JourneyHome = (function () {
         const style = `style="--stage-accent:${theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
         const openAttr = isOpen ? " open" : "";
         const currentCls = isOpen ? " is-unit-current" : "";
+        const unitFourGold =
+          typeof curriculumUnitFourGold === "function" && curriculumUnitFourGold(state, unit.id);
         return `
-        <details class="journey-unit-details journey-catalog-unit is-unit-${uv}${currentCls}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${style}${openAttr}>
+        <details class="journey-unit-details journey-catalog-unit is-unit-${uv}${currentCls}${unitFourGold ? " has-unit-four-gold" : ""}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${style}${openAttr}>
           <summary class="journey-unit-summary">
-            <span class="journey-unit-chevron" aria-hidden="true"></span>
-            <div class="journey-unit-summary-main">
-              <span class="journey-stage-tag">${escapeHtml(theme.spectrum || theme.label)}</span>
-              <strong class="journey-stage-unit">${escapeHtml(unit.titleJa)}</strong>
-              <span class="journey-stage-zh zh-annotation">${escapeHtml(unit.titleZh)}</span>
-            </div>
-            <div class="journey-unit-summary-end">
-              ${progLbl ? `<span class="journey-unit-prog">${escapeHtml(progLbl)}</span>` : ""}
-              ${typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : ""}
-              <span class="journey-unit-badge is-unit-${uv}">${badge}</span>
+            <div class="journey-unit-summary-bar">
+              <span class="journey-unit-chevron" aria-hidden="true"></span>
+              <div class="journey-unit-summary-main">
+                <span class="journey-stage-tag">${escapeHtml(theme.spectrum || theme.label)}</span>
+                <strong class="journey-stage-unit">${escapeHtml(unit.titleJa)}</strong>
+                <span class="journey-stage-zh zh-annotation">${escapeHtml(unit.titleZh)}</span>
+              </div>
+              <div class="journey-unit-summary-end">
+                ${progLbl ? `<span class="journey-unit-prog">${escapeHtml(progLbl)}</span>` : ""}
+                ${typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : ""}
+                <span class="journey-unit-badge is-unit-${uv}">${badge}</span>
+              </div>
             </div>
           </summary>
           <div class="journey-unit-body">
@@ -187,16 +210,26 @@ const JourneyHome = (function () {
       .join("");
     const devHint =
       typeof StoryReward !== "undefined" && StoryReward.storyDevMode && StoryReward.storyDevMode()
-        ? `<div class="journey-dev-banner journey-story-dev">
-          <p class="journey-story-dev-title">开发 · 四格分段测 · <a href="http://127.0.0.1:8777/storyboard-preview.html" target="_blank" rel="noopener">全册24格审阅↗</a> · <code>StoryRewardDev.help()</code></p>
+        ? (() => {
+            const v = cacheVer();
+            const unitRow = (u) => `
+            <div class="journey-story-dev-row">
+              <span class="journey-story-dev-label">U${u}</span>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="preview" data-unit="${u}">预览</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="complete" data-unit="${u}">模拟看完</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="reset" data-unit="${u}">重测首次弹</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="status" data-unit="${u}">状态</button>
+            </div>`;
+            return `<div class="journey-dev-banner journey-story-dev">
+          <p class="journey-story-dev-title">四格验收 · 2×2 条带 · <a href="story-unit-phone-real.html" target="_blank" rel="noopener">竖屏真比例↗</a> · <a href="http://127.0.0.1:8777/storyboard-preview.html" target="_blank" rel="noopener">分镜↗</a> · <code>StoryRewardDev.help()</code></p>
+          <p class="journey-story-dev-hint zh-annotation">顺序：U1→U6 ·「模拟看完」= 四课金星+四格齐+排队首次弹 ·「重测首次弹」= 仅重置已读（须单元已齐）</p>
+          <div class="journey-story-dev-grid">${[1, 2, 3, 4, 5, 6].map(unitRow).join("")}</div>
           <div class="journey-story-dev-actions">
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="preview" data-unit="4">预览U4</button>
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="panel" data-unit="4" data-panels="2">U4亮格2</button>
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="complete" data-unit="4">U4模拟齐</button>
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="reset" data-unit="4">重测首次弹</button>
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="status" data-unit="4">状态</button>
+            <a class="btn secondary story-dev-link" href="index.html?v=${v}&storyDev=1&storyAuto=1">一键 U1 看完待弹</a>
+            <button type="button" class="btn secondary story-dev-btn" data-story-dev="open-unit" data-unit="1">展开 U1</button>
           </div>
-        </div>`
+        </div>`;
+          })()
         : devCatalogMode()
           ? `<p class="journey-dev-banner">試用：真实进度 · 四关金星 ○☆★=未学/未满分/通关</p>`
           : "";
@@ -269,7 +302,7 @@ const JourneyHome = (function () {
       <div class="journey-legend-group journey-legend-nav" aria-label="底栏图标">
         <span class="journey-legend-nav-item" title="课程">${courseIcon}</span>
         <span class="journey-legend-nav-item" title="我的">${meIcon}</span>
-        <span class="journey-legend-nav-item" title="五十音">${kanaIcon}</span>
+        <span class="journey-legend-nav-item" title="注音">${kanaIcon}</span>
       </div>
     </div>`;
   }
@@ -298,7 +331,7 @@ const JourneyHome = (function () {
         <span class="journey-part0-icon">${kanaIcon}</span>
         <span class="journey-part0-badge">${pv === "start" ? "START" : "00"}</span>
         <div class="journey-part0-text">
-          <strong class="journey-part0-title">五十音 · ${escapeHtml(CURRICULUM_PART0.titleJa)}</strong>
+          <strong class="journey-part0-title">注音 · ${escapeHtml(CURRICULUM_PART0.titleJa)}</strong>
           <span class="journey-part0-desc zh-annotation">${pv === "start" ? "第一步 · 发音与文字" : "已完成 · 可随时复习"}</span>
         </div>
       </a>`;
@@ -342,12 +375,32 @@ const JourneyHome = (function () {
         } else if (action === "complete") StoryRewardDev.simulateUnitComplete(uid);
         else if (action === "reset") StoryRewardDev.resetSeen(uid);
         else if (action === "status") StoryRewardDev.status(uid);
+        else if (action === "open-unit") openUnitDetails(board, uid);
       });
+    });
+  }
+
+  function bindLessonEggButtons(board, state) {
+    board.querySelectorAll("[data-lesson-egg]").forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const lid = Number(btn.dataset.lessonEgg);
+        if (typeof StoryEgg !== "undefined") StoryEgg.openLessonEgg(state, lid, { markSeen: false });
+      });
+      const img = btn.querySelector("img");
+      if (!img) return;
+      const fallbacks = (img.dataset.fallbacks || "").split(",").filter(Boolean);
+      let fi = 0;
+      img.onerror = () => {
+        if (fi < fallbacks.length) img.src = fallbacks[fi++];
+      };
     });
   }
 
   function bindInteractions(board, state, onEnterLesson) {
     if (typeof StoryReward !== "undefined") StoryReward.bindGiftButtons(board, state);
+    bindLessonEggButtons(board, state);
     bindStoryDevBar(board, state);
     bindCatalogAccordion(board);
     board.querySelectorAll("[data-lid]").forEach((btn) => {
@@ -414,6 +467,7 @@ const JourneyHome = (function () {
       const frameSub = boardSlot.querySelector("#journey-frame-progress");
       if (frameSub) frameSub.textContent = progText;
       if (typeof StoryReward !== "undefined") StoryReward.afterHomeRender(state);
+      if (typeof LessonRecap !== "undefined") LessonRecap.afterHomeRender(state, boardSlot);
     }
     document.getElementById("journey-unit-sheet")?.remove();
   }

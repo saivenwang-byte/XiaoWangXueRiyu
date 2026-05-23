@@ -8,11 +8,11 @@
 
 | 文件 | sha256 (16) | bytes |
 |------|-------------|-------|
-| `unit-1-panel-1-clean.png` | `cf065661a01c381c` | 1103755 |
-| `unit-1-panel-2-clean.png` | `e05f6c404a2c7883` | 1149935 |
-| `unit-1-panel-3-clean.png` | `e16ee75aa9265afd` | 332005 |
-| `unit-1-panel-4-clean.png` | `92918c2b60565bb9` | 1205409 |
-| `unit-1-strip.webp` | `8f310dad9dc71e64` | 479292 |
+| `unit-1-panel-1-clean.png` | `5f447b19d24b51a3` | 3142355 |
+| `unit-1-panel-2-clean.png` | `6ba7a851864804c2` | 3402661 |
+| `unit-1-panel-3-clean.png` | `2351e5658b37e0dd` | 3261771 |
+| `unit-1-panel-4-clean.png` | `b632895fff147912` | 3275272 |
+| `unit-1-strip.webp` | `be2203d8c2ebc02c` | 617606 |
 
 ## 修改规则
 

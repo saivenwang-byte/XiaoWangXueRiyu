@@ -30,15 +30,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.1",
-    "cache": "46",
+    "cache": "93",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
-      "index.html service worker hyouga-sw-purged-v46"
+      "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=46",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46"
+    "local": "http://localhost:8765/index.html?v=93",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=93"
   },
   "confirmed": [
     {
@@ -103,6 +103,54 @@
       "title": "四关固定滚动区 + 进度条 + 可见滚动条",
       "files": ["js/scroll-hint.js", "js/app.js", "css/mvp.css"],
       "acceptance": "単語/会話/文法/テスト 顶部 N/M 与底部↓あと；中间区域 overflow-y"
+    },
+    {
+      "id": "stage-2-lessons-data-v47",
+      "since_cache": "47",
+      "title": "阶段二：第13/15/17/19/20课种子包数据",
+      "files": [
+        "js/data/lessons-stage2-mvp.js",
+        "js/data/lessons-mvp.js",
+        "js/data/lessons-mvp-depth.js",
+        "js/data/lesson-vocab-biaori.js"
+      ],
+      "acceptance": "首页8课排序；四关可进；L14 回归不退化"
+    },
+    {
+      "id": "p0-journey-home-v48",
+      "since_cache": "48",
+      "title": "P0：学习の道首页（catalog+四岛图+单元列表+00入門）",
+      "files": [
+        "js/data/curriculum-catalog.js",
+        "js/journey-home.js",
+        "intro.html",
+        "css/mvp.css",
+        "js/app.js"
+      ],
+      "acceptance": "ホーム=单元折叠+课序；未发布準備中；00→intro.html；14/16/18 课内不变"
+    },
+    {
+      "id": "story-egg-three-tier-v93",
+      "since_cache": "93",
+      "title": "三级彩蛋：L1单课 / L2单元条带 / L3通关4×6",
+      "files": [
+        "js/story-egg.js",
+        "js/story-egg-viewport.js",
+        "js/lesson-recap.js",
+        "js/story-caption-jp.js",
+        "js/data/grand-finale-cards.js",
+        "js/data/unit-strip-storyboard.js",
+        "css/story-egg-typography.css",
+        "assets/story/unit-*-strip.webp",
+        "assets/story/grand/card-*-clean.png",
+        "assets/story/egg-grand.webp",
+        "scripts/compose-egg-grand-confirmed.py",
+        "scripts/grand_finale_layout.py",
+        "彩蛋/通关隐藏版-确认版",
+        "docs/story-egg-three-tier-系统定稿.md",
+        "docs/story-grand-confirmed-source.md"
+      ],
+      "acceptance": "四金解锁 L1；单元四金 L2 竖条；全通关 L3 4×6；card19 左对齐裁切含主人公；确认版路径锁定"
     }
   ],
   "roadmap": {
@@ -113,8 +161,9 @@
   "backlog": [
     {
       "id": "stage-2-lessons-13-15-17-19-20",
-      "status": "next",
-      "note": "PRD 第2阶段 txt → 种子包数据；优先于 Part-0 编码"
+      "status": "done",
+      "since_cache": "47",
+      "note": "数据 v47；首页 catalog v48 按单元展示"
     },
     {
       "id": "part-0-intro-a",

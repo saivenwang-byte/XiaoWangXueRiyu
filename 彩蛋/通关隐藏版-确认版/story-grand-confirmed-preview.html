@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>通关隐藏版 · 确认版 8×3 预览</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #1a1a22; color: #f5f0e8; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; }
+    h1 { font-size: 1.1rem; margin: 0 0 0.5rem; }
+    p { margin: 0 0 1rem; opacity: 0.85; font-size: 0.9rem; text-align: center; max-width: 40rem; }
+    .strip-wrap { width: min(98vw, 1600px); border-radius: 12px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+    .strip-wrap img { width: 100%; display: block; }
+    .grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; width: min(98vw, 1600px); margin-top: 1rem; }
+    .grid img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
+    .grid img::after { content: attr(alt); }
+    a { color: #9fd4ff; }
+    .row-label { font-size: 0.75rem; opacity: 0.7; width: min(98vw, 1600px); margin-top: 0.75rem; }
+  </style>
+</head>
+<body>
+  <h1>通关隐藏版 · 确认版合成（8×3）</h1>
+  <p>源图 <code>1.png</code>…<code>24.png</code> · 格序见 <code>通关隐藏版全家福md.txt</code> · App 用 <a href="../../assets/story/egg-grand.webp">egg-grand.webp</a></p>
+  <div class="strip-wrap"><img src="egg-grand-8x3.webp?v=1" alt="8×3 合成" /></div>
+  <p class="row-label">第 1 行：卡 1–8（北海道·東北 → 中部开端）</p>
+  <div class="grid" id="r1"></div>
+  <p class="row-label">第 2 行：卡 9–16（近畿·中国·四国）</p>
+  <div class="grid" id="r2"></div>
+  <p class="row-label">第 3 行：卡 17–24（四国·九州·沖縄）</p>
+  <div class="grid" id="r3"></div>
+  <script>
+    function fillRow(id, start) {
+      const el = document.getElementById(id);
+      for (let i = start; i < start + 8; i++) {
+        const img = document.createElement("img");
+        img.src = `${i}.png`;
+        img.alt = `卡${i}`;
+        img.title = `卡片${i}`;
+        el.appendChild(img);
+      }
+    }
+    fillRow("r1", 1);
+    fillRow("r2", 9);
+    fillRow("r3", 17);
+  </script>
+</body>
+</html>

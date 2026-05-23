@@ -4,6 +4,10 @@
 
 **上一版**（三视图グルミ + 水彩绘本感）— 人物一致性与彩蛋效果已确认。中学生硬线漫画风暂缓。
 
+## 制作前校对（必做）
+
+[`docs/story-unit-production-workflow.md`](../../docs/story-unit-production-workflow.md) · `python scripts/preflight-unit-strip.py --unit N`
+
 ## 交接（推荐）
 
 修好的图放进 **`incoming/unit-{N}/panel-{1..4}.png`** → 运行 `python scripts/install-story-strips-from-folder.py`  
@@ -22,6 +26,8 @@
 | `unit-2-strip.webp` | 已生成（`incoming/unit-2/` 可覆盖） |
 | `unit-3-strip.webp` | 已生成（`incoming/unit-3/` 可覆盖） |
 | `unit-4-strip.webp` … `unit-6-strip.webp` | 待放入 incoming 后安装 |
-| `egg-grand.webp` | **隐藏彩蛋** · 24 课各 4 金星后解锁 · 全家福合成（待出图） |
+| `egg-grand.webp` | **隐藏彩蛋** · 8×3（7680×1620）· 真源 `彩蛋/通关隐藏版-确认版/1..24.png` |
+| `grand/card-{01..24}-*.png` | 全家福单卡 draft / harmonized / clean |
 
-规格：**16:9 · 2×2** · 左上→右上→左下→右下。见 `docs/storyboard-画幅与版式-定案.md`。
+规格（单元条带）：**16:9 · 2×2** · 见 `docs/storyboard-画幅与版式-定案.md`。  
+全家福：`docs/storyboard-grand-24-彩蛋重绘.md` · `python scripts/preflight-grand-finale.py`

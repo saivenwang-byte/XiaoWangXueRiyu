@@ -167,15 +167,39 @@ bind_draw_helpers(
 )
 
 
-def compose(panels: list[Path], out: Path) -> None:
+STRIP_BG = (252, 248, 245)
+STRIP_GAP = 2
+VERT_W = 1080
+
+
+def compose_grid(panels: list[Path], out: Path) -> None:
     half_w, half_h = OUT_W // 2, OUT_H // 2
-    canvas = Image.new("RGB", (OUT_W, OUT_H), (255, 255, 255))
+    canvas = Image.new("RGB", (OUT_W, OUT_H), STRIP_BG)
     for i, p in enumerate(panels):
         cell = Image.open(p).convert("RGB").resize((half_w, half_h), Image.Resampling.LANCZOS)
         canvas.paste(cell, ((i % 2) * half_w, (i // 2) * half_h))
     out.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(out, "WEBP", quality=90, method=6)
-    print(f"composed {out}")
+    print(f"composed grid {out} ({OUT_W}x{OUT_H})")
+
+
+def compose_vertical(panels: list[Path], out: Path) -> None:
+    """竖排四格 · 画册/连环画感 · 竖屏手机满宽阅读。"""
+    cells: list[Image.Image] = []
+    for p in panels:
+        im = Image.open(p).convert("RGB")
+        ratio = im.height / max(im.width, 1)
+        h = max(1, int(VERT_W * ratio))
+        cells.append(im.resize((VERT_W, h), Image.Resampling.LANCZOS))
+    total_h = sum(c.height for c in cells) + STRIP_GAP * (len(cells) - 1)
+    canvas = Image.new("RGB", (VERT_W, total_h), STRIP_BG)
+    y = 0
+    for i, cell in enumerate(cells):
+        canvas.paste(cell, (0, y))
+        y += cell.height + (STRIP_GAP if i < len(cells) - 1 else 0)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(out, "WEBP", quality=90, method=6)
+    print(f"composed vertical {out} ({VERT_W}x{total_h})")
 
 
 def resolve_source(unit: int, i: int, source: str) -> Path:
@@ -193,6 +217,17 @@ def main() -> None:
     ap.add_argument("--source", choices=("draft", "harmonized", "auto"), default="auto")
     ap.add_argument("--unit", type=int, default=1)
     ap.add_argument(
+        "--layout",
+        choices=("vertical", "grid"),
+        default="vertical",
+        help="vertical=竖排四格(默认) grid=2×2横图",
+    )
+    ap.add_argument(
+        "--raw-clean",
+        action="store_true",
+        help="确认版直出：不跑水印/色调 clean 处理",
+    )
+    ap.add_argument(
         "--with-dialogue",
         action="store_true",
         help="同时生成 panel-N-dialogue.png（默认仅 clean + strip，不贴泡）",
@@ -207,9 +242,12 @@ def main() -> None:
     cleans: list[Path] = []
     incoming = STORY / "incoming" / f"unit-{unit}"
     incoming.mkdir(parents=True, exist_ok=True)
-    clean_fns = UNIT_CLEAN[unit]
-    p4_fn = UNIT_P4_CLEAN[unit]
-    dlg_fns = UNIT_DIALOGUE[unit]
+    clean_fns = UNIT_CLEAN[unit] if not args.raw_clean else [lambda img: None] * 3
+    p4_fn = (lambda img, ref_warm=None: None) if args.raw_clean else UNIT_P4_CLEAN[unit]
+    dlg_fns = UNIT_DIALOGUE.get(unit) if args.with_dialogue else None
+    if args.with_dialogue and not dlg_fns:
+        print(f"unit {unit} 无 UNIT_DIALOGUE 定义，无法生成 dialogue 图", file=sys.stderr)
+        sys.exit(1)
 
     for i in range(1, 4):
         src = pick(i)
@@ -248,9 +286,15 @@ def main() -> None:
             print(f"ok dialogue {i} -> {dlg_path.name}")
 
     strip = STORY / f"unit-{unit}-strip.webp"
-    compose(cleans, strip)
-    compose(cleans, STORY / f"unit-{unit}-strip-draft.webp")
-    print(f"unit {unit} strip = clean panels (no bubbles)")
+    if args.layout == "vertical":
+        compose_vertical(cleans, strip)
+        compose_vertical(cleans, STORY / f"unit-{unit}-strip-draft.webp")
+    else:
+        compose_grid(cleans, strip)
+        compose_grid(cleans, STORY / f"unit-{unit}-strip-draft.webp")
+    meta = STORY / f"unit-{unit}-strip-layout.txt"
+    meta.write_text(args.layout + "\n", encoding="utf-8")
+    print(f"unit {unit} strip = {args.layout} (raw_clean={args.raw_clean})")
     if not args.with_dialogue:
         print("skip dialogue panels (use --with-dialogue to generate)")
     print("done")
