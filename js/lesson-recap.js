@@ -121,10 +121,11 @@ const LessonRecap = (function () {
     const lid = Number(lessonId);
     const uid = Number(unitId);
     const slot = panelIndex >= 0 ? panelIndex + 1 : 1;
+    const panel = `assets/story/unit-${uid}-panel-${slot}-clean.png`;
     return [
+      panel,
       `assets/story/lesson-${lid}-egg.webp`,
       `assets/story/lesson-${lid}-egg.png`,
-      `assets/story/unit-${uid}-panel-${slot}-clean.png`,
     ];
   }
 

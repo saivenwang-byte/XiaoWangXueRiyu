@@ -61,11 +61,11 @@ const StoryEgg = (function () {
   function lessonEggImageUrl(unitId, lessonId) {
     const lid = Number(lessonId);
     const uid = Number(unitId);
-    const egg = `assets/story/lesson-${lid}-egg.webp`;
-    const eggPng = `assets/story/lesson-${lid}-egg.png`;
     const slot = panelIndexForLesson(uid, lid) + 1;
     const panel = `assets/story/unit-${uid}-panel-${slot}-clean.png`;
-    return { primary: egg, fallbacks: [eggPng, panel] };
+    const egg = `assets/story/lesson-${lid}-egg.webp`;
+    const eggPng = `assets/story/lesson-${lid}-egg.png`;
+    return { primary: panel, fallbacks: [egg, eggPng] };
   }
 
   function lessonCornerLabel(lessonId) {
@@ -435,6 +435,9 @@ const StoryEgg = (function () {
   }
 
   function afterHomeRender(state) {
+    if (typeof HyougaTestCard !== "undefined" && HyougaTestCard.skipsHomeAutoEggPopup()) {
+      return;
+    }
     if (shouldAutoShowUltimate(state)) {
       window.setTimeout(() => {
         const home = document.getElementById("view-home");

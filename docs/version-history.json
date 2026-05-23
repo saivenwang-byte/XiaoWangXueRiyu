@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.1",
-    "cache": "93",
+    "cache": "94",
     "date": "2026-05-21",
-    "note": "三级彩蛋收官：单元条带+单课彩蛋+通关24格(确认版裁切)；v93",
+    "note": "热修：index/share-wechat 编码损坏致手机??与按钮失效；legacy 自动跳新版；v94",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"

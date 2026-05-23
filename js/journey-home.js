@@ -66,8 +66,9 @@ const JourneyHome = (function () {
       const i = sb?.panels?.findIndex((p) => p.lessonId === lid) ?? -1;
       return i >= 0 ? i + 1 : 1;
     })();
-    const primary = `assets/story/lesson-${lid}-egg.webp`;
-    const fallbacks = `assets/story/lesson-${lid}-egg.png,assets/story/unit-${uid}-panel-${slot}-clean.png`;
+    const panel = `assets/story/unit-${uid}-panel-${slot}-clean.png`;
+    const primary = panel;
+    const fallbacks = `assets/story/lesson-${lid}-egg.webp,assets/story/lesson-${lid}-egg.png`;
     return `<button type="button" class="journey-lesson-egg-btn" data-lesson-egg="${lid}" title="本课插画" aria-label="第${lid}課 插画">
       <img src="${escapeHtml(primary)}" alt="" loading="lazy" decoding="async" data-fallbacks="${escapeHtml(fallbacks)}" />
     </button>`;
@@ -428,7 +429,12 @@ const JourneyHome = (function () {
     const board = document.createElement("div");
     board.className =
       "journey-shinkansen journey-shinkansen--explore" + (dev ? " journey-shinkansen--dev-catalog" : "");
+    const testCardBanner =
+      typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()
+        ? `<div class="hyouga-test-card-banner" role="status">测试卡 · 满级全开（24课四金·条带·L3）· 说明见 docs/测试卡-满级链接.md</div>`
+        : "";
     board.innerHTML = `
+      ${testCardBanner}
       <header class="journey-frame-head journey-frame-head--slim">
         <p class="journey-frame-tagline">${FRAME_TAGLINE}</p>
         <p class="journey-frame-sub" id="journey-frame-progress"></p>
@@ -444,6 +450,14 @@ const JourneyHome = (function () {
 
   function render(options) {
     const { state, onEnterLesson } = options;
+    if (
+      typeof HyougaTestCard !== "undefined" &&
+      HyougaTestCard.active() &&
+      typeof HyougaTestCard.apply === "function"
+    ) {
+      HyougaTestCard.apply(state);
+      if (typeof saveMvpState === "function") saveMvpState(state);
+    }
     const boardSlot = document.getElementById("journey-board-slot");
     const heroProg = document.getElementById("home-path-progress");
     const free =
@@ -459,6 +473,9 @@ const JourneyHome = (function () {
     }
     if (mapRevealedAll(state)) progText = (progText ? `${progText} · ` : "") + "地図全開";
     if (devCatalogMode()) progText = (progText ? `${progText} · ` : "") + "開発：全24課可进";
+    if (typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()) {
+      progText = (progText ? `${progText} · ` : "") + "测试卡满级";
+    }
 
     if (heroProg) heroProg.textContent = progText;
     if (boardSlot) {
