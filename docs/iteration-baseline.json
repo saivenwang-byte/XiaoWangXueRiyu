@@ -30,15 +30,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.1",
-    "cache": "94",
+    "cache": "95",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=94",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=94"
+    "local": "http://localhost:8765/index.html?v=95",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=95"
   },
   "confirmed": [
     {

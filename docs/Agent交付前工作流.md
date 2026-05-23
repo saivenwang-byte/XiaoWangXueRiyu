@@ -2,6 +2,7 @@
 
 > **地位**：本文件与 `AGENTS.md` 同级，为 **AI / 开发者向用户交付结果之前** 的强制循环。  
 > 用户已多次强调的事项，凡标注 **【项目级·反复】** 的，不得因「本次对话没提到」而跳过。  
+> **开发者满配 + 竖屏验收（红线）**：[开发者验收-SOP.md](./开发者验收-SOP.md) · 电脑双击 `开发者竖屏验收.bat`  
 > **跨会话记忆库（踩坑 / 版本 / 费用）**：[Agent交付前工作流-记忆库.md](./Agent交付前工作流-记忆库.md) · [version-history.json](./version-history.json)  
 > **总规范**：[PROJECT_SPEC.md](../PROJECT_SPEC.md) · **架构**：[PROJECT_ARCHITECTURE.md](./PROJECT_ARCHITECTURE.md)  
 > **文递自归**：[Agent文递自归.md](./Agent文递自归.md) · [项目知识库-文递自归.md](./项目知识库-文递自归.md) · [iteration-baseline.json](./iteration-baseline.json)
@@ -41,6 +42,8 @@
 | 发链接前跑全套自检 | `发布前自检.bat` 或 `python scripts/pre-ship-check.py` |
 | `?v=` 与 `CACHE_VER` 一致 | `index.html` 全部 script/css 与 `js/share-wechat.js` |
 | 交付写清两个链接 | **本地**：`http://localhost:8765/index.html?v=N`；**公网**：`https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=N` |
+| **开发者必须满配** | 链接带 `testcard=1&developer=1`；电脑用 `dev-phone-preview.html`（见 [开发者验收-SOP.md](./开发者验收-SOP.md)） |
+| `index.html` UTF-8 无损 | 禁止出现大面积 `??` 或 `</a>` 标签断裂；发版前打开开发者竖屏目检 |
 | 未要求不 push | 用户没说 commit/push 时，只改本地 + 给链接说明 |
 
 ### C. 本地预览

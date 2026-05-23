@@ -10,11 +10,14 @@ const CURRICULUM_RELEASED_IDS = [
 
 /**
  * 开发期封面目录：24 课全显可点（灰/锁样式后置）。
- * 开：?dev=1 · localStorage hyouga_dev_catalog=1 · localhost/file 默认
+ * 开：?testcard=1 · ?dev=1 · localStorage hyouga_dev_catalog=1 · localhost/file 默认
  * 关：localStorage hyouga_dev_catalog=0
+ * 满级测试卡说明：docs/测试卡-满级链接.md
  */
 function curriculumDevCatalogMode() {
   try {
+    if (/[?&]testcard=1(?:&|$)/.test(location.search || "")) return true;
+    if (typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()) return true;
     if (/[?&]dev=1/.test(location.search || "")) return true;
     if (localStorage.getItem("hyouga_dev_catalog") === "1") return true;
     if (localStorage.getItem("hyouga_dev_catalog") === "0") return false;
@@ -339,6 +342,11 @@ function curriculumUnitVisualState(state, unitId) {
   const id = Number(unitId);
   const unit = CURRICULUM_UNITS.find((u) => u.id === id);
   if (!unit) return "dormant";
+  if (typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()) {
+    const prog = curriculumUnitProgress(state, unit);
+    if (prog.total > 0 && prog.cleared >= prog.total) return "cleared";
+    return "active";
+  }
   const prog = curriculumUnitProgress(state, unit);
   const touched = curriculumUnitLessonsTouched(state, unit);
   const allDone = prog.total > 0 && prog.cleared >= prog.total;
@@ -386,16 +394,27 @@ const LESSON_FOUR_DIMS = [
   { gate: 3, label: "テスト", labelZh: "测试" },
 ];
 
+function lessonQuizPerfect(state, lessonId) {
+  const g = state?.lessons?.[Number(lessonId)] || {};
+  return g.quizPerfect === true;
+}
+
 function lessonDimStarState(state, lessonId, gateNum) {
   const id = Number(lessonId);
   const g = state?.lessons?.[id] || {};
+  if (gateNum === 3) {
+    if (lessonQuizPerfect(state, id)) return "gold";
+    if (g.gate3 && g.quizPerfect !== false) return "tried";
+    if (Array.isArray(state?.mistakes) && state.mistakes.some((m) => m.lessonId === id)) {
+      return "tried";
+    }
+    if (g.touched && g.touched[3]) return "tried";
+    return "ghost";
+  }
   if (g[`gate${gateNum}`]) return "gold";
   if (gateNum === 0) {
     const seen = state?.flashProgress?.[id]?.seen;
     if (Array.isArray(seen) && seen.length > 0) return "tried";
-  }
-  if (gateNum === 3 && Array.isArray(state?.mistakes) && state.mistakes.some((m) => m.lessonId === id)) {
-    return "tried";
   }
   if (g.touched && g.touched[gateNum]) return "tried";
   return "ghost";
@@ -498,6 +517,13 @@ function curriculumLessonCleared(state, lessonId) {
   return countLessonGoldStars(state, lessonId) === 4;
 }
 
+/** 单元内 4 课均为四金星（L2 触发） */
+function curriculumUnitFourGold(state, unitId) {
+  const unit = CURRICULUM_UNITS.find((u) => u.id === Number(unitId));
+  if (!unit) return false;
+  return unit.lessonIds.every((id) => curriculumLessonCleared(state, id));
+}
+
 /** 已发布且有数据的课全部三关通关 → 可自由选课刷星 */
 function curriculumFreeExploreMode(state) {
   const released = CURRICULUM_RELEASED_IDS.filter((id) => curriculumLessonHasData(id));
@@ -570,8 +596,7 @@ function curriculumUnitProgress(state, unit) {
   const playable = lessons.filter((L) => L.playable);
   let cleared = 0;
   playable.forEach((L) => {
-    const g = state?.lessons?.[L.lessonId];
-    if (g && g.gate0 && g.gate1 && g.gate2 && g.gate3) cleared++;
+    if (curriculumLessonCleared(state, L.lessonId)) cleared++;
   });
   return {
     cleared,
