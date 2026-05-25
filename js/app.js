@@ -8,12 +8,8 @@
     home: "標日 あと学習",
     lesson: "学習中",
     review: "復習",
-    me: "笔记",
+    me: "マイページ",
   };
-
-  function cockpitBackLabel() {
-    return state.ui?.returnAfterLesson === "me" ? "笔记" : "首页";
-  }
 
   /** 从左到右 = 推荐学习顺序；序号与位置一致 */
   const cockpitTabs = [
@@ -32,14 +28,12 @@
   /** 第1課 · 序号/折叠条颜色随当前关（単語0/会話2/文法1/作業3/拡張4） */
   function syncL1GateTheme(lessonId, gate) {
     const body = document.getElementById("lesson-flow-body");
-    const cockpitView = document.querySelector(".lesson-cockpit-view");
     if (!body) return;
     const l1 = isL1FiveGate(lessonId);
     const g = String(gate);
     if (l1) {
       body.classList.add("l1-lesson-scope");
       body.setAttribute("data-l1-active-gate", g);
-      if (cockpitView) cockpitView.setAttribute("data-cockpit-gate", g);
       body.querySelectorAll(".gate-scroll-region").forEach((el) => {
         el.classList.add("l1-lesson-scope");
         el.setAttribute("data-l1-active-gate", g);
@@ -47,7 +41,6 @@
     } else {
       body.removeAttribute("data-l1-active-gate");
       body.classList.remove("l1-lesson-scope");
-      cockpitView?.removeAttribute("data-cockpit-gate");
       body.querySelectorAll(".gate-scroll-region").forEach((el) => {
         el.removeAttribute("data-l1-active-gate");
         el.classList.remove("l1-lesson-scope");
@@ -204,24 +197,9 @@
     }
   }
 
-  function exitLessonView() {
-    if (typeof LearningNotes !== "undefined") LearningNotes.ensure(state);
-    const target = state.ui?.returnAfterLesson === "me" ? "me" : "home";
-    if (state.ui) state.ui.returnAfterLesson = null;
-    saveMvpState(state);
-    showView(target);
-  }
-
-  function enterLesson(lessonId, gate, options) {
+  function enterLesson(lessonId, gate) {
     activeLessonId = Number(lessonId);
     state.lastLessonId = activeLessonId;
-    if (typeof LearningNotes !== "undefined") LearningNotes.ensure(state);
-    state.ui = state.ui || {};
-    if (options?.returnView) {
-      state.ui.returnAfterLesson = options.returnView;
-    } else {
-      state.ui.returnAfterLesson = null;
-    }
     if (typeof touchCurriculumUnit === "function" && typeof getUnitIdForLesson === "function") {
       touchCurriculumUnit(state, getUnitIdForLesson(activeLessonId));
       saveMvpState(state);
@@ -382,14 +360,14 @@
     el.innerHTML = `
       <div class="cockpit-top">
         <button type="button" class="cockpit-home-btn" id="cockpit-exit" aria-label="返回首页">
-          ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">${escapeHtml(cockpitBackLabel())}</span>
+          ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">首页</span>
         </button>
         <span class="cockpit-lesson">第${L.lessonId}課 · ${escapeHtml(L.theme)}</span>
       </div>
       ${pathRail ? `<div class="cockpit-path">${pathRail}</div>` : ""}
       <div class="cockpit-tabs" id="cockpit-tabs" role="tablist"></div>
     `;
-    el.querySelector("#cockpit-exit").onclick = () => exitLessonView();
+    el.querySelector("#cockpit-exit").onclick = () => showView("home");
     const tabs = el.querySelector("#cockpit-tabs");
     cockpitTabsForLesson(L.lessonId).forEach((t) => {
       const done = !!g[`gate${t.k}`];
@@ -404,12 +382,7 @@
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", activeGate === t.k ? "true" : "false");
       const tabDoneIcon = isL1FiveGate(L.lessonId) ? false : done && t.k !== 0;
-      /* 第1課五关：仅文字 Tab，不要模块小图标（用户多次拍板） */
-      const tabGateIcon =
-        !isL1FiveGate(L.lessonId) && typeof L1UiIcons !== "undefined"
-          ? `<span class="cockpit-tab-icon" aria-hidden="true">${L1UiIcons.gateIcon(t.k)}</span>`
-          : "";
-      b.innerHTML = `${tabGateIcon}<span class="cockpit-tab-main">${tabDoneIcon ? "✅ " : ""}${escapeHtml(t.label)}</span>
+      b.innerHTML = `<span class="cockpit-tab-main">${tabDoneIcon ? "✅ " : ""}${escapeHtml(t.label)}</span>
         <span class="cockpit-tab-sub">${escapeHtml(t.sub)}</span>`;
       b.onclick = (e) => {
         e.preventDefault();
@@ -432,11 +405,11 @@
       cockpit.innerHTML = `
         <div class="cockpit-top">
           <button type="button" class="cockpit-home-btn" id="cockpit-exit" aria-label="返回首页">
-            ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">${escapeHtml(cockpitBackLabel())}</span>
+            ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">首页</span>
           </button>
           <span class="cockpit-lesson">第${id}課 · 準備中</span>
         </div>`;
-      cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => exitLessonView());
+      cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => showView("home"));
     }
     if (head) {
       head.innerHTML = `<p class="headline-jp jp">${escapeHtml(meta.headline)}</p>
@@ -449,7 +422,7 @@
           <p class="zh-annotation">开发目录可进入占位页；种子课 13–20 已有四关正文。</p>
           <button type="button" class="btn primary" id="stub-back-home">← 学習の道</button>
         </div>`;
-      body.querySelector("#stub-back-home")?.addEventListener("click", () => exitLessonView());
+      body.querySelector("#stub-back-home")?.addEventListener("click", () => showView("home"));
     }
   }
 
@@ -497,7 +470,7 @@ function appendGateNextStrip(container, currentGate) {
   container.appendChild(div);
   div.querySelector(".next-btn").onclick = () => {
     if (nextK >= 0) switchGate(nextK);
-    else exitLessonView();
+    else showView("home");
   };
 }
     const body = document.getElementById("lesson-flow-body");
@@ -517,7 +490,7 @@ function appendGateNextStrip(container, currentGate) {
       state,
       switchGate: (k) => switchGate(k),
       onRefreshCockpit: () => renderLessonCockpit(lessonProgress(activeLessonId)),
-      onCompleteHome: () => exitLessonView(),
+      onCompleteHome: () => showView("home"),
     };
 
     const opts = {
@@ -550,7 +523,7 @@ function appendGateNextStrip(container, currentGate) {
           return;
         }
         if (activeGate === 3) {
-          exitLessonView();
+          showView("home");
           return;
         }
         renderLessonCockpit(lessonProgress(activeLessonId));
@@ -559,8 +532,7 @@ function appendGateNextStrip(container, currentGate) {
     };
 
     try {
-      /* 第1課五关：顶栏 Tab 已标识模块，不再套 gate-scroll 进度条 */
-      const skipScrollHint = l1;
+      const skipScrollHint = l1 && activeGate === 0;
       const useScroll =
         !skipScrollHint && typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
       const host = useScroll ? ScrollHint.setupForGate(body, activeGate) : null;
@@ -600,7 +572,7 @@ function appendGateNextStrip(container, currentGate) {
         QuizGate.mount(mountEl, activeLessonId, {
           ...opts,
           onComplete: (finished) => {
-            if (finished) exitLessonView();
+            if (finished) showView("home");
             else {
               renderLessonCockpit(lessonProgress(activeLessonId));
               mountGate();
@@ -709,257 +681,48 @@ function appendGateNextStrip(container, currentGate) {
     if (typeof SpeakUI !== "undefined") SpeakUI.bind(modal);
   }
 
-  let meNotebookScope = { type: "book" };
-  let meNotebookBound = false;
+  function renderMe() {
+    const heat = document.getElementById("heatmap");
+    const progress = document.getElementById("parent-progress");
+    const weak = document.getElementById("weak-top3");
 
-  function currentNotebookScope() {
-    if (typeof LearningNotes !== "undefined") LearningNotes.ensure(state);
-    const saved = state.ui?.meNotebookScope;
-    if (saved && saved.type) return saved;
-    return meNotebookScope;
-  }
-
-  function setNotebookScope(scope) {
-    meNotebookScope = scope;
-    state.ui = state.ui || {};
-    state.ui.meNotebookScope = scope;
-    saveMvpState(state);
-    syncNotebookEditor();
-    highlightNotebookScopeButtons();
-  }
-
-  function syncNotebookEditor() {
-    if (typeof LearningNotes === "undefined") return;
-    const scope = currentNotebookScope();
-    const label = document.getElementById("me-notebook-label");
-    const editor = document.getElementById("me-notebook-editor");
-    const aggregate = document.getElementById("me-notebook-aggregate");
-    if (label) label.textContent = LearningNotes.scopeTitle(scope);
-    const isBook = !scope || scope.type === "book";
-    if (aggregate) {
-      aggregate.hidden = !isBook;
-      if (isBook) aggregate.textContent = LearningNotes.buildBookAggregate(state);
-    }
-    if (editor) {
-      editor.value = LearningNotes.getText(state, isBook ? { type: "book" } : scope);
-      editor.placeholder = isBook
-        ? "全册总记、学习心得、复习计划…"
-        : "记录要点、老师提示、自己的疑问…";
-    }
-  }
-
-  function saveNotebookDraft() {
-    if (typeof LearningNotes === "undefined") return;
-    const editor = document.getElementById("me-notebook-editor");
-    if (!editor) return;
-    const scope = currentNotebookScope();
-    LearningNotes.setText(state, scope, editor.value);
-    saveMvpState(state);
-    if (!scope || scope.type === "book") syncNotebookEditor();
-  }
-
-  function expandMeNotebook(scope) {
-    const nb = document.getElementById("me-notebook");
-    const panel = document.getElementById("me-notebook-panel");
-    const toggle = document.getElementById("me-notebook-toggle");
-    if (!nb || !panel) return;
-    if (scope) setNotebookScope(scope);
-    state.ui = state.ui || {};
-    state.ui.meNotebookOpen = true;
-    saveMvpState(state);
-    nb.classList.remove("is-collapsed");
-    panel.hidden = false;
-    if (toggle) {
-      toggle.textContent = "收起";
-      toggle.setAttribute("aria-expanded", "true");
-    }
-    syncNotebookEditor();
-    highlightNotebookScopeButtons();
-    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  function collapseMeNotebook(save) {
-    const nb = document.getElementById("me-notebook");
-    const panel = document.getElementById("me-notebook-panel");
-    const toggle = document.getElementById("me-notebook-toggle");
-    if (!nb) return;
-    if (save) saveNotebookDraft();
-    state.ui = state.ui || {};
-    state.ui.meNotebookOpen = false;
-    saveMvpState(state);
-    nb.classList.add("is-collapsed");
-    if (panel) panel.hidden = true;
-    if (toggle) {
-      toggle.textContent = "展开";
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  }
-
-  function highlightNotebookScopeButtons() {
-    const scope = currentNotebookScope();
-    document.querySelectorAll(".me-note-scope").forEach((btn) => {
-      const t = btn.dataset.noteScope;
-      const id = btn.dataset.noteId;
-      const on =
-        (scope.type === "book" && t === "book") ||
-        (scope.type === t && String(scope.id) === String(id));
-      btn.classList.toggle("is-active", on);
-    });
-  }
-
-  function bindMeNotebookOnce() {
-    if (meNotebookBound) return;
-    meNotebookBound = true;
-    document.getElementById("me-notebook-toggle")?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const nb = document.getElementById("me-notebook");
-      if (nb?.classList.contains("is-collapsed")) expandMeNotebook();
-      else collapseMeNotebook(true);
-    });
-    document.getElementById("me-notebook-save")?.addEventListener("click", () => {
-      saveNotebookDraft();
-      if (typeof LearningNotes !== "undefined") {
-        const scope = currentNotebookScope();
-        if (scope.type === "lesson") {
-          document
-            .querySelectorAll(`[data-note-lesson="${scope.id}"]`)
-            .forEach((b) => b.classList.toggle("has-note", LearningNotes.hasText(state, scope)));
-        }
-        if (scope.type === "unit") {
-          document
-            .querySelectorAll(`[data-note-unit="${scope.id}"]`)
-            .forEach((b) => b.classList.toggle("has-note", LearningNotes.hasText(state, scope)));
-        }
-      }
-      if (typeof SpeakUI !== "undefined" && SpeakUI.showToast) SpeakUI.showToast("笔记已保存", 1600);
-    });
-    document.querySelectorAll(".me-note-scope").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        saveNotebookDraft();
-        const t = btn.dataset.noteScope;
-        if (t === "book") setNotebookScope({ type: "book" });
-        else setNotebookScope({ type: t, id: Number(btn.dataset.noteId) });
-      });
-    });
-    document.addEventListener(
-      "click",
-      (e) => {
-        const nb = document.getElementById("me-notebook");
-        if (!nb || nb.classList.contains("is-collapsed")) return;
-        if (nb.contains(e.target)) return;
-        if (e.target.closest(".me-lesson-note-btn, .me-unit-note-btn")) return;
-        collapseMeNotebook(true);
-      },
-      true
-    );
-  }
-
-  function openMeNotebook(scope) {
-    showView("me");
-    if (typeof NotesPanel === "undefined") return;
-    if (scope?.type === "lesson") {
-      NotesPanel.expandLesson(scope);
-      return;
-    }
-    if (scope?.type === "unit" && typeof CURRICULUM_UNITS !== "undefined") {
-      const u = CURRICULUM_UNITS.find((x) => x.id === Number(scope.id));
-      const first = u?.lessonIds?.[0];
-      if (first) NotesPanel.expandLesson({ type: "lesson", id: first });
-    }
-  }
-
-  function meLessonRowHtml(id) {
-    const g = lessonProgress(id);
-    const L = typeof getLessonMvp === "function" ? getLessonMvp(id) : null;
-    const title = L?.lessonTitleJa || L?.headline || L?.titleJa || "";
-    const all =
-      g.gate0 && g.gate1 && g.gate2 && g.gate3 && (!isL1FiveGate(id) || g.gate4);
-    const stars =
-      typeof formatLessonFourSeaStars === "function"
-        ? formatLessonFourSeaStars(state, id)
-        : `${g.gate0 ? "★" : "○"}${g.gate2 ? "★" : "○"}${g.gate1 ? "★" : "○"}${g.gate3 ? "★" : "○"}`;
-    const status = all ? "完了" : "学習中";
-    const clearedCls = all ? " is-cleared" : "";
-    const hasNote =
-      typeof LearningNotes !== "undefined" && LearningNotes.hasText(state, { type: "lesson", id });
-    return `<div class="me-lesson-row-wrap">
-      <button type="button" class="me-lesson-row" data-me-lid="${id}">
-        <span class="me-lesson-title">第${id}課 ${escapeHtml(title)}</span>
-        <span class="parent-row-stars">${stars}</span>
-        <span class="me-lesson-status${clearedCls}">${escapeHtml(status)}</span>
-      </button>
-      <button type="button" class="me-lesson-note-btn${hasNote ? " has-note" : ""}" data-note-lesson="${id}" title="写本课笔记" aria-label="第${id}課笔记">📝</button>
-    </div>`;
-  }
-
-  function meUnitSummaryHtml(unit) {
-    const stars = unit.lessonIds
-      .map((lid) => {
-        const g = lessonProgress(lid);
-        const all =
-          g.gate0 && g.gate1 && g.gate2 && g.gate3 && (!isL1FiveGate(lid) || g.gate4);
-        return all ? "★" : "○";
+    heat.innerHTML = weekStudyDays(state)
+      .map((d) => {
+        const label = d.date.slice(5);
+        return `<div class="heat-cell ${d.studied ? "on" : ""}" title="${d.date}"><span>${label}</span></div>`;
       })
       .join("");
-    let labelZh = unit.titleJa;
-    let themeJa = "";
-    let titleZh = unit.titleZh || "";
-    if (typeof curriculumUnitTitleParts === "function") {
-      const p = curriculumUnitTitleParts(unit);
-      labelZh = p.labelZh;
-      themeJa = p.themeJa;
-      titleZh = p.titleZh;
-    }
-    const themeHtml = themeJa
-      ? `<span class="me-unit-theme jp">${escapeHtml(themeJa)}</span>`
-      : "";
-    return `<div class="me-unit-summary-grid">
-      <span class="me-unit-label-zh">${escapeHtml(labelZh)}</span>
-      ${themeHtml}
-      <span class="zh-annotation me-unit-zh">${escapeHtml(titleZh)}</span>
-      <span class="parent-row-stars">${stars}</span>
-    </div>`;
-  }
 
-  function bindMeProgressActions(root) {
-    if (!root) return;
-    root.querySelectorAll(".me-lesson-row[data-me-lid]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const lid = Number(btn.dataset.meLid);
-        const g = lessonProgress(lid);
-        enterLesson(lid, defaultGateForLesson(g, lid), { returnView: "me" });
-      });
-    });
-    root.querySelectorAll("[data-note-lesson]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openMeNotebook({ type: "lesson", id: Number(btn.dataset.noteLesson) });
-      });
-    });
-    root.querySelectorAll("[data-note-unit]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openMeNotebook({ type: "unit", id: Number(btn.dataset.noteUnit) });
-      });
-    });
-  }
+    const progressIds =
+      typeof CURRICULUM_RELEASED_IDS !== "undefined"
+        ? [...CURRICULUM_RELEASED_IDS].sort((a, b) => a - b)
+        : LESSONS_MVP.map((L) => L.lessonId).sort((a, b) => a - b);
+    progress.innerHTML = progressIds
+      .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
+      .map((id) => {
+        const g = lessonProgress(id);
+        const all =
+          g.gate0 &&
+          g.gate1 &&
+          g.gate2 &&
+          g.gate3 &&
+          (!isL1FiveGate(id) || g.gate4);
+        const stars =
+          typeof formatLessonFourSeaStars === "function"
+            ? formatLessonFourSeaStars(state, id)
+            : `${g.gate0 ? "★" : "○"}${g.gate2 ? "★" : "○"}${g.gate1 ? "★" : "○"}${g.gate3 ? "★" : "○"}`;
+        return `<div class="parent-row">
+        <span>第${id}課</span>
+        <span class="parent-row-stars">${stars}</span>
+        <span class="${all ? "done-tag" : ""}">${all ? "完了" : "学習中"}</span>
+      </div>`;
+      })
+      .join("");
 
-  function renderMe() {
-    if (typeof LearningNotes !== "undefined") LearningNotes.ensure(state);
-
-    const root = document.getElementById("notes-panel-root");
-    if (root && typeof NotesPanel !== "undefined") {
-      root.innerHTML = NotesPanel.render(state);
-      NotesPanel.bind(root, state, {
-        enterLesson: (lid, gate, opts) => {
-          const g = lessonProgress(lid);
-          enterLesson(lid, gate ?? defaultGateForLesson(g, lid), opts);
-        },
-      });
-    }
+    const tops = weakGrammarTop3(state);
+    weak.innerHTML = tops.length
+      ? tops.map((t) => `<li><strong>${escapeHtml(t.title)}</strong> · ${t.count}回</li>`).join("")
+      : "<li class='hint-ja'>まだにがてデータがありません。</li>";
 
     const toggle = document.getElementById("toggle-zh");
     if (toggle) {
@@ -968,9 +731,8 @@ function appendGateNextStrip(container, currentGate) {
         state.showChineseZh = toggle.checked;
         saveMvpState(state);
         applyZhSetting();
-        if (document.getElementById("view-home")?.classList.contains("active")) renderHome();
-        if (document.getElementById("view-lesson")?.classList.contains("active")) renderLessonFlow();
-        if (document.getElementById("view-me")?.classList.contains("active")) renderMe();
+        if (document.getElementById("view-home").classList.contains("active")) renderHome();
+        if (document.getElementById("view-lesson").classList.contains("active")) renderLessonFlow();
       };
     }
 
@@ -1006,24 +768,10 @@ function appendGateNextStrip(container, currentGate) {
     showView,
   };
 
-  function bootMain() {
-    applyZhSetting();
-    showView("home");
-    if (typeof StoryRewardDev !== "undefined") {
-      StoryRewardDev.bootFromUrl(window.MvpDev);
-    }
-  }
+  applyZhSetting();
+  showView("home");
 
-  const splashOverlay = document.getElementById("home-splash-overlay");
-  if (splashOverlay && typeof HomeSplash !== "undefined") {
-    const splashState = loadMvpState();
-    HomeSplash.render({ state: splashState });
-    HomeSplash.bind(() => {
-      splashOverlay.classList.add("is-hidden");
-      splashOverlay.setAttribute("aria-hidden", "true");
-      bootMain();
-    });
-  } else {
-    bootMain();
+  if (typeof StoryRewardDev !== "undefined") {
+    StoryRewardDev.bootFromUrl(window.MvpDev);
   }
 })();

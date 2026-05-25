@@ -1,7 +1,8 @@
 # AI 协作说明（项目级）
 
 > **总规范入口**：[PROJECT_SPEC.md](PROJECT_SPEC.md)（文档地图 · 术语 · 自检 · MVP→24）  
-> **架构与命名**：[docs/PROJECT_ARCHITECTURE.md](docs/PROJECT_ARCHITECTURE.md)
+> **架构与命名**：[docs/PROJECT_ARCHITECTURE.md](docs/PROJECT_ARCHITECTURE.md)  
+> **⚠️ 工作流强约束**：[docs/WORKFLOW-STRICT-ROLLBACK.md](docs/WORKFLOW-STRICT-ROLLBACK.md) — 任何代码修改前必须先执行阶段比对，失败回退，不跳阶段。
 
 ---
 
@@ -53,6 +54,8 @@
 ## 首要知识库
 
 改日文、发布链接前必读：[docs/项目知识库-标日日文书写.md](docs/项目知识库-标日日文书写.md)
+
+改课内単語 UI/数据前必读：[docs/项目知识库-课内单词标黄范式.md](docs/项目知识库-课内单词标黄范式.md)（记忆库 §11）
 
 ---
 
