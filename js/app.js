@@ -856,16 +856,17 @@ function appendGateNextStrip(container, currentGate) {
   }
 
   function openMeNotebook(scope) {
-    if (scope?.type === "unit") {
-      const ubtn = document.querySelector(".me-note-scope[data-note-scope='unit']");
-      if (ubtn) ubtn.dataset.noteId = String(scope.id);
-    }
-    if (scope?.type === "lesson") {
-      const lbtn = document.querySelector(".me-note-scope[data-note-scope='lesson']");
-      if (lbtn) lbtn.dataset.noteId = String(scope.id);
-    }
     showView("me");
-    expandMeNotebook(scope);
+    if (typeof NotesPanel === "undefined") return;
+    if (scope?.type === "lesson") {
+      NotesPanel.expandLesson(scope);
+      return;
+    }
+    if (scope?.type === "unit" && typeof CURRICULUM_UNITS !== "undefined") {
+      const u = CURRICULUM_UNITS.find((x) => x.id === Number(scope.id));
+      const first = u?.lessonIds?.[0];
+      if (first) NotesPanel.expandLesson({ type: "lesson", id: first });
+    }
   }
 
   function meLessonRowHtml(id) {
@@ -901,9 +902,22 @@ function appendGateNextStrip(container, currentGate) {
         return all ? "★" : "○";
       })
       .join("");
+    let labelZh = unit.titleJa;
+    let themeJa = "";
+    let titleZh = unit.titleZh || "";
+    if (typeof curriculumUnitTitleParts === "function") {
+      const p = curriculumUnitTitleParts(unit);
+      labelZh = p.labelZh;
+      themeJa = p.themeJa;
+      titleZh = p.titleZh;
+    }
+    const themeHtml = themeJa
+      ? `<span class="me-unit-theme jp">${escapeHtml(themeJa)}</span>`
+      : "";
     return `<div class="me-unit-summary-grid">
-      <span class="me-unit-title">${escapeHtml(unit.titleJa)}</span>
-      <span class="zh-annotation">${escapeHtml(unit.titleZh)}</span>
+      <span class="me-unit-label-zh">${escapeHtml(labelZh)}</span>
+      ${themeHtml}
+      <span class="zh-annotation me-unit-zh">${escapeHtml(titleZh)}</span>
       <span class="parent-row-stars">${stars}</span>
     </div>`;
   }
@@ -935,67 +949,17 @@ function appendGateNextStrip(container, currentGate) {
 
   function renderMe() {
     if (typeof LearningNotes !== "undefined") LearningNotes.ensure(state);
-    bindMeNotebookOnce();
 
-    // Time stats
-    const stats = document.getElementById("me-stats");
-    if (stats && typeof StudyTimer !== "undefined") {
-      const time = StudyTimer.getStats();
-      stats.innerHTML = `
-        <div class="me-stat-item"><span class="me-stat-num">${(time.totalMinutes/60).toFixed(1)}</span><span class="me-stat-label">累计(小时)</span></div>
-        <div class="me-stat-item"><span class="me-stat-num">${time.todayMinutes}</span><span class="me-stat-label">今日(分钟)</span></div>
-      `;
+    const root = document.getElementById("notes-panel-root");
+    if (root && typeof NotesPanel !== "undefined") {
+      root.innerHTML = NotesPanel.render(state);
+      NotesPanel.bind(root, state, {
+        enterLesson: (lid, gate, opts) => {
+          const g = lessonProgress(lid);
+          enterLesson(lid, gate ?? defaultGateForLesson(g, lid), opts);
+        },
+      });
     }
-
-    const heat = document.getElementById("heatmap");
-    const progress = document.getElementById("parent-progress");
-    const weak = document.getElementById("weak-top3");
-
-    heat.innerHTML = weekStudyDays(state)
-      .map((d) => {
-        const label = d.date.slice(5);
-        return `<div class="heat-cell ${d.studied ? "on" : ""}" title="${d.date}"><span>${label}</span></div>`;
-      })
-      .join("");
-
-    if (typeof CURRICULUM_UNITS !== "undefined" && progress) {
-      progress.innerHTML = CURRICULUM_UNITS.map((unit) => {
-        const rows = unit.lessonIds
-          .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
-          .map((id) => meLessonRowHtml(id))
-          .join("");
-        const unitHasNote =
-          typeof LearningNotes !== "undefined" && LearningNotes.hasText(state, { type: "unit", id: unit.id });
-        return `<details class="me-unit-details" data-unit-id="${unit.id}">
-          <summary class="me-unit-summary-row">
-            ${meUnitSummaryHtml(unit)}
-            <button type="button" class="me-unit-note-btn${unitHasNote ? " has-note" : ""}" data-note-unit="${unit.id}" title="写本单元笔记" aria-label="单元笔记">📝</button>
-          </summary>
-          ${rows}
-        </details>`;
-      }).join("");
-      bindMeProgressActions(progress);
-    } else if (progress) {
-      const progressIds =
-        typeof CURRICULUM_RELEASED_IDS !== "undefined"
-          ? [...CURRICULUM_RELEASED_IDS].sort((a, b) => a - b)
-          : (typeof LESSONS_MVP !== "undefined" ? LESSONS_MVP : [])
-              .map((L) => L.lessonId)
-              .sort((a, b) => a - b);
-      progress.innerHTML = progressIds
-        .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
-        .map((id) => meLessonRowHtml(id))
-        .join("");
-      bindMeProgressActions(progress);
-    }
-
-    const tops = weakGrammarTop3(state);
-    weak.innerHTML = tops.length
-      ? tops.map((t) => `<li><strong>${escapeHtml(t.title)}</strong> · ${t.count}回</li>`).join("")
-      : "<li class='hint-ja'>まだにがてデータがありません。</li>";
-
-    if (state.ui?.meNotebookOpen) expandMeNotebook(currentNotebookScope());
-    else collapseMeNotebook(false);
 
     const toggle = document.getElementById("toggle-zh");
     if (toggle) {
@@ -1004,8 +968,9 @@ function appendGateNextStrip(container, currentGate) {
         state.showChineseZh = toggle.checked;
         saveMvpState(state);
         applyZhSetting();
-        if (document.getElementById("view-home").classList.contains("active")) renderHome();
-        if (document.getElementById("view-lesson").classList.contains("active")) renderLessonFlow();
+        if (document.getElementById("view-home")?.classList.contains("active")) renderHome();
+        if (document.getElementById("view-lesson")?.classList.contains("active")) renderLessonFlow();
+        if (document.getElementById("view-me")?.classList.contains("active")) renderMe();
       };
     }
 

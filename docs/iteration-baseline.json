@@ -8,13 +8,26 @@
     "git_tag": "mvp-v1.0.1-biaori-141618"
   },
   "unit1_lesson1_mvp": {
-    "status": "frozen",
+    "status": "locked",
     "frozen_at": "2026-05-25",
-    "cache": "146",
+    "locked_at": "2026-05-25",
+    "cache": "225",
     "lesson_id": 1,
     "unit_id": 1,
     "doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
-    "user_confirmed": "2026-05-25"
+    "archive": "过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
+    "user_confirmed": "2026-05-25",
+    "note": "课文五关 MVP 已锁定；后续默认改笔记板块，不回头改 lesson-1-flow"
+  },
+  "notes_panel_v1": {
+    "status": "locked",
+    "name": "「笔记板块V1」定稿锁",
+    "locked_at": "2026-05-25",
+    "cache": "242",
+    "git_tag": "lock/notes-panel-v1-20260525",
+    "doc": "docs/locks/NOTES-PANEL-V1-LOCK-20260525.md",
+    "spec": "过程讨论内容/19-20260525-笔记板块规范.md",
+    "note": "易错红上蓝下对照；关联倒三角可点开；单元易错汇总；不动 U1L1 五关"
   },
   "paradigm": {
     "name_cn": "文递自归",
@@ -39,15 +52,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "225",
+    "cache": "242",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=225",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=225",
+    "local": "http://localhost:8765/index.html?v=242",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=242",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md"
   },
   "confirmed": [
@@ -222,6 +235,41 @@
       ],
       "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=225",
       "user_confirmed": "2026-05-25"
+    },
+    {
+      "id": "unit1-lesson1-mvp-locked-v225",
+      "since_cache": "225",
+      "title": "第1单元第1課课文五关 MVP 用户锁定",
+      "doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
+      "acceptance": "五关+提示统一+传送链；lesson-1-flow 禁改",
+      "user_confirmed": "2026-05-25"
+    },
+    {
+      "id": "notes-panel-v2",
+      "since_cache": "227",
+      "title": "笔记板块 V2：计时+课次手风琴+课本/老师/学霸/TOP3/关联/我的笔记",
+      "doc": "过程讨论内容/19-20260525-笔记板块规范.md",
+      "files": ["js/notes-panel.js", "js/app.js", "index.html", "css/mvp.css"],
+      "acceptance": "底栏笔记；单开手风琴；关联弹窗不跳课；笔记失焦保存+橙点；?v=227",
+      "user_confirmed": "2026-05-25"
+    },
+    {
+      "id": "notes-panel-v1-lock",
+      "since_cache": "242",
+      "title": "「笔记板块V1」定稿锁",
+      "doc": "docs/locks/NOTES-PANEL-V1-LOCK-20260525.md",
+      "git_tag": "lock/notes-panel-v1-20260525",
+      "files": [
+        "js/notes-panel.js",
+        "js/app.js",
+        "js/study-timer.js",
+        "js/learning-notes.js",
+        "css/mvp.css",
+        "index.html",
+        "js/share-wechat.js"
+      ],
+      "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=242",
+      "user_confirmed": "2026-05-25"
     }
   ],
   "roadmap": {
@@ -251,7 +299,17 @@
     {
       "id": "stage-3-lessons-1-12",
       "status": "in_progress",
-      "note": "第1課 MVP frozen v146；第2課知识关联试点；第3–12待"
+      "note": "第1課 MVP locked v225；第2課知识关联试点；第3–12待"
+    },
+    {
+      "id": "notes-panel-v2",
+      "status": "done",
+      "since_cache": "227",
+      "doc": "过程讨论内容/19-20260525-笔记板块规范.md",
+      "start_doc": "docs/笔记板块-开工说明.md",
+      "title": "笔记板块 V2（课本/老师/学霸·手风琴）",
+      "scope": "底栏笔记；不动已锁 lesson-1-flow",
+      "note": "已升格为 notes_panel_v1 定稿锁 v242；见 docs/locks/NOTES-PANEL-V1-LOCK-20260525.md"
     },
     {
       "id": "stage-4-lessons-21-24",
@@ -320,7 +378,8 @@
     "删除或隐藏已有 Tab/关卡",
     "全站 giant 点读卡 / 113 词逐词大卡",
     "重写 app.js 路由或替换 lessons 数据源",
-    "未跑四关回归即改 speech-engine.js 排序/回退链"
+    "未跑四关回归即改 speech-engine.js 排序/回退链",
+    "修改 js/lesson-1-flow.js 或第1課课内五关已锁 UI/数据（unit1_lesson1_mvp locked）"
   ],
   "regression_smoke_lesson": 14,
   "regression_gates": ["vocab", "grammar", "dialogue", "quiz"]

@@ -1965,10 +1965,33 @@ body.mvp-app .nav-item.active {
 .me-unit-summary-row .me-unit-summary-grid {
   flex: 1;
   min-width: 0;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2px 8px;
-  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
+}
+
+.me-unit-summary-grid .me-unit-label-zh {
+  font-weight: 800;
+  font-size: 13px;
+  color: #424242;
+}
+
+.me-unit-summary-grid .me-unit-theme {
+  font-size: 13px;
+  font-weight: 700;
+  max-width: 10em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me-unit-summary-grid .me-unit-zh {
+  font-size: 11px;
+}
+
+.me-unit-summary-grid .parent-row-stars {
+  margin-left: auto;
 }
 
 .me-unit-details {
@@ -5577,24 +5600,43 @@ button.is-speaking {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
   overflow: hidden;
-  white-space: nowrap;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .journey-unit-summary-main .journey-stage-tag {
   display: none;
 }
 
-.journey-unit-summary-main .journey-stage-unit {
+.journey-unit-summary-main .journey-unit-label-zh {
   font-size: 13px;
   font-weight: 800;
-  flex-shrink: 1;
-  min-width: 0;
+  color: #424242;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.journey-unit-summary-main .journey-unit-title-sep {
+  font-size: 12px;
+  font-weight: 600;
+  color: #bdbdbd;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.journey-unit-summary-main .journey-stage-theme,
+.journey-unit-summary-main .journey-stage-unit {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212121;
+  flex-shrink: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .journey-unit-summary-main .journey-stage-zh {
@@ -10430,4 +10472,1291 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 @media (min-width:400px) {
   .l1-vh-j,.l1-vj { width:62px; }
   .l1-vh-k,.l1-vk { width:68px; }
+}
+
+/* ── 笔记板块（规范 19）── */
+#view-me {
+  padding-bottom: 8px;
+}
+
+.notes-panel-root {
+  margin: 0 -4px;
+}
+
+.notes-panel {
+  padding: 0 2px 8px;
+}
+
+.notes-timer-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 8px 10px 10px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid var(--mvp-border);
+  border-radius: 10px;
+}
+
+.notes-timer-stat {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notes-timer-sep {
+  flex-shrink: 0;
+  width: 1px;
+  height: 20px;
+  margin: 0 10px;
+  background: #e0e0e0;
+}
+
+.notes-timer-label {
+  font-size: 12px;
+  color: #757575;
+  white-space: nowrap;
+}
+
+.notes-timer-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.notes-timer-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  margin-left: 1px;
+}
+
+/* 笔记顶栏 · 用法与颜色图例（可折叠，避免每课重复说明） */
+.notes-guide {
+  margin: 0 10px 10px;
+  border: 1px solid #e8ecef;
+  border-radius: 10px;
+  background: #fafbfc;
+  overflow: hidden;
+}
+
+.notes-guide-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #455a64;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notes-guide-chevron {
+  flex-shrink: 0;
+  width: 12px;
+  font-size: 9px;
+  color: #90a4ae;
+  transition: transform 0.15s ease;
+}
+
+.notes-guide-chevron::before {
+  content: "▶";
+  display: block;
+}
+
+.notes-guide[open] .notes-guide-chevron {
+  transform: rotate(90deg);
+}
+
+.notes-guide-summary-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.notes-guide-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-guide[open] .notes-guide-summary {
+  border-bottom: 1px solid #eceff1;
+}
+
+.notes-guide-body {
+  padding: 8px 12px 10px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: #607d8b;
+}
+
+.notes-guide-lead {
+  margin: 0 0 6px;
+}
+
+.notes-guide-body p {
+  margin: 0 0 6px;
+}
+
+.notes-guide-foot {
+  margin: 6px 0 0 !important;
+  font-size: 10px;
+  color: #90a4ae;
+}
+
+.notes-guide-foot .notes-tap-open {
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+.notes-guide-chip {
+  display: inline-block;
+  margin: 0 2px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.notes-guide-chip--tb {
+  background: #e8f0f8;
+  color: #4a6a8a;
+}
+
+.notes-guide-chip--tc {
+  background: #efe8f4;
+  color: #6a4a7a;
+}
+
+.notes-guide-chip--sc {
+  background: #e8f4ef;
+  color: #3d6a55;
+}
+
+.notes-guide-chip--lk {
+  background: #eef2f8;
+  color: #4a5a7a;
+}
+
+.notes-guide-chip--mine {
+  background: #f5f0e8;
+  color: #6a5a40;
+}
+
+.notes-guide-weak-cats {
+  margin: 4px 0 6px;
+}
+
+.notes-lesson-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px 12px;
+}
+
+/* 课次行 · 左边线色 = 课文目录六单元（--stage-accent） */
+.notes-unit-head {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin: 10px 0 4px;
+  padding: 4px 2px 4px 0;
+}
+
+.notes-unit-head:first-child {
+  margin-top: 2px;
+}
+
+.notes-unit-head-stripe,
+.notes-unit-stripe {
+  flex-shrink: 0;
+  width: 4px;
+  min-height: 18px;
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--stage-accent, #bdbdbd);
+}
+
+.notes-unit-head-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.notes-unit-head-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--notes-unit-dark, var(--stage-accent, #5d4037));
+}
+
+.notes-unit-weak-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(176, 128, 120, 0.14);
+  color: #7d524c;
+  white-space: nowrap;
+}
+
+.notes-unit-weak-pill--none {
+  background: transparent;
+  color: #b0bec5;
+  font-weight: 500;
+  padding: 0;
+}
+
+.notes-lesson-card--has-weak .notes-lesson-summary {
+  background: linear-gradient(90deg, rgba(176, 128, 120, 0.06) 0%, transparent 48%);
+}
+
+.notes-lesson-weak-markers {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.notes-lesson-weak-markers .notes-weak-cat-badge {
+  margin: 0;
+  font-size: 9px;
+  padding: 0 4px;
+  line-height: 1.35;
+}
+
+.notes-weak-intro-brief {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #8d6e63;
+}
+
+.notes-lesson-card {
+  border: 1px solid var(--notes-unit-border, #e8e8e8);
+  border-left: 4px solid var(--stage-accent, #bdbdbd);
+  border-radius: 12px;
+  background: var(--mvp-card, #fff);
+  overflow: hidden;
+}
+
+.notes-lesson-card[open] {
+  border-left-width: 5px;
+  border-left-color: var(--stage-accent, #bdbdbd);
+  background: var(--notes-unit-bg, var(--mvp-card, #fff));
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.notes-lesson-summary {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px 10px 10px 6px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+}
+
+.notes-unit-tag {
+  flex-shrink: 0;
+  align-self: center;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: var(--notes-unit-dark, var(--stage-accent));
+  background: var(--notes-unit-bg, #fafafa);
+  border: 1px solid var(--notes-unit-border, #e0e0e0);
+  max-width: 4.5em;
+  text-align: center;
+}
+
+.notes-lesson-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-lesson-chevron {
+  flex-shrink: 0;
+  width: 14px;
+  align-self: center;
+  font-size: 10px;
+  color: #999;
+  transition: transform 0.2s ease;
+}
+
+.notes-lesson-chevron::before {
+  content: "▶";
+  display: block;
+  line-height: 14px;
+}
+
+.notes-lesson-card[open] .notes-lesson-chevron {
+  transform: rotate(90deg);
+}
+
+.notes-lesson-title-wrap {
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notes-lesson-theme,
+.notes-lesson-dot {
+  align-self: center;
+}
+
+.notes-lesson-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.25;
+}
+
+.notes-lesson-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.notes-preview-chip {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.notes-preview-chip--tb { background: #dceef4; color: #2a6f7f; }
+.notes-preview-chip--tc { background: #dceade; color: #3d5c4a; }
+.notes-preview-chip--sc { background: #e8e0f2; color: #5e4b7a; }
+.notes-preview-chip--wk { background: #f5e4e1; color: #7d524c; }
+
+.notes-lesson-theme {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.notes-lesson-dot {
+  flex-shrink: 0;
+  color: #ff9800;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.notes-lesson-body {
+  padding: 6px 10px 10px;
+  border-top: 1px solid rgba(211, 47, 47, 0.12);
+}
+
+.notes-lesson-hint {
+  margin: 0 0 8px;
+  font-size: 10px;
+  color: #9e9e9e;
+  text-align: center;
+}
+
+.notes-dim-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 三维色块 · 默认折叠 */
+.notes-dim {
+  border-radius: 10px;
+  border: 1px solid var(--mvp-border);
+  overflow: hidden;
+  background: var(--mvp-card);
+}
+
+.notes-dim-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.notes-dim-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-dim-chevron,
+.notes-sub-chevron {
+  flex-shrink: 0;
+  width: 12px;
+  font-size: 9px;
+  color: #888;
+  transition: transform 0.15s ease;
+}
+
+.notes-dim-chevron::before,
+.notes-sub-chevron::before {
+  content: "▶";
+  display: block;
+}
+
+.notes-dim[open] > .notes-dim-summary .notes-dim-chevron,
+.notes-sub[open] > .notes-sub-summary .notes-sub-chevron {
+  transform: rotate(90deg);
+}
+
+.notes-dim-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.notes-dim-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.notes-dim-count {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.notes-dim-panel {
+  padding: 0 8px 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 四色块：课本 / 老师 / 学霸 / 薄弱（低饱和、可区分） */
+.notes-dim--textbook {
+  background: #eef6f9;
+  border-color: #8bb8c8;
+  border-left: 3px solid #5a9aad;
+}
+
+.notes-dim--textbook > .notes-dim-summary {
+  color: #2a6f7f;
+}
+
+.notes-dim--textbook .notes-dim-panel {
+  border-top-color: rgba(90, 154, 173, 0.2);
+}
+
+.notes-dim--teacher {
+  background: #edf5ef;
+  border-color: #8fb896;
+  border-left: 3px solid #6a9a76;
+}
+
+.notes-dim--teacher > .notes-dim-summary {
+  color: #3d5c4a;
+}
+
+.notes-dim--teacher .notes-dim-panel {
+  border-top-color: rgba(106, 154, 118, 0.2);
+}
+
+.notes-dim--scholar {
+  background: #f2eff8;
+  border-color: #b8a9d4;
+  border-left: 3px solid #8f7ab0;
+}
+
+.notes-dim--scholar > .notes-dim-summary {
+  color: #5e4b7a;
+}
+
+.notes-dim--scholar .notes-dim-panel {
+  border-top-color: rgba(143, 122, 176, 0.2);
+}
+
+.notes-dim--weak {
+  background: #faf0ee;
+  border-color: #c9a8a3;
+  border-left: 3px solid #b08078;
+}
+
+.notes-dim--weak > .notes-dim-summary {
+  color: #7d524c;
+}
+
+.notes-dim--weak .notes-dim-panel {
+  border-top-color: rgba(176, 128, 120, 0.2);
+}
+
+.notes-dim--links {
+  border-color: var(--mvp-border);
+  background: var(--mvp-card);
+}
+
+.notes-dim--links > .notes-dim-summary {
+  color: var(--mvp-muted);
+}
+
+.notes-dim--mine {
+  border-color: var(--mvp-border);
+  background: var(--mvp-bg);
+}
+
+.notes-dim--mine > .notes-dim-summary {
+  color: var(--mvp-text);
+}
+
+.notes-scholar-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notes-scholar-block {
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.notes-scholar-block-title,
+.notes-sub--scholar-fold .notes-sub-title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mvp-muted);
+}
+
+.notes-sub--scholar-fold .notes-sub-summary {
+  color: var(--mvp-muted);
+}
+
+.notes-scholar-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notes-scholar-bubble {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--mvp-text);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.notes-scholar-bubble--core {
+  background: #f5f0eb;
+  border-color: #e8dfd6;
+}
+
+.notes-scholar-bubble--one {
+  background: #faf8f5;
+  border-left: 3px solid #bcaaa4;
+}
+
+.notes-scholar-bubble--ref {
+  background: #f3f1ee;
+  border-color: #e0dcd6;
+}
+
+.notes-scholar-bubble--err {
+  background: #faf7f6;
+  border-left: 3px solid #a1887f;
+}
+
+.notes-tb-bubble {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--mvp-text);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(90, 154, 173, 0.2);
+}
+
+.notes-dim--textbook .notes-sub {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(90, 154, 173, 0.15);
+}
+
+.notes-dim--teacher .notes-sub {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(106, 154, 118, 0.15);
+}
+
+.notes-sub--textbook.notes-sub--teacher-like .notes-sub-title,
+.notes-sub--teacher .notes-sub-title {
+  color: var(--mvp-muted);
+}
+
+/* 提词字色：工业蓝系 · 仅字色+字重，无黄底/铺底 */
+.notes-hl {
+  background: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.notes-hl-lesson {
+  color: #1a365d;
+  font-weight: 700;
+}
+
+.notes-hl-pattern {
+  color: #1e3a5f;
+  font-weight: 700;
+}
+
+.notes-hl-pos {
+  color: #2c5282;
+  font-weight: 600;
+}
+
+.notes-hl-conj {
+  color: #3d5a80;
+  font-weight: 600;
+}
+
+.notes-hl-place {
+  color: #4a6fa5;
+  font-weight: 500;
+}
+
+.notes-hl-special {
+  color: #37474f;
+  font-weight: 600;
+}
+
+.notes-hl-legend {
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 10px;
+  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: #90a4ae;
+}
+
+.notes-hl-legend::before {
+  content: "字色 ";
+  font-weight: 500;
+  color: #b0bec5;
+}
+
+.notes-hl-legend .notes-hl {
+  font-size: 10px;
+}
+
+.notes-hl-legend-note {
+  color: #b0bec5;
+  font-weight: 400;
+}
+
+.notes-dim-subs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notes-sub {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.notes-sub-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #424242;
+}
+
+.notes-sub-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-sub-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notes-sub-count {
+  font-size: 10px;
+  font-weight: 600;
+  color: #757575;
+}
+
+.notes-sub-body {
+  padding: 0 8px 8px;
+}
+
+.notes-sub--scholar-fold .notes-sub-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notes-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.notes-tag--textbook {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.notes-tag-body {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #555;
+}
+
+.notes-kp-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.notes-kp-row:last-child {
+  margin-bottom: 0;
+}
+
+.me-kp-badge {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.me-kp-音 { background: #90a4ae; }
+.me-kp-源 { background: #a1887f; }
+.me-kp-予 { background: #8d6e63; }
+.me-kp-敬 { background: #e57373; }
+.me-kp-誤 { background: #bcaaa4; color: #4e342e; }
+.me-kp-話 { background: #a5d6a7; color: #33691e; }
+.me-kp-補 { background: #bdbdbd; }
+
+.notes-kp-text {
+  margin: 0;
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #444;
+}
+
+.notes-scholar-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #444;
+}
+
+.notes-weak-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notes-weak-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 8px 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.85);
+  border-left-width: 3px;
+}
+
+.notes-weak-item-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.notes-weak-compare {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(176, 128, 120, 0.2);
+}
+
+.notes-weak-q {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: #78909c;
+  line-height: 1.4;
+}
+
+.notes-weak-compare-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.notes-weak-compare-row:last-child {
+  margin-bottom: 0;
+}
+
+.notes-weak-compare-label {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 36px;
+}
+
+/* 正解在上 · 红字放大，加深正确记忆 */
+.notes-weak-compare-row--correct {
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.notes-weak-compare-row--correct .notes-weak-compare-label {
+  color: #c62828;
+  font-size: 11px;
+}
+
+.notes-weak-compare-row--correct .notes-weak-compare-val {
+  color: #b71c1c;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* 曾错在下 · 蓝字缩小，弱化错误印象 */
+.notes-weak-compare-row--mistake {
+  font-size: 11px;
+  opacity: 0.92;
+}
+
+.notes-weak-compare-row--mistake .notes-weak-compare-label {
+  color: #1565c0;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.notes-weak-compare-row--mistake .notes-weak-compare-val {
+  color: #5c6bc0;
+  font-size: 11px;
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-color: rgba(21, 101, 192, 0.35);
+}
+
+.notes-weak-compare-val {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.notes-weak-compare-expl {
+  margin: 6px 0 0;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+  font-size: 11px;
+  color: #8d6e63;
+  line-height: 1.45;
+}
+
+.notes-weak-compare-hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #8d6e63;
+}
+
+.notes-weak-item:last-child {
+  margin-bottom: 0;
+}
+
+.notes-weak-item.notes-weak-cat--lang {
+  border-left-color: #4a8fa8;
+}
+
+.notes-weak-item.notes-weak-cat--write {
+  border-left-color: #5c6b7a;
+}
+
+.notes-weak-item.notes-weak-cat--verb {
+  border-left-color: #5c6bc0;
+}
+
+.notes-weak-item.notes-weak-cat--grammar {
+  border-left-color: #455a64;
+}
+
+.notes-weak-item.notes-weak-cat--mix {
+  border-left-color: #8d6e63;
+}
+
+.notes-weak-cat-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.notes-weak-cat--lang .notes-weak-cat-badge {
+  background: #4a8fa8;
+}
+
+.notes-weak-cat--write .notes-weak-cat-badge {
+  background: #5c6b7a;
+}
+
+.notes-weak-cat--verb .notes-weak-cat-badge {
+  background: #5c6bc0;
+}
+
+.notes-weak-cat--grammar .notes-weak-cat-badge {
+  background: #546e7a;
+}
+
+.notes-weak-cat--mix .notes-weak-cat-badge {
+  background: #8d6e63;
+}
+
+.notes-weak-stars {
+  flex-shrink: 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #b8860b;
+  line-height: 1;
+}
+
+.notes-weak-stars--demo {
+  margin-right: 2px;
+}
+
+.notes-weak-legend-row {
+  margin-top: 8px;
+}
+
+.notes-weak-legend-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.notes-weak-legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #78909c;
+}
+
+.notes-weak-legend-chip .notes-weak-cat-badge {
+  margin: 0;
+}
+
+.notes-weak-legend-stars {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: #90a4ae;
+  line-height: 1.5;
+}
+
+.notes-weak-intro {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(176, 128, 120, 0.25);
+}
+
+.notes-weak-intro-lead {
+  margin: 0 0 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5d4037;
+}
+
+.notes-weak-intro-sub {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #8d6e63;
+}
+
+.notes-weak-empty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #8d6e63;
+  padding: 4px 2px 0;
+}
+
+.notes-weak-rank {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #b08078;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notes-weak-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.notes-weak-count {
+  color: #7d524c;
+  font-weight: 600;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* 关联 · 倒三角 + 顶横线（课次行右侧，约 1 字间距） */
+.notes-tap-open {
+  display: inline-block;
+  margin-left: 0.25em;
+  vertical-align: 0.05em;
+  color: #90a4ae;
+  line-height: 0;
+}
+
+.notes-tap-open-svg {
+  display: block;
+}
+
+.notes-links-tap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 2px;
+  font-size: 10px;
+  color: #90a4ae;
+  line-height: 1.25;
+}
+
+.notes-link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notes-link-chip {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: 1px solid #e8ecef;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.notes-link-chip:active {
+  background: #f5f7fa;
+}
+
+.notes-link-chip-main {
+  min-width: 0;
+}
+
+.notes-link-badge {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #5a6a82;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+.notes-link-text {
+  display: block;
+  font-size: 12px;
+  line-height: 1.42;
+  color: #424242;
+  font-weight: 400;
+}
+
+.notes-dim--links .notes-dim-panel {
+  padding: 4px 6px 6px;
+}
+
+.notes-dim--links .notes-hl-legend {
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-size: 10px;
+}
+
+.notes-dim--links .notes-dim-count {
+  color: #4a5a7a;
+}
+
+.notes-mine-editor {
+  width: 100%;
+  min-height: 56px;
+  resize: vertical;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid #cfd8dc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-family: inherit;
+  background: #fff;
+}
+
+.notes-go-lesson {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.notes-empty {
+  margin: 0;
+  font-size: 12px;
+}
+
+.notes-link-modal {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.notes-link-card {
+  position: relative;
+  width: min(100%, 360px);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 14px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.notes-link-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #eee;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.notes-link-card-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mvp-muted);
+  background: var(--mvp-bg);
+  border: 1px solid var(--mvp-border);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.notes-link-card-jp {
+  margin: 12px 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.notes-link-card-zh {
+  margin: 0 0 12px;
+  font-size: 11px;
+  color: #999;
+}
+
+.notes-link-card-sub {
+  margin: 10px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+}
+
+.notes-link-card-desc {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.45;
+}
+
+.notes-link-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.notes-link-card-tip {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  background: #f8fafc;
+  border-left: 3px solid #3d5a80;
+  border-radius: 0 8px 8px 0;
+  color: #424242;
+}
+
+.notes-link-card-tags .notes-tag--textbook {
+  background: none;
+  color: #2c5282;
+  font-weight: 600;
+  padding: 0 2px;
+}
+
+.notes-link-card-foot {
+  margin: 12px 0 0;
+  font-size: 10px;
+  color: #ccc;
+  text-align: center;
 }

@@ -16,7 +16,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
   <link rel="stylesheet" href="css/app.css?v=209" />
-  <link rel="stylesheet" href="css/mvp.css?v=225" />
+  <link rel="stylesheet" href="css/mvp.css?v=242" />
   <style>
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
     .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -86,12 +86,7 @@
       </section>
 
       <section id="view-me" class="view" aria-hidden="true">
-        <h3 class="section-title">学习日数</h3>
-        <div class="heatmap" id="heatmap"></div>
-        <h3 class="section-title">进度</h3>
-        <div id="parent-progress"></div>
-        <h3 class="section-title">薄弱知识点 TOP3</h3>
-        <ul id="weak-top3" style="padding-left:18px"></ul>
+        <div id="notes-panel-root" class="notes-panel-root"></div>
         <label class="settings-toggle">
           <input type="checkbox" id="toggle-zh" checked />
           <span>显示中文释义（小字灰色）</span>
@@ -133,7 +128,7 @@
   <script src="js/data/lessons-data.js?v=209"></script>
   <script src="js/data/lessons-mvp.js?v=209"></script>
   <script src="js/data/lessons-mvp-depth.js?v=209"></script>
-  <script src="js/data/curriculum-catalog.js?v=209"></script>
+  <script src="js/data/curriculum-catalog.js?v=212"></script>
   <script src="js/ruby-render.js?v=209"></script>
   <script src="js/mvp-storage.js?v=209"></script>
   <script src="js/speech-engine.js?v=209"></script>
@@ -162,12 +157,13 @@
   <script src="js/story-egg-viewport.js?v=209"></script>
   <script src="js/story-egg.js?v=209"></script>
   <script src="js/lesson-recap.js?v=209"></script>
-  <script src="js/journey-home.js?v=210"></script>
+  <script src="js/journey-home.js?v=212"></script>
   <script src="js/home-splash.js?v=1"></script>
   <script src="js/hyouga-test-card.js?v=209"></script>
-  <script src="js/learning-notes.js?v=209"></script>
+  <script src="js/learning-notes.js?v=210"></script>
+  <script src="js/notes-panel.js?v=242"></script>
   <script src="js/lesson-1-flow.js?v=220"></script>
-  <script src="js/app.js?v=223"></script>
+  <script src="js/app.js?v=228"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {

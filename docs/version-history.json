@@ -2,9 +2,10 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "225",
+    "cache": "242",
     "date": "2026-05-25",
-    "note": "第1課五关提示统一+首页开屏IA+课内序号对齐；见 过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
+    "git_tag": "lock/notes-panel-v1-20260525",
+    "note": "「笔记板块V1」定稿锁：易错对照、关联可点开图例、单元汇总；见 docs/locks/NOTES-PANEL-V1-LOCK-20260525.md",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"
@@ -113,6 +114,16 @@
       "lessons": [1],
       "local": "http://localhost:8765/index.html?v=225",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=225"
+    },
+    {
+      "product": "1.0.2",
+      "cache": "242",
+      "tag": "lock/notes-panel-v1-20260525",
+      "date": "2026-05-25",
+      "note": "「笔记板块V1」定稿锁：底栏笔记六块、易错红上蓝下、关联倒三角可点开",
+      "lock_doc": "docs/locks/NOTES-PANEL-V1-LOCK-20260525.md",
+      "local": "http://localhost:8765/index.html?v=242",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=242"
     }
   ],
   "versioning_rules": {
