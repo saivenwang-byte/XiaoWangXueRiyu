@@ -17,8 +17,19 @@ const DialogueGate = (() => {
     return lesson?.lessonId === 1;
   }
 
+  /** 第1单元第1–4课 · ABC 三答 UI（A=课文 · B/C=场景变体） */
+  function isUnit1AbcDialogue() {
+    const lid = lesson?.lessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lid);
+  }
+
+  /** 第1单元第1–4课 · 与第1课相同的 l1-gate-panel + 传送链 */
+  function isUnit1MvpPanel() {
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lesson?.lessonId);
+  }
+
   function isSequentialMode() {
-    if (isL1Dialogue()) return false;
+    if (isUnit1AbcDialogue()) return false;
     if (!dialogues.length) return true;
     return dialogues.every((d) => !d.userTurn?.replies || d.userTurn.replies.length <= 1);
   }
@@ -199,6 +210,12 @@ const DialogueGate = (() => {
         : lesson.dialogues || [];
     if (Number(lessonId) === 1 && typeof applyL1DialogueAbc === "function") {
       dialogues = applyL1DialogueAbc(dialogues);
+    } else if (
+      Number(lessonId) >= 2 &&
+      Number(lessonId) <= 4 &&
+      typeof applyUnit1DialogueAbc === "function"
+    ) {
+      dialogues = applyUnit1DialogueAbc(lessonId, dialogues);
     }
     if (!dialogues.length) {
       container.innerHTML = `<p class="hint-ja">会話データがありません。</p>`;
@@ -252,7 +269,7 @@ const DialogueGate = (() => {
 
   function renderReplyList(replies, sceneIdx) {
     const idx = sceneIdx != null ? sceneIdx : dialogueIndex;
-    if (isL1Dialogue()) return renderL1AbcReplyList(replies, idx);
+    if (isUnit1AbcDialogue()) return renderL1AbcReplyList(replies, idx);
     const ordered = sortRepliesByKnowledgeLevel(replies);
     const marks = ["①", "②", "③"];
     return `<div class="dg-reply-list" role="list" aria-label="三种说法">
@@ -435,9 +452,15 @@ const DialogueGate = (() => {
     const opener = d.opener;
     const replies = d.userTurn?.replies || [];
     const speakerB = d.userTurn?.speaker || "B";
-    if (isL1Dialogue()) {
+    if (isUnit1AbcDialogue()) {
       let html = renderL1OpenerBlock(d, idx);
       html += `<p class="dg-your-turn dg-your-turn-compact">${escapeHtml(speakerB)} · 選ぶ回答 <span class="dg-abc-hint">A＝课文</span></p>`;
+      if (replies.length) html += renderReplyList(replies, idx);
+      html += renderFooter(null, idx);
+      return html;
+    }
+    if (isUnit1MvpPanel()) {
+      let html = renderL1OpenerBlock(d, idx);
       if (replies.length) html += renderReplyList(replies, idx);
       html += renderFooter(null, idx);
       return html;
@@ -489,7 +512,7 @@ const DialogueGate = (() => {
     const preview = (d.opener?.japanese || d.title || "").trim().slice(0, 36);
     const tag = d.isBranch ? "分岐" : d.scenePlace ? `第${d.scenePlace}句` : `第${i + 1}句`;
     const done = dialoguePassed[i];
-    if (lesson?.lessonId === 1) {
+    if (isUnit1MvpPanel()) {
       const zhHint = sceneTitleZh(d);
       const zhCol =
         zhHint && showZh()
@@ -520,7 +543,11 @@ const DialogueGate = (() => {
   }
 
   function l1AccordionMode() {
-    return l1Flow || lesson?.lessonId === 1;
+    return isUnit1MvpPanel() || l1Flow;
+  }
+
+  function useUnit1SceneFooter() {
+    return isUnit1MvpPanel();
   }
 
   function sceneFoldClass() {
@@ -552,7 +579,7 @@ const DialogueGate = (() => {
         .map(
           (d, i) => `
         <details class="${foldCls}" data-didx="${i}" data-node-id="l${lesson.lessonId}_dlg_${i}">
-          <summary class="${sumCls}">${l1Flow ? `💬 ` : ""}${sceneFoldSummary(d, i)}</summary>
+          <summary class="${sumCls}">${l1Flow && !isUnit1MvpPanel() ? `💬 ` : ""}${sceneFoldSummary(d, i)}</summary>
           <div class="${bodyCls}"></div>
         </details>`
         )
@@ -569,6 +596,7 @@ const DialogueGate = (() => {
       done: doneN,
       total: dialogues.length,
       ready: ok,
+      lessonId: lesson?.lessonId,
     });
   }
 
@@ -580,8 +608,8 @@ const DialogueGate = (() => {
     dialogueIndex = idx;
     dialogue = d;
     body.innerHTML = d.isBranch ? renderBranchSceneBody(d, idx) : renderSequentialSceneBody(d, idx);
-    if (isL1Dialogue() && typeof L1KnowledgeCard !== "undefined") {
-      L1KnowledgeCard.bind(body, { switchGate });
+    if (isUnit1MvpPanel() && typeof L1KnowledgeCard !== "undefined") {
+      L1KnowledgeCard.bind(body, { switchGate, lessonId: lesson.lessonId });
     }
     bindSpeak(body);
     bindFooter(body, idx);
@@ -627,7 +655,7 @@ const DialogueGate = (() => {
 
   function renderFooter(scopeEl, idx) {
     const i = idx != null ? idx : dialogueIndex;
-    if (l1Flow) {
+    if (l1Flow || useUnit1SceneFooter()) {
       return `
       <div class="dg-l1-scene-actions" data-scene-footer="${i}">
         <button type="button" class="btn secondary dg-scene-done" data-scene-done="${i}">本句听完 ✓</button>
@@ -673,9 +701,12 @@ const DialogueGate = (() => {
     const det = container?.querySelector(`${sceneFoldSelector()}[data-didx="${dialogueIndex}"]`);
     if (det) {
       const sum = det.querySelector(l1AccordionMode() ? ".gw-group-summary" : ".dg-scene-fold-summary");
-      if (sum) sum.innerHTML = (l1Flow ? "💬 " : "") + sceneFoldSummary(dialogues[dialogueIndex], dialogueIndex);
+      if (sum) {
+        const prefix = l1Flow && !isUnit1MvpPanel() ? "💬 " : "";
+        sum.innerHTML = prefix + sceneFoldSummary(dialogues[dialogueIndex], dialogueIndex);
+      }
     }
-    if (l1Flow || lesson?.lessonId === 1) {
+    if (isUnit1MvpPanel() || l1Flow) {
       updateL1Footer();
       return;
     }
@@ -703,7 +734,7 @@ const DialogueGate = (() => {
   }
 
   function render() {
-    if (l1Flow) {
+    if (l1Flow && !isUnit1MvpPanel()) {
       const chainFooter =
         typeof Lesson1Flow !== "undefined"
           ? Lesson1Flow.chainFooterHtml(2, {
@@ -732,7 +763,7 @@ const DialogueGate = (() => {
       updateL1Footer();
       return;
     }
-    const l1Dlg = lesson.lessonId === 1;
+    const l1Dlg = isUnit1MvpPanel();
     if (l1Dlg && typeof Lesson1Flow !== "undefined") {
       container.innerHTML = Lesson1Flow.l1GatePanelHtml(renderSceneAccordion(), 2, {
         btnId: "dg-l1-done",
@@ -740,11 +771,12 @@ const DialogueGate = (() => {
         total: dialogues.length,
         ready: false,
         disabled: true,
+        lessonId: lesson.lessonId,
       });
       bindSceneAccordion();
       bindSpeak();
       const panel = container.querySelector(".l1-gate-panel") || container;
-      Lesson1Flow.bindChainFooter(panel, 2, { switchGate });
+      Lesson1Flow.bindChainFooter(panel, 2, { switchGate, lessonId: lesson.lessonId });
       panel.querySelector("#dg-l1-done")?.addEventListener("click", () => {
         if (!allDialoguesPassed()) return;
         setGateDone(state, lesson.lessonId, 2);

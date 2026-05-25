@@ -7,17 +7,29 @@
     "doc": "docs/MVP-FREEZE.md",
     "git_tag": "mvp-v1.0.1-biaori-141618"
   },
+  "unit1_lessons_1_4_mvp": {
+    "status": "locked",
+    "frozen_at": "2026-05-25",
+    "locked_at": "2026-05-25",
+    "cache": "246",
+    "lesson_ids": [1, 2, 3, 4],
+    "unit_id": 1,
+    "doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
+    "user_confirmed": "2026-05-25",
+    "note": "第1单元第1–4课五关+会話ABC；无用户明示不得改 lesson-1-flow / unit1-dialogue-abc / 课1–4 lessons-data 五关字段"
+  },
   "unit1_lesson1_mvp": {
     "status": "locked",
     "frozen_at": "2026-05-25",
     "locked_at": "2026-05-25",
-    "cache": "225",
+    "cache": "246",
     "lesson_id": 1,
     "unit_id": 1,
     "doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
+    "parent_lock": "unit1_lessons_1_4_mvp",
     "archive": "过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
     "user_confirmed": "2026-05-25",
-    "note": "课文五关 MVP 已锁定；后续默认改笔记板块，不回头改 lesson-1-flow"
+    "note": "课1 子锁；全单元 1–4 见 unit1_lessons_1_4_mvp"
   },
   "notes_panel_v1": {
     "status": "locked",
@@ -52,18 +64,33 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "242",
+    "cache": "246",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=242",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=242",
-    "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md"
+    "local": "http://localhost:8765/index.html?v=246",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=246",
+    "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
+    "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
+    "mvp_unit1_lessons_1_4": "第1单元第1–4课五关+会話ABC 已锁定 v246"
   },
   "confirmed": [
+    {
+      "id": "unit1-lessons-2-4-mvp-flow",
+      "since_cache": "246",
+      "title": "第1单元第2–4课 · 五关与第1课对齐（含会話 ABC）",
+      "files": [
+        "js/lesson-1-flow.js",
+        "js/app.js",
+        "js/dialogue-gate.js",
+        "js/data/unit1-dialogue-abc-l234.js",
+        "scripts/validate-unit1-mvp-lessons.py"
+      ],
+      "acceptance": "第2–4课五关壳与第1课一致；会話每句 A=课文 B/C=场景变体+黄提示；第1课冻结不变"
+    },
     {
       "id": "plan-a-sensei-four-gates",
       "since_cache": "41",
@@ -270,6 +297,26 @@
       ],
       "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=242",
       "user_confirmed": "2026-05-25"
+    },
+    {
+      "id": "unit1-lessons-1-4-locked-v246",
+      "since_cache": "246",
+      "title": "第1单元第1–4课 · 五关+会話ABC 用户锁定",
+      "doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
+      "files": [
+        "js/lesson-1-flow.js",
+        "js/app.js",
+        "js/dialogue-gate.js",
+        "js/grammar-network.js",
+        "js/quiz-gate.js",
+        "js/lesson-overview.js",
+        "js/data/l1-dialogue-abc.js",
+        "js/data/unit1-dialogue-abc-l234.js",
+        "js/data/lessons-data.js",
+        "scripts/validate-unit1-mvp-lessons.py"
+      ],
+      "acceptance": "课1–4 五关与课1 MVP 同壳；会話 A/B/C+提示；pre-ship OK；?v=246",
+      "user_confirmed": "2026-05-25"
     }
   ],
   "roadmap": {
@@ -299,7 +346,7 @@
     {
       "id": "stage-3-lessons-1-12",
       "status": "in_progress",
-      "note": "第1課 MVP locked v225；第2課知识关联试点；第3–12待"
+      "note": "第1单元第1–4课 MVP locked v246；第5–12课五关待"
     },
     {
       "id": "notes-panel-v2",
@@ -379,7 +426,8 @@
     "全站 giant 点读卡 / 113 词逐词大卡",
     "重写 app.js 路由或替换 lessons 数据源",
     "未跑四关回归即改 speech-engine.js 排序/回退链",
-    "修改 js/lesson-1-flow.js 或第1課课内五关已锁 UI/数据（unit1_lesson1_mvp locked）"
+    "修改 js/lesson-1-flow.js 或第1单元第1–4课课内五关/会話ABC（unit1_lessons_1_4_mvp locked）",
+    "修改 js/data/unit1-dialogue-abc-l234.js 或 lessonId 1–4 课内五关数据字段（无用户明示）"
   ],
   "regression_smoke_lesson": 14,
   "regression_gates": ["vocab", "grammar", "dialogue", "quiz"]

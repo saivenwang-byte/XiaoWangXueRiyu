@@ -1,9 +1,10 @@
 /**
- * 第1課 · 课内五关（単語/会話/文法/作業/拡張）— 截图定稿交互
- * 仅 lessonId === 1 时由 app.js 调用
+ * 第1单元 MVP 课内五关（単語/会話/文法/作業/拡張）— 截图定稿交互
+ * lessonId 1–4 由 app.js 传入 callbacks.lessonId；第1課行为不变
  */
 const Lesson1Flow = (function () {
   const LESSON_ID = 1;
+  const UNIT1_MVP_MAX = 4;
 
   const COCKPIT_TABS = [
     { k: 0, label: "単語", sub: "フラッシュ" },
@@ -15,6 +16,39 @@ const Lesson1Flow = (function () {
 
   function isLesson(lessonId) {
     return Number(lessonId) === LESSON_ID;
+  }
+
+  function isUnit1Mvp(lessonId) {
+    const n = Number(lessonId);
+    return n >= 1 && n <= UNIT1_MVP_MAX;
+  }
+
+  function resolveLessonId(callbacks) {
+    const n = Number(callbacks?.lessonId);
+    return n >= 1 && n <= UNIT1_MVP_MAX ? n : LESSON_ID;
+  }
+
+  function chainMetaFor(lessonId, activeGate) {
+    const meta = { ...(L1_CHAIN_META[activeGate] || L1_CHAIN_META[0]) };
+    if (activeGate !== 4) return meta;
+    const lid = Number(lessonId);
+    if (lid >= 1 && lid < UNIT1_MVP_MAX) {
+      return {
+        ...meta,
+        done: `第${lid}课完了`,
+        next: `第${lid + 1}课`,
+        hint: `第${lid}课五关已走完，返回首页继续第${lid + 1}课。`,
+      };
+    }
+    if (lid === UNIT1_MVP_MAX) {
+      return {
+        ...meta,
+        done: "第4课完了",
+        next: "本单元",
+        hint: "本单元第2～4课五关已走完，可复习或进入下一单元。",
+      };
+    }
+    return meta;
   }
 
   function escapeHtml(s) {
@@ -90,7 +124,7 @@ const Lesson1Flow = (function () {
   };
 
   function chainButtonLabel(activeGate, opts = {}) {
-    const meta = L1_CHAIN_META[activeGate] || L1_CHAIN_META[0];
+    const meta = chainMetaFor(opts.lessonId ?? LESSON_ID, activeGate);
     const done = Number(opts.done) || 0;
     const total = Number(opts.total) || 0;
     const ready = opts.ready === true || (total > 0 && done >= total);
@@ -115,7 +149,7 @@ const Lesson1Flow = (function () {
   }
 
   function chainFooterHtml(activeGate, opts = {}) {
-    const meta = L1_CHAIN_META[activeGate] || L1_CHAIN_META[0];
+    const meta = chainMetaFor(opts.lessonId ?? LESSON_ID, activeGate);
     const btnId = opts.btnId || "l1-chain-done";
     const readyBtn = opts.ready === true;
     const dis = opts.disabled !== undefined ? !!opts.disabled : !readyBtn;
@@ -158,8 +192,9 @@ const Lesson1Flow = (function () {
     });
   }
 
-  function vocabSeenCount(state, list) {
-    const seen = state?.flashProgress?.[LESSON_ID]?.seen || [];
+  function vocabSeenCount(state, list, lessonId) {
+    const lid = lessonId != null ? Number(lessonId) : LESSON_ID;
+    const seen = state?.flashProgress?.[lid]?.seen || [];
     return list.filter((v) => seen.includes(v.id)).length;
   }
 
@@ -218,17 +253,18 @@ const Lesson1Flow = (function () {
     if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(root);
   }
 
-  function kcardHtml(tip, anchorId) {
+  function kcardHtml(tip, anchorId, lessonId) {
     if (!tip || typeof L1KnowledgeCard === "undefined") return "";
-    return L1KnowledgeCard.html(tip, anchorId, LESSON_ID);
+    const lid = lessonId != null ? Number(lessonId) : LESSON_ID;
+    return L1KnowledgeCard.html(tip, anchorId, lid);
   }
 
-  function gwGroupHtml({ title, body, tip, attrs = "", seq, foldGate }) {
+  function gwGroupHtml({ title, body, tip, attrs = "", seq, foldGate, lessonId }) {
     const card =
       typeof tip === "object" && tip?.lines
-        ? kcardHtml(tip, tip._anchor)
+        ? kcardHtml(tip, tip._anchor, lessonId)
         : tip
-          ? kcardHtml({ lines: [{ zh: String(tip) }] })
+          ? kcardHtml({ lines: [{ zh: String(tip) }] }, null, lessonId)
           : "";
     const g = foldGate != null ? Number(foldGate) : 3;
     const foldSlot =
@@ -279,8 +315,20 @@ const Lesson1Flow = (function () {
     "l1_v_28",
   ]);
 
-  function vocabBadges(v, tip) {
-    const warn = VOCAB_WARN_IDS.has(v.id);
+  const VOCAB_WARN_BY_LESSON = {
+    2: new Set(["l2_v_1", "l2_v_2", "l2_v_3", "l2_v_4", "l2_v_28", "l2_v_31"]),
+    3: new Set(["l3_v_2", "l3_v_3", "l3_v_4", "l3_v_5", "l3_v_6"]),
+    4: new Set(["l4_v_2", "l4_v_3", "l4_v_4", "l4_v_5"]),
+  };
+
+  function vocabWarnIdsFor(lessonId) {
+    const lid = Number(lessonId);
+    if (lid === LESSON_ID) return VOCAB_WARN_IDS;
+    return VOCAB_WARN_BY_LESSON[lid] || new Set();
+  }
+
+  function vocabBadges(v, tip, lessonId) {
+    const warn = vocabWarnIdsFor(lessonId).has(v.id);
     const hasTip = !!(tip && tip.lines && tip.lines.length);
     /* 有「注意」时，知识卡文案归注意区，不再标「延伸」（避免点开只看见延伸、不知道注意什么） */
     const extend = hasTip && !warn;
@@ -347,7 +395,8 @@ const Lesson1Flow = (function () {
   }
 
   function mountVocab(mountEl, state, callbacks) {
-    const L = getLessonMvp(LESSON_ID);
+    const lid = resolveLessonId(callbacks);
+    const L = getLessonMvp(lid);
     const list = (L && L.vocab) ? L.vocab.filter(function(v) { return v.from === "text" || !v.from; }) : [];
     if (!list.length) {
       mountEl.innerHTML = `<p class="hint-ja">単語リストは準備中です。</p>`;
@@ -381,8 +430,11 @@ const Lesson1Flow = (function () {
             : typeof SpeakUI !== "undefined"
               ? SpeakUI.btnHtml(payload, `data-vocab-id="${escapeHtml(v.id)}"`)
               : "";
-        const tip = typeof L1KnowledgeTips !== "undefined" ? L1KnowledgeTips.vocab(v) : null;
-        const badges = vocabBadges(v, tip);
+        const tip =
+          lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined"
+            ? L1KnowledgeTips.vocab(v)
+            : null;
+        const badges = vocabBadges(v, tip, lid);
         const warnBlock = badges.warnExplain ? vocabWarnTipHtml(tip, v) : "";
         const extendBlock = badges.extend ? vocabExtendTipHtml(tip, v) : "";
         const conjBlock = badges.conj ? vocabConjBodyHtml(v) : "";
@@ -429,7 +481,7 @@ const Lesson1Flow = (function () {
       .join("");
 
     const total = list.length;
-    const seen0 = vocabSeenCount(state, list);
+    const seen0 = vocabSeenCount(state, list, lid);
     const vocabReady = seen0 >= total && total > 0;
 
     // Supplementary blocks: pronunciation, etymology, preview
@@ -472,23 +524,25 @@ const Lesson1Flow = (function () {
         total,
         ready: vocabReady,
         disabled: !vocabReady,
+        lessonId: lid,
       }
     );
 
     const vocabPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
     const updateVocabFooter = () => {
-      const seen = vocabSeenCount(state, list);
+      const seen = vocabSeenCount(state, list, lid);
       const ready = seen >= total && total > 0;
       updateChainFooterButton(vocabPanel.querySelector("#l1-vocab-done"), 0, {
         done: seen,
         total,
         ready,
+        lessonId: lid,
       });
     };
 
     mountEl.querySelector("#l1-vocab-done")?.addEventListener("click", () => {
-      if (vocabSeenCount(state, list) < total) return;
-      setGateDone(state, LESSON_ID, 0);
+      if (vocabSeenCount(state, list, lid) < total) return;
+      setGateDone(state, lid, 0);
       saveMvpState(state);
       callbacks.switchGate?.(2);
     });
@@ -496,7 +550,7 @@ const Lesson1Flow = (function () {
     mountEl.querySelectorAll(".l1-vocab-item").forEach((row) => {
       const markSeen = () => {
         const vid = row.getAttribute("data-vocab-id");
-        if (vid && typeof markFlashSeen === "function") markFlashSeen(state, LESSON_ID, vid);
+        if (vid && typeof markFlashSeen === "function") markFlashSeen(state, lid, vid);
         updateVocabFooter();
       };
       row.querySelectorAll(
@@ -551,7 +605,7 @@ const Lesson1Flow = (function () {
         btn.classList.toggle("is-open", opening);
         setExpandBtnGlyph(btn, opening);
         const vid = item.getAttribute("data-vocab-id");
-        if (opening && vid && typeof markFlashSeen === "function") markFlashSeen(state, LESSON_ID, vid);
+        if (opening && vid && typeof markFlashSeen === "function") markFlashSeen(state, lid, vid);
         updateVocabFooter();
       });
     });
@@ -600,7 +654,8 @@ const Lesson1Flow = (function () {
   }
 
   function mountHomework(mountEl, state, callbacks) {
-    const L = getLessonMvp(LESSON_ID);
+    const lid = resolveLessonId(callbacks);
+    const L = getLessonMvp(lid);
     let sections = (L?.homeworkSections || []).filter((s) => {
       const t = (s.lines || []).join(" ");
       return t.trim() && !/^（本课无/.test(t.trim());
@@ -622,7 +677,9 @@ const Lesson1Flow = (function () {
     };
 
     function tipForTitle(title) {
-      if (typeof L1KnowledgeTips !== "undefined") return L1KnowledgeTips.homeworkTitle(title);
+      if (lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined") {
+        return L1KnowledgeTips.homeworkTitle(title);
+      }
       const key = Object.keys(HW_TIPS).find((k) => title.includes(k));
       return key ? { lines: [{ zh: HW_TIPS[key] }] } : { lines: [{ zh: "对照课本与文法栏，逐条完成本类练习。" }] };
     }
@@ -642,6 +699,7 @@ const Lesson1Flow = (function () {
           title,
           body: `<ul class="l1-prose-list">${inner}</ul>`,
           tip: tipForTitle(title),
+          lessonId: lid,
         });
       })
       .filter(Boolean)
@@ -654,6 +712,7 @@ const Lesson1Flow = (function () {
           title: "小テスト（交互）",
           body: `<div id="l1-hw-quiz"></div>`,
           tip: tipForTitle("小テスト"),
+          lessonId: lid,
         })
       : "";
 
@@ -669,6 +728,7 @@ const Lesson1Flow = (function () {
       total: hwTotal || 1,
       ready: hwTotal === 0,
       disabled: hwTotal > 0,
+      lessonId: lid,
     });
 
     const hwPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
@@ -680,6 +740,7 @@ const Lesson1Flow = (function () {
         done,
         total: hwTotal || 1,
         ready,
+        lessonId: lid,
       });
     };
     hwPanel.querySelectorAll(".gw-group").forEach((det, i) => {
@@ -697,10 +758,11 @@ const Lesson1Flow = (function () {
       if (!slot || slot.dataset.mounted === "1") return;
       slot.dataset.mounted = "1";
       if (typeof QuizGate !== "undefined") {
-        QuizGate.mount(slot, LESSON_ID, {
+        QuizGate.mount(slot, lid, {
           state,
+          l1Scope: true,
           onComplete: () => {
-            setGateDone(state, LESSON_ID, 3);
+            setGateDone(state, lid, 3);
             saveMvpState(state);
             callbacks.onRefreshCockpit?.();
           },
@@ -714,7 +776,7 @@ const Lesson1Flow = (function () {
 
     mountEl.querySelector("#l1-hw-done")?.addEventListener("click", () => {
       if (hwTotal > 0 && Object.keys(hwOpened).length < hwTotal) return;
-      setGateDone(state, LESSON_ID, 3);
+      setGateDone(state, lid, 3);
       saveMvpState(state);
       callbacks.switchGate?.(4);
     });
@@ -722,7 +784,8 @@ const Lesson1Flow = (function () {
   }
 
   function mountExtension(mountEl, state, callbacks) {
-    const L = getLessonMvp(LESSON_ID);
+    const lid = resolveLessonId(callbacks);
+    const L = getLessonMvp(lid);
     const blocks = L?.summaryBlocks || [];
     const reviewExt = L?.reviewExtension || [];
     const keyPoints = L?.dialogueKeyPoints || [];
@@ -730,6 +793,12 @@ const Lesson1Flow = (function () {
     const show = showZh(state);
 
     const renderLn = (lines) => renderLines(lines, show);
+    const extTip = (key, fallback, title) => {
+      if (lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined") {
+        return L1KnowledgeTips.extensionKey(key, title);
+      }
+      return fallback;
+    };
 
     const groups = [];
     const pron = blocks.find((b) => b.key === "pronunciation");
@@ -738,10 +807,9 @@ const Lesson1Flow = (function () {
         extKey: "pronunciation",
         title: "発音ポイント",
         body: `<ul class="l1-prose-list">${renderLn(pron.lines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("pronunciation")
-            : { lines: [{ zh: "注意助词「は」读「わ」、长音拉长一拍、促音停顿等。" }] },
+        tip: extTip("pronunciation", {
+          lines: [{ zh: "注意助词「は」读「わ」、长音拉长一拍、促音停顿等。" }],
+        }),
       });
     }
     const grammarNodes = L?.grammarNodes || [];
@@ -753,10 +821,9 @@ const Lesson1Flow = (function () {
         extKey: "grammar",
         title: "文法まとめ",
         body: `<ul class="l1-prose-list">${renderLn(glines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("grammar")
-            : { lines: [{ zh: "以上为本课全部语法节点，建议逐条对照例句复习。" }] },
+        tip: extTip("grammar", {
+          lines: [{ zh: "以上为本课全部语法节点，建议逐条对照例句复习。" }],
+        }),
       });
     }
     const preview = blocks.find((b) => b.key === "preview");
@@ -765,10 +832,9 @@ const Lesson1Flow = (function () {
         extKey: "preview",
         title: "活用予告",
         body: `<ul class="l1-prose-list">${renderLn(preview.lines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("preview")
-            : { lines: [{ zh: "提前了解后续课程的活用变化，心中有数。" }] },
+        tip: extTip("preview", {
+          lines: [{ zh: "提前了解后续课程的活用变化，心中有数。" }],
+        }),
       });
     }
     const honor = blocks.find((b) => b.key === "honorific");
@@ -777,10 +843,9 @@ const Lesson1Flow = (function () {
         extKey: "honorific",
         title: "敬語レベル表示",
         body: `<ul class="l1-prose-list">${renderLn(honor.lines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("honorific")
-            : { lines: [{ zh: "掌握敬体与简体的使用场景，避免失礼。" }] },
+        tip: extTip("honorific", {
+          lines: [{ zh: "掌握敬体与简体的使用场景，避免失礼。" }],
+        }),
       });
     }
     const etym = blocks.find((b) => b.key === "etymology");
@@ -789,10 +854,7 @@ const Lesson1Flow = (function () {
         extKey: "etymology",
         title: "語源メモ",
         body: `<ul class="l1-prose-list">${renderLn(etym.lines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("etymology")
-            : { lines: [{ zh: "了解词语来源有助于记忆。" }] },
+        tip: extTip("etymology", { lines: [{ zh: "了解词语来源有助于记忆。" }] }),
       });
     }
     if (keyPoints.length) {
@@ -800,10 +862,9 @@ const Lesson1Flow = (function () {
         extKey: "keyPoints",
         title: "会話のキーポイント",
         body: `<ul class="l1-prose-list">${renderLn(keyPoints)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("keyPoints")
-            : { lines: [{ zh: "朗读对话时留意这些要点，模仿语调。" }] },
+        tip: extTip("keyPoints", {
+          lines: [{ zh: "朗读对话时留意这些要点，模仿语调。" }],
+        }),
       });
     }
     if (rolePlay.length) {
@@ -811,10 +872,9 @@ const Lesson1Flow = (function () {
         extKey: "rolePlay",
         title: "ロールプレイ課題",
         body: `<ul class="l1-prose-list">${renderLn(rolePlay)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("rolePlay")
-            : { lines: [{ zh: "找伙伴练习，或自己扮演两个角色轮流说。" }] },
+        tip: extTip("rolePlay", {
+          lines: [{ zh: "找伙伴练习，或自己扮演两个角色轮流说。" }],
+        }),
       });
     }
     reviewExt.forEach((sec, si) => {
@@ -822,10 +882,7 @@ const Lesson1Flow = (function () {
         extKey: "review",
         title: stripEmojiTitle(sec.title || `まとめ ${si + 1}`),
         body: `<ul class="l1-prose-list">${renderLn(sec.lines)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey(null, sec.title)
-            : { lines: [{ zh: "回顾本课核心内容，建立与前后课程的联系。" }] },
+        tip: extTip(null, { lines: [{ zh: "回顾本课核心内容，建立与前后课程的联系。" }] }, sec.title),
       });
     });
     if (L?.basicText?.length) {
@@ -833,16 +890,20 @@ const Lesson1Flow = (function () {
         extKey: "basicText",
         title: "基本课文（4句型）",
         body: `<ul class="l1-prose-list">${renderLn(L.basicText)}</ul>`,
-        tip:
-          typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.extensionKey("basicText")
-            : { lines: [{ zh: "课本4个核心句型，务必朗读并记忆。" }] },
+        tip: extTip("basicText", { lines: [{ zh: "课本4个核心句型，务必朗读并记忆。" }] }),
       });
     }
 
     const groupsHtml = groups
       .map((g, i) =>
-        gwGroupHtml({ seq: i + 1, foldGate: 4, title: g.title, body: g.body, tip: g.tip })
+        gwGroupHtml({
+          seq: i + 1,
+          foldGate: 4,
+          title: g.title,
+          body: g.body,
+          tip: g.tip,
+          lessonId: lid,
+        })
       )
       .join("");
 
@@ -856,6 +917,7 @@ const Lesson1Flow = (function () {
         total: extTotal || 1,
         ready: extTotal === 0,
         disabled: extTotal > 0,
+        lessonId: lid,
       }
     );
 
@@ -868,6 +930,7 @@ const Lesson1Flow = (function () {
         done,
         total: extTotal || 1,
         ready,
+        lessonId: lid,
       });
     };
     extPanel.querySelectorAll(".gw-group").forEach((det, i) => {
@@ -881,7 +944,7 @@ const Lesson1Flow = (function () {
 
     mountEl.querySelector("#l1-sum-done")?.addEventListener("click", () => {
       if (extTotal > 0 && Object.keys(extOpened).length < extTotal) return;
-      setGateDone(state, LESSON_ID, 4);
+      setGateDone(state, lid, 4);
       saveMvpState(state);
       callbacks.onCompleteHome?.();
     });
@@ -916,7 +979,10 @@ const Lesson1Flow = (function () {
 
   return {
     LESSON_ID,
+    UNIT1_MVP_MAX,
     isLesson,
+    isUnit1Mvp,
+    resolveLessonId,
     COCKPIT_TABS,
     L1_CHAIN_STEPS,
     mountVocab,

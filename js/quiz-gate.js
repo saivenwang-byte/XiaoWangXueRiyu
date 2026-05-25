@@ -4,6 +4,7 @@ const QuizGate = (() => {
   let container = null;
   let state = null;
   let onComplete = null;
+  let l1Scope = false;
 
   function escapeHtml(s) {
     const d = document.createElement("div");
@@ -85,8 +86,11 @@ const QuizGate = (() => {
     const questions = lesson.quizQuestions;
     if (qIndex >= questions.length) {
       setGateDone(state, lesson.lessonId, 3);
+      const doneCls = l1Scope
+        ? ' class="qz-wrap qz-wrap--l1-scope l1-lesson-scope celebrate" data-l1-active-gate="3"'
+        : ' class="qz-wrap celebrate"';
       container.innerHTML = `
-        <div class="qz-wrap celebrate">
+        <div${doneCls}>
           <span class="big-emoji">✅</span>
           <h3>3つの関クリア！</h3>
           <p class="hint-ja">まちがえた問題は「復習」に入ります（1・3・7日目）。</p>
@@ -114,8 +118,9 @@ const QuizGate = (() => {
     const speakQ =
       typeof SpeakUI !== "undefined" ? SpeakUI.btnHtml(questionSpeakPayload(q), 'class="qz-q-speak"') : "";
 
+    const scopeAttr = l1Scope ? ' class="qz-wrap qz-wrap--l1-scope l1-lesson-scope" data-l1-active-gate="3"' : ' class="qz-wrap"';
     container.innerHTML = `
-      <div class="qz-wrap">
+      <div${scopeAttr}>
         <div class="qz-nav">
           <button type="button" class="btn secondary" id="qz-prev" ${qIndex === 0 ? "disabled" : ""}>← 上一题</button>
           <span class="qz-progress">問題 ${qIndex + 1} / ${questions.length}</span>

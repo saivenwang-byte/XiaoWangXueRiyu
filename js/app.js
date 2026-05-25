@@ -20,16 +20,26 @@
     { k: 4, label: "拡張", icon: "📋", sub: "まとめ" },
   ];
 
-  function isL1FiveGate(lessonId) {
+  /** 第1单元 MVP 五关（第1～4课，与第1课同一套 Lesson1Flow） */
+  function isUnit1MvpFiveGate(lessonId) {
     const lid = lessonId != null ? Number(lessonId) : activeLessonId;
-    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isLesson(lid);
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lid);
+  }
+
+  function isL1FiveGate(lessonId) {
+    return isUnit1MvpFiveGate(lessonId);
+  }
+
+  function isUnit1Lesson(lessonId) {
+    const lid = lessonId != null ? Number(lessonId) : activeLessonId;
+    return lid >= 2 && lid <= 4;
   }
 
   /** 第1課 · 序号/折叠条颜色随当前关（単語0/会話2/文法1/作業3/拡張4） */
   function syncL1GateTheme(lessonId, gate) {
     const body = document.getElementById("lesson-flow-body");
     if (!body) return;
-    const l1 = isL1FiveGate(lessonId);
+    const l1 = isUnit1MvpFiveGate(lessonId);
     const g = String(gate);
     if (l1) {
       body.classList.add("l1-lesson-scope");
@@ -49,11 +59,12 @@
   }
 
   function maxGateIndex(lessonId) {
-    return isL1FiveGate(lessonId) ? 4 : 3;
+    return isUnit1MvpFiveGate(lessonId) ? 4 : 3;
   }
 
   function cockpitTabsForLesson(lessonId) {
-    return isL1FiveGate(lessonId) ? Lesson1Flow.COCKPIT_TABS : cockpitTabs;
+    if (isUnit1MvpFiveGate(lessonId)) return Lesson1Flow.COCKPIT_TABS;
+    return cockpitTabs;
   }
 
   function resolveGate(g, lessonId) {
@@ -62,7 +73,7 @@
     if (g === "conversation" || g === "convo" || g === 2 || g === "2") return 2;
     if (g === "quiz" || g === "homework" || g === 3 || g === "3") return 3;
     if (g === "extension" || g === "summary" || g === 4 || g === "4") {
-      return isL1FiveGate(lessonId) ? 4 : null;
+      return isUnit1MvpFiveGate(lessonId) ? 4 : null;
     }
     const n = Number(g);
     const max = maxGateIndex(lessonId);
@@ -71,7 +82,7 @@
 
   /** 单词→会話→文法→(作業/テスト)→拡張；会話未过则优先会話 */
   function defaultGateForLesson(g, lessonId) {
-    if (isL1FiveGate(lessonId)) {
+    if (isUnit1MvpFiveGate(lessonId)) {
       if (!g.gate0) return 0;
       if (!g.gate2) return 2;
       if (!g.gate1) return 1;
@@ -138,7 +149,7 @@
   function renderLessonFlowHead(L) {
     const head = document.getElementById("lesson-flow-head");
     if (!head || !L) return;
-    if (isL1FiveGate(L.lessonId)) {
+    if (isUnit1MvpFiveGate(L.lessonId)) {
       head.innerHTML = Lesson1Flow.flowHeadHtml(L, activeGate, state);
       if (typeof SpeakUI !== "undefined") SpeakUI.bind(head);
       return;
@@ -332,7 +343,7 @@
   }
 
   function pathRailHtml(g) {
-    if (isL1FiveGate(activeLessonId)) {
+    if (isUnit1MvpFiveGate(activeLessonId)) {
       return "";
     }
     if (typeof formatLessonFourSeaStars === "function" && activeLessonId != null) {
@@ -381,7 +392,7 @@
       b.dataset.gate = String(t.k);
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", activeGate === t.k ? "true" : "false");
-      const tabDoneIcon = isL1FiveGate(L.lessonId) ? false : done && t.k !== 0;
+      const tabDoneIcon = isUnit1MvpFiveGate(L.lessonId) ? false : done && t.k !== 0;
       b.innerHTML = `<span class="cockpit-tab-main">${tabDoneIcon ? "✅ " : ""}${escapeHtml(t.label)}</span>
         <span class="cockpit-tab-sub">${escapeHtml(t.sub)}</span>`;
       b.onclick = (e) => {
@@ -485,9 +496,10 @@ function appendGateNextStrip(container, currentGate) {
       return;
     }
 
-    const l1 = isL1FiveGate(activeLessonId);
+    const u1mvp = isUnit1MvpFiveGate(activeLessonId);
     const l1Callbacks = {
       state,
+      lessonId: activeLessonId,
       switchGate: (k) => switchGate(k),
       onRefreshCockpit: () => renderLessonCockpit(lessonProgress(activeLessonId)),
       onCompleteHome: () => showView("home"),
@@ -497,7 +509,7 @@ function appendGateNextStrip(container, currentGate) {
       state,
       onComplete: () => {
         const g = lessonProgress(activeLessonId);
-        if (l1) {
+        if (u1mvp) {
           if (activeGate === 1 && !g.gate2) {
             switchGate(2);
             return;
@@ -532,18 +544,18 @@ function appendGateNextStrip(container, currentGate) {
     };
 
     try {
-      const skipScrollHint = l1 && activeGate === 0;
+      const skipScrollHint = u1mvp && activeGate === 0;
       const useScroll =
         !skipScrollHint && typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
       const host = useScroll ? ScrollHint.setupForGate(body, activeGate) : null;
       const mountEl = host?.region || body;
-      if (l1) {
+      if (u1mvp) {
         mountEl.classList.add("l1-lesson-scope");
         mountEl.setAttribute("data-l1-active-gate", String(activeGate));
         syncL1GateTheme(activeLessonId, activeGate);
       }
 
-      if (activeGate === 0 && l1) {
+      if (activeGate === 0 && u1mvp) {
         Lesson1Flow.mountVocab(mountEl, state, l1Callbacks);
       } else if (activeGate === 0) {
         if (typeof VocabFlash === "undefined") {
@@ -554,19 +566,19 @@ function appendGateNextStrip(container, currentGate) {
       } else if (activeGate === 1) {
         GrammarNetwork.mount(mountEl, activeLessonId, {
           ...opts,
-          l1Lesson: l1,
-          switchGate: l1 ? (k) => switchGate(k) : undefined,
+          l1Flow: false,
+          switchGate: u1mvp ? (k) => switchGate(k) : undefined,
         });
         if (typeof SpeakUI !== "undefined") SpeakUI.bind(mountEl);
       } else if (activeGate === 2) {
         DialogueGate.mount(mountEl, activeLessonId, {
           ...opts,
-          l1Lesson: l1,
-          switchGate: l1 ? (k) => switchGate(k) : undefined,
+          l1Flow: false,
+          switchGate: u1mvp ? (k) => switchGate(k) : undefined,
         });
-      } else if (l1 && activeGate === 3) {
+      } else if (u1mvp && activeGate === 3) {
         Lesson1Flow.mountHomework(mountEl, state, l1Callbacks);
-      } else if (l1 && activeGate === 4) {
+      } else if (u1mvp && activeGate === 4) {
         Lesson1Flow.mountExtension(mountEl, state, l1Callbacks);
       } else {
         QuizGate.mount(mountEl, activeLessonId, {
@@ -706,7 +718,7 @@ function appendGateNextStrip(container, currentGate) {
           g.gate1 &&
           g.gate2 &&
           g.gate3 &&
-          (!isL1FiveGate(id) || g.gate4);
+          (!isUnit1MvpFiveGate(id) || g.gate4);
         const stars =
           typeof formatLessonFourSeaStars === "function"
             ? formatLessonFourSeaStars(state, id)

@@ -2,10 +2,10 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "242",
+    "cache": "246",
     "date": "2026-05-25",
-    "git_tag": "lock/notes-panel-v1-20260525",
-    "note": "「笔记板块V1」定稿锁：易错对照、关联可点开图例、单元汇总；见 docs/locks/NOTES-PANEL-V1-LOCK-20260525.md",
+    "git_tag": null,
+    "note": "第1单元第2–4课会話 ABC 补全（A=课文 B/C=场景变体，unit1-dialogue-abc-l234.js）",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"

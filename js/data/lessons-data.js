@@ -1274,14 +1274,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "李さん、それは 何ですか。",
-          "chinese": ""
+          "chinese": "李小姐，那是什么？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "これは 私の 家族の 写真です。",
-              "chinese": "",
+              "chinese": "这是我家人的照片。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1296,14 +1296,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "これは 私の 家族の 写真です。",
-          "chinese": ""
+          "chinese": "这是我家人的照片。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "この 方は どなたですか。",
-              "chinese": "",
+              "chinese": "这位是谁？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1318,14 +1318,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "この 方は どなたですか。",
-          "chinese": ""
+          "chinese": "这位是谁？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "私の 父です。",
-              "chinese": "",
+              "chinese": "是我父亲。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1340,14 +1340,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "私の 父です。",
-          "chinese": ""
+          "chinese": "是我父亲。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "お父さんは おいくつですか。",
-              "chinese": "",
+              "chinese": "您父亲多大岁数？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1362,14 +1362,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "お父さんは おいくつですか。",
-          "chinese": ""
+          "chinese": "您父亲多大岁数？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "五十八歳です。",
-              "chinese": "",
+              "chinese": "五十八岁。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1384,14 +1384,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "五十八歳です。",
-          "chinese": ""
+          "chinese": "五十八岁。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "そうですか。じゃ、これは？",
-              "chinese": "",
+              "chinese": "是吗。那么，这是？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1406,14 +1406,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "そうですか。じゃ、これは？",
-          "chinese": ""
+          "chinese": "是吗。那么，这是？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "それも 父です。若い 時の 写真です。",
-              "chinese": "",
+              "chinese": "那也是父亲。年轻时的照片。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1428,14 +1428,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "それも 父です。若い 時の 写真です。",
-          "chinese": ""
+          "chinese": "那也是父亲。年轻时的照片。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "えっ、同じ 方ですか。雰囲気が 違いますね。",
-              "chinese": "",
+              "chinese": "啊，是同一个人吗。气质不一样呢。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1450,14 +1450,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "えっ、同じ 方ですか。雰囲気が 違いますね。",
-          "chinese": ""
+          "chinese": "啊，是同一个人吗。气质不一样呢。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "はい。この 写真は 二十歳の 時の 父です。",
-              "chinese": "",
+              "chinese": "是的。这张照片是二十岁时的父亲。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1472,14 +1472,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "はい。この 写真は 二十歳の 時の 父です。",
-          "chinese": ""
+          "chinese": "是的。这张照片是二十岁时的父亲。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "あれは どなたの 写真ですか。",
-              "chinese": "",
+              "chinese": "那是谁的照片？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1494,14 +1494,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "あれは どなたの 写真ですか。",
-          "chinese": ""
+          "chinese": "那是谁的照片？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "私の 母です。",
-              "chinese": "",
+              "chinese": "是我母亲。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1516,14 +1516,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "私の 母です。",
-          "chinese": ""
+          "chinese": "是我母亲。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "優しそうな 方ですね。",
-              "chinese": "",
+              "chinese": "看上去是很和蔼的人。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -1538,14 +1538,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "優しそうな 方ですね。",
-          "chinese": ""
+          "chinese": "看上去是很和蔼的人。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "ありがとうございます。",
-              "chinese": "",
+              "chinese": "谢谢。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2304,14 +2304,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "李さん、ここは あなたの ホテルですか。",
-          "chinese": ""
+          "chinese": "李小姐，这是您的酒店吗？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "はい、そうです。",
-              "chinese": "",
+              "chinese": "是的。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2326,14 +2326,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "はい、そうです。",
-          "chinese": ""
+          "chinese": "是的。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "あそこが 公園です。とても きれいですよ。",
-              "chinese": "",
+              "chinese": "那边是公园。很漂亮哦。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2348,14 +2348,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "あそこが 公園です。とても きれいですよ。",
-          "chinese": ""
+          "chinese": "那边是公园。很漂亮哦。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "そうですか。あの 赤い 建物は 何ですか。",
-              "chinese": "",
+              "chinese": "是吗。那座红色的建筑是什么？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2370,14 +2370,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "そうですか。あの 赤い 建物は 何ですか。",
-          "chinese": ""
+          "chinese": "是吗。那座红色的建筑是什么？"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "あれは 駅です。",
-              "chinese": "",
+              "chinese": "那是车站。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2392,14 +2392,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "あれは 駅です。",
-          "chinese": ""
+          "chinese": "那是车站。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "じゃ、コンビニは どこですか。",
-              "chinese": "",
+              "chinese": "那么，便利店在哪儿？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2414,14 +2414,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "じゃ、コンビニは どこですか。",
-          "chinese": ""
+          "chinese": "那么，便利店在哪儿？"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "コンビニは あそこです。ホテルの 隣です。",
-              "chinese": "",
+              "chinese": "便利店在那边。在酒店旁边。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2436,14 +2436,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "コンビニは あそこです。ホテルの 隣です。",
-          "chinese": ""
+          "chinese": "便利店在那边。在酒店旁边。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "銀行は どこに ありますか。",
-              "chinese": "",
+              "chinese": "银行在哪儿？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2458,14 +2458,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "銀行は どこに ありますか。",
-          "chinese": ""
+          "chinese": "银行在哪儿？"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "銀行は あちらの 交差点の 左です。",
-              "chinese": "",
+              "chinese": "银行在那边十字路口的左侧。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2480,14 +2480,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "銀行は あちらの 交差点の 左です。",
-          "chinese": ""
+          "chinese": "银行在那边十字路口的左侧。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "レストランは？",
-              "chinese": "",
+              "chinese": "餐厅呢？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2502,14 +2502,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "レストランは？",
-          "chinese": ""
+          "chinese": "餐厅呢？"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "レストランは デパートの 中に あります。",
-              "chinese": "",
+              "chinese": "餐厅在百货商店里面。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2524,14 +2524,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "レストランは デパートの 中に あります。",
-          "chinese": ""
+          "chinese": "餐厅在百货商店里面。"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "小野さん、どうも ありがとうございます。",
-              "chinese": "",
+              "chinese": "小野，非常感谢。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -2546,14 +2546,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "小野さん、どうも ありがとうございます。",
-          "chinese": ""
+          "chinese": "小野，非常感谢。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "いいえ。どういたしまして。",
-              "chinese": "",
+              "chinese": "不客气。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3259,14 +3259,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "李さん、部屋は どうですか。",
-          "chinese": ""
+          "chinese": "李小姐，房间怎么样？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "とても きれいです。",
-              "chinese": "",
+              "chinese": "非常漂亮。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3281,14 +3281,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "とても きれいです。",
-          "chinese": ""
+          "chinese": "非常漂亮。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "何が ありますか。",
-              "chinese": "",
+              "chinese": "有什么？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3303,14 +3303,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "何が ありますか。",
-          "chinese": ""
+          "chinese": "有什么？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "机と 椅子と ベッドが あります。机の上に パソコンや 本などが あります。",
-              "chinese": "",
+              "chinese": "有桌子、椅子和床。桌子上有电脑、书之类的东西。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3325,14 +3325,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "机と 椅子と ベッドが あります。机の上に パソコンや 本などが あります。",
-          "chinese": ""
+          "chinese": "有桌子、椅子和床。桌子上有电脑、书之类的东西。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "窓の 隣に 何が ありますか。",
-              "chinese": "",
+              "chinese": "窗户旁边有什么？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3347,14 +3347,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "窓の 隣に 何が ありますか。",
-          "chinese": ""
+          "chinese": "窗户旁边有什么？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "本棚が あります。",
-              "chinese": "",
+              "chinese": "有书架。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3369,14 +3369,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "本棚が あります。",
-          "chinese": ""
+          "chinese": "有书架。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "ベッドの 下に 何か ありますか。",
-              "chinese": "",
+              "chinese": "床底下有什么吗？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3391,14 +3391,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "ベッドの 下に 何か ありますか。",
-          "chinese": ""
+          "chinese": "床底下有什么吗？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "はい、靴が あります。",
-              "chinese": "",
+              "chinese": "有，有鞋子。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3413,14 +3413,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "はい、靴が あります。",
-          "chinese": ""
+          "chinese": "有，有鞋子。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "テレビは どこに ありますか。",
-              "chinese": "",
+              "chinese": "电视在哪儿？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3435,14 +3435,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "テレビは どこに ありますか。",
-          "chinese": ""
+          "chinese": "电视在哪儿？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "テレビは 机の 前の 壁に かかっています。",
-              "chinese": "",
+              "chinese": "电视挂在桌子前面的墙上。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3457,14 +3457,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "テレビは 机の 前の 壁に かかっています。",
-          "chinese": ""
+          "chinese": "电视挂在桌子前面的墙上。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "そうですか。猫は いますか。",
-              "chinese": "",
+              "chinese": "是吗。有猫吗？",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3479,14 +3479,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "小野",
           "japanese": "そうですか。猫は いますか。",
-          "chinese": ""
+          "chinese": "是吗。有猫吗？"
         },
         "userTurn": {
           "speaker": "李",
           "replies": [
             {
               "japanese": "いいえ、猫は いません。でも、庭に 小鳥が います。",
-              "chinese": "",
+              "chinese": "没有猫。不过院子里有小鸟。",
               "noteJa": "",
               "noteZh": ""
             }
@@ -3501,14 +3501,14 @@ const LESSONS_MVP = [
         "opener": {
           "speaker": "李",
           "japanese": "いいえ、猫は いません。でも、庭に 小鳥が います。",
-          "chinese": ""
+          "chinese": "没有猫。不过院子里有小鸟。"
         },
         "userTurn": {
           "speaker": "小野",
           "replies": [
             {
               "japanese": "いい 部屋ですね。",
-              "chinese": "",
+              "chinese": "房间不错啊。",
               "noteJa": "",
               "noteZh": ""
             }
