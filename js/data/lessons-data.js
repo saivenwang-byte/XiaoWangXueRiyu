@@ -25766,3 +25766,9 @@ const LESSONS_MVP = [
     ]
   }
 ];
+
+if (typeof getLessonMvp !== "function") {
+  function getLessonMvp(id) {
+    return LESSONS_MVP.find((l) => l.lessonId === Number(id));
+  }
+}

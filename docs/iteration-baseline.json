@@ -39,15 +39,15 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "146",
+    "cache": "225",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=146",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=146",
+    "local": "http://localhost:8765/index.html?v=225",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=225",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md"
   },
   "confirmed": [
@@ -195,6 +195,33 @@
         "js/nav-icons.js"
       ],
       "acceptance": "第1課五Tab可学完；提示/传送链/分关色序号；第2課起跨课关联chip；用户2026-05-25确认定稿"
+    },
+    {
+      "id": "vocab-special-highlight-paradigm",
+      "since_cache": "146",
+      "title": "课内单词标黄范式（项目通用·改単語前必读）",
+      "doc": "docs/项目知识库-课内单词标黄范式.md",
+      "memory": "docs/Agent交付前工作流-记忆库.md §11",
+      "scope": "编写/改版课内単語 UI 与延伸数据的通用准则；实现先 U1L1 MVP",
+      "acceptance": "默认行干净+三键；special 左黄条+角标；延伸行内折叠；对齐五十音 is-special；禁止 app.js 第二套单词表",
+      "user_confirmed": "2026-05-25"
+    },
+    {
+      "id": "l1-tip-unified-v225",
+      "since_cache": "225",
+      "title": "第1課五关提示统一：提示：+折叠 + l1-tip-slot + 单词序号栅格",
+      "doc": "过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
+      "files": [
+        "js/sensei-tip-card.js",
+        "js/l1-knowledge-card.js",
+        "js/dialogue-gate.js",
+        "js/lesson-1-flow.js",
+        "css/mvp.css",
+        "index.html",
+        "js/share-wechat.js"
+      ],
+      "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=225",
+      "user_confirmed": "2026-05-25"
     }
   ],
   "roadmap": {
@@ -277,6 +304,16 @@
       "acceptance": "已并入 unit1-lesson1-mvp-v146；见 docs/MVP-UNIT1-LESSON1-FREEZE.md",
       "scope": "第1課 MVP 真源；其他课未批量前不动",
       "note": "用户 2026-05-25 确认定稿；cache 146"
+    },
+    {
+      "id": "u1l1-vocab-special-ui-impl",
+      "approved": "2026-05-25",
+      "status": "done",
+      "since_cache": "160",
+      "doc": "docs/项目知识库-课内单词标黄范式.md",
+      "title": "U1L1 単語关落地标黄范式（删 app.js 重复表·行内折叠）",
+      "scope": "仅第1課；不扩 24 课",
+      "note": "准则已入库；待用户「开工」后实现"
     }
   ],
   "forbidden_without_explicit_user_request": [

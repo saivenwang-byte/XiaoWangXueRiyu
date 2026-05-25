@@ -32,6 +32,8 @@ function mvpDefaultState() {
     lastLessonId: 16,
     showChineseZh: true,
     story: { units: {}, pendingAuto: null },
+    notes: { lesson: {}, unit: {}, bookExtra: "" },
+    ui: { returnAfterLesson: null, meNotebookOpen: false, meNotebookScope: null },
   };
 }
 
@@ -56,6 +58,26 @@ function loadMvpState() {
               pendingAuto: parsed.story.pendingAuto ?? null,
             }
           : { units: {}, pendingAuto: null },
+      notes:
+        parsed.notes && typeof parsed.notes === "object"
+          ? {
+              lesson:
+                parsed.notes.lesson && typeof parsed.notes.lesson === "object"
+                  ? { ...parsed.notes.lesson }
+                  : {},
+              unit:
+                parsed.notes.unit && typeof parsed.notes.unit === "object" ? { ...parsed.notes.unit } : {},
+              bookExtra: typeof parsed.notes.bookExtra === "string" ? parsed.notes.bookExtra : "",
+            }
+          : { lesson: {}, unit: {}, bookExtra: "" },
+      ui:
+        parsed.ui && typeof parsed.ui === "object"
+          ? {
+              returnAfterLesson: parsed.ui.returnAfterLesson ?? null,
+              meNotebookOpen: !!parsed.ui.meNotebookOpen,
+              meNotebookScope: parsed.ui.meNotebookScope || null,
+            }
+          : { returnAfterLesson: null, meNotebookOpen: false, meNotebookScope: null },
     };
     Object.keys(merged.lessons || {}).forEach((lid) => {
       const g = merged.lessons[lid];

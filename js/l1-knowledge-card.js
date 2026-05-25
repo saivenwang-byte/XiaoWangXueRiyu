@@ -9,7 +9,8 @@ const L1KnowledgeCard = (function () {
       payload = KnowledgeLink.enrichTip(tip, anchorId, lessonId != null ? lessonId : 1);
     }
     if (typeof SenseiTipCard !== "undefined" && SenseiTipCard.fromTipPayload) {
-      return SenseiTipCard.fromTipPayload(payload);
+      const l1Scope = lessonId == null || Number(lessonId) === 1;
+      return SenseiTipCard.fromTipPayload(payload, { l1Scope });
     }
     return "";
   }

@@ -80,13 +80,22 @@ const DialogueGate = (() => {
     return `<p class="zh-annotation">${escapeHtml(text)}</p>`;
   }
 
+  function wrapL1TipSlot(html) {
+    if (!html) return "";
+    if (!isL1Dialogue()) return html;
+    return `<div class="l1-tip-slot l1-tip-slot--line">${html}</div>`;
+  }
+
   function senseiNotes(line, opts = {}) {
     if (!line?.noteJa && !(line?.noteZh && showZh())) return "";
     if (typeof SenseiTipCard !== "undefined") {
-      return SenseiTipCard.fromNotes(line.noteJa, line.noteZh, {
-        expanded: false,
-        ...opts,
-      });
+      return wrapL1TipSlot(
+        SenseiTipCard.fromNotes(line.noteJa, line.noteZh, {
+          expanded: false,
+          l1Scope: isL1Dialogue(),
+          ...opts,
+        })
+      );
     }
     let h = "";
     if (line.noteJa) h += `<p class="note-ja">${escapeHtml(line.noteJa)}</p>`;
@@ -288,11 +297,11 @@ const DialogueGate = (() => {
 
   function renderL1AbcTip(reply) {
     if (!reply?.noteZh || !showZh()) return "";
-    const label =
-      typeof SenseiTipCard !== "undefined" && SenseiTipCard.labelHtml
-        ? SenseiTipCard.labelHtml()
-        : '<span class="hyouga-tip-label">提示：</span>';
-    return `<div class="hyouga-tip-static hyouga-tip-shell hyouga-tip-static--inline" role="note">${label}<span class="hyouga-tip-text zh-annotation">${escapeHtml(reply.noteZh)}</span></div>`;
+    if (typeof SenseiTipCard !== "undefined") {
+      const card = SenseiTipCard.fromTipPayload({ lines: [{ zh: reply.noteZh }] }, { l1Scope: true });
+      return card ? `<div class="l1-tip-slot l1-tip-slot--abc">${card}</div>` : "";
+    }
+    return "";
   }
 
   function sceneTitleZh(d) {
@@ -332,20 +341,22 @@ const DialogueGate = (() => {
             label === "A" ? "课文" : label === "B" ? "变体B" : label === "C" ? "变体C" : "";
           const jp = lineJapaneseHtml(reply);
           const reaction = reply.npcReaction;
+          const jpPlain = (reply.japanese || reply.jp || "").replace(/\s+/g, " ").trim();
+          const zhText = (reply.chinese || reply.zh || "").trim();
           return `
           <div class="dg-reply-block dg-reply-block--abc" data-abc="${escapeHtml(label)}">
-            <div class="dg-reply-head dg-line-row dg-line-row--reply">
+            <div class="dg-reply-head dg-reply-head--abc" title="${escapeHtml(jpPlain)}">
               <span class="dg-abc-label" aria-label="${escapeHtml(label)}答">${escapeHtml(label)}</span>
               ${tier ? `<span class="dg-abc-tier">${escapeHtml(tier)}</span>` : ""}
-              <div class="dg-line-content">
-                <p class="jp dg-reply-jp">${jp}</p>
-                ${zhLine(reply.chinese || reply.zh)}
-                ${renderL1AbcTip(reply)}
-                <div class="dg-score-slot dg-score-slot--inline" data-dg-score-for="dg-r-${sceneIdx}-${i}" aria-live="polite" hidden></div>
-              </div>
+              <p class="jp dg-reply-jp">${jp}</p>
               <div class="dg-actions-col">
                 ${speakBtn(linePayload(reply), dialogueSpeakAttrs(reply), `dg-r-${sceneIdx}-${i}`)}
               </div>
+            </div>
+            <div class="dg-reply-extra--abc">
+              ${zhText && showZh() ? `<p class="zh-annotation dg-reply-zh" title="${escapeHtml(zhText)}">${escapeHtml(zhText)}</p>` : ""}
+              ${renderL1AbcTip(reply)}
+              <div class="dg-score-slot dg-score-slot--inline" data-dg-score-for="dg-r-${sceneIdx}-${i}" aria-live="polite" hidden></div>
             </div>
             ${
               reaction
@@ -369,7 +380,7 @@ const DialogueGate = (() => {
     if (typeof L1KnowledgeTips === "undefined" || typeof L1KnowledgeCard === "undefined") return "";
     const tip = L1KnowledgeTips.dialogue(sceneIdx);
     const html = L1KnowledgeCard.html(tip, `l1_dlg_${sceneIdx}`, lesson?.lessonId || 1);
-    return html ? `<div class="l1-fold-kcard-slot l1-fold-kcard-slot--scene">${html}</div>` : "";
+    return html ? `<div class="l1-tip-slot l1-tip-slot--scene">${html}</div>` : "";
   }
 
   function renderBranchSceneBody(d, idx) {
@@ -490,8 +501,9 @@ const DialogueGate = (() => {
         <span class="dg-scene-fold-preview jp">${escapeHtml(preview)}${preview.length >= 36 ? "…" : ""}</span>
         ${zhCol}
       </span>
-      ${done ? '<span class="dg-scene-done-mark" aria-label="已听完">✓</span>' : ""}
-      <span class="dg-scene-fold-chevron" aria-hidden="true"></span>`;
+      <span class="dg-scene-fold-chevron hyo-fold-slot" aria-hidden="true">${
+        typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(2) : ""
+      }</span>`;
     }
     if (l1Flow) {
       const mark = done ? " ✓" : "";
@@ -591,14 +603,25 @@ const DialogueGate = (() => {
       return;
     }
     const folds = container.querySelectorAll(sceneFoldSelector());
+    const syncFoldChevron = (det) => {
+      const slot = det.querySelector(".hyo-fold-slot");
+      if (!slot || typeof HyougaGlyphs === "undefined") return;
+      slot.innerHTML = det.open ? HyougaGlyphs.foldUpInner(2) : HyougaGlyphs.foldDownInner(2);
+    };
     folds.forEach((det) => {
       det.addEventListener("toggle", () => {
-        if (!det.open) return;
-        folds.forEach((other) => {
-          if (other !== det) other.open = false;
-        });
-        fillSceneFoldBody(det);
+        if (det.open) {
+          folds.forEach((other) => {
+            if (other !== det) {
+              other.open = false;
+              syncFoldChevron(other);
+            }
+          });
+          fillSceneFoldBody(det);
+        }
+        syncFoldChevron(det);
       });
+      syncFoldChevron(det);
     });
   }
 
@@ -710,29 +733,19 @@ const DialogueGate = (() => {
       return;
     }
     const l1Dlg = lesson.lessonId === 1;
-    const chainFooter =
-      l1Dlg && typeof Lesson1Flow !== "undefined"
-        ? Lesson1Flow.chainFooterHtml(2, {
-            btnId: "dg-l1-done",
-            done: 0,
-            total: dialogues.length,
-            ready: false,
-            disabled: true,
-          })
-        : "";
-    container.innerHTML = `
-      <div class="dg-wrap dg-simple dg-strips dg-scene-accordion${l1Dlg ? " dg-l1-convo l1-lesson-scope" : ""}"${l1Dlg ? ' data-l1-active-gate="2"' : ""}>
-        ${l1Dlg ? "" : `<p class="dg-label dg-label-compact">② ${dialogueModeLabel()}</p>`}
-        ${l1Dlg ? "" : renderIntroBlock()}
-        ${renderSceneAccordion()}
-        ${l1Dlg ? "" : renderLegacyLink()}
-        ${chainFooter}
-      </div>`;
-    bindSceneAccordion();
-    bindSpeak();
-    if (l1Dlg) {
-      Lesson1Flow.bindChainFooter(container, 2, { switchGate });
-      container.querySelector("#dg-l1-done")?.addEventListener("click", () => {
+    if (l1Dlg && typeof Lesson1Flow !== "undefined") {
+      container.innerHTML = Lesson1Flow.l1GatePanelHtml(renderSceneAccordion(), 2, {
+        btnId: "dg-l1-done",
+        done: 0,
+        total: dialogues.length,
+        ready: false,
+        disabled: true,
+      });
+      bindSceneAccordion();
+      bindSpeak();
+      const panel = container.querySelector(".l1-gate-panel") || container;
+      Lesson1Flow.bindChainFooter(panel, 2, { switchGate });
+      panel.querySelector("#dg-l1-done")?.addEventListener("click", () => {
         if (!allDialoguesPassed()) return;
         setGateDone(state, lesson.lessonId, 2);
         saveMvpState(state);
@@ -740,7 +753,17 @@ const DialogueGate = (() => {
         else onComplete?.();
       });
       updateL1Footer();
+      return;
     }
+    container.innerHTML = `
+      <div class="dg-wrap dg-simple dg-strips dg-scene-accordion">
+        <p class="dg-label dg-label-compact">② ${dialogueModeLabel()}</p>
+        ${renderIntroBlock()}
+        ${renderSceneAccordion()}
+        ${renderLegacyLink()}
+      </div>`;
+    bindSceneAccordion();
+    bindSpeak();
   }
 
   function bindSpeak() {

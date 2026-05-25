@@ -427,12 +427,12 @@ const GrammarNetwork = (() => {
           <span class="gn-node-fold-title jp">${titleHtml(node)}</span>
           ${zh ? `<span class="gn-node-fold-zh zh-annotation">${escapeHtml(zh)}</span>` : ""}
         </span>
-        ${nodesOpened[i] ? '<span class="dg-scene-done-mark" aria-label="已展开">✓</span>' : ""}
-        <span class="gn-node-fold-chevron" aria-hidden="true"></span>`;
+        <span class="gn-node-fold-chevron hyo-fold-slot" aria-hidden="true">${
+          typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(1) : ""
+        }</span>`;
     }
     if (l1Flow) {
-      const mark = nodesOpened[i] ? " ✓" : "";
-      return `${escapeHtml(tag)}${mark} · <span class="jp">${titleHtml(node)}</span>`;
+      return `${escapeHtml(tag)} · <span class="jp">${titleHtml(node)}</span>`;
     }
     return `
       <span class="gn-node-num">${i + 1}</span>
@@ -441,8 +441,9 @@ const GrammarNetwork = (() => {
         <span class="gn-node-fold-title jp">${titleHtml(node)}</span>
         ${zh ? `<span class="gn-node-fold-zh zh-annotation">${escapeHtml(zh)}</span>` : ""}
       </span>
-      ${nodesOpened[i] ? '<span class="gn-node-done-mark" aria-label="已展开">✓</span>' : ""}
-      <span class="gn-node-fold-chevron" aria-hidden="true"></span>`;
+      <span class="gn-node-fold-chevron hyo-fold-slot" aria-hidden="true">${
+        typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(1) : ""
+      }</span>`;
   }
 
   function l1AccordionMode() {
@@ -561,13 +562,23 @@ const GrammarNetwork = (() => {
       return;
     }
     const folds = container.querySelectorAll(nodeFoldSelector());
+    const syncFoldChevron = (det) => {
+      const slot = det.querySelector(".hyo-fold-slot");
+      if (!slot || typeof HyougaGlyphs === "undefined") return;
+      slot.innerHTML = det.open ? HyougaGlyphs.foldUpInner(1) : HyougaGlyphs.foldDownInner(1);
+    };
     folds.forEach((det) => {
       det.addEventListener("toggle", () => {
-        if (!det.open) return;
-        folds.forEach((other) => {
-          if (other !== det) other.open = false;
-        });
-        onNodeFoldOpen(det);
+        if (det.open) {
+          folds.forEach((other) => {
+            if (other !== det) {
+              other.open = false;
+              syncFoldChevron(other);
+            }
+          });
+          onNodeFoldOpen(det);
+        }
+        syncFoldChevron(det);
       });
     });
   }
@@ -638,33 +649,30 @@ const GrammarNetwork = (() => {
     }
     const l1Grammar = lesson.lessonId === 1;
     const req = requiredNodeIndices();
-    const chainFooter =
-      l1Grammar && typeof Lesson1Flow !== "undefined"
-        ? Lesson1Flow.chainFooterHtml(1, {
-            btnId: "gn-gate-done",
-            done: 0,
-            total: req.length,
-            ready: false,
-            disabled: true,
-          })
-        : "";
-    container.innerHTML = `
-      <div class="gn-wrap gn-compact gn-accordion${l1Grammar ? " gn-l1-grammar l1-lesson-scope" : ""}"${l1Grammar ? ' data-l1-active-gate="1"' : ""}>
-        ${l1Grammar ? "" : `<p class="gn-progress">${progressLabelText()}</p>`}
+    if (l1Grammar && typeof Lesson1Flow !== "undefined") {
+      container.innerHTML = Lesson1Flow.l1GatePanelHtml(renderNodeAccordion(), 1, {
+        btnId: "gn-gate-done",
+        done: 0,
+        total: req.length,
+        ready: false,
+        disabled: true,
+      });
+      bindNodeAccordion();
+      updateGateDoneButton();
+      const panel = container.querySelector(".l1-gate-panel") || container;
+      Lesson1Flow.bindChainFooter(panel, 1, { switchGate });
+    } else {
+      container.innerHTML = `
+      <div class="gn-wrap gn-compact gn-accordion">
+        <p class="gn-progress">${progressLabelText()}</p>
         ${renderNodeAccordion()}
-        ${
-          l1Grammar
-            ? chainFooter
-            : `<div class="gn-nav gn-nav-single">
+        <div class="gn-nav gn-nav-single">
           <button type="button" class="btn primary" id="gn-gate-done" disabled>展开全部必学文型</button>
-        </div>`
-        }
+        </div>
       </div>
     `;
-    bindNodeAccordion();
-    updateGateDoneButton();
-    if (l1Grammar && typeof Lesson1Flow !== "undefined") {
-      Lesson1Flow.bindChainFooter(container, 1, { switchGate });
+      bindNodeAccordion();
+      updateGateDoneButton();
     }
     container.querySelector("#gn-gate-done")?.addEventListener("click", () => {
       if (!allRequiredOpened()) return;

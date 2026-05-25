@@ -166,27 +166,49 @@ const Lesson1Flow = (function () {
   function l1GatePanelHtml(bodyHtml, activeGate, footerOpts = {}) {
     return `
       <div class="l1-gate-panel l1-lesson-scope" data-l1-active-gate="${activeGate}">
-        ${bodyHtml}
+        <div class="gate-scroll-region l1-gate-scroll" role="region" aria-label="课内内容">
+          ${bodyHtml}
+        </div>
         ${chainFooterHtml(activeGate, footerOpts)}
       </div>`;
+  }
+
+  function foldGateFromEl(det) {
+    const scope =
+      det.closest("[data-l1-active-gate]") || det.closest(".l1-lesson-scope");
+    const g = scope?.getAttribute("data-l1-active-gate");
+    return g != null && g !== "" ? Number(g) : 0;
+  }
+
+  function syncFoldSlot(det) {
+    const slot = det.querySelector(".hyo-fold-slot, .hyo-fold-toggle-static");
+    if (!slot || typeof HyougaGlyphs === "undefined") return;
+    const gate = foldGateFromEl(det);
+    slot.innerHTML = HyougaGlyphs.foldToggleInner(!!det.open, gate);
   }
 
   /** 手风琴：同时只展开一条（与作業/拡張 gw-group 一致） */
   function bindSingleOpenAccordion(root, onOpen) {
     if (!root) return;
     const folds = root.querySelectorAll(
-      ".gw-group, .l1-scene-fold, .l1-grammar-fold, .dg-scene-fold, .gn-node-fold"
+      ".gw-group, .l1-scene-fold, .l1-grammar-fold, .dg-scene-fold, .gn-node-fold, .l1-vocab-supp"
     );
     folds.forEach((det) => {
       if (det.dataset.l1AccordionBound === "1") return;
       det.dataset.l1AccordionBound = "1";
       det.addEventListener("toggle", () => {
-        if (!det.open) return;
-        folds.forEach((other) => {
-          if (other !== det) other.open = false;
-        });
-        if (typeof onOpen === "function") onOpen(det);
+        if (det.open) {
+          folds.forEach((other) => {
+            if (other !== det) {
+              other.open = false;
+              syncFoldSlot(other);
+            }
+          });
+          if (typeof onOpen === "function") onOpen(det);
+        }
+        syncFoldSlot(det);
       });
+      syncFoldSlot(det);
     });
   }
 
@@ -201,23 +223,30 @@ const Lesson1Flow = (function () {
     return L1KnowledgeCard.html(tip, anchorId, LESSON_ID);
   }
 
-  function gwGroupHtml({ icon, title, body, tip, attrs = "", seq }) {
+  function gwGroupHtml({ title, body, tip, attrs = "", seq, foldGate }) {
     const card =
       typeof tip === "object" && tip?.lines
         ? kcardHtml(tip, tip._anchor)
         : tip
           ? kcardHtml({ lines: [{ zh: String(tip) }] })
           : "";
+    const g = foldGate != null ? Number(foldGate) : 3;
+    const foldSlot =
+      typeof HyougaGlyphs !== "undefined"
+        ? `<span class="hyo-fold-slot gw-fold-slot" aria-hidden="true">${HyougaGlyphs.foldDownInner(g)}</span>`
+        : "";
+    const titleInner = `<span class="gw-group-title-label">${escapeHtml(title)}</span>`;
     const head =
       typeof seq === "number"
-        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${icon ? `${icon} ` : ""}${escapeHtml(title)}</span>`
-        : `<span class="gw-group-title-text">${icon ? `${icon} ` : ""}${escapeHtml(title)}</span>`;
+        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${titleInner}</span>${foldSlot}`
+        : `<span class="gw-group-title-text">${titleInner}</span>${foldSlot}`;
+    const cardSlot = card ? `<div class="l1-tip-slot l1-tip-slot--gate">${card}</div>` : "";
     return `
       <details class="gw-group l1-gw-group" ${attrs}>
         <summary class="gw-group-summary">${head}</summary>
         <div class="gw-group-body">
           ${body}
-          ${card}
+          ${cardSlot}
         </div>
       </details>`;
   }
@@ -235,14 +264,91 @@ const Lesson1Flow = (function () {
     });
   }
 
+  /** 标黄范式 · 第1課「注意」词（见 docs/项目知识库-课内单词标黄范式.md） */
+  const VOCAB_WARN_IDS = new Set([
+    "l1_v_2",
+    "l1_v_3",
+    "l1_v_4",
+    "l1_v_12",
+    "l1_v_15",
+    "l1_v_16",
+    "l1_v_22",
+    "l1_v_23",
+    "l1_v_26",
+    "l1_v_27",
+    "l1_v_28",
+  ]);
+
+  function vocabBadges(v, tip) {
+    const warn = VOCAB_WARN_IDS.has(v.id);
+    const hasTip = !!(tip && tip.lines && tip.lines.length);
+    /* 有「注意」时，知识卡文案归注意区，不再标「延伸」（避免点开只看见延伸、不知道注意什么） */
+    const extend = hasTip && !warn;
+    const conj = !!(v.conjugation && v.conjugation.forms && Object.keys(v.conjugation.forms).length);
+    const warnExplain = warn;
+    return { warn, extend, conj, warnExplain, special: warn || extend || conj };
+  }
+
+  function vocabWarnFallback(v) {
+    if (typeof L1KnowledgeTips !== "undefined") {
+      const t = L1KnowledgeTips.vocab(v);
+      if (t?.lines?.length) return t;
+    }
+    return {
+      lines: [
+        {
+          zh: "本词在称谓、读法或礼貌用法上与一般名词句不同；请结合淡黄行底记忆，并对照课文朗读。",
+        },
+      ],
+    };
+  }
+
+  /** 喇叭左侧固定双行：上=注意，下=延伸（无则占位，全表对齐） */
+  function vocabTagsColumnHtml(badges) {
+    const warnOn = badges.warn
+      ? `<span class="l1-vocab-slot l1-vocab-slot--on vocab-tag vocab-tag--warn">注意</span>`
+      : `<span class="l1-vocab-slot l1-vocab-slot--off"></span>`;
+    const bottomLabel = badges.extend ? "延伸" : badges.conj ? "活用" : "";
+    const bottomOn = bottomLabel
+      ? `<span class="l1-vocab-slot l1-vocab-slot--on vocab-tag vocab-tag--${
+          badges.extend ? "extend" : "conj"
+        }">${bottomLabel}</span>`
+      : `<span class="l1-vocab-slot l1-vocab-slot--off"></span>`;
+    return `<div class="l1-vocab-tags-col" aria-label="词项标注">${warnOn}${bottomOn}</div>`;
+  }
+
+  function vocabTipSlotHtml(tip, anchorId) {
+    if (!tip) return "";
+    const card = kcardHtml(tip, anchorId);
+    return card ? `<div class="l1-tip-slot l1-tip-slot--vocab">${card}</div>` : "";
+  }
+
+  function vocabWarnTipHtml(tip, v) {
+    const payload = tip?.lines?.length ? tip : vocabWarnFallback(v);
+    return vocabTipSlotHtml(payload, `${v.id}_warn`);
+  }
+
+  function vocabExtendTipHtml(tip, v) {
+    if (!tip?.lines?.length) return "";
+    return vocabTipSlotHtml(tip, `${v.id}_ext`);
+  }
+
+  function vocabConjBodyHtml(v) {
+    const forms = v.conjugation?.forms;
+    if (!forms || !Object.keys(forms).length) return "";
+    const items = Object.entries(forms)
+      .map(([k, val]) => `<span class="l1-vocab-conj-tag"><b>${escapeHtml(k)}</b> ${escapeHtml(val)}</span>`)
+      .join("");
+    const typeLabel = v.conjugation.type ? escapeHtml(v.conjugation.type) : "活用";
+    return `<div class="l1-vocab-extra-block l1-vocab-extra-block--conj">
+      <p class="l1-vocab-extra-label">活用 · ${typeLabel}</p>
+      <div class="l1-vocab-fold-body l1-vocab-conj-grid">${items}</div>
+    </div>`;
+  }
+
   function mountVocab(mountEl, state, callbacks) {
     const L = getLessonMvp(LESSON_ID);
-    const list =
-      typeof getLessonPrdVocab === "function"
-        ? getLessonPrdVocab(LESSON_ID)
-        : (typeof getLessonVocab === "function" ? getLessonVocab(LESSON_ID) : []).filter(
-            (v) => v.from === "text"
-          );
+    const list = (L && L.vocab) ? L.vocab.filter(function(v) { return v.from === "text" || !v.from; }) : [];
     if (!list.length) {
       mountEl.innerHTML = `<p class="hint-ja">単語リストは準備中です。</p>`;
       return;
@@ -261,10 +367,13 @@ const Lesson1Flow = (function () {
 
     const wordRows = list
       .map((v, i) => {
-        const colKana = normKana(v.kana || "");
         const colWord = normKana(v.jp || "");
+        const colKana = normKana(v.kana || "");
         const colPitch = (v.pitch || "").trim();
+        const colPos = (v.pos || "").trim();
         const colZh = showZh(state) && v.meaningZh ? v.meaningZh : "";
+        const metaParts = [colKana, colPitch, colPos].filter(Boolean);
+        const metaLine = metaParts.length ? metaParts.join(" · ") : "";
         const payload = speakPayload(v);
         const actions =
           typeof ShadowSpeak !== "undefined"
@@ -272,33 +381,90 @@ const Lesson1Flow = (function () {
             : typeof SpeakUI !== "undefined"
               ? SpeakUI.btnHtml(payload, `data-vocab-id="${escapeHtml(v.id)}"`)
               : "";
-        const cell = (cls, text, extra = "") =>
-          `<span class="${cls} ${extra}">${text ? escapeHtml(text) : ""}</span>`;
-        const tip =
-          typeof L1KnowledgeTips !== "undefined" ? L1KnowledgeTips.vocab(v) : null;
-        const kcard = kcardHtml(tip, v.id);
+        const tip = typeof L1KnowledgeTips !== "undefined" ? L1KnowledgeTips.vocab(v) : null;
+        const badges = vocabBadges(v, tip);
+        const warnBlock = badges.warnExplain ? vocabWarnTipHtml(tip, v) : "";
+        const extendBlock = badges.extend ? vocabExtendTipHtml(tip, v) : "";
+        const conjBlock = badges.conj ? vocabConjBodyHtml(v) : "";
+        const extraInner = [warnBlock, extendBlock, conjBlock].filter(Boolean).join("");
+        const hasExtra = !!extraInner;
+        const rowCls = [
+          badges.warn ? " is-vocab-warn" : "",
+          hasExtra ? " has-vocab-expand" : "",
+        ].join("");
+        const jpHtml =
+          v.ruby?.length && typeof RubyRender !== "undefined"
+            ? RubyRender.fromSegments(v.jp, v.ruby)
+            : escapeHtml(colWord);
+        const expandLabel = badges.warnExplain
+          ? "展开注意说明"
+          : "展开延伸与活用";
+        const fold0 =
+          typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldToggleInner(false, 0) : "▼";
+        const expandBtn = hasExtra
+          ? `<button type="button" class="hyo-fold-toggle l1-vocab-expand-btn" aria-expanded="false" aria-label="${escapeHtml(expandLabel)}">${fold0}</button>`
+          : `<span class="l1-vocab-expand-spacer" aria-hidden="true"></span>`;
+        const metaHtml = metaLine
+          ? `<span class="l1-vocab-meta-inline hint-ja" title="${escapeHtml(metaLine)}">${escapeHtml(metaLine)}</span>`
+          : "";
+        const zhHtml = colZh
+          ? `<span class="l1-vocab-zh-inline zh-annotation">${escapeHtml(colZh)}</span>`
+          : "";
         return `
-        <li class="l1-vocab-grid-row" data-idx="${i}" data-vocab-id="${escapeHtml(v.id || "")}">
-          <span class="l1-seq-num l1-vocab-seq" aria-label="第${i + 1}项">${i + 1}</span>
-          ${cell("l1-col-jp jp", colWord)}
-          ${cell("l1-col-kana jp", colKana)}
-          ${cell("l1-col-pitch", colPitch)}
-          ${cell("l1-col-zh zh-annotation", colZh)}
-          <span class="l1-col-act">${actions}</span>
-        </li>
-        ${kcard ? `<li class="l1-vocab-kcard-row">${kcard}</li>` : ""}`;
+        <li class="l1-vocab-item${rowCls}" data-idx="${i}" data-vocab-id="${escapeHtml(v.id || "")}">
+          <div class="l1-vocab-item-main">
+            <span class="l1-seq-num l1-vocab-seq" aria-label="第${i + 1}项">${i + 1}</span>
+            ${expandBtn}
+            <div class="l1-vocab-core">
+              <span class="l1-vocab-jp jp">${jpHtml}</span>
+              ${metaHtml}
+              ${zhHtml}
+            </div>
+            ${vocabTagsColumnHtml(badges)}
+            <div class="l1-vocab-act">${actions}</div>
+          </div>
+          ${hasExtra ? `<div class="l1-vocab-extra" hidden>${extraInner}</div>` : ""}
+        </li>`;
       })
       .join("");
 
-    const showZhCol = showZh(state);
     const total = list.length;
     const seen0 = vocabSeenCount(state, list);
     const vocabReady = seen0 >= total && total > 0;
 
+    // Supplementary blocks: pronunciation, etymology, preview
+    const summaryBlocks = (L.summaryBlocks || []);
+    const pron = summaryBlocks.find(b => b.key === "pronunciation");
+    const etym = summaryBlocks.find(b => b.key === "etymology");
+    const prev = summaryBlocks.find(b => b.key === "preview");
+
+    const suppFold = (title) =>
+      typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownHtml(0) : "";
+    const suppHtml = `
+      ${pron ? `
+      <details class="l1-vocab-supp l1-fold-panel">
+        <summary class="l1-vocab-supp-head"><span class="hyo-fold-toggle-static" aria-hidden="true">${suppFold("pron")}</span>発音ポイント<span class="zh-annotation">（发音要点）</span></summary>
+        <ul class="l1-vocab-supp-list">${(pron.lines||[]).map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+      </details>` : ""}
+      ${etym ? `
+      <details class="l1-vocab-supp l1-fold-panel">
+        <summary class="l1-vocab-supp-head"><span class="hyo-fold-toggle-static" aria-hidden="true">${suppFold("etym")}</span>語源メモ<span class="zh-annotation">（词源注释）</span></summary>
+        <ul class="l1-vocab-supp-list">${(etym.lines||[]).map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+      </details>` : ""}
+      ${prev ? `
+      <details class="l1-vocab-supp l1-fold-panel">
+        <summary class="l1-vocab-supp-head"><span class="hyo-fold-toggle-static" aria-hidden="true">${suppFold("prev")}</span>活用予告<span class="zh-annotation">（活用预告）</span></summary>
+        <ul class="l1-vocab-supp-list">${(prev.lines||[]).map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+      </details>` : ""}
+    `;
+
     mountEl.innerHTML = l1GatePanelHtml(
-      `<div class="l1-vocab-flat-wrap l1-scroll-panel${showZhCol ? "" : " l1-vocab-no-zh"}"><ul class="l1-vocab-grid l1-vocab-grid--no-head" role="list">
+      `<div class="l1-vocab-flat-wrap l1-vocab-paradigm-wrap">
+        <ul class="l1-vocab-list l1-mod-list" role="list">
           ${wordRows}
-        </ul></div>`,
+        </ul>
+        ${suppHtml}
+      </div>`,
       0,
       {
         btnId: "l1-vocab-done",
@@ -327,10 +493,65 @@ const Lesson1Flow = (function () {
       callbacks.switchGate?.(2);
     });
 
-    mountEl.querySelectorAll("[data-vocab-id]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const vid = el.getAttribute("data-vocab-id");
+    mountEl.querySelectorAll(".l1-vocab-item").forEach((row) => {
+      const markSeen = () => {
+        const vid = row.getAttribute("data-vocab-id");
         if (vid && typeof markFlashSeen === "function") markFlashSeen(state, LESSON_ID, vid);
+        updateVocabFooter();
+      };
+      row.querySelectorAll(
+        "[data-vocab-id], .l1-vocab-extra, .btn-ss-record, .btn-ss-replay, .btn-speak-icon, .l1-vocab-expand-btn"
+      ).forEach((el) => el.addEventListener("click", markSeen, { passive: true }));
+    });
+
+    const vocabItems = [...mountEl.querySelectorAll(".l1-vocab-item.has-vocab-expand")];
+    const setExpandBtnGlyph = (btn, isOpen) => {
+      if (!btn || typeof HyougaGlyphs === "undefined") return;
+      btn.innerHTML = HyougaGlyphs.foldToggleInner(isOpen, 0);
+    };
+    mountEl.querySelectorAll(".vocab-tag--warn").forEach((tag) => {
+      const item = tag.closest(".l1-vocab-item");
+      if (!item?.classList.contains("has-vocab-expand")) return;
+      tag.setAttribute("role", "button");
+      tag.setAttribute("tabindex", "0");
+      tag.setAttribute("title", "点开查看注意要点");
+      tag.addEventListener("click", (e) => {
+        e.stopPropagation();
+        item.querySelector(".l1-vocab-expand-btn")?.click();
+      });
+      tag.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        item.querySelector(".l1-vocab-expand-btn")?.click();
+      });
+    });
+
+    mountEl.querySelectorAll(".l1-vocab-expand-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const item = btn.closest(".l1-vocab-item");
+        const extra = item?.querySelector(".l1-vocab-extra");
+        if (!extra) return;
+        const opening = extra.hidden;
+        if (opening) {
+          vocabItems.forEach((other) => {
+            if (other === item) return;
+            const ex = other.querySelector(".l1-vocab-extra");
+            const ob = other.querySelector(".l1-vocab-expand-btn");
+            if (ex && !ex.hidden) {
+              ex.hidden = true;
+              ob?.setAttribute("aria-expanded", "false");
+              ob?.classList.remove("is-open");
+              setExpandBtnGlyph(ob, false);
+            }
+          });
+        }
+        extra.hidden = !opening;
+        btn.setAttribute("aria-expanded", opening ? "true" : "false");
+        btn.classList.toggle("is-open", opening);
+        setExpandBtnGlyph(btn, opening);
+        const vid = item.getAttribute("data-vocab-id");
+        if (opening && vid && typeof markFlashSeen === "function") markFlashSeen(state, LESSON_ID, vid);
         updateVocabFooter();
       });
     });
@@ -339,7 +560,15 @@ const Lesson1Flow = (function () {
     else if (typeof SpeakUI !== "undefined") SpeakUI.bind(mountEl);
     bindChainFooter(vocabPanel, 0, callbacks);
     bindGwGroups(mountEl, callbacks);
-    if (typeof L1KnowledgeCard !== "undefined") L1KnowledgeCard.bind(mountEl, callbacks);
+    mountEl.querySelectorAll(".l1-kcard-link").forEach((btn) => {
+      if (btn.dataset.l1LinkBound === "1") return;
+      btn.dataset.l1LinkBound = "1";
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const gate = btn.dataset.l1Gate;
+        if (gate !== "" && callbacks?.switchGate) callbacks.switchGate(Number(gate));
+      });
+    });
     updateVocabFooter();
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.warmPhrases) {
       const lines = list.map((v) => speakPayload(v));
@@ -398,22 +627,6 @@ const Lesson1Flow = (function () {
       return key ? { lines: [{ zh: HW_TIPS[key] }] } : { lines: [{ zh: "对照课本与文法栏，逐条完成本类练习。" }] };
     }
 
-    const HW_ICONS = {
-      発音: "🔊",
-      活用: "🔄",
-      選択: "✅",
-      穴埋め: "✏️",
-      翻訳: "🌐",
-      間違い: "🔍",
-      作文: "📝",
-      聴解: "👂",
-    };
-
-    function iconForTitle(title) {
-      const key = Object.keys(HW_ICONS).find((k) => title.includes(k));
-      return key ? HW_ICONS[key] : "📋";
-    }
-
     let hwSeq = 0;
     const folds = sections
       .map((s) => {
@@ -425,7 +638,7 @@ const Lesson1Flow = (function () {
         hwSeq += 1;
         return gwGroupHtml({
           seq: hwSeq,
-          icon: iconForTitle(title),
+          foldGate: 3,
           title,
           body: `<ul class="l1-prose-list">${inner}</ul>`,
           tip: tipForTitle(title),
@@ -437,7 +650,7 @@ const Lesson1Flow = (function () {
     const quizBlock = quizCount
       ? gwGroupHtml({
           seq: hwSeq + 1,
-          icon: "🎯",
+          foldGate: 3,
           title: "小テスト（交互）",
           body: `<div id="l1-hw-quiz"></div>`,
           tip: tipForTitle("小テスト"),
@@ -447,7 +660,7 @@ const Lesson1Flow = (function () {
     const hwTotal = sections.length + (quizCount ? 1 : 0);
     const hwBody =
       folds || quizBlock
-        ? `<div class="l1-hw-folds">${folds}${quizBlock}</div>`
+        ? `<div class="l1-hw-folds l1-mod-list">${folds}${quizBlock}</div>`
         : `<p class="hint-ja">作業データがありません。</p>`;
 
     mountEl.innerHTML = l1GatePanelHtml(hwBody, 3, {
@@ -522,7 +735,7 @@ const Lesson1Flow = (function () {
     const pron = blocks.find((b) => b.key === "pronunciation");
     if (pron) {
       groups.push({
-        icon: "🔊",
+        extKey: "pronunciation",
         title: "発音ポイント",
         body: `<ul class="l1-prose-list">${renderLn(pron.lines)}</ul>`,
         tip:
@@ -537,7 +750,7 @@ const Lesson1Flow = (function () {
         .map((n) => `${n.title}：${n.explanationZh || n.titleZh || ""}`)
         .filter((l) => l.length > 3);
       groups.push({
-        icon: "📖",
+        extKey: "grammar",
         title: "文法まとめ",
         body: `<ul class="l1-prose-list">${renderLn(glines)}</ul>`,
         tip:
@@ -549,7 +762,7 @@ const Lesson1Flow = (function () {
     const preview = blocks.find((b) => b.key === "preview");
     if (preview && !/本课无/.test((preview.lines || []).join(""))) {
       groups.push({
-        icon: "🔮",
+        extKey: "preview",
         title: "活用予告",
         body: `<ul class="l1-prose-list">${renderLn(preview.lines)}</ul>`,
         tip:
@@ -561,7 +774,7 @@ const Lesson1Flow = (function () {
     const honor = blocks.find((b) => b.key === "honorific");
     if (honor) {
       groups.push({
-        icon: "🎩",
+        extKey: "honorific",
         title: "敬語レベル表示",
         body: `<ul class="l1-prose-list">${renderLn(honor.lines)}</ul>`,
         tip:
@@ -573,7 +786,7 @@ const Lesson1Flow = (function () {
     const etym = blocks.find((b) => b.key === "etymology");
     if (etym) {
       groups.push({
-        icon: "📜",
+        extKey: "etymology",
         title: "語源メモ",
         body: `<ul class="l1-prose-list">${renderLn(etym.lines)}</ul>`,
         tip:
@@ -584,7 +797,7 @@ const Lesson1Flow = (function () {
     }
     if (keyPoints.length) {
       groups.push({
-        icon: "💬",
+        extKey: "keyPoints",
         title: "会話のキーポイント",
         body: `<ul class="l1-prose-list">${renderLn(keyPoints)}</ul>`,
         tip:
@@ -595,7 +808,7 @@ const Lesson1Flow = (function () {
     }
     if (rolePlay.length) {
       groups.push({
-        icon: "🎭",
+        extKey: "rolePlay",
         title: "ロールプレイ課題",
         body: `<ul class="l1-prose-list">${renderLn(rolePlay)}</ul>`,
         tip:
@@ -606,7 +819,7 @@ const Lesson1Flow = (function () {
     }
     reviewExt.forEach((sec, si) => {
       groups.push({
-        icon: "📌",
+        extKey: "review",
         title: stripEmojiTitle(sec.title || `まとめ ${si + 1}`),
         body: `<ul class="l1-prose-list">${renderLn(sec.lines)}</ul>`,
         tip:
@@ -617,7 +830,7 @@ const Lesson1Flow = (function () {
     });
     if (L?.basicText?.length) {
       groups.push({
-        icon: "📄",
+        extKey: "basicText",
         title: "基本课文（4句型）",
         body: `<ul class="l1-prose-list">${renderLn(L.basicText)}</ul>`,
         tip:
@@ -629,13 +842,13 @@ const Lesson1Flow = (function () {
 
     const groupsHtml = groups
       .map((g, i) =>
-        gwGroupHtml({ seq: i + 1, icon: g.icon, title: g.title, body: g.body, tip: g.tip })
+        gwGroupHtml({ seq: i + 1, foldGate: 4, title: g.title, body: g.body, tip: g.tip })
       )
       .join("");
 
     const extTotal = groups.length;
     mountEl.innerHTML = l1GatePanelHtml(
-      `<div class="l1-ext-folds">${groupsHtml || `<p class="hint-ja">まとめデータがありません。</p>`}</div>`,
+      `<div class="l1-ext-folds l1-mod-list">${groupsHtml || `<p class="hint-ja">まとめデータがありません。</p>`}</div>`,
       4,
       {
         btnId: "l1-sum-done",

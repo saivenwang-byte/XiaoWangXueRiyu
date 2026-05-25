@@ -96,6 +96,9 @@ const L1KnowledgeTips = (function () {
     l1_v_27: {
       lines: [{ zh: "「父」对外谦称；称呼自己父亲用「父」，称呼对方用「お父さん」。" }],
     },
+    l1_v_28: {
+      lines: [{ zh: "「母」对外谦称（はは）；说自己母亲用「母」，称呼对方母亲用「お母さん」。" }],
+    },
   };
 
   const DIALOGUE = [
@@ -282,7 +285,7 @@ const L1KnowledgeTips = (function () {
     return null;
   }
 
-  function vocab(v) {
+  function vocabTip(v) {
     if (!v) return null;
     return VOCAB[v.id] || posFallback(v);
   }
@@ -329,5 +332,5 @@ const L1KnowledgeTips = (function () {
     return { lines: [{ zh: "本块为补充归纳，与当课五关内容交叉对照。" }], links: [{ label: "→ 文法", gate: 1 }] };
   }
 
-  return { vocab, dialogue, grammar, homeworkTitle, extensionKey };
+  return { vocab: vocabTip, dialogue, grammar, homeworkTitle, extensionKey };
 })();

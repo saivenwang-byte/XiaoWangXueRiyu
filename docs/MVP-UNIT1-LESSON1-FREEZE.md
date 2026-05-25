@@ -17,6 +17,7 @@
 |----|------|
 | 结构 | **単語 → 会話 → 文法 → 作業 → 拡張**（五 Tab；与旧四关课 14/16/18 路由分离） |
 | 数据真源 | `js/data/lessons-data.js`（lessonId 1）· `js/data/l1-knowledge-tips.js` · `js/data/l1-dialogue-abc.js` |
+| 単語范式 | [项目知识库-课内单词标黄范式.md](./项目知识库-课内单词标黄范式.md)（标黄/延伸/三键 · 改单词前必读） |
 | 课内壳 | `js/lesson-1-flow.js`（仅 `lessonId === 1`） |
 | 提示 | `js/sensei-tip-card.js`：单行「提示：+ 正文」；多行可折叠；无左侧三角叹号 |
 | 传送链 | 底栏中文路径 + 分关色主按钮 + 进度 `完了（n/m）` |

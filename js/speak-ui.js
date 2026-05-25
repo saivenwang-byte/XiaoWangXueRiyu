@@ -1,6 +1,10 @@
 /** 统一小喇叭：绑定、预加载、播放态 */
 const SpeakUI = (() => {
-  const SPEAKER_SVG = `<svg class="speak-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+  const SPEAKER_SVG = `<svg class="speak-icon-svg hyo-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+
+  function listenInner() {
+    return typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.listenInner() : SPEAKER_SVG;
+  }
 
   let toastEl = null;
   let toastTimer = null;
@@ -98,7 +102,7 @@ const SpeakUI = (() => {
         : "";
     const keyAttr = ttsKey ? ` data-tts-key="${escAttr(ttsKey)}"` : "";
     const titleAttr = ttsKey ? ` title="朗读 #${escAttr(ttsKey)}"` : ' title="朗读"';
-    return `<button type="button" class="btn-speak-icon" aria-label="朗读"${titleAttr} ${extraAttrs} ${dataAttr}${keyAttr}>${SPEAKER_SVG}</button>`;
+    return `<button type="button" class="btn-speak-icon hyo-l3-audio" aria-label="朗读"${titleAttr} ${extraAttrs} ${dataAttr}${keyAttr}>${listenInner()}</button>`;
   }
 
   /** 行内：日文 + 小喇叭 */

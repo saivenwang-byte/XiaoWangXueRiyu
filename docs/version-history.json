@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "146",
+    "cache": "225",
     "date": "2026-05-25",
-    "note": "第1单元第1課 MVP 冻结：五关 UI/传送链/知识关联A；baseline unit1_lesson1_mvp；CACHE_VER 146",
+    "note": "第1課五关提示统一+首页开屏IA+课内序号对齐；见 过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"
@@ -103,6 +103,16 @@
       "mvp_freeze_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
       "local": "http://localhost:8765/index.html?v=146",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=146"
+    },
+    {
+      "product": "1.0.2",
+      "cache": "225",
+      "date": "2026-05-25",
+      "note": "L1 五关提示统一（提示：+折叠+l1-tip-slot）、单词序号栅格、开屏地图与单元行 IA",
+      "archive": "过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
+      "lessons": [1],
+      "local": "http://localhost:8765/index.html?v=225",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=225"
     }
   ],
   "versioning_rules": {

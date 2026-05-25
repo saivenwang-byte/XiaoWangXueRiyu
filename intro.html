@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>00 入門 · 標日 あと学習</title>
+  <link rel="stylesheet" href="css/app.css?v=151" />
+  <link rel="stylesheet" href="css/mvp.css?v=152" />
+</head>
+<body class="mvp-body intro-body">
+  <script>
+    if (window.self !== window.top) document.documentElement.classList.add("hyouga-embed-preview");
+  </script>
+  <header class="top-bar">
+    <a href="index.html?v=151&embed=1" class="btn-back" id="intro-back-link">← 標日 あと学習</a>
+    <h1>00 入門</h1>
+  </header>
+  <main class="intro-page">
+    <div class="mvp-hero intro-hero intro-hero--minimal">
+      <h2>注音能力全景</h2>
+      <p class="intro-hero-sub jp">発音と文字</p>
+      <p class="intro-hero-hint zh-annotation">点假名看提示 · 喇叭听音</p>
+    </div>
+    <div id="intro-root" class="intro-root"></div>
+  </main>
+  <script src="js/share-wechat.js?v=151"></script>
+  <script>
+    (function () {
+      var back = document.getElementById("intro-back-link");
+      if (back && window.self !== window.top) {
+        back.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.top.location.href = "index.html?v=151&testcard=1&developer=1&embed=1";
+        });
+      }
+    })();
+  </script>
+  <script src="js/speech-engine.js?v=151"></script>
+  <script src="js/speak-ui.js?v=151"></script>
+  <script src="js/shadow-speak.js?v=151"></script>
+  <script src="js/sensei-tip-card.js?v=151"></script>
+  <script src="js/data/intro-content.js?v=151"></script>
+  <script src="js/data/intro-kana-tips.js?v=151"></script>
+  <script src="js/intro-kana-tip.js?v=151"></script>
+  <script src="js/intro-guide.js?v=152"></script>
+</body>
+</html>

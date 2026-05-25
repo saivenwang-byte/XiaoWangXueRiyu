@@ -87,21 +87,27 @@ const ShadowSpeak = (() => {
 
   function rowHtml(payload, rowId, extraAttrs = "") {
     const exp = expectedLine(payload);
+    const listenInner =
+      typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.listenInner() : "🔊";
     const speakBtn =
       typeof SpeakUI !== "undefined"
         ? SpeakUI.btnHtml(payload, `data-ss-play="1" ${extraAttrs}`)
-        : `<button type="button" class="btn-speak-icon" data-ss-play="1" data-jp="${escAttr(exp)}">🔊</button>`;
+        : `<button type="button" class="btn-speak-icon hyo-l3-audio" data-ss-play="1" data-jp="${escAttr(exp)}" aria-label="听" title="听">${listenInner}</button>`;
+    const recordInner =
+      typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.recordInner() : "🎤";
+    const replayInner =
+      typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.replayInner() : "▶";
     const mode = isDialogueRow(rowId, extraAttrs) ? "dialogue" : /^vf-/.test(rowId || "") ? "vocab" : "light";
     const kw = parseKeywordsAttr(extraAttrs);
     const kwAttr = kw.length ? ` data-ss-keywords="${escAttr(JSON.stringify(kw))}"` : "";
     const evalBtn =
       mode === "dialogue"
-        ? `<button type="button" class="btn-ss-evaluate" data-ss-evaluate data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="评估" title="对照本句客观评分">✓</button>`
+        ? `<button type="button" class="btn-ss-evaluate hyo-l3-audio" data-ss-evaluate data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="评估" title="对照本句客观评分">${typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.evaluateInner() : "✓"}</button>`
         : "";
     return `<div class="ss-action-row" data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}">
       ${speakBtn}
-      <button type="button" class="btn-ss-record" data-ss-record data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="录音" title="录音">🎤</button>
-      <button type="button" class="btn-ss-replay" data-ss-replay data-ss-row="${escAttr(rowId)}" disabled aria-label="回放" title="回放">▶</button>
+      <button type="button" class="btn-ss-record hyo-l3-audio" data-ss-record data-ss-row="${escAttr(rowId)}" data-ss-mode="${mode}" data-speak-expected="${escAttr(exp)}"${kwAttr} aria-label="录音" title="录音">${recordInner}</button>
+      <button type="button" class="btn-ss-replay hyo-l3-audio" data-ss-replay data-ss-row="${escAttr(rowId)}" disabled aria-label="回放" title="回放">${replayInner}</button>
       ${evalBtn}
     </div>`;
   }
@@ -455,8 +461,16 @@ const ShadowSpeak = (() => {
     if (mediaRecorder && recordRowId !== rowId) {
       await forceStopRecord(false);
     }
+    if (location.protocol === "file:") {
+      toast("录音需本地服务：请双击「打开本地预览.bat」");
+      return;
+    }
     if (!navigator.mediaDevices?.getUserMedia) {
-      toast("当前环境不支持录音，请用微信打开");
+      toast(
+        isWeChat()
+          ? "微信内常无法录音：点右上角 ··· → 在浏览器中打开"
+          : "当前环境不支持录音，请用 Safari/Chrome 打开 https 或 localhost"
+      );
       return;
     }
     if (typeof SpeechEngine !== "undefined" && SpeechEngine.unlockAudioOnce) {

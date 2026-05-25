@@ -47,11 +47,40 @@ const JourneyHome = (function () {
     return null;
   }
 
-  function unitProgressLabel(state, unit) {
+  function unitProgressCounts(state, unit) {
     const prog =
       typeof curriculumUnitProgress === "function" ? curriculumUnitProgress(state, unit) : null;
-    if (!prog || !prog.total) return "";
-    return `${prog.cleared}/${prog.total} 課`;
+    return { cleared: prog?.cleared || 0, total: prog?.total || unit.lessons?.length || 4 };
+  }
+
+  /** 单元右侧：状态文案 + 5 颗五角星（完成为 5 颗实心）；彩蛋按钮在最右 */
+  function unitStatusHtml(state, unit, uv) {
+    const { cleared, total } = unitProgressCounts(state, unit);
+    const starN = 5;
+    let label = "未开启";
+    if (uv === "start") label = "START";
+    else if (uv === "active") label = "进行中";
+    else if (uv === "cleared") label = "已完成";
+
+    let filled = 0;
+    if (uv === "cleared") filled = starN;
+    else if (uv === "active" || uv === "start") {
+      filled = total > 0 ? Math.min(starN, Math.round((cleared / total) * starN)) : 0;
+    }
+
+    const showStars = uv !== "dormant";
+    const stars = showStars
+      ? Array.from({ length: starN }, (_, i) =>
+          i < filled
+            ? '<span class="journey-unit-star journey-unit-star--on" aria-hidden="true">★</span>'
+            : '<span class="journey-unit-star journey-unit-star--off" aria-hidden="true">☆</span>'
+        ).join("")
+      : "";
+
+    return `<div class="journey-unit-status-col is-unit-${uv}">
+      <span class="journey-unit-state-label">${escapeHtml(label)}</span>
+      ${stars ? `<span class="journey-unit-stars" aria-label="单元进度 ${filled}/${starN}">${stars}</span>` : ""}
+    </div>`;
   }
 
   function lessonEggThumbHtml(state, unitId, lessonId) {
@@ -137,7 +166,7 @@ const JourneyHome = (function () {
     else if (prog.status === "未開啟") cls += " is-lesson-locked";
     else cls += " is-lesson-idle";
     if (devCatalogMode() && L.hasData) cls += " is-lesson-playable";
-    const zhLine = themeZh
+    const zhInline = themeZh
       ? `<span class="lesson-row-zh zh-annotation">${escapeHtml(themeZh)}</span>`
       : "";
     return `
@@ -145,8 +174,10 @@ const JourneyHome = (function () {
         title="第${L.lessonId}課 · ${escapeHtml(L.headline)}${themeZh ? " · " + escapeHtml(themeZh) : ""} · ${escapeHtml(prog.title || "")}">
         <span class="lesson-row-badge" aria-hidden="true">${L.lessonId}</span>
         <span class="lesson-row-body">
-          ${zhLine}
-          <span class="lesson-row-title jp">${escapeHtml(L.headline)}</span>
+          <span class="lesson-row-titleline">
+            <span class="lesson-row-title jp">${escapeHtml(L.headline)}</span>
+            ${zhInline}
+          </span>
           <span class="lesson-row-meta">
             <span class="lesson-row-status">${escapeHtml(prog.status)}</span>
             <span class="lesson-row-stars" aria-label="${escapeHtml(prog.title || "")}">${prog.stars}</span>
@@ -172,15 +203,7 @@ const JourneyHome = (function () {
             </div>`;
           })
           .join("");
-        const badge =
-          uv === "cleared"
-            ? "★ 単元完了"
-            : uv === "start"
-              ? "START"
-              : uv === "active"
-                ? "進行中"
-                : "未開啟";
-        const progLbl = unitProgressLabel(state, unit);
+        const unitJp = escapeHtml(unit.unitThemeJa || unit.titleJa);
         const style = `style="--stage-accent:${theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
         const openAttr = isOpen ? " open" : "";
         const currentCls = isOpen ? " is-unit-current" : "";
@@ -192,14 +215,12 @@ const JourneyHome = (function () {
             <div class="journey-unit-summary-bar">
               <span class="journey-unit-chevron" aria-hidden="true"></span>
               <div class="journey-unit-summary-main">
-                <span class="journey-stage-tag">${escapeHtml(theme.spectrum || theme.label)}</span>
-                <strong class="journey-stage-unit">${escapeHtml(unit.titleJa)}</strong>
+                <strong class="journey-stage-unit jp">${unitJp}</strong>
                 <span class="journey-stage-zh zh-annotation">${escapeHtml(unit.titleZh)}</span>
               </div>
               <div class="journey-unit-summary-end">
-                ${progLbl ? `<span class="journey-unit-prog">${escapeHtml(progLbl)}</span>` : ""}
+                ${unitStatusHtml(state, unit, uv)}
                 ${typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : ""}
-                <span class="journey-unit-badge is-unit-${uv}">${badge}</span>
               </div>
             </div>
           </summary>
@@ -428,7 +449,7 @@ const JourneyHome = (function () {
     const dev = devCatalogMode();
     const board = document.createElement("div");
     board.className =
-      "journey-shinkansen journey-shinkansen--explore" + (dev ? " journey-shinkansen--dev-catalog" : "");
+      "journey-shinkansen journey-shinkansen--catalog" + (dev ? " journey-shinkansen--dev-catalog" : "");
     const testCardBanner =
       typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()
         ? `<div class="hyouga-test-card-banner" role="status">测试卡 · 满级全开（24课四金·条带·L3）· 说明见 docs/测试卡-满级链接.md</div>`
@@ -439,9 +460,8 @@ const JourneyHome = (function () {
         <p class="journey-frame-tagline">${FRAME_TAGLINE}</p>
         <p class="journey-frame-sub" id="journey-frame-progress"></p>
       </header>
-      <div class="journey-frame-body journey-frame-body--explore">
+      <div class="journey-frame-body journey-frame-body--catalog">
         <div class="journey-catalog-lead">${renderPart0Bar(state)}</div>
-        <div class="journey-map-core journey-map-core--explore">${renderMapCore(state)}${renderMapLegend()}</div>
         ${renderExploreCatalog(state)}
       </div>`;
     bindInteractions(board, state, onEnterLesson);
@@ -489,5 +509,10 @@ const JourneyHome = (function () {
     document.getElementById("journey-unit-sheet")?.remove();
   }
 
-  return { render, tryEnterLesson };
+  /** 开机封面 · 全幅探索地图（与课内目录分离） */
+  function renderSplashMap(state) {
+    return `<div class="journey-map-core journey-map-core--splash">${renderMapCore(state)}</div>`;
+  }
+
+  return { render, tryEnterLesson, renderSplashMap };
 })();

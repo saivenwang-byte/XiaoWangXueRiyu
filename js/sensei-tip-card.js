@@ -114,17 +114,22 @@ const SenseiTipCard = (() => {
     </article>`;
   }
 
+  function l1UnifiedFold(opts) {
+    return !!(opts && (opts.l1Scope || opts.alwaysFold));
+  }
+
   /**
    * @param {{ lines?: {zh?: string, ja?: string}[], links?: object[] }} tip
+   * @param {{ l1Scope?: boolean, alwaysFold?: boolean, expanded?: boolean }} [opts]
    */
-  function fromTipPayload(tip) {
+  function fromTipPayload(tip, opts = {}) {
     if (!tip) return "";
     const items = (tip.lines || []).filter((l) => l && (l.zh || l.ja));
     if (!items.length) return "";
     const rows = flattenTipLines(items);
     const linksHtml = linksBlock(tip.links, tip.related);
-    if (isSingleLineTip(items)) return renderStatic(rows, linksHtml);
-    return renderFold(rows, linksHtml, false);
+    if (!l1UnifiedFold(opts) && isSingleLineTip(items)) return renderStatic(rows, linksHtml);
+    return renderFold(rows, linksHtml, !!opts.expanded);
   }
 
   function wrap(opts) {
@@ -161,14 +166,13 @@ const SenseiTipCard = (() => {
     if (noteJa) items.push({ ja: noteJa });
     if (noteZh && showZh()) items.push({ zh: noteZh });
     if (!items.length) return "";
-    if (isSingleLineTip(items)) return fromTipPayload({ lines: items });
-    return renderFold(flattenTipLines(items), "", !!opts.expanded);
+    return fromTipPayload({ lines: items }, opts);
   }
 
   function fromLines(lines, opts = {}) {
     const items = (lines || []).filter((l) => l && (l.ja || l.zh));
     if (!items.length) return "";
-    return fromTipPayload({ lines: items });
+    return fromTipPayload({ lines: items }, opts);
   }
 
   function bind(root) {
