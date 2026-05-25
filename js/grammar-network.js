@@ -5,6 +5,11 @@ const GrammarNetwork = (() => {
   let onGateComplete = null;
   let container = null;
   let state = null;
+  /** 展开过的文法行（必学全展开后可点「完了」） */
+  let nodesOpened = {};
+  let l1Flow = false;
+  let l1FooterLabel = "文法完了 ✓ → 作業";
+  let switchGate = null;
 
   function escapeHtml(s) {
     const d = document.createElement("div");
@@ -294,18 +299,20 @@ const GrammarNetwork = (() => {
 
   function exampleBlockHtml(node) {
     const parts = (node.example || "").split(/[/／]/).map((s) => s.trim()).filter(Boolean);
-    const zhParts = (node.exampleZh || "").split(/[/／]/).map((s) => s.trim());
+    const exZhRaw = Array.isArray(node.exampleZh) ? node.exampleZh.join("／") : (node.exampleZh || "");
+    const zhParts = exZhRaw.split(/[/／]/).map((s) => s.trim());
     if (parts.length <= 1) {
       const speak =
         typeof SpeakUI !== "undefined"
           ? SpeakUI.btnHtml(exampleSpeakPayload(node), 'class="gn-ex-speak-inline" title="听例句"')
           : "";
+      const zhText = Array.isArray(node.exampleZh) ? node.exampleZh[0] || "" : (node.exampleZh || "");
       return `<div class="gn-example-line">
         <div class="gn-example-line-top">
           <p class="gn-example jp">${RubyRender.nodeExample(node)}</p>
           ${speak}
         </div>
-        ${node.exampleZh && showZh() ? `<p class="gn-example-zh zh-annotation">${escapeHtml(node.exampleZh)}</p>` : ""}
+        ${zhText && showZh() ? `<p class="gn-example-zh zh-annotation">${escapeHtml(zhText)}</p>` : ""}
       </div>`;
     }
     const marks = ["①", "②", "③"];
@@ -362,7 +369,7 @@ const GrammarNetwork = (() => {
     let html = SenseiTipCard.wrap({
       bodyHtml: renderDepthHtml([first]),
       subtitle: first.heading || "",
-      expanded: true,
+      expanded: false,
     });
     if (rest.length) {
       html += SenseiTipCard.wrap({
@@ -378,84 +385,294 @@ const GrammarNetwork = (() => {
     container = el;
     state = options.state;
     onGateComplete = options.onComplete;
+    switchGate = options.switchGate || null;
+    l1Flow = !!options.l1Flow;
+    l1FooterLabel = options.l1FooterLabel || l1FooterLabel;
+    if (options.l1Lesson && Number(lessonId) === 1) l1Flow = false;
     lesson = getLessonMvp(lessonId);
     cardIndex = 0;
     flipped = false;
+    nodesOpened = {};
     render();
-    warmNodePhrases(lesson.grammarNodes[0]);
   }
 
   function currentNode() {
     return lesson.grammarNodes[cardIndex];
   }
 
-  function render() {
-    const node = currentNode();
+  function requiredNodeIndices() {
+    return lesson.grammarNodes
+      .map((n, i) => (!n.supplement ? i : -1))
+      .filter((i) => i >= 0);
+  }
+
+  function allRequiredOpened() {
+    return requiredNodeIndices().every((i) => nodesOpened[i]);
+  }
+
+  function progressLabelText() {
     const total = lesson.grammarNodes.length;
-    const required = lesson.grammarNodes.filter((n) => !n.supplement);
-    const reqTotal = required.length;
-    const reqIdx = required.findIndex((n) => n.id === node.id);
-    const progressLabel = node.supplement
-      ? `補充カード · ${cardIndex + 1}/${total}`
-      : `必学 ${reqIdx >= 0 ? reqIdx + 1 : "?"}/${reqTotal} · 全体 ${cardIndex + 1}/${total}`;
+    const req = requiredNodeIndices();
+    const opened = req.filter((i) => nodesOpened[i]).length;
+    return `必学 ${opened}/${req.length} · 全体 ${total} 文型 · 点行展开`;
+  }
+
+  function nodeFoldSummary(node, i) {
+    const zh = node.titleZh && showZh() ? node.titleZh.slice(0, 20) : "";
+    const tag = node.supplement ? "補充" : node.core ? "★必学" : "必学";
+    if (lesson?.lessonId === 1) {
+      return `
+        <span class="l1-seq-num">${i + 1}</span>
+        <span class="dg-scene-fold-meta">
+          <span class="gn-node-fold-title jp">${titleHtml(node)}</span>
+          ${zh ? `<span class="gn-node-fold-zh zh-annotation">${escapeHtml(zh)}</span>` : ""}
+        </span>
+        ${nodesOpened[i] ? '<span class="dg-scene-done-mark" aria-label="已展开">✓</span>' : ""}
+        <span class="gn-node-fold-chevron" aria-hidden="true"></span>`;
+    }
+    if (l1Flow) {
+      const mark = nodesOpened[i] ? " ✓" : "";
+      return `${escapeHtml(tag)}${mark} · <span class="jp">${titleHtml(node)}</span>`;
+    }
+    return `
+      <span class="gn-node-num">${i + 1}</span>
+      <span class="gn-node-fold-meta">
+        <span class="gn-node-fold-tag">${escapeHtml(tag)}</span>
+        <span class="gn-node-fold-title jp">${titleHtml(node)}</span>
+        ${zh ? `<span class="gn-node-fold-zh zh-annotation">${escapeHtml(zh)}</span>` : ""}
+      </span>
+      ${nodesOpened[i] ? '<span class="gn-node-done-mark" aria-label="已展开">✓</span>' : ""}
+      <span class="gn-node-fold-chevron" aria-hidden="true"></span>`;
+  }
+
+  function l1AccordionMode() {
+    return l1Flow || lesson?.lessonId === 1;
+  }
+
+  function nodeFoldClass() {
+    return l1AccordionMode() ? "gw-group l1-grammar-fold" : "gn-node-fold";
+  }
+
+  function nodeSummaryClass() {
+    return l1AccordionMode() ? "gw-group-summary" : "gn-node-fold-summary";
+  }
+
+  function nodeBodyClass() {
+    return l1AccordionMode() ? "gw-group-body" : "gn-node-fold-body";
+  }
+
+  function nodeFoldSelector() {
+    return l1AccordionMode() ? ".l1-grammar-fold" : ".gn-node-fold";
+  }
+
+  function nodeFoldListClass() {
+    return l1AccordionMode() ? "l1-fold-list" : "gn-node-fold-list";
+  }
+
+  function nodeTipText(node) {
+    const zh = node.explanationZh || node.explainZh || node.titleZh || "";
+    if (zh) return zh.slice(0, 120);
+    return "对照例句朗读；有疑问可点开下方链接或扩展栏。";
+  }
+
+  function renderNodeTip(node) {
+    if (lesson?.lessonId === 1 && typeof L1KnowledgeCard !== "undefined" && typeof L1KnowledgeTips !== "undefined") {
+      return L1KnowledgeCard.html(L1KnowledgeTips.grammar(node), node.id, 1);
+    }
+    if (
+      lesson?.lessonId >= 2 &&
+      typeof KnowledgeLink !== "undefined" &&
+      typeof SenseiTipCard !== "undefined"
+    ) {
+      return SenseiTipCard.fromTipPayload(KnowledgeLink.tipFromGrammarNode(node, lesson.lessonId));
+    }
+    if (!l1Flow) return "";
+    const tip = nodeTipText(node);
+    return `
+      <details class="gw-tip">
+        <summary class="gw-tip-summary">先生のひとこと</summary>
+        <p class="zh-annotation gw-tip-text">${escapeHtml(tip)}</p>
+      </details>`;
+  }
+
+  function renderNodeBody(node) {
     warmNodePhrases(node);
     if (node.depthSections?.length && typeof SpeechEngine !== "undefined" && SpeechEngine.warmPhrases) {
       SpeechEngine.warmPhrases(collectDepthWarmLines(node.depthSections));
     }
-    container.innerHTML = `
-      <div class="gn-wrap gn-compact gn-scroll">
-        <p class="gn-progress">${progressLabel}${node.core ? " · ★コア" : ""}</p>
-        <div class="gn-scroll-body">
-          ${heroRow(node)}
-          ${explainBlock(node)}
-          <div class="gn-example-block">
-            <p class="gn-example-label">例句</p>
-            ${exampleBlockHtml(node)}
-          </div>
-          <div class="gn-ext-wrap">${RubyRender.extensionsHtml(node.extensions)}</div>
-          ${renderSenseiDepthBlocks(node)}
+    const linksHtml = (node.links || [])
+      .map(
+        (link) =>
+          `<button type="button" class="${linkClass(link.type)}" data-gn-link-idx="${lesson.grammarNodes.indexOf(node)}">${escapeHtml(link.label)}</button>`
+      )
+      .join("");
+    return `
+      <div class="gn-node-body-inner">
+        ${heroRow(node)}
+        ${explainBlock(node)}
+        <div class="gn-example-block">
+          <p class="gn-example-label">例句</p>
+          ${exampleBlockHtml(node)}
         </div>
-        <div class="gn-links" id="gn-links"></div>
+        <div class="gn-ext-wrap">${typeof RubyRender !== "undefined" ? RubyRender.extensionsHtml(node.extensions) : ""}</div>
+        ${renderSenseiDepthBlocks(node)}
+        ${linksHtml ? `<div class="gn-links gn-links-inline">${linksHtml}</div>` : ""}
         <div class="gn-tags">${(node.tags || []).map((t) => `<span class="gn-tag">${escapeHtml(t)}</span>`).join("")}</div>
-        <div class="gn-nav">
-          <button type="button" class="btn secondary" id="gn-prev" ${cardIndex === 0 ? "disabled" : ""}>前へ</button>
-          <button type="button" class="btn primary" id="gn-next">${cardIndex >= total - 1 ? "第1関クリア" : "次へ"}</button>
-        </div>
+        ${renderNodeTip(node)}
+      </div>`;
+  }
+
+  function bindLinksInBody(bodyEl, node) {
+    bodyEl.querySelectorAll("[data-gn-link-idx]").forEach((btn) => {
+      const idx = Number(btn.dataset.gnLinkIdx);
+      const n = lesson.grammarNodes[idx] || node;
+      const label = btn.textContent;
+      const link = (n.links || []).find((l) => l.label === label);
+      if (!link) return;
+      btn.onclick = () => handleLink(link, n);
+    });
+  }
+
+  function fillNodeFoldBody(det) {
+    const idx = Number(det.dataset.gidx);
+    const node = lesson.grammarNodes[idx];
+    const body = det.querySelector(l1AccordionMode() ? ".gw-group-body" : ".gn-node-fold-body");
+    if (!body || !node) return;
+    cardIndex = idx;
+    body.innerHTML = renderNodeBody(node);
+    if (typeof L1KnowledgeCard !== "undefined") L1KnowledgeCard.bind(body, { switchGate });
+    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(body);
+    bindLinksInBody(body, node);
+    if (typeof SpeakUI !== "undefined") SpeakUI.bind(body);
+  }
+
+  function onNodeFoldOpen(det) {
+    const idx = Number(det.dataset.gidx);
+    nodesOpened[idx] = true;
+    fillNodeFoldBody(det);
+    const sum = det.querySelector(l1AccordionMode() ? ".gw-group-summary" : ".gn-node-fold-summary");
+    if (sum) sum.innerHTML = (l1Flow ? "📖 " : "") + nodeFoldSummary(lesson.grammarNodes[idx], idx);
+    updateGateDoneButton();
+  }
+
+  function bindNodeAccordion() {
+    if (typeof Lesson1Flow !== "undefined" && Lesson1Flow.bindSingleOpenAccordion) {
+      Lesson1Flow.bindSingleOpenAccordion(container, onNodeFoldOpen);
+      return;
+    }
+    const folds = container.querySelectorAll(nodeFoldSelector());
+    folds.forEach((det) => {
+      det.addEventListener("toggle", () => {
+        if (!det.open) return;
+        folds.forEach((other) => {
+          if (other !== det) other.open = false;
+        });
+        onNodeFoldOpen(det);
+      });
+    });
+  }
+
+  function updateGateDoneButton() {
+    const btn = container.querySelector("#gn-gate-done");
+    if (!btn) return;
+    const ok = allRequiredOpened();
+    const req = requiredNodeIndices();
+    const opened = req.filter((i) => nodesOpened[i]).length;
+    if (lesson?.lessonId === 1 && typeof Lesson1Flow !== "undefined") {
+      Lesson1Flow.updateChainFooterButton(btn, 1, {
+        done: opened,
+        total: req.length,
+        ready: ok,
+      });
+      return;
+    }
+    btn.disabled = !ok;
+    if (l1Flow) {
+      btn.textContent = ok ? l1FooterLabel : `文法完了（必学 ${opened}/${req.length}）`;
+      return;
+    }
+    btn.textContent = ok
+      ? "文法完了 → 会話"
+      : `展开全部必学（${opened}/${req.length}）`;
+  }
+
+  function renderNodeAccordion() {
+    const foldCls = nodeFoldClass();
+    const sumCls = nodeSummaryClass();
+    const bodyCls = nodeBodyClass();
+    return `<div class="${nodeFoldListClass()}" role="list">
+      ${lesson.grammarNodes
+        .map(
+          (node, i) => `
+        <details class="${foldCls}" data-gidx="${i}" data-node-id="${escapeHtml(node.id || "")}">
+          <summary class="${sumCls}">${l1Flow ? "📖 " : ""}${nodeFoldSummary(node, i)}</summary>
+          <div class="${bodyCls}"></div>
+        </details>`
+        )
+        .join("")}
+    </div>`;
+  }
+
+  function render() {
+    if (l1Flow) {
+      container.innerHTML = `
+        <div class="gn-card-wrap l1-flow-wrap gn-l1-wrap">
+          <h2>第${lesson.lessonId}課 · 文法</h2>
+          <p class="hint-ja">点开每一文型查看说明与例句；必学全部展开后可点底部「文法完了」。</p>
+          <p class="gn-progress hint-ja">${progressLabelText()}</p>
+          ${renderNodeAccordion()}
+          <div class="gn-footer">
+            <button type="button" class="btn primary" id="gn-gate-done" disabled>文法完了（必学 0/0）</button>
+          </div>
+          <p class="hint-ja">中文仅辅助理解；朗读只读日语。</p>
+        </div>`;
+      bindNodeAccordion();
+      updateGateDoneButton();
+      container.querySelector("#gn-gate-done")?.addEventListener("click", () => {
+        if (!allRequiredOpened()) return;
+        setGateDone(state, lesson.lessonId, 1);
+        saveMvpState(state);
+        onGateComplete?.();
+      });
+      return;
+    }
+    const l1Grammar = lesson.lessonId === 1;
+    const req = requiredNodeIndices();
+    const chainFooter =
+      l1Grammar && typeof Lesson1Flow !== "undefined"
+        ? Lesson1Flow.chainFooterHtml(1, {
+            btnId: "gn-gate-done",
+            done: 0,
+            total: req.length,
+            ready: false,
+            disabled: true,
+          })
+        : "";
+    container.innerHTML = `
+      <div class="gn-wrap gn-compact gn-accordion${l1Grammar ? " gn-l1-grammar l1-lesson-scope" : ""}"${l1Grammar ? ' data-l1-active-gate="1"' : ""}>
+        ${l1Grammar ? "" : `<p class="gn-progress">${progressLabelText()}</p>`}
+        ${renderNodeAccordion()}
+        ${
+          l1Grammar
+            ? chainFooter
+            : `<div class="gn-nav gn-nav-single">
+          <button type="button" class="btn primary" id="gn-gate-done" disabled>展开全部必学文型</button>
+        </div>`
+        }
       </div>
     `;
-
-    if (typeof SenseiTipCard !== "undefined") SenseiTipCard.bind(container);
-
-    const linksEl = container.querySelector("#gn-links");
-    (node.links || []).forEach((link) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = linkClass(link.type);
-      btn.textContent = link.label;
-      btn.onclick = () => handleLink(link, node);
-      linksEl.appendChild(btn);
+    bindNodeAccordion();
+    updateGateDoneButton();
+    if (l1Grammar && typeof Lesson1Flow !== "undefined") {
+      Lesson1Flow.bindChainFooter(container, 1, { switchGate });
+    }
+    container.querySelector("#gn-gate-done")?.addEventListener("click", () => {
+      if (!allRequiredOpened()) return;
+      setGateDone(state, lesson.lessonId, 1);
+      saveMvpState(state);
+      if (l1Grammar && switchGate) switchGate(3);
+      else onGateComplete?.();
     });
-
-    container.querySelector("#gn-prev").onclick = () => {
-      if (cardIndex > 0) {
-        cardIndex--;
-        flipped = false;
-        render();
-        warmNodePhrases(currentNode());
-      }
-    };
-    container.querySelector("#gn-next").onclick = () => {
-      if (cardIndex < total - 1) {
-        cardIndex++;
-        flipped = false;
-        render();
-        warmNodePhrases(currentNode());
-      } else {
-        setGateDone(state, lesson.lessonId, 1);
-        onGateComplete?.();
-      }
-    };
-    if (typeof SpeakUI !== "undefined") SpeakUI.bind(container);
   }
 
   function showModal(html, onReady) {
@@ -525,7 +742,16 @@ const GrammarNetwork = (() => {
         if (idx >= 0) {
           cardIndex = idx;
           flipped = true;
+          nodesOpened[idx] = true;
           render();
+          const det = container?.querySelector(`${nodeFoldSelector()}[data-gidx="${idx}"]`);
+          if (det) {
+            container.querySelectorAll(nodeFoldSelector()).forEach((f) => {
+              f.open = f === det;
+            });
+            fillNodeFoldBody(det);
+            updateGateDoneButton();
+          }
           return;
         }
       }

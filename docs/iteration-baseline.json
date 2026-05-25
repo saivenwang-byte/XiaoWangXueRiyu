@@ -1,11 +1,20 @@
 {
   "schema": "hyouga-iteration-baseline/v1",
-  "updated": "2026-05-21",
+  "updated": "2026-05-25",
   "mvp_status": {
     "phase": "frozen",
     "frozen_at": "2026-05-21",
     "doc": "docs/MVP-FREEZE.md",
     "git_tag": "mvp-v1.0.1-biaori-141618"
+  },
+  "unit1_lesson1_mvp": {
+    "status": "frozen",
+    "frozen_at": "2026-05-25",
+    "cache": "146",
+    "lesson_id": 1,
+    "unit_id": 1,
+    "doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
+    "user_confirmed": "2026-05-25"
   },
   "paradigm": {
     "name_cn": "文递自归",
@@ -29,16 +38,17 @@
   },
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
-    "product": "1.0.1",
-    "cache": "95",
+    "product": "1.0.2",
+    "cache": "146",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=95",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=95"
+    "local": "http://localhost:8765/index.html?v=146",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=146",
+    "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md"
   },
   "confirmed": [
     {
@@ -151,6 +161,40 @@
         "docs/story-grand-confirmed-source.md"
       ],
       "acceptance": "四金解锁 L1；单元四金 L2 竖条；全通关 L3 4×6；card19 左对齐裁切含主人公；确认版路径锁定"
+    },
+    {
+      "id": "p5-full-rebuild-from-prd-v108",
+      "since_cache": "108",
+      "title": "完全重建：从PRD生成单一数据源 lessons-data.js",
+      "files": [
+        "js/data/lessons-data.js",
+        "scripts/generate-all-lessons.py",
+        "js/data/lessons-mvp.js",
+        "index.html"
+      ],
+      "acceptance": "全24课vocab/grammar/dialogue/quiz/homework一键生成；无patch/injection/merge；旧文件全部删除"
+    },
+    {
+      "id": "unit1-lesson1-mvp-v146",
+      "since_cache": "146",
+      "title": "第1单元第1課 MVP 定稿（五关·UI·知识关联A）",
+      "doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
+      "files": [
+        "js/lesson-1-flow.js",
+        "js/sensei-tip-card.js",
+        "js/l1-knowledge-card.js",
+        "js/data/l1-knowledge-tips.js",
+        "js/data/l1-dialogue-abc.js",
+        "js/data/knowledge-graph.js",
+        "js/knowledge-link.js",
+        "js/dialogue-gate.js",
+        "js/grammar-network.js",
+        "js/data/lessons-data.js",
+        "js/app.js",
+        "css/mvp.css",
+        "js/nav-icons.js"
+      ],
+      "acceptance": "第1課五Tab可学完；提示/传送链/分关色序号；第2課起跨课关联chip；用户2026-05-25确认定稿"
     }
   ],
   "roadmap": {
@@ -179,8 +223,8 @@
     },
     {
       "id": "stage-3-lessons-1-12",
-      "status": "planned",
-      "note": "阶段三；零基础路径闭环"
+      "status": "in_progress",
+      "note": "第1課 MVP frozen v146；第2課知识关联试点；第3–12待"
     },
     {
       "id": "stage-4-lessons-21-24",
@@ -190,8 +234,9 @@
     {
       "id": "p3-light-in-lesson-links",
       "approved": "2026-05-21",
-      "status": "deferred",
-      "note": "轻量课内链接；全课 mini 覆盖后激活"
+      "status": "partial",
+      "since_cache": "146",
+      "note": "阶段A：knowledge-graph + 第2課起 chip；阶段B子图 deferred"
     },
     {
       "id": "home-24-units-nav",
@@ -202,6 +247,36 @@
       "id": "parent-dashboard-full",
       "status": "deferred",
       "note": "24课进度+にがて Top3+热力图"
+    },
+    {
+      "id": "me-learning-notes-v104",
+      "status": "done",
+      "since_cache": "104",
+      "note": "U-01～U-04 自学笔记+从マイ返回；见 docs/执行清单-用户问题与验收.md",
+      "doc": "docs/执行清单-用户问题与验收.md"
+    },
+    {
+      "id": "tts-ship-gate-v104",
+      "status": "done",
+      "since_cache": "104",
+      "note": "U-07 发布前 TTS 强制对账+报告",
+      "doc": "docs/TTS-语音包强制审核与防复发.md"
+    },
+    {
+      "id": "cover-design-u10",
+      "status": "planned",
+      "note": "U-10 封面收官；用户确认 U-08/09 后再做"
+    },
+    {
+      "id": "lesson1-ui-five-tabs-extension-fold",
+      "approved": "2026-05-25",
+      "status": "done",
+      "since_cache": "146",
+      "merged_into": "unit1-lesson1-mvp-v146",
+      "title": "第1課课内：五标签+拡張 gw-group 折叠（截图定稿）",
+      "acceptance": "已并入 unit1-lesson1-mvp-v146；见 docs/MVP-UNIT1-LESSON1-FREEZE.md",
+      "scope": "第1課 MVP 真源；其他课未批量前不动",
+      "note": "用户 2026-05-25 确认定稿；cache 146"
     }
   ],
   "forbidden_without_explicit_user_request": [

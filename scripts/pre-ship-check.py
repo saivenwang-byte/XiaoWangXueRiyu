@@ -158,8 +158,23 @@ def check_cache_ver_sync() -> bool:
     return True
 
 
+def _read_depth_js_text() -> str | None:
+    """课外讲题：旧 lessons-mvp-depth.js 已并入 lessons-data.js 或课内 l1 数据。"""
+    for name in ("lessons-mvp-depth.js", "lessons-data.js"):
+        path = ROOT / "js" / "data" / name
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        if 'type: "text"' in text or "depthSections" in text:
+            return text
+    return None
+
+
 def check_depth_zh() -> bool:
-    text = (ROOT / "js" / "data" / "lessons-mvp-depth.js").read_text(encoding="utf-8")
+    text = _read_depth_js_text()
+    if text is None:
+        ok("课外讲题 depth 源已迁移，跳过 text/list zh 扫描")
+        return True
     issues = []
     for m in re.finditer(r'type:\s*"text"', text):
         start = m.start()
@@ -196,13 +211,39 @@ def run_audit_ja_text() -> bool:
 
 
 def check_vocab_meaning_zh() -> bool:
-    text = (ROOT / "js" / "data" / "lesson-vocab-biaori.js").read_text(encoding="utf-8")
-    jp_count = len(re.findall(r'\bjp:\s*"', text))
-    zh_count = len(re.findall(r'meaningZh:\s*"', text))
-    if zh_count < jp_count * 0.95:
-        fail(f"标日单词 meaningZh 不足：jp={jp_count} zh={zh_count}")
+    path = ROOT / "js" / "data" / "lessons-data.js"
+    if not path.exists():
+        fail("缺少 js/data/lessons-data.js")
         return False
-    ok(f"标日单词 meaningZh 覆盖 {zh_count}/{jp_count}")
+    text = path.read_text(encoding="utf-8")
+    jp_count = len(re.findall(r'"jp":\s*"', text))
+    zh_count = len(re.findall(r'"meaningZh":\s*"', text))
+    if zh_count < jp_count * 0.95:
+        fail(f"单词 meaningZh 不足：jp={jp_count} zh={zh_count}")
+        return False
+    ok(f"单词 meaningZh 覆盖 {zh_count}/{jp_count}")
+    return True
+
+
+def check_prd_lesson1_vocab() -> bool:
+    script = ROOT / "scripts" / "check-l1-vocab-count.py"
+    if not script.exists():
+        fail("缺少 scripts/check-l1-vocab-count.py")
+        return False
+    r = subprocess.run(
+        [sys.executable, str(script)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if r.returncode != 0:
+        fail("第1课单词未与【产品PRD】第1单元第01课对齐（应为 28 词）")
+        if r.stdout:
+            print(r.stdout.strip())
+        return False
+    ok("第1课 PRD 单词表 28 条对账通过")
     return True
 
 
@@ -236,7 +277,10 @@ def check_local_http() -> bool:
 
 
 def check_quiz_blank_has_tts() -> bool:
-    text = (ROOT / "js" / "data" / "lessons-mvp-depth.js").read_text(encoding="utf-8")
+    text = _read_depth_js_text()
+    if text is None:
+        ok("填空测验 TTS 扫描已跳过（无 depth 源文件）")
+        return True
     bad = []
     for m in re.finditer(
         r'question:\s*"((?:\\.|[^"\\])*)"\s*,\s*questionTts:\s*"((?:\\.|[^"\\])*)"',
@@ -303,6 +347,53 @@ def run_audit_tts_registry() -> bool:
         fail("语音包有缺失 MP3（喇叭条数 ≠ 可用语音）")
         return False
     ok("语音包编号对账通过（docs/tts-registry.json 已更新）")
+    r2 = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "report-tts-audit.py")],
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if r2.returncode != 0:
+        fail("TTS 对账报告生成失败（见 report-tts-audit.py）")
+        return False
+    ok("已更新 docs/TTS-对账报告-最新.md")
+    return True
+
+
+def check_tts_mp3_http() -> bool:
+    """8765 上抽样一条 MP3 可访问（排除「本地有文件但 HTTP 未起」）。"""
+    import json
+    import urllib.error
+    import urllib.request
+
+    reg_path = ROOT / "docs" / "tts-registry.json"
+    if not reg_path.is_file():
+        fail("缺少 docs/tts-registry.json，请先跑 audit-tts-registry.py --write")
+        return False
+    try:
+        reg = json.loads(reg_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        fail("tts-registry.json 无法解析")
+        return False
+    entries = reg.get("entries") or []
+    sample = next((e for e in entries if e.get("hasMp3")), None)
+    if not sample:
+        fail("registry 无可用 MP3 条目")
+        return False
+    key = sample["key"]
+    url = f"http://127.0.0.1:8765/tts-cache/{key}.mp3"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as r:
+            body = r.read()
+            if r.status != 200 or len(body) < 200:
+                fail(f"MP3 HTTP 异常 {url} status={r.status} size={len(body)}")
+                return False
+    except (urllib.error.URLError, OSError, TimeoutError) as e:
+        fail(f"无法通过 HTTP 读取语音包 {url}（{e}）— 先 重启本地服务.bat")
+        return False
+    ok(f"语音包 HTTP 可访问（抽样 {key}.mp3）")
     return True
 
 
@@ -355,12 +446,14 @@ def main() -> int:
         check_cache_ver_sync(),
         check_author_link_hints(),
         check_vocab_meaning_zh(),
+        check_prd_lesson1_vocab(),
         check_depth_zh(),
         check_quiz_blank_has_tts(),
         run_audit_ja_text(),
         run_audit_tts_registry(),
         check_local_preview_hint(),
         check_local_http(),
+        check_tts_mp3_http(),
     ]
     print()
     passed = all(checks)

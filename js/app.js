@@ -1,8 +1,8 @@
-(function () {
+﻿(function () {
   let state = loadMvpState();
   let activeLessonId = null;
-  /** 0=単語 1=文法 2=会話 3=テスト */
-  let activeGate = 2;
+  /** 0=単語 1=文法 2=会話 3=作業 4=まとめ */
+  let activeGate = -1;
 
   const titles = {
     home: "標日 あと学習",
@@ -13,23 +13,72 @@
 
   /** 从左到右 = 推荐学习顺序；序号与位置一致 */
   const cockpitTabs = [
-    { k: 0, label: "🃏 単語", sub: "フラッシュ" },
-    { k: 2, label: "① 会話", sub: "多场景", recommended: true },
-    { k: 1, label: "② 文法", sub: "ネット" },
-    { k: 3, label: "③ テスト", sub: "確認" },
+    { k: 0, label: "単語", icon: "🃏", sub: "フラッシュ" },
+    { k: 2, label: "会話", icon: "💬", sub: "多场景", recommended: true },
+    { k: 1, label: "文法", icon: "📖", sub: "ネット" },
+    { k: 3, label: "作業", icon: "📝", sub: "練習" },
+    { k: 4, label: "拡張", icon: "📋", sub: "まとめ" },
   ];
 
-  function resolveGate(g) {
+  function isL1FiveGate(lessonId) {
+    const lid = lessonId != null ? Number(lessonId) : activeLessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isLesson(lid);
+  }
+
+  /** 第1課 · 序号/折叠条颜色随当前关（単語0/会話2/文法1/作業3/拡張4） */
+  function syncL1GateTheme(lessonId, gate) {
+    const body = document.getElementById("lesson-flow-body");
+    if (!body) return;
+    const l1 = isL1FiveGate(lessonId);
+    const g = String(gate);
+    if (l1) {
+      body.classList.add("l1-lesson-scope");
+      body.setAttribute("data-l1-active-gate", g);
+      body.querySelectorAll(".gate-scroll-region").forEach((el) => {
+        el.classList.add("l1-lesson-scope");
+        el.setAttribute("data-l1-active-gate", g);
+      });
+    } else {
+      body.removeAttribute("data-l1-active-gate");
+      body.classList.remove("l1-lesson-scope");
+      body.querySelectorAll(".gate-scroll-region").forEach((el) => {
+        el.removeAttribute("data-l1-active-gate");
+        el.classList.remove("l1-lesson-scope");
+      });
+    }
+  }
+
+  function maxGateIndex(lessonId) {
+    return isL1FiveGate(lessonId) ? 4 : 3;
+  }
+
+  function cockpitTabsForLesson(lessonId) {
+    return isL1FiveGate(lessonId) ? Lesson1Flow.COCKPIT_TABS : cockpitTabs;
+  }
+
+  function resolveGate(g, lessonId) {
     if (g === "vocab" || g === 0 || g === "0") return 0;
     if (g === "grammar" || g === 1 || g === "1") return 1;
     if (g === "conversation" || g === "convo" || g === 2 || g === "2") return 2;
-    if (g === "quiz" || g === 3 || g === "3") return 3;
+    if (g === "quiz" || g === "homework" || g === 3 || g === "3") return 3;
+    if (g === "extension" || g === "summary" || g === 4 || g === "4") {
+      return isL1FiveGate(lessonId) ? 4 : null;
+    }
     const n = Number(g);
-    return n >= 0 && n <= 3 ? n : null;
+    const max = maxGateIndex(lessonId);
+    return n >= 0 && n <= max ? n : null;
   }
 
-  /** 单词→会話→文法→テスト；会話未过则优先会話 */
-  function defaultGateForLesson(g) {
+  /** 单词→会話→文法→(作業/テスト)→拡張；会話未过则优先会話 */
+  function defaultGateForLesson(g, lessonId) {
+    if (isL1FiveGate(lessonId)) {
+      if (!g.gate0) return 0;
+      if (!g.gate2) return 2;
+      if (!g.gate1) return 1;
+      if (!g.gate3) return 3;
+      if (!g.gate4) return 4;
+      return 4;
+    }
     if (!g.gate0) return 0;
     if (!g.gate2) return 2;
     if (!g.gate1) return 1;
@@ -55,15 +104,15 @@
   }
 
   function lessonProgress(lessonId) {
-    return (
-      state.lessons[Number(lessonId)] || {
-        gate0: false,
-        gate1: false,
-        gate2: false,
-        gate3: false,
-        touched: {},
-      }
-    );
+    const base = {
+      gate0: false,
+      gate1: false,
+      gate2: false,
+      gate3: false,
+      gate4: false,
+      touched: {},
+    };
+    return { ...base, ...(state.lessons[Number(lessonId)] || {}) };
   }
 
   function setModalOpen(m, open) {
@@ -89,6 +138,11 @@
   function renderLessonFlowHead(L) {
     const head = document.getElementById("lesson-flow-head");
     if (!head || !L) return;
+    if (isL1FiveGate(L.lessonId)) {
+      head.innerHTML = Lesson1Flow.flowHeadHtml(L, activeGate, state);
+      if (typeof SpeakUI !== "undefined") SpeakUI.bind(head);
+      return;
+    }
     const themeZh =
       state.showChineseZh !== false && L.themeZh
         ? `<span class="zh-annotation">（${escapeHtml(L.themeZh)}）</span>`
@@ -126,11 +180,13 @@
 
   function switchGate(k) {
     const next = Number(k);
-    if (Number.isNaN(next) || next < 0 || next > 3 || next === activeGate) return;
+    const max = maxGateIndex(activeLessonId);
+    if (Number.isNaN(next) || next < 0 || next > max || next === activeGate) return;
     if (activeLessonId != null && typeof touchLessonGate === "function") {
       touchLessonGate(state, activeLessonId, next);
     }
     activeGate = next;
+    syncL1GateTheme(activeLessonId, activeGate);
     closeAllModals();
     const L = getLessonMvp(activeLessonId);
     renderLessonCockpit(lessonProgress(activeLessonId));
@@ -148,9 +204,13 @@
       touchCurriculumUnit(state, getUnitIdForLesson(activeLessonId));
       saveMvpState(state);
     }
-    const resolved = resolveGate(gate);
-    activeGate = resolved != null ? resolved : defaultGateForLesson(lessonProgress(activeLessonId));
+    const resolved = resolveGate(gate, activeLessonId);
+    activeGate =
+      resolved != null
+        ? resolved
+        : defaultGateForLesson(lessonProgress(activeLessonId), activeLessonId);
     if (typeof touchLessonGate === "function") touchLessonGate(state, activeLessonId, activeGate);
+    syncL1GateTheme(activeLessonId, activeGate);
     if (typeof applyUnitThemeToView === "function") {
       applyUnitThemeToView(activeLessonId);
     }
@@ -261,7 +321,8 @@
           <button type="button" class="btn primary">会話</button>
           <button type="button" class="btn secondary btn-flash-link">単語</button>
         </div>`;
-      card.querySelector(".btn.primary").onclick = () => enterLesson(L.lessonId, defaultGateForLesson(g));
+      card.querySelector(".btn.primary").onclick = () =>
+        enterLesson(L.lessonId, defaultGateForLesson(g, L.lessonId));
       card.querySelector(".btn-flash-link").onclick = (e) => {
         e.stopPropagation();
         enterLesson(L.lessonId, 0);
@@ -271,6 +332,9 @@
   }
 
   function pathRailHtml(g) {
+    if (isL1FiveGate(activeLessonId)) {
+      return "";
+    }
     if (typeof formatLessonFourSeaStars === "function" && activeLessonId != null) {
       return formatLessonFourSeaStars(state, activeLessonId);
     }
@@ -292,17 +356,20 @@
     const el = document.getElementById("lesson-cockpit");
     const L = getLessonMvp(activeLessonId);
     if (!el || !L) return;
+    const pathRail = pathRailHtml(g);
     el.innerHTML = `
       <div class="cockpit-top">
-        <button type="button" class="btn-back" id="cockpit-exit">← ホーム</button>
+        <button type="button" class="cockpit-home-btn" id="cockpit-exit" aria-label="返回首页">
+          ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">首页</span>
+        </button>
         <span class="cockpit-lesson">第${L.lessonId}課 · ${escapeHtml(L.theme)}</span>
       </div>
-      <div class="cockpit-path">${pathRailHtml(g)}</div>
+      ${pathRail ? `<div class="cockpit-path">${pathRail}</div>` : ""}
       <div class="cockpit-tabs" id="cockpit-tabs" role="tablist"></div>
     `;
     el.querySelector("#cockpit-exit").onclick = () => showView("home");
     const tabs = el.querySelector("#cockpit-tabs");
-    cockpitTabs.forEach((t) => {
+    cockpitTabsForLesson(L.lessonId).forEach((t) => {
       const done = !!g[`gate${t.k}`];
       const b = document.createElement("button");
       b.type = "button";
@@ -314,7 +381,8 @@
       b.dataset.gate = String(t.k);
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", activeGate === t.k ? "true" : "false");
-      b.innerHTML = `<span class="cockpit-tab-main">${done && t.k !== 0 ? "✅ " : ""}${escapeHtml(t.label)}</span>
+      const tabDoneIcon = isL1FiveGate(L.lessonId) ? false : done && t.k !== 0;
+      b.innerHTML = `<span class="cockpit-tab-main">${tabDoneIcon ? "✅ " : ""}${escapeHtml(t.label)}</span>
         <span class="cockpit-tab-sub">${escapeHtml(t.sub)}</span>`;
       b.onclick = (e) => {
         e.preventDefault();
@@ -336,7 +404,9 @@
     if (cockpit) {
       cockpit.innerHTML = `
         <div class="cockpit-top">
-          <button type="button" class="btn-back" id="cockpit-exit">← ホーム</button>
+          <button type="button" class="cockpit-home-btn" id="cockpit-exit" aria-label="返回首页">
+            ${typeof NavIcons !== "undefined" ? NavIcons.html("home") : ""}<span class="cockpit-home-label">首页</span>
+          </button>
           <span class="cockpit-lesson">第${id}課 · 準備中</span>
         </div>`;
       cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => showView("home"));
@@ -367,9 +437,13 @@
       return;
     }
     const g = lessonProgress(L.lessonId);
-    if (activeGate < 0 || activeGate > 3) activeGate = defaultGateForLesson(g);
+    const max = maxGateIndex(L.lessonId);
+    if (activeGate < 0 || activeGate > max) {
+      activeGate = defaultGateForLesson(g, L.lessonId);
+    }
     renderLessonFlowHead(L);
     renderLessonCockpit(g);
+    syncL1GateTheme(L.lessonId, activeGate);
     mountGate();
     if (typeof SpeakUI !== "undefined") {
       SpeakUI.bind(document.getElementById("lesson-cockpit"));
@@ -377,14 +451,69 @@
   }
 
   function mountGate() {
+
+function nextGateName(current) {
+  if (current === 0) return ["会話", 2];
+  if (current === 2) return ["文法", 1];
+  if (current === 1) return ["作業", 3];
+  if (current === 3) return ["拡張", 4];
+  return ["完了", -1];
+}
+
+function appendGateNextStrip(container, currentGate) {
+  const [name, nextK] = nextGateName(currentGate);
+  const div = document.createElement("div");
+  div.className = "gate-next-strip";
+  div.innerHTML = nextK >= 0
+    ? `<span class="next-icon">✅</span><span class="next-text">本模块完成！接下来学习 <b>「${name}」</b></span><button type="button" class="btn primary next-btn" data-next="${nextK}">进入 ${name} →</button>`
+    : `<span class="next-icon">🎉</span><span class="next-text">全部模块完成！</span><button type="button" class="btn primary next-btn" data-next="-1">返回首页</button>`;
+  container.appendChild(div);
+  div.querySelector(".next-btn").onclick = () => {
+    if (nextK >= 0) switchGate(nextK);
+    else showView("home");
+  };
+}
     const body = document.getElementById("lesson-flow-body");
     if (!body) return;
     body.innerHTML = "";
+
+    /* 课文简介 gate */
+    if (activeGate === -1 && typeof LessonOverview !== "undefined") {
+      LessonOverview.render(body, activeLessonId, {
+        enterGate: function (k) { switchGate(k); }
+      });
+      return;
+    }
+
+    const l1 = isL1FiveGate(activeLessonId);
+    const l1Callbacks = {
+      state,
+      switchGate: (k) => switchGate(k),
+      onRefreshCockpit: () => renderLessonCockpit(lessonProgress(activeLessonId)),
+      onCompleteHome: () => showView("home"),
+    };
 
     const opts = {
       state,
       onComplete: () => {
         const g = lessonProgress(activeLessonId);
+        if (l1) {
+          if (activeGate === 1 && !g.gate2) {
+            switchGate(2);
+            return;
+          }
+          if (activeGate === 2 && !g.gate1) {
+            switchGate(1);
+            return;
+          }
+          if (activeGate === 1 && !g.gate3) {
+            switchGate(3);
+            return;
+          }
+          renderLessonCockpit(g);
+          mountGate();
+          return;
+        }
         if (activeGate === 1 && !g.gate2) {
           switchGate(2);
           return;
@@ -403,22 +532,42 @@
     };
 
     try {
+      const skipScrollHint = l1 && activeGate === 0;
       const useScroll =
-        typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
+        !skipScrollHint && typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
       const host = useScroll ? ScrollHint.setupForGate(body, activeGate) : null;
       const mountEl = host?.region || body;
+      if (l1) {
+        mountEl.classList.add("l1-lesson-scope");
+        mountEl.setAttribute("data-l1-active-gate", String(activeGate));
+        syncL1GateTheme(activeLessonId, activeGate);
+      }
 
-      if (activeGate === 0) {
+      if (activeGate === 0 && l1) {
+        Lesson1Flow.mountVocab(mountEl, state, l1Callbacks);
+      } else if (activeGate === 0) {
         if (typeof VocabFlash === "undefined") {
           body.innerHTML = `<p class="hint-ja">単語モジュールを読み込めません。ページを更新してください。</p>`;
         } else {
           VocabFlash.mount(mountEl, activeLessonId, { state, fromLesson: true });
         }
       } else if (activeGate === 1) {
-        GrammarNetwork.mount(mountEl, activeLessonId, opts);
+        GrammarNetwork.mount(mountEl, activeLessonId, {
+          ...opts,
+          l1Lesson: l1,
+          switchGate: l1 ? (k) => switchGate(k) : undefined,
+        });
         if (typeof SpeakUI !== "undefined") SpeakUI.bind(mountEl);
       } else if (activeGate === 2) {
-        DialogueGate.mount(mountEl, activeLessonId, opts);
+        DialogueGate.mount(mountEl, activeLessonId, {
+          ...opts,
+          l1Lesson: l1,
+          switchGate: l1 ? (k) => switchGate(k) : undefined,
+        });
+      } else if (l1 && activeGate === 3) {
+        Lesson1Flow.mountHomework(mountEl, state, l1Callbacks);
+      } else if (l1 && activeGate === 4) {
+        Lesson1Flow.mountExtension(mountEl, state, l1Callbacks);
       } else {
         QuizGate.mount(mountEl, activeLessonId, {
           ...opts,
@@ -434,6 +583,9 @@
     } catch (err) {
       console.error("mountGate", activeGate, err);
       body.innerHTML = `<p class="hint-ja">読み込みエラー。ページを再読み込みしてください。</p>`;
+    }
+    if (typeof KnowledgeLink !== "undefined") {
+      requestAnimationFrame(() => KnowledgeLink.flushPendingAnchor());
     }
   }
 
@@ -549,7 +701,12 @@
       .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
       .map((id) => {
         const g = lessonProgress(id);
-        const all = g.gate0 && g.gate1 && g.gate2 && g.gate3;
+        const all =
+          g.gate0 &&
+          g.gate1 &&
+          g.gate2 &&
+          g.gate3 &&
+          (!isL1FiveGate(id) || g.gate4);
         const stars =
           typeof formatLessonFourSeaStars === "function"
             ? formatLessonFourSeaStars(state, id)
