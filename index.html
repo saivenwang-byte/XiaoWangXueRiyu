@@ -15,8 +15,8 @@
   <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="css/app.css?v=278" />
-  <link rel="stylesheet" href="css/mvp.css?v=278" />
+  <link rel="stylesheet" href="css/app.css?v=279" />
+  <link rel="stylesheet" href="css/mvp.css?v=279" />
   <style>
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
     .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -27,7 +27,7 @@
     }
   </style>
 </head>
-<body class="mvp-app">
+<body class="mvp-app is-splash-open">
   <script>
     (function () {
       if (location.protocol !== "file:") return;
@@ -42,6 +42,10 @@
     })();
   </script>
 
+  <div id="home-splash-overlay" class="home-splash-overlay" role="dialog" aria-modal="true" aria-label="学习の道 · 封面">
+    <div id="splash-root" class="splash-root"></div>
+  </div>
+
   <div id="app">
     <header class="top-bar">
       <h1 id="page-title">标日 あと学習</h1>
@@ -52,7 +56,7 @@
     </header>
 
     <main id="main-content">
-      <section id="view-home" class="view active" aria-hidden="false">
+      <section id="view-home" class="view" aria-hidden="true">
         <div class="mvp-hero mvp-hero-compact mvp-hero--hidden-title">
           <h2 class="sr-only">学习の道</h2>
           <p id="home-path-progress" class="sr-only">进度</p>
@@ -114,61 +118,62 @@
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 19c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span>
         <span class="nav-label">笔记</span>
       </button>
-      <a href="intro.html?v=278" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
+      <a href="intro.html?v=279" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700" font-family="sans-serif">あ</text></svg></span>
         <span class="nav-label">注音</span>
       </a>
     </nav>
   </div>
 
-  <script src="js/lesson-overview.js?v=278"></script>
-  <script src="js/image-tools.js?v=278"></script>
-  <script src="js/public-url.config.js?v=278"></script>
-  <script src="js/share-wechat.js?v=278"></script>
-  <script src="js/data/mini-cards.js?v=278"></script>
-  <script src="js/data/lessons-data.js?v=278"></script>
-  <script src="js/data/lessons-mvp.js?v=278"></script>
-  <script src="js/data/curriculum-catalog.js?v=278"></script>
-  <script src="js/ruby-render.js?v=278"></script>
-  <script src="js/mvp-storage.js?v=278"></script>
-  <script src="js/speech-engine.js?v=278"></script>
-  <script src="js/speak-ui.js?v=278"></script>
-  <script src="js/shadow-speak.js?v=278"></script>
-  <script src="js/ui-feedback.js?v=278"></script>
-  <script src="js/sensei-tip-card.js?v=278"></script>
-  <script src="js/data/l1-dialogue-abc.js?v=278"></script>
-  <script src="js/data/unit1-dialogue-abc-l234.js?v=278"></script>
-  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=278"></script>
-  <script src="js/data/dialogue-zh-l9-24.js?v=278"></script>
-  <script src="js/data/lessons-9-24-dialogue-abc.js?v=278"></script>
-  <script src="js/data/knowledge-graph.js?v=278"></script>
-  <script src="js/knowledge-link.js?v=278"></script>
-  <script src="js/data/l1-knowledge-tips.js?v=278"></script>
-  <script src="js/data/unit1-knowledge-tips.js?v=278"></script>
-  <script src="js/data/unit2-knowledge-tips.js?v=278"></script>
-  <script src="js/data/lessons-9-24-knowledge-tips.js?v=278"></script>
-  <script src="js/l1-knowledge-card.js?v=278"></script>
-  <script src="js/grammar-network.js?v=278"></script>
-  <script src="js/dialogue-gate.js?v=278"></script>
-  <script src="js/quiz-gate.js?v=278"></script>
-  <script src="js/vocab-flash.js?v=278"></script>
-  <script src="js/scroll-hint.js?v=278"></script>
-  <script src="js/nav-icons.js?v=278"></script>
-  <script src="js/data/unit-strip-storyboard.js?v=278"></script>
-  <script src="js/story-comic-ui.js?v=278"></script>
-  <script src="js/data/grand-finale-cards.js?v=278"></script>
-  <script src="js/story-caption-jp.js?v=278"></script>
-  <script src="js/story-reward.js?v=278"></script>
-  <script src="js/story-egg-viewport.js?v=278"></script>
-  <script src="js/story-egg.js?v=278"></script>
-  <script src="js/lesson-recap.js?v=278"></script>
-  <script src="js/journey-home.js?v=278"></script>
-  <script src="js/hyouga-test-card.js?v=278"></script>
-  <script src="js/learning-notes.js?v=278"></script>
-  <script src="js/study-timer.js?v=278"></script>
-  <script src="js/notes-panel.js?v=278"></script>
-  <script src="js/lesson-1-flow.js?v=278"></script>
-  <script src="js/app.js?v=278"></script>
+  <script src="js/lesson-overview.js?v=279"></script>
+  <script src="js/image-tools.js?v=279"></script>
+  <script src="js/public-url.config.js?v=279"></script>
+  <script src="js/share-wechat.js?v=279"></script>
+  <script src="js/data/mini-cards.js?v=279"></script>
+  <script src="js/data/lessons-data.js?v=279"></script>
+  <script src="js/data/lessons-mvp.js?v=279"></script>
+  <script src="js/data/curriculum-catalog.js?v=279"></script>
+  <script src="js/ruby-render.js?v=279"></script>
+  <script src="js/mvp-storage.js?v=279"></script>
+  <script src="js/speech-engine.js?v=279"></script>
+  <script src="js/speak-ui.js?v=279"></script>
+  <script src="js/shadow-speak.js?v=279"></script>
+  <script src="js/ui-feedback.js?v=279"></script>
+  <script src="js/sensei-tip-card.js?v=279"></script>
+  <script src="js/data/l1-dialogue-abc.js?v=279"></script>
+  <script src="js/data/unit1-dialogue-abc-l234.js?v=279"></script>
+  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=279"></script>
+  <script src="js/data/dialogue-zh-l9-24.js?v=279"></script>
+  <script src="js/data/lessons-9-24-dialogue-abc.js?v=279"></script>
+  <script src="js/data/knowledge-graph.js?v=279"></script>
+  <script src="js/knowledge-link.js?v=279"></script>
+  <script src="js/data/l1-knowledge-tips.js?v=279"></script>
+  <script src="js/data/unit1-knowledge-tips.js?v=279"></script>
+  <script src="js/data/unit2-knowledge-tips.js?v=279"></script>
+  <script src="js/data/lessons-9-24-knowledge-tips.js?v=279"></script>
+  <script src="js/l1-knowledge-card.js?v=279"></script>
+  <script src="js/grammar-network.js?v=279"></script>
+  <script src="js/dialogue-gate.js?v=279"></script>
+  <script src="js/quiz-gate.js?v=279"></script>
+  <script src="js/vocab-flash.js?v=279"></script>
+  <script src="js/scroll-hint.js?v=279"></script>
+  <script src="js/nav-icons.js?v=279"></script>
+  <script src="js/data/unit-strip-storyboard.js?v=279"></script>
+  <script src="js/story-comic-ui.js?v=279"></script>
+  <script src="js/data/grand-finale-cards.js?v=279"></script>
+  <script src="js/story-caption-jp.js?v=279"></script>
+  <script src="js/story-reward.js?v=279"></script>
+  <script src="js/story-egg-viewport.js?v=279"></script>
+  <script src="js/story-egg.js?v=279"></script>
+  <script src="js/lesson-recap.js?v=279"></script>
+  <script src="js/journey-home.js?v=279"></script>
+  <script src="js/home-splash.js?v=279"></script>
+  <script src="js/hyouga-test-card.js?v=279"></script>
+  <script src="js/learning-notes.js?v=279"></script>
+  <script src="js/study-timer.js?v=279"></script>
+  <script src="js/notes-panel.js?v=279"></script>
+  <script src="js/lesson-1-flow.js?v=279"></script>
+  <script src="js/app.js?v=279"></script>
   <script>
     (function purgeSwAndModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
