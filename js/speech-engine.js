@@ -18,8 +18,8 @@ const SpeechEngine = (() => {
   const MP3_WAIT_WECHAT_MS = 3200;
   const MP3_READY_MS = 2800;
   const MP3_READY_WECHAT_MS = 3500;
-  const FETCH_MP3_MS = 3200;
-  const FETCH_MP3_MS_DESKTOP = 2600;
+const FETCH_MP3_MS = 8000;
+const FETCH_MP3_MS_DESKTOP = 5000;
   let audioUnlocked = false;
   const ONLINE_TTS_MS = 2200;
   let loadingListener = null;
