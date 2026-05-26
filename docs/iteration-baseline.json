@@ -78,7 +78,7 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "302",
+    "cache": "303",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
@@ -87,8 +87,8 @@
       "js/public-url.config.js HYOUGA_TTS_CACHE_VER",
       "tts-cache/sw-manifest.json"
     ],
-    "local": "http://localhost:8765/index.html?v=302",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=302",
+    "local": "http://localhost:8765/index.html?v=303",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=303",
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
     "mvp_unit1_lessons_1_4": "第1单元第1–4课五关+会話ABC 已锁定 v246"

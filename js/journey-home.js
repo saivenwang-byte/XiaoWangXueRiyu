@@ -350,6 +350,9 @@ const JourneyHome = (function () {
     const pad = 6;
 
     function align() {
+      const body = det.querySelector(".journey-unit-body");
+      if (body) body.scrollTop = 0;
+
       if (!scroller) {
         det.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
@@ -360,6 +363,9 @@ const JourneyHome = (function () {
       if (Math.abs(topDelta) > 2) {
         scroller.scrollBy({ top: topDelta, behavior: "smooth" });
       }
+      /* 四课在单元内滑槽滚动时，由 .journey-unit-body overflow-y 承担，不再强拉外层 */
+      if (body && body.scrollHeight > body.clientHeight + 4) return;
+
       const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
       if (lastSlot) {
         const lRect = lastSlot.getBoundingClientRect();

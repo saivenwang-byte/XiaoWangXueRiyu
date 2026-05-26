@@ -6379,6 +6379,24 @@ details.journey-unit-details[open] .journey-catalog-unit {
     display: none;
   }
 
+  /* 单元内四课 · 纵向滑槽（装不下时在单元内上下滑，不挡整页） */
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
+    max-height: min(
+      58dvh,
+      calc(
+        100dvh - 52px - 56px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          10.5rem
+      )
+    );
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scroll-padding-bottom: 10px;
+    padding-bottom: 10px;
+    border-radius: 0 0 10px 10px;
+  }
+
   .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
     grid-template-columns: 1fr 1fr;
     gap: 6px;

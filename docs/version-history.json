@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "302",
+    "cache": "303",
     "date": "2026-05-25",
-    "note": "手机展开单元：隐藏其余单元、四课2×2格完整可见；cache v302",
+    "note": "手机展开单元：四课区纵向滑槽 overflow-y；cache v303",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
