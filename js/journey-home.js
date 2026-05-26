@@ -166,6 +166,8 @@ const JourneyHome = (function () {
     const units = getCurriculumUnitsForHome();
     const expandedId = getExpandedUnitId(state);
     const blocks = units
+      .slice()
+      .sort((a, b) => a.id - b.id)
       .map((unit) => {
         const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
         const uv = unitVisual(state, unit.id);
@@ -341,14 +343,7 @@ const JourneyHome = (function () {
       </a>`;
   }
 
-  /** 展开单元后：本单元顶对齐目录滚动区，四课尽量一屏可见 */
-  function promoteUnitToTop(det) {
-    const scroller = det?.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
-    if (scroller && det?.parentNode === scroller) {
-      scroller.insertBefore(det, scroller.firstChild);
-    }
-  }
-
+  /** 展开单元后：滚动对齐，不改变 DOM 顺序（保持第1→第6单元） */
   function scrollOpenedUnitIntoView(det) {
     if (!det) return;
     const scroller = det.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
@@ -357,15 +352,14 @@ const JourneyHome = (function () {
       return;
     }
     const pad = 6;
-    const sRect = scroller.getBoundingClientRect();
-    const dRect = det.getBoundingClientRect();
-    const topDelta = dRect.top - sRect.top;
-    if (topDelta < pad) {
-      scroller.scrollBy({ top: topDelta - pad, behavior: "smooth" });
-    }
-    if (dRect.bottom > sRect.bottom - pad) {
-      scroller.scrollBy({ top: dRect.bottom - sRect.bottom + pad, behavior: "smooth" });
-    }
+    requestAnimationFrame(() => {
+      const sRect = scroller.getBoundingClientRect();
+      const dRect = det.getBoundingClientRect();
+      const topDelta = dRect.top - sRect.top - pad;
+      if (Math.abs(topDelta) > 2) {
+        scroller.scrollBy({ top: topDelta, behavior: "smooth" });
+      }
+    });
   }
 
   function bindCatalogAccordion(board) {
@@ -383,8 +377,7 @@ const JourneyHome = (function () {
           }
         });
         det.classList.add("is-unit-current");
-        promoteUnitToTop(det);
-        requestAnimationFrame(() => scrollOpenedUnitIntoView(det));
+        scrollOpenedUnitIntoView(det);
       });
     });
   }
@@ -396,7 +389,7 @@ const JourneyHome = (function () {
       d.open = d === el;
       d.classList.toggle("is-unit-current", d === el);
     });
-    requestAnimationFrame(() => scrollOpenedUnitIntoView(el));
+    scrollOpenedUnitIntoView(el);
     el.classList.add("is-map-reveal-flash");
     setTimeout(() => el.classList.remove("is-map-reveal-flash"), 1200);
   }

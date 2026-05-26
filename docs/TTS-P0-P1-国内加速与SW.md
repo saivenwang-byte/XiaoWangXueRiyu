@@ -16,6 +16,8 @@
 
 **换国内备案 OSS/COS 时**：只改 `HYOUGA_TTS_ORIGIN` 为 `https://你的域名`（不含 `/tts-cache/`），然后：
 
+完整步骤（个人备案 + 腾讯云 COS + 与页面同域）：[国内部署-个人无公司-链接与语音.md](./国内部署-个人无公司-链接与语音.md)。
+
 ```bat
 python scripts/sync-tts-sw-manifest.py
 ```

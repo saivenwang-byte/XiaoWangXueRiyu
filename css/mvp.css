@@ -6357,6 +6357,21 @@ details.journey-unit-details[open] .journey-catalog-unit {
   padding: 7px 10px;
 }
 
+/* 课文目录：课名最多两行，避免「显示不完整」误判；单元顺序固定 1→6 */
+.journey-catalog-scroll--accordion .lesson-row-title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
+  overflow: visible;
+  padding-bottom: 8px;
+}
+
 .journey-map-core--explore {
   flex: 0 0 auto;
   position: relative;
