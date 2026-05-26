@@ -195,6 +195,25 @@ def check_depth_zh() -> bool:
     return True
 
 
+def run_audit_dialogue_zh_mt() -> bool:
+    script = ROOT / "scripts" / "audit-dialogue-zh-mt.py"
+    if not script.exists():
+        ok("audit-dialogue-zh-mt 跳过（脚本不存在）")
+        return True
+    r = subprocess.run(
+        [sys.executable, str(script), "--from-lesson", "13"],
+        cwd=str(ROOT),
+        capture_output=True,
+    )
+    if r.returncode != 0:
+        fail("会話中文 audit-dialogue-zh-mt（13–24）未通过（见 docs/audit-dialogue-zh-mt.md）")
+        if r.stdout:
+            sys.stdout.buffer.write(r.stdout[-1500:])
+        return False
+    ok("会話中文 audit-dialogue-zh-mt（13–24）通过")
+    return True
+
+
 def run_audit_ja_text() -> bool:
     r = subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "audit-ja-text.py")],
@@ -225,26 +244,74 @@ def check_vocab_meaning_zh() -> bool:
     return True
 
 
-def check_prd_lesson1_vocab() -> bool:
-    script = ROOT / "scripts" / "check-l1-vocab-count.py"
-    if not script.exists():
-        fail("缺少 scripts/check-l1-vocab-count.py")
+def check_prd_vocab_all_lessons() -> bool:
+    """批次 E · 第1–24课 PRD 单词对账；任一课 FAIL/缺 PRD/缺课块则阻断发布。"""
+    lib = ROOT / "scripts" / "biaori_prd_vocab.py"
+    audit_script = ROOT / "scripts" / "audit-lessons-biaori-prd.py"
+    if not lib.is_file():
+        fail("缺少 scripts/biaori_prd_vocab.py")
         return False
-    r = subprocess.run(
-        [sys.executable, str(script)],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-    )
-    if r.returncode != 0:
-        fail("第1课单词未与【产品PRD】第1单元第01课对齐（应为 28 词）")
-        if r.stdout:
-            print(r.stdout.strip())
+
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("biaori_prd_vocab", lib)
+    mod = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(mod)
+
+    try:
+        results = mod.audit_lessons_range(1, 24)
+    except Exception as e:
+        fail(f"PRD 单词对账无法执行: {e}")
         return False
-    ok("第1课 PRD 单词表 28 条对账通过")
-    return True
+
+    bad = [r for r in results if r.get("status") != "PASS"]
+    n_pass = len(results) - len(bad)
+
+    if audit_script.is_file():
+        subprocess.run(
+            [
+                sys.executable,
+                str(audit_script),
+                "--from",
+                "1",
+                "--to",
+                "24",
+                "--out",
+                str(ROOT / "docs" / "audit-lessons-biaori-prd-最新.md"),
+            ],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+
+    if not bad:
+        ok(f"第1–24课 PRD 单词对账 {n_pass}/{len(results)} 通过")
+        return True
+
+    for r in bad[:8]:
+        lid = r["lessonId"]
+        st = r.get("status")
+        title = r.get("title", "")
+        if st == "FAIL":
+            c = r.get("cmp") or {}
+            fail(
+                f"L{lid} PRD 单词 FAIL · {title} · "
+                f"PRD/data={c.get('prd_n')}/{c.get('data_n')} · "
+                f"见 docs/audit-lessons-biaori-prd-最新.md"
+            )
+        elif st == "NO_PRD":
+            fail(f"L{lid} 缺 PRD 单课文件 · {title}")
+        else:
+            fail(f"L{lid} lessons-data 无课块 · {title}")
+
+    if len(bad) > 8:
+        fail(f"…另有 {len(bad) - 8} 课未通过，运行 python scripts/audit-lessons-biaori-prd.py")
+    else:
+        fail("修复后运行 python scripts/audit-lessons-biaori-prd.py 查看矩阵")
+    return False
 
 
 def get_cache_ver() -> str | None:
@@ -277,21 +344,29 @@ def check_local_http() -> bool:
 
 
 def check_quiz_blank_has_tts() -> bool:
-    text = _read_depth_js_text()
-    if text is None:
-        ok("填空测验 TTS 扫描已跳过（无 depth 源文件）")
+    path = ROOT / "js" / "data" / "lessons-data.js"
+    if not path.exists():
+        ok("填空测验 TTS 扫描已跳过（无 lessons-data.js）")
         return True
+    import json as _json
+    import re as _re
+
+    text = path.read_text(encoding="utf-8")
+    m = _re.search(r"const\s+LESSONS_MVP\s*=\s*(\[.*\])\s*;", text, _re.S)
+    if not m:
+        fail("lessons-data.js 无法解析 LESSONS_MVP")
+        return False
+    lessons = _json.loads(m.group(1))
     bad = []
-    for m in re.finditer(
-        r'question:\s*"((?:\\.|[^"\\])*)"\s*,\s*questionTts:\s*"((?:\\.|[^"\\])*)"',
-        text,
-    ):
-        q = m.group(1).replace('\\"', '"')
-        tts = m.group(2).replace('\\"', '"')
-        if re.search(r"[＿_]", q) and not tts.strip():
-            bad.append(q[:40])
+    for L in lessons:
+        for q in L.get("quizQuestions") or []:
+            if q.get("type") != "fill":
+                continue
+            qtext = q.get("question") or ""
+            if _re.search(r"[＿_]", qtext) and not (q.get("questionTts") or "").strip():
+                bad.append(f"L{L.get('lessonId')} {q.get('id')}")
     if bad:
-        fail(f"填空测验缺 questionTts {len(bad)} 处")
+        fail(f"填空测验缺 questionTts {len(bad)} 处（例 {bad[:3]}）")
         return False
     ok("填空测验均配有 questionTts 完整朗读句")
     return True
@@ -429,6 +504,7 @@ def print_delivery_block(passed: bool) -> None:
     print(f"| 产品版本 | {product} |")
     print(f"| 缓存版本 | v={ver} |")
     print("| 文递自归基线 | 见上方 [OK]/[FAIL] |")
+    print("| PRD 单词 1–24课 | 见上方 [OK]/[FAIL] |")
     print("| 本地 HTTP | 见上方 [OK]/[FAIL] |")
     print("| 本地冒烟 | Agent 改 UI/会話/语音后须自测 |")
     print("\n## 链接\n")
@@ -446,10 +522,11 @@ def main() -> int:
         check_cache_ver_sync(),
         check_author_link_hints(),
         check_vocab_meaning_zh(),
-        check_prd_lesson1_vocab(),
+        check_prd_vocab_all_lessons(),
         check_depth_zh(),
         check_quiz_blank_has_tts(),
         run_audit_ja_text(),
+        run_audit_dialogue_zh_mt(),
         run_audit_tts_registry(),
         check_local_preview_hint(),
         check_local_http(),

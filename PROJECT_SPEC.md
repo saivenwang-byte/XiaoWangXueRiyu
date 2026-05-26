@@ -17,6 +17,8 @@
 | **交付闸门** | [docs/Agent交付前工作流.md](docs/Agent交付前工作流.md) |
 | **踩坑记忆** | [docs/Agent交付前工作流-记忆库.md](docs/Agent交付前工作流-记忆库.md) |
 | **标日日文** | [docs/项目知识库-标日日文书写.md](docs/项目知识库-标日日文书写.md) |
+| **课内単語标黄** | [docs/项目知识库-课内单词标黄范式.md](docs/项目知识库-课内单词标黄范式.md)（改单词 UI/数据前必读） |
+| **U1L1 UI 统筹** | [docs/项目知识库-U1L1-MVP-UI统筹审查.md](docs/项目知识库-U1L1-MVP-UI统筹审查.md)（课内 UI/密度/色 · 前置条件） |
 | **版本沿革** | [docs/version-history.json](docs/version-history.json) · [VERSION.md](VERSION.md) |
 | **Cursor 本机设置** | [docs/Cursor推荐设置.md](docs/Cursor推荐设置.md) |
 | **协作入口** | [AGENTS.md](AGENTS.md) |

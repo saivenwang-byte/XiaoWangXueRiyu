@@ -23,13 +23,43 @@ const DialogueGate = (() => {
     return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lid);
   }
 
+  /** 第2单元第5–8课 · ABC（同 U1 约定） */
+  function isUnit2AbcDialogue() {
+    const lid = lesson?.lessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit2Mvp(lid);
+  }
+
+  /** 第3–6单元第9–24课 · ABC */
+  function isUnits3AbcDialogue() {
+    const lid = lesson?.lessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnits3to6Mvp(lid);
+  }
+
+  function isMvpAbcDialogue() {
+    return isUnit1AbcDialogue() || isUnit2AbcDialogue() || isUnits3AbcDialogue();
+  }
+
   /** 第1单元第1–4课 · 与第1课相同的 l1-gate-panel + 传送链 */
   function isUnit1MvpPanel() {
     return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lesson?.lessonId);
   }
 
+  /** 第2单元第5–8课 · 同 l1-gate-panel 壳 */
+  function isUnit2MvpPanel() {
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit2Mvp(lesson?.lessonId);
+  }
+
+  /** 第3–6单元第9–24课 · 同 l1-gate-panel 壳 */
+  function isUnits3MvpPanel() {
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnits3to6Mvp(lesson?.lessonId);
+  }
+
+  function isMvpFiveGatePanel() {
+    return isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel();
+  }
+
   function isSequentialMode() {
-    if (isUnit1AbcDialogue()) return false;
+    if (isMvpAbcDialogue()) return false;
     if (!dialogues.length) return true;
     return dialogues.every((d) => !d.userTurn?.replies || d.userTurn.replies.length <= 1);
   }
@@ -216,6 +246,18 @@ const DialogueGate = (() => {
       typeof applyUnit1DialogueAbc === "function"
     ) {
       dialogues = applyUnit1DialogueAbc(lessonId, dialogues);
+    } else if (
+      Number(lessonId) >= 5 &&
+      Number(lessonId) <= 8 &&
+      typeof applyUnit2DialogueAbc === "function"
+    ) {
+      dialogues = applyUnit2DialogueAbc(lessonId, dialogues);
+    } else if (
+      Number(lessonId) >= 9 &&
+      Number(lessonId) <= 24 &&
+      typeof applyLessons9_24DialogueAbc === "function"
+    ) {
+      dialogues = applyLessons9_24DialogueAbc(lessonId, dialogues);
     }
     if (!dialogues.length) {
       container.innerHTML = `<p class="hint-ja">会話データがありません。</p>`;
@@ -269,7 +311,7 @@ const DialogueGate = (() => {
 
   function renderReplyList(replies, sceneIdx) {
     const idx = sceneIdx != null ? sceneIdx : dialogueIndex;
-    if (isUnit1AbcDialogue()) return renderL1AbcReplyList(replies, idx);
+    if (isMvpAbcDialogue()) return renderL1AbcReplyList(replies, idx);
     const ordered = sortRepliesByKnowledgeLevel(replies);
     const marks = ["①", "②", "③"];
     return `<div class="dg-reply-list" role="list" aria-label="三种说法">
@@ -452,14 +494,17 @@ const DialogueGate = (() => {
     const opener = d.opener;
     const replies = d.userTurn?.replies || [];
     const speakerB = d.userTurn?.speaker || "B";
-    if (isUnit1AbcDialogue()) {
+    if (isMvpAbcDialogue()) {
       let html = renderL1OpenerBlock(d, idx);
-      html += `<p class="dg-your-turn dg-your-turn-compact">${escapeHtml(speakerB)} · 選ぶ回答 <span class="dg-abc-hint">A＝课文</span></p>`;
+      if (d.abcGuideZh && showZh()) {
+        html += `<p class="dg-abc-guide zh-annotation">${escapeHtml(d.abcGuideZh)}</p>`;
+      }
+      html += `<p class="dg-your-turn dg-your-turn-compact">${escapeHtml(speakerB)} · 選ぶ回答 <span class="dg-abc-hint">A＝课文 · B/C＝场景变体（均可沟通）</span></p>`;
       if (replies.length) html += renderReplyList(replies, idx);
       html += renderFooter(null, idx);
       return html;
     }
-    if (isUnit1MvpPanel()) {
+    if (isMvpFiveGatePanel()) {
       let html = renderL1OpenerBlock(d, idx);
       if (replies.length) html += renderReplyList(replies, idx);
       html += renderFooter(null, idx);
@@ -512,7 +557,7 @@ const DialogueGate = (() => {
     const preview = (d.opener?.japanese || d.title || "").trim().slice(0, 36);
     const tag = d.isBranch ? "分岐" : d.scenePlace ? `第${d.scenePlace}句` : `第${i + 1}句`;
     const done = dialoguePassed[i];
-    if (isUnit1MvpPanel()) {
+    if (isMvpFiveGatePanel()) {
       const zhHint = sceneTitleZh(d);
       const zhCol =
         zhHint && showZh()
@@ -543,11 +588,11 @@ const DialogueGate = (() => {
   }
 
   function l1AccordionMode() {
-    return isUnit1MvpPanel() || l1Flow;
+    return isMvpFiveGatePanel() || l1Flow;
   }
 
   function useUnit1SceneFooter() {
-    return isUnit1MvpPanel();
+    return isMvpFiveGatePanel();
   }
 
   function sceneFoldClass() {
@@ -579,7 +624,7 @@ const DialogueGate = (() => {
         .map(
           (d, i) => `
         <details class="${foldCls}" data-didx="${i}" data-node-id="l${lesson.lessonId}_dlg_${i}">
-          <summary class="${sumCls}">${l1Flow && !isUnit1MvpPanel() ? `💬 ` : ""}${sceneFoldSummary(d, i)}</summary>
+          <summary class="${sumCls}">${l1Flow && !isMvpFiveGatePanel() ? `💬 ` : ""}${sceneFoldSummary(d, i)}</summary>
           <div class="${bodyCls}"></div>
         </details>`
         )
@@ -608,7 +653,7 @@ const DialogueGate = (() => {
     dialogueIndex = idx;
     dialogue = d;
     body.innerHTML = d.isBranch ? renderBranchSceneBody(d, idx) : renderSequentialSceneBody(d, idx);
-    if (isUnit1MvpPanel() && typeof L1KnowledgeCard !== "undefined") {
+    if (isMvpFiveGatePanel() && typeof L1KnowledgeCard !== "undefined") {
       L1KnowledgeCard.bind(body, { switchGate, lessonId: lesson.lessonId });
     }
     bindSpeak(body);
@@ -702,11 +747,11 @@ const DialogueGate = (() => {
     if (det) {
       const sum = det.querySelector(l1AccordionMode() ? ".gw-group-summary" : ".dg-scene-fold-summary");
       if (sum) {
-        const prefix = l1Flow && !isUnit1MvpPanel() ? "💬 " : "";
+        const prefix = l1Flow && !isMvpFiveGatePanel() ? "💬 " : "";
         sum.innerHTML = prefix + sceneFoldSummary(dialogues[dialogueIndex], dialogueIndex);
       }
     }
-    if (isUnit1MvpPanel() || l1Flow) {
+    if (isMvpFiveGatePanel() || l1Flow) {
       updateL1Footer();
       return;
     }
@@ -734,7 +779,7 @@ const DialogueGate = (() => {
   }
 
   function render() {
-    if (l1Flow && !isUnit1MvpPanel()) {
+    if (l1Flow && !isMvpFiveGatePanel()) {
       const chainFooter =
         typeof Lesson1Flow !== "undefined"
           ? Lesson1Flow.chainFooterHtml(2, {
@@ -763,7 +808,7 @@ const DialogueGate = (() => {
       updateL1Footer();
       return;
     }
-    const l1Dlg = isUnit1MvpPanel();
+    const l1Dlg = isMvpFiveGatePanel();
     if (l1Dlg && typeof Lesson1Flow !== "undefined") {
       container.innerHTML = Lesson1Flow.l1GatePanelHtml(renderSceneAccordion(), 2, {
         btnId: "dg-l1-done",

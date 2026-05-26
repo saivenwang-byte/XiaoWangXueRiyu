@@ -571,6 +571,22 @@ body.mvp-app .nav-item.active {
   margin: 6px 0 0;
 }
 
+.hyouga-tip-flat {
+  display: block;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.hyouga-tip-flat .hyouga-tip-flat-body {
+  margin-top: 4px;
+}
+
+.hyouga-tip-flat .hyouga-tip-links {
+  margin-top: 6px;
+}
+
 .hyouga-tip-fold {
   margin: 8px 0 0;
   overflow: hidden;
@@ -2711,6 +2727,14 @@ body.mvp-app .gate-tab.active:active {
 }
 
 /* --- 学习舱导航 A + 首页路径 B --- */
+#view-lesson.view.lesson-cockpit-view.active {
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: hidden;
+}
+
 .lesson-cockpit-view.active {
   padding-top: 0;
   display: flex;
@@ -2756,6 +2780,25 @@ body.mvp-app .gate-tab.active:active {
 #lesson-flow-body.l1-lesson-scope ~ .gate-scroll-progress,
 #lesson-flow-body:has(.l1-gate-panel) .gate-scroll-progress {
   display: none;
+}
+
+/* 五关壳已内嵌 l1-gate-scroll 时，外层 ScrollHint 区域只布局不滚动 */
+.gate-scroll-region:has(> .l1-gate-panel) {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.gate-scroll-region > .l1-gate-panel {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+.lesson-cockpit-view.active #lesson-flow-body > .l1-gate-panel {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
 }
 
 .gate-scroll-region {
@@ -2980,6 +3023,27 @@ body.mvp-app .gate-tab.active:active {
   margin-top: 8px;
   padding-top: 10px;
   border-top: 1px solid var(--l1-gate-rail, #e0e0e0);
+}
+
+/* 作業关内嵌小テスト · 与 MVP §4.4 字号一致 */
+.l1-gate-panel .qz-wrap--l1-scope {
+  padding: 4px 0 8px;
+}
+.l1-gate-panel .qz-wrap--l1-scope .qz-nav {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.l1-gate-panel .qz-wrap--l1-scope .qz-question {
+  font-size: 15px;
+}
+.l1-gate-panel .qz-wrap--l1-scope .qz-question-zh,
+.l1-gate-panel .qz-wrap--l1-scope .qz-opt-zh {
+  font-size: 11px;
+  color: #78909c;
+}
+.l1-gate-panel .qz-wrap--l1-scope .qz-speak-hint {
+  font-size: 11px;
+  color: #b0bec5;
 }
 
 .cockpit-tab.recommended:not(.active) {
@@ -3842,6 +3906,10 @@ button.l1-chain-node:not(.is-current):hover {
 }
 
 .l1-lesson-scope .l1-vocab-extra .l1-tip-slot:first-child {
+  margin-top: 0;
+}
+
+.l1-lesson-scope .l1-vocab-extra .hyouga-tip-flat {
   margin-top: 0;
 }
 
@@ -5512,6 +5580,11 @@ button.is-speaking {
 
 .journey-unit-details[open] {
   padding-bottom: 10px;
+  overflow: visible;
+}
+
+.journey-unit-details[open].is-unit-current {
+  scroll-margin-top: 8px;
 }
 
 .journey-unit-summary {
@@ -8193,7 +8266,20 @@ body.intro-body .intro-flow-dot.active {
 }
 
 .panorama-cell .gojuon-kana {
-  font-size: 16px;
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.panorama-cell .gojuon-roma {
+  display: block;
+  margin-top: 1px;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #90a4ae;
 }
 
 .panorama-empty {
@@ -11082,6 +11168,66 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   border: 1px solid rgba(90, 154, 173, 0.2);
 }
 
+.notes-tb-links {
+  margin: 8px 0 0;
+  padding: 0 0 0 1.1em;
+  font-size: 11px;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.notes-tb-link {
+  color: #1a5276;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(26, 82, 118, 0.35);
+}
+
+.notes-tb-link--text {
+  color: var(--mvp-muted);
+  border-bottom: none;
+}
+
+.notes-ref-longtable {
+  margin-top: 8px;
+  border: 1px solid rgba(90, 120, 150, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.notes-ref-longtable-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3d5a6e;
+  list-style: none;
+}
+
+.notes-ref-longtable-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-ref-longtable-body {
+  max-height: min(52vh, 320px);
+  overflow: auto;
+  padding: 6px 10px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  border-top: 1px solid rgba(90, 120, 150, 0.12);
+}
+
+.notes-ref-table-line {
+  padding: 2px 0;
+  border-bottom: 1px dotted rgba(0, 0, 0, 0.06);
+}
+
+.notes-ref-table-line:last-child {
+  border-bottom: none;
+}
+
 .notes-dim--textbook .notes-sub {
   background: rgba(255, 255, 255, 0.75);
   border-color: rgba(90, 154, 173, 0.15);
@@ -11760,3 +11906,29 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   color: #ccc;
   text-align: center;
 }
+
+.notes-settings-fold {
+  margin: 10px 10px 4px;
+  padding: 0;
+  border: 1px solid var(--mvp-border);
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.notes-settings-summary {
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #616161;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notes-settings-summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes-settings-body {
+  padding: 0 12px 12px;
+  border-top: 1px solid #eee;
+}.l1-tip-btn { font-size:12px; padding:2px; border:none; background:#fff8e1; border-radius:3px; cursor:pointer; color:#e65100; line-height:1; } .l1-tip-btn:hover { background:#ffe0b2; }

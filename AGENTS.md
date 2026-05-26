@@ -38,6 +38,11 @@
 
 ## 交付前强制工作流
 
+**每次启动任务 / 批量改仓 / 交付审核前**（前置）：
+
+📄 **[docs/MVP-批量脚手架与回退工作流.md](docs/MVP-批量脚手架与回退工作流.md)** · [workflow_definition.json](docs/workflow_definition.json)  
+脚本：`scripts/mvp_batch_generator.py` · `scripts/workflow_with_rollback.py` · `scripts/init-check.ps1`
+
 **向用户交付链接、声称修好之前**：
 
 📄 [docs/Agent交付前工作流.md](docs/Agent交付前工作流.md)  

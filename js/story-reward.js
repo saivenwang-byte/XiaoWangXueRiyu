@@ -730,8 +730,20 @@ const StoryRewardDev = (function () {
             ? mvpLessonGatesEmpty()
             : { gate0: false, gate1: false, gate2: false, gate3: false, touched: {} };
       } else {
-        state.lessons[lid] =
-          typeof mvpLessonGatesCleared === "function"
+        const mvpFive =
+          typeof curriculumIsMvpFiveGateLesson === "function" && curriculumIsMvpFiveGateLesson(lid);
+        state.lessons[lid] = mvpFive
+          ? typeof mvpLessonGatesUnit1Cleared === "function"
+            ? mvpLessonGatesUnit1Cleared()
+            : {
+                gate0: true,
+                gate1: true,
+                gate2: true,
+                gate3: true,
+                gate4: true,
+                touched: { 0: true, 1: true, 2: true, 3: true, 4: true },
+              }
+          : typeof mvpLessonGatesCleared === "function"
             ? mvpLessonGatesCleared()
             : { gate0: true, gate1: true, gate2: true, gate3: true, touched: { 0: true, 1: true, 2: true, 3: true } };
       }
@@ -751,8 +763,21 @@ const StoryRewardDev = (function () {
     withState((state) => {
       ensureEggsForDev(state);
       unit.lessons.forEach((L) => {
-        state.lessons[L.lessonId] =
-          typeof mvpLessonGatesCleared === "function"
+        const lid = L.lessonId;
+        const mvpFive =
+          typeof curriculumIsMvpFiveGateLesson === "function" && curriculumIsMvpFiveGateLesson(lid);
+        state.lessons[lid] = mvpFive
+          ? typeof mvpLessonGatesUnit1Cleared === "function"
+            ? mvpLessonGatesUnit1Cleared()
+            : {
+                gate0: true,
+                gate1: true,
+                gate2: true,
+                gate3: true,
+                gate4: true,
+                touched: { 0: true, 1: true, 2: true, 3: true, 4: true },
+              }
+          : typeof mvpLessonGatesCleared === "function"
             ? mvpLessonGatesCleared()
             : { gate0: true, gate1: true, gate2: true, gate3: true, touched: { 0: true, 1: true, 2: true, 3: true } };
       });

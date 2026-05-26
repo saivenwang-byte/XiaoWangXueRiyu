@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 标日初级上 · 课程目录真源（单元 / 课序 / 发布 / 地图段）
  * 首页路径图只读本文件；课内数据仍在 lessons-mvp*.js
  */
@@ -386,6 +386,15 @@ function curriculumLessonStarDisplay(state, lessonId) {
   return { filled: p.filled, text: p.stars, title: p.title };
 }
 
+/** 第1单元第1–4课 · 五关（与 Lesson1Flow Tab 一致） */
+const LESSON_FIVE_DIMS_U1 = [
+  { gate: 0, label: "単語", labelZh: "单词" },
+  { gate: 2, label: "会話", labelZh: "会话" },
+  { gate: 1, label: "文法", labelZh: "语法" },
+  { gate: 3, label: "作業", labelZh: "作业" },
+  { gate: 4, label: "拡張", labelZh: "扩展" },
+];
+
 /** 四关 · 单词 / 会話 / 文法 / テスト（与课内 Tab 一致） */
 const LESSON_FOUR_DIMS = [
   { gate: 0, label: "単語", labelZh: "单词" },
@@ -393,6 +402,39 @@ const LESSON_FOUR_DIMS = [
   { gate: 1, label: "文法", labelZh: "语法" },
   { gate: 3, label: "テスト", labelZh: "测试" },
 ];
+
+function curriculumIsUnit1FiveGateLesson(lessonId) {
+  const n = Number(lessonId);
+  return n >= 1 && n <= 4;
+}
+
+/** 第2单元第5–8课 · 五关（与第1单元 L1–4 同维度） */
+function curriculumIsUnit2FiveGateLesson(lessonId) {
+  const n = Number(lessonId);
+  return n >= 5 && n <= 8;
+}
+
+/** 第3–6单元第9–24课 · 五关 */
+function curriculumIsUnits3to6FiveGateLesson(lessonId) {
+  const n = Number(lessonId);
+  return n >= 9 && n <= 24;
+}
+
+function curriculumIsMvpFiveGateLesson(lessonId) {
+  return (
+    curriculumIsUnit1FiveGateLesson(lessonId) ||
+    curriculumIsUnit2FiveGateLesson(lessonId) ||
+    curriculumIsUnits3to6FiveGateLesson(lessonId)
+  );
+}
+
+function lessonStarDimensions(lessonId) {
+  return curriculumIsMvpFiveGateLesson(lessonId) ? LESSON_FIVE_DIMS_U1 : LESSON_FOUR_DIMS;
+}
+
+function lessonStarTotal(lessonId) {
+  return lessonStarDimensions(lessonId).length;
+}
 
 function lessonQuizPerfect(state, lessonId) {
   const g = state?.lessons?.[Number(lessonId)] || {};
@@ -402,13 +444,24 @@ function lessonQuizPerfect(state, lessonId) {
 function lessonDimStarState(state, lessonId, gateNum) {
   const id = Number(lessonId);
   const g = state?.lessons?.[id] || {};
-  if (gateNum === 3) {
+  const five = curriculumIsMvpFiveGateLesson(id);
+  if (gateNum === 3 && !five) {
     if (lessonQuizPerfect(state, id)) return "gold";
     if (g.gate3 && g.quizPerfect !== false) return "tried";
     if (Array.isArray(state?.mistakes) && state.mistakes.some((m) => m.lessonId === id)) {
       return "tried";
     }
     if (g.touched && g.touched[3]) return "tried";
+    return "ghost";
+  }
+  if (gateNum === 3 && five) {
+    if (g.gate3) return "gold";
+    if (g.touched && g.touched[3]) return "tried";
+    return "ghost";
+  }
+  if (gateNum === 4 && five) {
+    if (g.gate4) return "gold";
+    if (g.touched && g.touched[4]) return "tried";
     return "ghost";
   }
   if (g[`gate${gateNum}`]) return "gold";
@@ -420,20 +473,28 @@ function lessonDimStarState(state, lessonId, gateNum) {
   return "ghost";
 }
 
-/** 四颗海星：金星=满分通关 · 空心=学过未过 · 虚框=未学 */
-function formatLessonFourSeaStars(state, lessonId) {
-  const parts = LESSON_FOUR_DIMS.map((d) => {
+/** 海星：金星=该关通关 · 空心=学过未满分 · 虚框=未学（U1L1–4 为五颗） */
+function formatLessonSeaStars(state, lessonId) {
+  const dims = lessonStarDimensions(lessonId);
+  const parts = dims.map((d) => {
     const st = lessonDimStarState(state, lessonId, d.gate);
     const hint =
       st === "gold" ? "金星" : st === "tried" ? "未满分" : "未学";
     const sym = st === "gold" ? "★" : st === "tried" ? "☆" : "○";
     return `<span class="sea-star sea-star--${st}" title="${d.labelZh}·${hint}" aria-hidden="true">${sym}</span>`;
   });
-  return `<span class="lesson-sea-stars" aria-label="単語·会話·文法·テスト">${parts.join("")}</span>`;
+  const aria = dims.map((d) => d.labelZh).join("·");
+  return `<span class="lesson-sea-stars lesson-sea-stars--${dims.length}" aria-label="${aria}">${parts.join("")}</span>`;
+}
+
+function formatLessonFourSeaStars(state, lessonId) {
+  return formatLessonSeaStars(state, lessonId);
 }
 
 function countLessonGoldStars(state, lessonId) {
-  return LESSON_FOUR_DIMS.filter((d) => lessonDimStarState(state, lessonId, d.gate) === "gold").length;
+  return lessonStarDimensions(lessonId).filter(
+    (d) => lessonDimStarState(state, lessonId, d.gate) === "gold"
+  ).length;
 }
 
 /** 课次行 · 圆圈序号 | 中文主题 + 日文课名 | 状态+海星 */
@@ -465,28 +526,32 @@ function curriculumLessonProgressDisplay(state, lessonId, options) {
     };
   }
 
+  const max = lessonStarTotal(id);
   const n = countLessonGoldStars(state, id);
   if (n === 0) {
+    const dimHint = curriculumIsMvpFiveGateLesson(id)
+      ? "单词·会话·语法·作业·扩展"
+      : "单词·会话·语法·测试";
     return {
       filled: 0,
-      stars: formatLessonFourSeaStars(state, id),
+      stars: formatLessonSeaStars(state, id),
       status: "未学習",
-      title: "单词·会话·语法·测试",
+      title: dimHint,
     };
   }
-  if (n === 4) {
+  if (n === max) {
     return {
-      filled: 4,
-      stars: formatLessonFourSeaStars(state, id),
+      filled: max,
+      stars: formatLessonSeaStars(state, id),
       status: "通関",
-      title: "四关金星",
+      title: max === 5 ? "五关金星" : "四关金星",
     };
   }
   return {
     filled: n,
-    stars: formatLessonFourSeaStars(state, id),
-    status: `進行中 ${n}/4`,
-    title: `金星 ${n}/4`,
+    stars: formatLessonSeaStars(state, id),
+    status: `進行中 ${n}/${max}`,
+    title: `金星 ${n}/${max}`,
   };
 }
 
@@ -514,10 +579,10 @@ const CURRICULUM_STAGE_SLOTS = {
 };
 
 function curriculumLessonCleared(state, lessonId) {
-  return countLessonGoldStars(state, lessonId) === 4;
+  return countLessonGoldStars(state, lessonId) === lessonStarTotal(lessonId);
 }
 
-/** 单元内 4 课均为四金星（L2 触发） */
+/** 单元内各课均满金星（U1：每课五颗；其余单元：每课四颗）→ 单元彩蛋 */
 function curriculumUnitFourGold(state, unitId) {
   const unit = CURRICULUM_UNITS.find((u) => u.id === Number(unitId));
   if (!unit) return false;

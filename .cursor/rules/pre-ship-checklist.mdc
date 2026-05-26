@@ -11,4 +11,6 @@ alwaysApply: true
 
 语音单独：`批量检查语音包.bat` → `docs/TTS-语音包编号规范.md`
 
+PRD 单词（1–24课）：`pre-ship-check.py` 内 `check_prd_vocab_all_lessons`；任一课 FAIL/缺 PRD → **阻断** · 报告 `docs/audit-lessons-biaori-prd-最新.md`
+
 总规范：`PROJECT_SPEC.md` · 交付流程：`docs/Agent交付前工作流.md`

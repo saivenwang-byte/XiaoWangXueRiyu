@@ -31,3 +31,10 @@ _restore_index.html
 # v1.0 微信版：根目录 tts-cache 纳入仓库，供 GitHub Pages 离线朗读
 发布包/tts-cache/
 上传包/
+generated_products/
+.workflow_snapshots/
+workflow_status.json
+goal.txt
+completion_snapshot.txt
+feedback.md
+claude-progress.md

@@ -33,6 +33,7 @@
 | 数据真源 | `js/data/lessons-data.js`（lessonId 1–4） |
 | 会話 ABC | **A**＝课文标准答 · **B/C**＝同问不同场景可选说法 + 黄底「提示」 |
 | 会話句数 | 课1：10 · 课2：13 · 课3：12 · 课4：12 |
+| 通关海星 | **5 颗/课**（単語·会話·文法·作業·拡張）；满星 → 本课彩蛋；四课满星 → 单元四格彩蛋 |
 | 课内壳 | `Lesson1Flow` + `isUnit1MvpPanel()` / `isUnit1MvpFiveGate()` |
 | UI | 与课1 MVP 同：五色 Tab、`l1-gate-panel`、折叠序号、底链、`完了（n/m）` |
 | 校验 | `scripts/validate-unit1-mvp-lessons.py`（字段齐） |

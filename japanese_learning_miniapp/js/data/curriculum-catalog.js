@@ -45,7 +45,8 @@ const CURRICULUM_PART0 = {
 const CURRICULUM_UNITS = [
   {
     id: 1,
-    titleJa: "第1单元",
+    titleJa: "第1単元",
+    unitThemeJa: "李さんの来日",
     titleZh: "小李赴日",
     grammarLine: "名詞述語文（〜は〜です）",
     island: "shikoku",
@@ -53,7 +54,8 @@ const CURRICULUM_UNITS = [
   },
   {
     id: 2,
-    titleJa: "第2单元",
+    titleJa: "第2単元",
+    unitThemeJa: "会社生活①",
     titleZh: "公司生活①",
     grammarLine: "動詞述語文（ます形）",
     island: "kyushu",
@@ -61,7 +63,8 @@ const CURRICULUM_UNITS = [
   },
   {
     id: 3,
-    titleJa: "第3单元",
+    titleJa: "第3単元",
+    unitThemeJa: "箱根旅行",
     titleZh: "箱根旅行",
     grammarLine: "形容詞・形容動詞",
     island: "honshu",
@@ -69,7 +72,8 @@ const CURRICULUM_UNITS = [
   },
   {
     id: 4,
-    titleJa: "第4单元",
+    titleJa: "第4単元",
+    unitThemeJa: "会社生活②",
     titleZh: "公司生活②",
     grammarLine: "て形体系",
     island: "honshu",
@@ -77,7 +81,8 @@ const CURRICULUM_UNITS = [
   },
   {
     id: 5,
-    titleJa: "第5单元",
+    titleJa: "第5単元",
+    unitThemeJa: "新春を迎える",
     titleZh: "迎新春",
     grammarLine: "愿望·义务·可能",
     island: "honshu",
@@ -85,7 +90,8 @@ const CURRICULUM_UNITS = [
   },
   {
     id: 6,
-    titleJa: "第6单元",
+    titleJa: "第6単元",
+    unitThemeJa: "さようなら、日本",
     titleZh: "再见日本",
     grammarLine: "简体·引用（向中级）",
     island: "hokkaido",

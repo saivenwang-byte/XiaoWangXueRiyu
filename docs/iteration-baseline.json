@@ -64,20 +64,208 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "246",
+    "cache": "278",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
       "japanese_learning_miniapp/config/h5-url.js"
     ],
-    "local": "http://localhost:8765/index.html?v=246",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=246",
+    "local": "http://localhost:8765/index.html?v=278",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=278",
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
     "mvp_unit1_lessons_1_4": "第1单元第1–4课五关+会話ABC 已锁定 v246"
   },
   "confirmed": [
+    {
+      "id": "unit1-lessons-2-4-l1-mvp-patch",
+      "since_cache": "253",
+      "title": "第1单元2–4课 · 文法例句+综合Q12+拡張5块（L1冻结不动）",
+      "files": [
+        "scripts/patch-unit1-lessons-2-4-l1-mvp.py",
+        "js/data/lessons-data.js"
+      ],
+      "acceptance": "L2–4 quiz=12 综合题；reviewExtension=5；L4 あります/います 活用；未改 lessonId=1 与 lesson-1-flow.js"
+    },
+    {
+      "id": "biaori-homework-extension-source-rule",
+      "since_cache": "254",
+      "title": "作業=标日课文 · 拡張=课文锚点+略超纲延展",
+      "files": [
+        "docs/作业与拡張-标日真源规范.md",
+        "scripts/align-homework-extension-biaori-l2-4.py"
+      ],
+      "acceptance": "全课作業题须可回溯当课标日课文；拡張区分【课文锚点】与【知识延展】"
+    },
+    {
+      "id": "unit2-u2b-grammar-l5-7",
+      "since_cache": "254",
+      "title": "第2单元 U2-B · 第5–7课文法例句（标日 basicText）",
+      "files": [
+        "scripts/patch-unit2-grammar-l5-7-biaori.py",
+        "scripts/align-homework-extension-biaori-l2-4.py",
+        "js/data/lessons-data.js",
+        "docs/标日精修进度-单元路线图.md"
+      ],
+      "acceptance": "l5_g2–g5/l6_g4–g5/l7_g2 例句+exampleZh；L5–7 作業/拡張课文锚点"
+    },
+    {
+      "id": "unit3-u3-lessons9-12",
+      "since_cache": "257",
+      "title": "第3单元 U3 · 第9–12课（イ・ナ形·好恶·比较）",
+      "files": [
+        "scripts/patch-unit3-lessons9-12-biaori.py",
+        "scripts/align-homework-extension-biaori-l2-4.py",
+        "js/data/lessons-data.js",
+        "docs/标日精修进度-单元路线图.md"
+      ],
+      "acceptance": "L9–12 文法例句来自 basicText/会話；Q12 综合题；作業/拡張课文锚点"
+    },
+    {
+      "id": "unit4-u4-lessons13-16",
+      "since_cache": "258",
+      "title": "第4单元 U4 · 第13–16课（数量·て形·ています）",
+      "files": [
+        "scripts/patch-unit4-lessons13-16-biaori.py",
+        "scripts/align-homework-extension-biaori-l2-4.py",
+        "js/data/lessons-data.js",
+        "docs/标日精修进度-单元路线图.md"
+      ],
+      "acceptance": "L13–16 文法例句+综合Q12+作業/拡張锚点；L14 quiz Q12 修复"
+    },
+    {
+      "id": "unit5-u5-lessons17-20",
+      "since_cache": "259",
+      "title": "第5单元 U5 · 第17–20课（愿望·变化·否定·可能）",
+      "files": [
+        "scripts/patch-unit5-lessons17-20-biaori.py",
+        "scripts/align-homework-extension-biaori-l2-4.py",
+        "js/data/lessons-data.js",
+        "docs/标日精修进度-单元路线图.md"
+      ],
+      "acceptance": "L17–20 文法例句+综合Q12+作業/拡張锚点；L17–20 quiz Q12 改为 choice"
+    },
+    {
+      "id": "unit6-u6-lessons21-24",
+      "since_cache": "260",
+      "title": "第6单元 U6 · 第21–24课（经验·简体·たり·转述）",
+      "files": [
+        "scripts/patch-unit6-lessons21-24-biaori.py",
+        "scripts/align-homework-extension-biaori-l2-4.py",
+        "js/data/lessons-data.js",
+        "docs/标日精修进度-单元路线图.md"
+      ],
+      "acceptance": "L21–24 文法例句+综合Q12+作業/拡張锚点；L21–24 quiz Q12 改为 choice；课2–24 标日精修主线收口"
+    },
+    {
+      "id": "vocab-knowledge-cards-l9-24",
+      "since_cache": "261",
+      "title": "第9–24课 · 逐词知识卡 + 作業/拡張侧栏提示（对齐 L1）",
+      "files": [
+        "scripts/build-lessons-9-24-knowledge-tips.py",
+        "js/data/lessons-9-24-knowledge-tips.js",
+        "js/lesson-1-flow.js"
+      ],
+      "acceptance": "Lessons924 VOCAB 全覆盖；homeworkTitle/extensionKey 按课号；audit 深度 WARN 仅 L7–8"
+    },
+    {
+      "id": "vocab-knowledge-cards-unit2-l5-8",
+      "since_cache": "262",
+      "title": "第5–8课 · 逐词知识卡精品 + L7/L8 全词（P1）",
+      "files": [
+        "scripts/build-unit2-knowledge-tips.py",
+        "scripts/vocab_tips_curated_data.py",
+        "js/data/unit2-knowledge-tips.js",
+        "js/lesson-1-flow.js"
+      ],
+      "acceptance": "L7/L8 全词 VOCAB；精品 CURATED 合并；audit 深度 WARN 0"
+    },
+    {
+      "id": "vocab-knowledge-premium-l9-24",
+      "since_cache": "262",
+      "title": "L9–24 精品 CURATED 加厚（P2）",
+      "files": ["scripts/vocab_tips_curated_data.py", "scripts/build-lessons-9-24-knowledge-tips.py"],
+      "acceptance": "注意词+课内核心词双行精品；与 unit2 共用 curated 真源"
+    },
+    {
+      "id": "vocab-knowledge-u4-l13-16-full",
+      "since_cache": "263",
+      "title": "U4 · L13–16 全词精品知识卡 + 作業/拡張侧栏",
+      "files": [
+        "scripts/build-u4-vocab-curated.py",
+        "scripts/vocab_tips_curated_u4.py",
+        "scripts/vocab_tips_curated_data.py",
+        "scripts/build-lessons-9-24-knowledge-tips.py",
+        "js/data/lessons-9-24-knowledge-tips.js",
+        "js/lesson-1-flow.js"
+      ],
+      "acceptance": "L13–16 共200条 CURATED；修正旧 l13_v_2 错绑冊；HW/EXT 按课；audit 深度 0"
+    },
+    {
+      "id": "vocab-knowledge-u2-l5-8-full",
+      "since_cache": "264",
+      "title": "U2 · L5–8 全词精品知识卡 + 作業/拡張侧栏",
+      "files": [
+        "scripts/build-u2-vocab-curated.py",
+        "scripts/vocab_tips_curated_u2.py",
+        "scripts/vocab_tips_curated_l78_snapshot.py",
+        "scripts/build-unit2-knowledge-tips.py",
+        "js/data/unit2-knowledge-tips.js",
+        "js/lesson-1-flow.js"
+      ],
+      "acceptance": "L5–8 共141条 CURATED；L7–8 手写快照；L5–6 时间/助词精品；audit 深度 0"
+    },
+    {
+      "id": "vocab-knowledge-u3-u6-l9-24-full",
+      "since_cache": "265",
+      "title": "U3–U6 · L9–24 全词精品知识卡 + 作業/拡張（U4 已含）",
+      "files": [
+        "scripts/build-u3-u5-u6-vocab-curated.py",
+        "scripts/vocab_tips_curated_u3.py",
+        "scripts/vocab_tips_curated_u5.py",
+        "scripts/vocab_tips_curated_u6.py",
+        "scripts/vocab_tips_curated_data.py",
+        "scripts/build-lessons-9-24-knowledge-tips.py",
+        "js/data/lessons-9-24-knowledge-tips.js"
+      ],
+      "acceptance": "U3 145 + U4 200 + U5 189 + U6 167 条；L17–24 作業/拡張加厚；audit 深度 0"
+    },
+    {
+      "id": "batch-l13-24-curated-dialogue-mt",
+      "since_cache": "253",
+      "title": "批 13–24 · curated 会話中文 + 机翻检测门禁",
+      "files": [
+        "scripts/data/curated_zh_l13_24.json",
+        "scripts/curated_dialogue_zh_l13_24.py",
+        "scripts/patch-dialogue-zh-l13-24.py",
+        "scripts/patch-batch-l13-24-data.py",
+        "scripts/dialogue_zh_mt.py",
+        "scripts/audit-dialogue-zh-mt.py",
+        "scripts/curated_zh_lookup.py",
+        "scripts/fix-dialogue-jp-md-artifacts-l13-24.py",
+        "js/data/dialogue-zh-l9-24.js",
+        "js/data/lessons-9-24-dialogue-abc.js",
+        "js/data/lessons-data.js",
+        "scripts/pre-ship-check.py"
+      ],
+      "acceptance": "L13–24 opener/reply/ABC-A 走 curated；audit-dialogue-zh-mt --from-lesson 13 为 0；发布前自检含该审计"
+    },
+    {
+      "id": "batch-a-l9-12-p1-dialogue-quiz",
+      "since_cache": "252",
+      "title": "批 A（第9–12课）P1 · 会話 ABC 中文 + 黄卡逐景 + L9 小测绑点",
+      "files": [
+        "scripts/curated_dialogue_zh_l9_12.py",
+        "scripts/patch-dialogue-zh-l9-12.py",
+        "scripts/patch-batch-a-l9-12-data.py",
+        "js/data/dialogue-zh-l9-24.js",
+        "js/data/lessons-9-24-dialogue-abc.js",
+        "js/data/lessons-data.js",
+        "scripts/generate-lessons-9-24-dialogue-abc.py"
+      ],
+      "acceptance": "L9–12 ABC 无机翻/错字；abcGuideZh 含场景名；L9 quiz grammarNodeId 与题意一致；课1–4 未改"
+    },
     {
       "id": "unit1-lessons-2-4-mvp-flow",
       "since_cache": "246",
@@ -419,6 +607,76 @@
       "title": "U1L1 単語关落地标黄范式（删 app.js 重复表·行内折叠）",
       "scope": "仅第1課；不扩 24 课",
       "note": "准则已入库；待用户「开工」后实现"
+    },
+    {
+      "id": "u2-lessons-5-8-biaori-truth",
+      "since_cache": "271",
+      "title": "U2 第5–8课 · 标日真源精修（结构化→PRD + 小测对账）",
+      "files": [
+        "【标日学习资料补充】/结构化/第2单元/*-真源补丁.txt",
+        "scripts/merge-supplement-structured-into-prd.py",
+        "scripts/patch-u2-lessons-5-8-biaori-truth.py",
+        "js/data/lessons-data.js",
+        "docs/tasks/round-标日真源-U2.json"
+      ],
+      "acceptance": "L5–8 小测12题/课与PRD一致；作業段【标日课文】；未动U1L1–4冻结"
+    },
+    {
+      "id": "u3-lessons-9-12-biaori-truth",
+      "since_cache": "272",
+      "title": "U3 第9–12课 · 标日真源精修 + 语法对照表 links",
+      "files": [
+        "【标日学习资料补充】/结构化/第3单元/*-真源补丁.txt",
+        "scripts/patch-u3-lessons-9-12-biaori-truth.py",
+        "scripts/grammar_links_biaori.py",
+        "scripts/patch-grammar-links-biaori.py",
+        "js/data/lessons-data.js",
+        "参考资料/04-练习题库/练习题库模板-L9-L12.md",
+        "docs/tasks/round-标日真源-U3.json"
+      ],
+      "acceptance": "L9–12 小测12题/课；翻译题 fill；grammarNodes.links 含对照表延展；未动U1L1–4冻结"
+    },
+    {
+      "id": "u4-u6-lessons-13-24-biaori-truth",
+      "since_cache": "273",
+      "title": "U4–U6(13–24) PRD小测 + Top20 + L13助数词 + 语法links全表",
+      "files": [
+        "scripts/patch-u4-lessons-13-16-biaori-truth.py",
+        "scripts/patch-u5-lessons-17-20-biaori-truth.py",
+        "scripts/patch-u6-lessons-21-24-biaori-truth.py",
+        "scripts/prd_quiz_canon.py",
+        "scripts/patch-top20-review-extension.py",
+        "scripts/patch-l13-counter-reference-table.py",
+        "scripts/grammar_links_biaori.py",
+        "参考资料/00-资料索引.md",
+        "docs/tasks/round-标日真源-U4-U6.json"
+      ],
+      "acceptance": "L13–24 Q1–11 PRD；Q12综合；Top20进扩展；L13助数词参考表；对照表links L2–24"
+    },
+    {
+      "id": "p0-p1-p3-l13-24-homework-top20-conj",
+      "since_cache": "275",
+      "title": "P0 L13–24 PRD作业全文 + P1 Top24每课1条 + P3 L5活用総表",
+      "files": [
+        "scripts/sync-homework-from-prd-l13-24.py",
+        "scripts/patch-review-extension-p1-p3.py",
+        "参考资料/03-语法补充/常见错误Top20.md",
+        "js/data/lessons-data.js",
+        "js/share-wechat.js"
+      ],
+      "acceptance": "作業关1–6/8–9来自PRD；段7総合保留；扩展误用首行Top20；L5参考表活用総表"
+    },
+    {
+      "id": "notes-panel-abc-v277",
+      "since_cache": "277",
+      "title": "笔记 A+B+C：模板/总结/链接/长表折叠 + 课内误用清理",
+      "files": [
+        "js/notes-panel.js",
+        "css/mvp.css",
+        "js/data/lessons-data.js",
+        "scripts/cleanup-notes-lessons-data.py"
+      ],
+      "acceptance": "老师含模板·总结·单元予告；课本 grammar links；L5/L13 参考长表折叠；L1拆行；L13+占位易错与L13参考表去重"
     }
   ],
   "forbidden_without_explicit_user_request": [

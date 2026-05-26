@@ -24,6 +24,7 @@ alwaysApply: true
 1. 读 `docs/iteration-baseline.json` 的 `current` + `confirmed` + `backlog`
 2. 自评 ICE 档位（见 `docs/Agent文递自归.md`）；用户未要求则 ≤ L2
 3. 本轮 scope 仅用户原话；`backlog` 项不得擅自提前做
+4. **若改课内単語**（`vocab-flash` / `lesson-1-flow` / `l1-knowledge-tips` / 单词 CSS）：先读 `docs/项目知识库-课内单词标黄范式.md` + 记忆库 §11
 
 ## 交付前必执行
 

@@ -3,12 +3,45 @@ const MVP_STORAGE_KEY = "hyouga_mvp_v1";
 /** 内测种子课：首页显示为已通关（金黄），当前应学仍为序列中下一课（通常第13課） */
 const MVP_INTERNAL_SEED_CLEARED = [14, 16, 18];
 
+/** 内测：第1单元第1–4课 · 五关满星 + 通関 + 右侧课文彩蛋图（与第1课一致） */
+const MVP_INTERNAL_SEED_UNIT1 = [1, 2, 3, 4];
+
 function mvpLessonGatesCleared() {
   return { gate0: true, gate1: true, gate2: true, gate3: true, touched: { 0: true, 1: true, 2: true, 3: true } };
 }
 
+function mvpLessonGatesUnit1Cleared() {
+  return {
+    gate0: true,
+    gate1: true,
+    gate2: true,
+    gate3: true,
+    gate4: true,
+    touched: { 0: true, 1: true, 2: true, 3: true, 4: true },
+  };
+}
+
+function applyMvpUnit1StorySeed(state) {
+  if (!state.story || typeof state.story !== "object") {
+    state.story = { units: {}, pendingAuto: null };
+  }
+  if (!state.story.units || typeof state.story.units !== "object") {
+    state.story.units = {};
+  }
+  if (typeof StoryReward !== "undefined" && StoryReward.syncAllStrips) {
+    StoryReward.syncAllStrips(state);
+  }
+}
+
 function mvpLessonGatesEmpty() {
-  return { gate0: false, gate1: false, gate2: false, gate3: false, touched: {} };
+  return {
+    gate0: false,
+    gate1: false,
+    gate2: false,
+    gate3: false,
+    gate4: false,
+    touched: {},
+  };
 }
 
 function applyMvpInternalSeed(state) {
@@ -16,6 +49,10 @@ function applyMvpInternalSeed(state) {
   MVP_INTERNAL_SEED_CLEARED.forEach((lid) => {
     state.lessons[lid] = mvpLessonGatesCleared();
   });
+  MVP_INTERNAL_SEED_UNIT1.forEach((lid) => {
+    state.lessons[lid] = mvpLessonGatesUnit1Cleared();
+  });
+  applyMvpUnit1StorySeed(state);
   return state;
 }
 
@@ -24,7 +61,10 @@ function mvpDefaultState() {
   MVP_INTERNAL_SEED_CLEARED.forEach((lid) => {
     lessons[lid] = mvpLessonGatesCleared();
   });
-  return {
+  MVP_INTERNAL_SEED_UNIT1.forEach((lid) => {
+    lessons[lid] = mvpLessonGatesUnit1Cleared();
+  });
+  const base = {
     studyDays: [],
     lessons,
     flashProgress: {},
@@ -35,6 +75,7 @@ function mvpDefaultState() {
     notes: { lesson: {}, unit: {}, bookExtra: "" },
     ui: { returnAfterLesson: null, meNotebookOpen: false, meNotebookScope: null },
   };
+  return applyMvpInternalSeed(base);
 }
 
 function loadMvpState() {
@@ -124,7 +165,11 @@ function setGateDone(state, lessonId, gate) {
 function touchLessonGate(state, lessonId, gate) {
   const lid = Number(lessonId);
   const g = Number(gate);
-  if (Number.isNaN(lid) || Number.isNaN(g) || g < 0 || g > 3) return;
+  const maxGate =
+    typeof curriculumIsMvpFiveGateLesson === "function" && curriculumIsMvpFiveGateLesson(lid)
+      ? 4
+      : 3;
+  if (Number.isNaN(lid) || Number.isNaN(g) || g < 0 || g > maxGate) return;
   if (!state.lessons[lid]) state.lessons[lid] = mvpLessonGatesEmpty();
   if (!state.lessons[lid].touched || typeof state.lessons[lid].touched !== "object") {
     state.lessons[lid].touched = {};
@@ -134,9 +179,19 @@ function touchLessonGate(state, lessonId, gate) {
 }
 
 function lessonGatePercent(state, lessonId) {
-  const g = state.lessons[Number(lessonId)] || {};
-  const done = [g.gate0, g.gate1, g.gate2, g.gate3].filter(Boolean).length;
-  return Math.round((done / 4) * 100);
+  const id = Number(lessonId);
+  const g = state.lessons[id] || {};
+  const dims =
+    typeof lessonStarDimensions === "function"
+      ? lessonStarDimensions(id)
+      : [
+          { gate: 0 },
+          { gate: 1 },
+          { gate: 2 },
+          { gate: 3 },
+        ];
+  const done = dims.filter((d) => g[`gate${d.gate}`]).length;
+  return Math.round((done / dims.length) * 100);
 }
 
 function addMvpMistake(state, item) {

@@ -10,6 +10,35 @@ const JourneyHome = (function () {
     return d.innerHTML;
   }
 
+  /** 课文目录单元行：第一单元 … 第六单元（保留「单元」） */
+  const UNIT_LABEL_ZH = [
+    "",
+    "第一单元",
+    "第二单元",
+    "第三单元",
+    "第四单元",
+    "第五单元",
+    "第六单元",
+  ];
+
+  function unitLabelZh(unitId) {
+    return UNIT_LABEL_ZH[unitId] || `第${unitId}单元`;
+  }
+
+  /** 单元主题日文（catalog.unitThemeJa 真源；缺字段时兜底） */
+  const UNIT_THEME_JA_FALLBACK = {
+    1: "李さんの来日",
+    2: "会社生活①",
+    3: "箱根旅行",
+    4: "会社生活②",
+    5: "新春を迎える",
+    6: "さようなら、日本",
+  };
+
+  function unitThemeJaText(unit) {
+    return (unit && (unit.unitThemeJa || UNIT_THEME_JA_FALLBACK[unit.id])) || "";
+  }
+
   function cacheVer() {
     return typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER
       ? ShareWechat.CACHE_VER
@@ -161,7 +190,11 @@ const JourneyHome = (function () {
     const themeZh = L.themeZh || L.theme || "";
     let cls = "lesson-row";
     if (L.devStub) cls += " is-lesson-stub";
-    else if (prog.filled === 4) cls += " is-lesson-cleared";
+    else if (
+      (typeof curriculumLessonCleared === "function" && curriculumLessonCleared(state, L.lessonId)) ||
+      prog.filled >= (typeof lessonStarTotal === "function" ? lessonStarTotal(L.lessonId) : 4)
+    )
+      cls += " is-lesson-cleared";
     else if (prog.filled > 0) cls += " is-lesson-active";
     else if (prog.status === "未開啟") cls += " is-lesson-locked";
     else cls += " is-lesson-idle";
@@ -203,7 +236,9 @@ const JourneyHome = (function () {
             </div>`;
           })
           .join("");
-        const unitJp = escapeHtml(unit.unitThemeJa || unit.titleJa);
+        const unitLabel = escapeHtml(unit.titleJa || unitLabelZh(unit.id));
+        const unitJp = escapeHtml(unitThemeJaText(unit));
+        const unitZh = escapeHtml(unit.titleZh || "");
         const style = `style="--stage-accent:${theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
         const openAttr = isOpen ? " open" : "";
         const currentCls = isOpen ? " is-unit-current" : "";
@@ -214,9 +249,12 @@ const JourneyHome = (function () {
           <summary class="journey-unit-summary">
             <div class="journey-unit-summary-bar">
               <span class="journey-unit-chevron" aria-hidden="true"></span>
-              <div class="journey-unit-summary-main">
-                <strong class="journey-stage-unit jp">${unitJp}</strong>
-                <span class="journey-stage-zh zh-annotation">${escapeHtml(unit.titleZh)}</span>
+              <div class="journey-unit-summary-main" title="${unitLabel} ${unitJp} ${unitZh}">
+                <span class="journey-unit-label-zh">${unitLabel}</span>
+                <span class="journey-unit-title-sep" aria-hidden="true">·</span>
+                <span class="journey-stage-theme jp" lang="ja">${unitJp}</span>
+                <span class="journey-unit-title-sep" aria-hidden="true">·</span>
+                <span class="journey-stage-zh zh-annotation">${unitZh}</span>
               </div>
               <div class="journey-unit-summary-end">
                 ${unitStatusHtml(state, unit, uv)}
@@ -359,14 +397,35 @@ const JourneyHome = (function () {
       </a>`;
   }
 
+  /** 展开单元后：本单元顶对齐目录滚动区，四课尽量一屏可见 */
+  function scrollOpenedUnitIntoView(det) {
+    if (!det) return;
+    const scroller = det.closest(".journey-catalog-scroll--accordion");
+    if (!scroller) {
+      det.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const pad = 6;
+    const delta = det.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+    scroller.scrollBy({ top: delta - pad, behavior: "smooth" });
+  }
+
   function bindCatalogAccordion(board) {
     const all = board.querySelectorAll("details.journey-unit-details");
     all.forEach((det) => {
       det.addEventListener("toggle", () => {
-        if (!det.open) return;
+        if (!det.open) {
+          det.classList.remove("is-unit-current");
+          return;
+        }
         all.forEach((other) => {
-          if (other !== det) other.open = false;
+          if (other !== det) {
+            other.open = false;
+            other.classList.remove("is-unit-current");
+          }
         });
+        det.classList.add("is-unit-current");
+        requestAnimationFrame(() => scrollOpenedUnitIntoView(det));
       });
     });
   }
@@ -376,8 +435,9 @@ const JourneyHome = (function () {
     if (!el) return;
     board.querySelectorAll("details.journey-unit-details").forEach((d) => {
       d.open = d === el;
+      d.classList.toggle("is-unit-current", d === el);
     });
-    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    requestAnimationFrame(() => scrollOpenedUnitIntoView(el));
     el.classList.add("is-map-reveal-flash");
     setTimeout(() => el.classList.remove("is-map-reveal-flash"), 1200);
   }

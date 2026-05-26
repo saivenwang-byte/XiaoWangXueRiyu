@@ -1,10 +1,16 @@
 /**
  * 第1单元 MVP 课内五关（単語/会話/文法/作業/拡張）— 截图定稿交互
  * lessonId 1–4 由 app.js 传入 callbacks.lessonId；第1課行为不变
+ * lessonId 5–8：第2单元 · 同壳扩展（isUnit2Mvp）
+ * lessonId 9–24：第3–6单元 · 同壳（isUnits3to6Mvp）；不改动 1–4 分支条件
  */
 const Lesson1Flow = (function () {
   const LESSON_ID = 1;
   const UNIT1_MVP_MAX = 4;
+  const UNIT2_MVP_MIN = 5;
+  const UNIT2_MVP_MAX = 8;
+  const UNITS3_MVP_MIN = 9;
+  const UNITS3_MVP_MAX = 24;
 
   const COCKPIT_TABS = [
     { k: 0, label: "単語", sub: "フラッシュ" },
@@ -23,9 +29,26 @@ const Lesson1Flow = (function () {
     return n >= 1 && n <= UNIT1_MVP_MAX;
   }
 
+  function isUnit2Mvp(lessonId) {
+    const n = Number(lessonId);
+    return n >= UNIT2_MVP_MIN && n <= UNIT2_MVP_MAX;
+  }
+
+  function isUnits3to6Mvp(lessonId) {
+    const n = Number(lessonId);
+    return n >= UNITS3_MVP_MIN && n <= UNITS3_MVP_MAX;
+  }
+
+  /** 第2–6单元 · 五关 MVP 壳（5–24，不含 U1 的 1–4） */
+  function isMvpExtendedFiveGate(lessonId) {
+    return isUnit2Mvp(lessonId) || isUnits3to6Mvp(lessonId);
+  }
+
   function resolveLessonId(callbacks) {
     const n = Number(callbacks?.lessonId);
-    return n >= 1 && n <= UNIT1_MVP_MAX ? n : LESSON_ID;
+    if (n >= 1 && n <= UNIT1_MVP_MAX) return n;
+    if (n >= UNIT2_MVP_MIN && n <= UNITS3_MVP_MAX) return n;
+    return LESSON_ID;
   }
 
   function chainMetaFor(lessonId, activeGate) {
@@ -46,6 +69,41 @@ const Lesson1Flow = (function () {
         done: "第4课完了",
         next: "本单元",
         hint: "本单元第2～4课五关已走完，可复习或进入下一单元。",
+      };
+    }
+    if (lid >= UNIT2_MVP_MIN && lid < UNIT2_MVP_MAX) {
+      return {
+        ...meta,
+        done: `第${lid}课完了`,
+        next: `第${lid + 1}课`,
+        hint: `第${lid}课五关已走完，返回首页继续第${lid + 1}课。`,
+      };
+    }
+    if (lid === UNIT2_MVP_MAX) {
+      return {
+        ...meta,
+        done: "第8课完了",
+        next: "下一单元",
+        hint: "第2单元四课五关已走完，可复习或进入第3单元。",
+      };
+    }
+    if (lid >= UNITS3_MVP_MIN && lid < UNITS3_MVP_MAX) {
+      const unitEnd = lid === 12 || lid === 16 || lid === 20;
+      return {
+        ...meta,
+        done: `第${lid}课完了`,
+        next: unitEnd ? "本单元复习" : `第${lid + 1}课`,
+        hint: unitEnd
+          ? `第${lid}课本单元最后一课五关已走完，可复习或进入下一单元。`
+          : `第${lid}课五关已走完，返回首页继续第${lid + 1}课。`,
+      };
+    }
+    if (lid === UNITS3_MVP_MAX) {
+      return {
+        ...meta,
+        done: "第24课完了",
+        next: "初级上收官",
+        hint: "第6单元四课五关已走完，可复习全册或查看通关条带。",
       };
     }
     return meta;
@@ -319,7 +377,54 @@ const Lesson1Flow = (function () {
     2: new Set(["l2_v_1", "l2_v_2", "l2_v_3", "l2_v_4", "l2_v_28", "l2_v_31"]),
     3: new Set(["l3_v_2", "l3_v_3", "l3_v_4", "l3_v_5", "l3_v_6"]),
     4: new Set(["l4_v_2", "l4_v_3", "l4_v_4", "l4_v_5"]),
+    5: new Set([
+      "l5_v_1", "l5_v_2", "l5_v_3", "l5_v_11", "l5_v_12", "l5_v_13", "l5_v_14",
+      "l5_v_21", "l5_v_29", "l5_v_30",
+    ]),
+    6: new Set([
+      "l6_v_1", "l6_v_2", "l6_v_3", "l6_v_10", "l6_v_11", "l6_v_29", "l6_v_30",
+      "l6_v_31", "l6_v_32",
+    ]),
+    7: new Set(["l7_v_1", "l7_v_9", "l7_v_11", "l7_v_29", "l7_v_31", "l7_v_32", "l7_v_33"]),
+    8: new Set(["l8_v_5", "l8_v_6", "l8_v_7", "l8_v_1", "l8_v_3", "l8_v_4"]),
+    /* 9–24：align-lessons-9-24-l1-mvp.py */
+    9: new Set(["l9_v_1", "l9_v_2", "l9_v_3", "l9_v_4", "l9_v_5", "l9_v_6", "l9_v_7", "l9_v_8"]),
+    10: new Set(["l10_v_1", "l10_v_2", "l10_v_3", "l10_v_4", "l10_v_5", "l10_v_6", "l10_v_7", "l10_v_8"]),
+    11: new Set(["l11_v_1", "l11_v_2", "l11_v_3", "l11_v_4", "l11_v_5", "l11_v_6"]),
+    12: new Set(["l12_v_1", "l12_v_2", "l12_v_3", "l12_v_5", "l12_v_6", "l12_v_7", "l12_v_8", "l12_v_9"]),
+    13: new Set([
+      "l13_v_1", "l13_v_3", "l13_v_18", "l13_v_29", "l13_v_40", "l13_v_43",
+      "l13_v_49", "l13_v_52", "l13_v_58",
+    ]),
+    14: new Set([
+      "l14_v_1", "l14_v_2", "l14_v_7", "l14_v_11", "l14_v_21", "l14_v_22",
+      "l14_v_26", "l14_v_27",
+    ]),
+    15: new Set([
+      "l15_v_1", "l15_v_4", "l15_v_21", "l15_v_30", "l15_v_40", "l15_v_43",
+    ]),
+    16: new Set([
+      "l16_v_1", "l16_v_3", "l16_v_7", "l16_v_9", "l16_v_15", "l16_v_21",
+      "l16_v_22", "l16_v_50",
+    ]),
+    17: new Set(["l17_v_1", "l17_v_2", "l17_v_3", "l17_v_4", "l17_v_5", "l17_v_6"]),
+    18: new Set(["l18_v_1", "l18_v_2", "l18_v_37", "l18_v_38", "l18_v_39", "l18_v_40", "l18_v_41", "l18_v_42"]),
+    19: new Set(["l19_v_1", "l19_v_2", "l19_v_3", "l19_v_4", "l19_v_5", "l19_v_6", "l19_v_7", "l19_v_8"]),
+    20: new Set(["l20_v_1", "l20_v_2", "l20_v_3", "l20_v_4", "l20_v_5", "l20_v_6", "l20_v_7", "l20_v_8"]),
+    21: new Set(["l21_v_1", "l21_v_2", "l21_v_3", "l21_v_4", "l21_v_5", "l21_v_6", "l21_v_7", "l21_v_8"]),
+    22: new Set(["l22_v_1", "l22_v_2", "l22_v_3", "l22_v_4", "l22_v_5", "l22_v_6", "l22_v_7", "l22_v_8"]),
+    23: new Set(["l23_v_1", "l23_v_2", "l23_v_3", "l23_v_4", "l23_v_5", "l23_v_6", "l23_v_7", "l23_v_8"]),
+    24: new Set(["l24_v_1", "l24_v_2", "l24_v_3", "l24_v_4", "l24_v_5", "l24_v_6"]),
   };
+
+  function mvpKnowledgeTips(lid) {
+    const id = Number(lid);
+    if (id === LESSON_ID && typeof L1KnowledgeTips !== "undefined") return L1KnowledgeTips;
+    if (id >= 2 && id <= 4 && typeof Unit1KnowledgeTips !== "undefined") return Unit1KnowledgeTips;
+    if (isUnits3to6Mvp(id) && typeof Lessons924KnowledgeTips !== "undefined") return Lessons924KnowledgeTips;
+    if (isUnit2Mvp(id) && typeof Unit2KnowledgeTips !== "undefined") return Unit2KnowledgeTips;
+    return null;
+  }
 
   function vocabWarnIdsFor(lessonId) {
     const lid = Number(lessonId);
@@ -337,18 +442,16 @@ const Lesson1Flow = (function () {
     return { warn, extend, conj, warnExplain, special: warn || extend || conj };
   }
 
-  function vocabWarnFallback(v) {
-    if (typeof L1KnowledgeTips !== "undefined") {
-      const t = L1KnowledgeTips.vocab(v);
+  function vocabWarnFallback(v, lid) {
+    const tips = mvpKnowledgeTips(lid);
+    if (tips) {
+      const t = tips.vocab(v);
       if (t?.lines?.length) return t;
     }
-    return {
-      lines: [
-        {
-          zh: "本词在称谓、读法或礼貌用法上与一般名词句不同；请结合淡黄行底记忆，并对照课文朗读。",
-        },
-      ],
-    };
+    const zh = isMvpExtendedFiveGate(lid)
+      ? "本词为当课重点；请结合淡黄行底、文法节点与会話 ABC 的 A 轨记忆。"
+      : "本词在称谓、读法或礼貌用法上与一般名词句不同；请结合淡黄行底记忆，并对照课文朗读。";
+    return { lines: [{ zh }] };
   }
 
   /** 喇叭左侧固定双行：上=注意，下=延伸（无则占位，全表对齐） */
@@ -367,7 +470,14 @@ const Lesson1Flow = (function () {
 
   function vocabTipSlotHtml(tip, anchorId) {
     if (!tip) return "";
-    const card = kcardHtml(tip, anchorId);
+    let payload = tip;
+    if (typeof KnowledgeLink !== "undefined" && anchorId) {
+      payload = KnowledgeLink.enrichTip(tip, anchorId, resolveLessonId());
+    }
+    const card =
+      typeof SenseiTipCard !== "undefined" && SenseiTipCard.fromTipPayload
+        ? SenseiTipCard.fromTipPayload(payload, { flat: true, l1Scope: false })
+        : kcardHtml(tip, anchorId);
     return card ? `<div class="l1-tip-slot l1-tip-slot--vocab">${card}</div>` : "";
   }
 
@@ -430,12 +540,10 @@ const Lesson1Flow = (function () {
             : typeof SpeakUI !== "undefined"
               ? SpeakUI.btnHtml(payload, `data-vocab-id="${escapeHtml(v.id)}"`)
               : "";
-        const tip =
-          lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined"
-            ? L1KnowledgeTips.vocab(v)
-            : null;
+        const tips = mvpKnowledgeTips(lid);
+        const tip = tips ? tips.vocab(v) : null;
         const badges = vocabBadges(v, tip, lid);
-        const warnBlock = badges.warnExplain ? vocabWarnTipHtml(tip, v) : "";
+        const warnBlock = badges.warnExplain ? vocabWarnTipHtml(tip || vocabWarnFallback(v, lid), v) : "";
         const extendBlock = badges.extend ? vocabExtendTipHtml(tip, v) : "";
         const conjBlock = badges.conj ? vocabConjBodyHtml(v) : "";
         const extraInner = [warnBlock, extendBlock, conjBlock].filter(Boolean).join("");
@@ -677,8 +785,10 @@ const Lesson1Flow = (function () {
     };
 
     function tipForTitle(title) {
-      if (lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined") {
-        return L1KnowledgeTips.homeworkTitle(title);
+      const tips = mvpKnowledgeTips(lid);
+      if (tips) {
+        const t = tips.homeworkTitle(title, lid);
+        if (t?.lines?.length) return t;
       }
       const key = Object.keys(HW_TIPS).find((k) => title.includes(k));
       return key ? { lines: [{ zh: HW_TIPS[key] }] } : { lines: [{ zh: "对照课本与文法栏，逐条完成本类练习。" }] };
@@ -794,8 +904,10 @@ const Lesson1Flow = (function () {
 
     const renderLn = (lines) => renderLines(lines, show);
     const extTip = (key, fallback, title) => {
-      if (lid === LESSON_ID && typeof L1KnowledgeTips !== "undefined") {
-        return L1KnowledgeTips.extensionKey(key, title);
+      const tips = mvpKnowledgeTips(lid);
+      if (tips) {
+        const t = tips.extensionKey(key, title, lid);
+        if (t?.lines?.length) return t;
       }
       return fallback;
     };
@@ -916,34 +1028,41 @@ const Lesson1Flow = (function () {
         done: 0,
         total: extTotal || 1,
         ready: extTotal === 0,
-        disabled: extTotal > 0,
+        disabled: false,
         lessonId: lid,
       }
     );
 
     const extPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
     const extOpened = {};
+    const extReadyMin = () => (extTotal === 0 ? 0 : 1);
     const updateExtFooter = () => {
       const done = Object.keys(extOpened).length;
-      const ready = extTotal === 0 || done >= extTotal;
+      const need = extReadyMin();
+      const ready = extTotal === 0 || done >= need;
       updateChainFooterButton(extPanel.querySelector("#l1-sum-done"), 4, {
-        done,
+        done: extTotal === 0 ? 1 : done,
         total: extTotal || 1,
         ready,
         lessonId: lid,
       });
     };
-    extPanel.querySelectorAll(".gw-group").forEach((det, i) => {
+    const extDetails = extPanel.querySelectorAll(".gw-group");
+    extDetails.forEach((det, i) => {
       det.addEventListener("toggle", () => {
         if (det.open) extOpened[i] = true;
         updateExtFooter();
       });
     });
+    if (extDetails.length && !extDetails[0].open) {
+      extDetails[0].open = true;
+      extOpened[0] = true;
+    }
     bindChainFooter(extPanel, 4, callbacks);
     updateExtFooter();
 
     mountEl.querySelector("#l1-sum-done")?.addEventListener("click", () => {
-      if (extTotal > 0 && Object.keys(extOpened).length < extTotal) return;
+      if (extTotal > 0 && Object.keys(extOpened).length < extReadyMin()) return;
       setGateDone(state, lid, 4);
       saveMvpState(state);
       callbacks.onCompleteHome?.();
@@ -980,8 +1099,15 @@ const Lesson1Flow = (function () {
   return {
     LESSON_ID,
     UNIT1_MVP_MAX,
+    UNIT2_MVP_MIN,
+    UNIT2_MVP_MAX,
+    UNITS3_MVP_MIN,
+    UNITS3_MVP_MAX,
     isLesson,
     isUnit1Mvp,
+    isUnit2Mvp,
+    isUnits3to6Mvp,
+    isMvpExtendedFiveGate,
     resolveLessonId,
     COCKPIT_TABS,
     L1_CHAIN_STEPS,

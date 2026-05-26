@@ -60,10 +60,13 @@
   function renderPanoramaTable() {
     const danHead = INTRO_GOJUON_DAN.map((d) => `<th class="panorama-dan">${escapeHtml(d)}</th>`).join("");
 
-    function cellButton(c, i) {
+    function cellButton(c) {
       const special = c.special ? " is-special" : "";
-      return `<div class="panorama-cell has-sensei-tip${special}" data-kana-tip="${escapeHtml(c.kana)}" tabindex="0" role="button" aria-label="${escapeHtml(c.kana)}${c.special ? " · 易错" : ""}">
+      const roma = c.romaji ? `<span class="gojuon-roma">${escapeHtml(c.romaji)}</span>` : "";
+      const ariaRoma = c.romaji ? ` · ${c.romaji}` : "";
+      return `<div class="panorama-cell has-sensei-tip${special}" data-kana-tip="${escapeHtml(c.kana)}" tabindex="0" role="button" aria-label="${escapeHtml(c.kana)}${ariaRoma}${c.special ? " · 易错" : ""}">
         <span class="gojuon-kana">${escapeHtml(c.kana)}</span>
+        ${roma}
         ${speakBtn(c.kana, "intro-speak-cell")}
       </div>`;
     }
@@ -73,13 +76,13 @@
         const c = row.cells[0];
         return `<tr>
           <td class="panorama-row-label">${escapeHtml(row.row)}</td>
-          <td colspan="5" class="panorama-n-cell">${cellButton(c, 0)}</td>
+          <td colspan="5" class="panorama-n-cell">${cellButton(c)}</td>
         </tr>`;
       }
       const cells = row.cells
         .map((c, i) => {
           if (!c) return `<td class="panorama-empty"></td>`;
-          return `<td>${cellButton(c, i)}</td>`;
+          return `<td>${cellButton(c)}</td>`;
         })
         .join("");
       return `<tr><td class="panorama-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;

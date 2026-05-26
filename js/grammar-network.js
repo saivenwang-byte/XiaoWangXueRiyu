@@ -15,6 +15,18 @@ const GrammarNetwork = (() => {
     return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lesson?.lessonId);
   }
 
+  function isUnit2MvpPanel() {
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit2Mvp(lesson?.lessonId);
+  }
+
+  function isUnits3MvpPanel() {
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnits3to6Mvp(lesson?.lessonId);
+  }
+
+  function isMvpFiveGatePanel() {
+    return isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel();
+  }
+
   function escapeHtml(s) {
     const d = document.createElement("div");
     d.textContent = s || "";
@@ -424,7 +436,7 @@ const GrammarNetwork = (() => {
   function nodeFoldSummary(node, i) {
     const zh = node.titleZh && showZh() ? node.titleZh.slice(0, 20) : "";
     const tag = node.supplement ? "補充" : node.core ? "★必学" : "必学";
-    if (isUnit1MvpPanel()) {
+    if (isMvpFiveGatePanel()) {
       return `
         <span class="l1-seq-num">${i + 1}</span>
         <span class="dg-scene-fold-meta">
@@ -451,7 +463,7 @@ const GrammarNetwork = (() => {
   }
 
   function l1AccordionMode() {
-    return isUnit1MvpPanel() || l1Flow;
+    return isMvpFiveGatePanel() || l1Flow;
   }
 
   function nodeFoldClass() {
@@ -481,10 +493,22 @@ const GrammarNetwork = (() => {
   }
 
   function renderNodeTip(node) {
-    if (isUnit1MvpPanel() && typeof L1KnowledgeCard !== "undefined") {
+    if (isMvpFiveGatePanel() && typeof L1KnowledgeCard !== "undefined") {
       let tip = null;
       if (lesson.lessonId === 1 && typeof L1KnowledgeTips !== "undefined") {
         tip = L1KnowledgeTips.grammar(node);
+      } else if (
+        typeof Lesson1Flow !== "undefined" &&
+        Lesson1Flow.isUnits3to6Mvp(lesson.lessonId) &&
+        typeof Lessons924KnowledgeTips !== "undefined"
+      ) {
+        tip = Lessons924KnowledgeTips.grammar(node);
+      } else if (
+        typeof Lesson1Flow !== "undefined" &&
+        Lesson1Flow.isUnit2Mvp(lesson.lessonId) &&
+        typeof Unit2KnowledgeTips !== "undefined"
+      ) {
+        tip = Unit2KnowledgeTips.grammar(node);
       } else {
         const zh = (node.explanationZh || node.titleZh || "").trim();
         const lines = zh
@@ -495,7 +519,7 @@ const GrammarNetwork = (() => {
       return L1KnowledgeCard.html(tip, node.id, lesson.lessonId);
     }
     if (
-      !isUnit1MvpPanel() &&
+      !isMvpFiveGatePanel() &&
       lesson?.lessonId >= 2 &&
       typeof KnowledgeLink !== "undefined" &&
       typeof SenseiTipCard !== "undefined"
@@ -570,7 +594,7 @@ const GrammarNetwork = (() => {
     fillNodeFoldBody(det);
     const sum = det.querySelector(l1AccordionMode() ? ".gw-group-summary" : ".gn-node-fold-summary");
     if (sum) {
-      const prefix = l1Flow && !isUnit1MvpPanel() ? "📖 " : "";
+      const prefix = l1Flow && !isMvpFiveGatePanel() ? "📖 " : "";
       sum.innerHTML = prefix + nodeFoldSummary(lesson.grammarNodes[idx], idx);
     }
     updateGateDoneButton();
@@ -609,7 +633,7 @@ const GrammarNetwork = (() => {
     const ok = allRequiredOpened();
     const req = requiredNodeIndices();
     const opened = req.filter((i) => nodesOpened[i]).length;
-    if (isUnit1MvpPanel() && typeof Lesson1Flow !== "undefined") {
+    if (isMvpFiveGatePanel() && typeof Lesson1Flow !== "undefined") {
       Lesson1Flow.updateChainFooterButton(btn, 1, {
         done: opened,
         total: req.length,
@@ -637,7 +661,7 @@ const GrammarNetwork = (() => {
         .map(
           (node, i) => `
         <details class="${foldCls}" data-gidx="${i}" data-node-id="${escapeHtml(node.id || "")}">
-          <summary class="${sumCls}">${l1Flow && !isUnit1MvpPanel() ? "📖 " : ""}${nodeFoldSummary(node, i)}</summary>
+          <summary class="${sumCls}">${l1Flow && !isMvpFiveGatePanel() ? "📖 " : ""}${nodeFoldSummary(node, i)}</summary>
           <div class="${bodyCls}"></div>
         </details>`
         )
@@ -646,7 +670,7 @@ const GrammarNetwork = (() => {
   }
 
   function render() {
-    if (l1Flow && !isUnit1MvpPanel()) {
+    if (l1Flow && !isMvpFiveGatePanel()) {
       container.innerHTML = `
         <div class="gn-card-wrap l1-flow-wrap gn-l1-wrap">
           <h2>第${lesson.lessonId}課 · 文法</h2>
@@ -668,7 +692,7 @@ const GrammarNetwork = (() => {
       });
       return;
     }
-    const l1Grammar = isUnit1MvpPanel();
+    const l1Grammar = isMvpFiveGatePanel();
     const req = requiredNodeIndices();
     if (l1Grammar && typeof Lesson1Flow !== "undefined") {
       container.innerHTML = Lesson1Flow.l1GatePanelHtml(renderNodeAccordion(), 1, {

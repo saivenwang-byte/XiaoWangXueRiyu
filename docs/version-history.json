@@ -2,10 +2,10 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "246",
+    "cache": "278",
     "date": "2026-05-25",
+    "note": "首页单元展开顶对齐四课可见；单词延展一次展开；cache v278",
     "git_tag": null,
-    "note": "第1单元第2–4课会話 ABC 补全（A=课文 B/C=场景变体，unit1-dialogue-abc-l234.js）",
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
     "paradigm": "docs/项目知识库-文递自归.md"

@@ -122,12 +122,21 @@ const SenseiTipCard = (() => {
    * @param {{ lines?: {zh?: string, ja?: string}[], links?: object[] }} tip
    * @param {{ l1Scope?: boolean, alwaysFold?: boolean, expanded?: boolean }} [opts]
    */
+  function renderFlat(rows, linksHtml) {
+    return `<div class="hyouga-tip-flat hyouga-tip-shell" role="note">
+      ${markHtml()}${labelHtml()}
+      <div class="hyouga-tip-flat-body">${renderLineParagraphs(rows)}</div>
+      ${linksHtml ? `<div class="hyouga-tip-links">${linksHtml}</div>` : ""}
+    </div>`;
+  }
+
   function fromTipPayload(tip, opts = {}) {
     if (!tip) return "";
     const items = (tip.lines || []).filter((l) => l && (l.zh || l.ja));
     if (!items.length) return "";
     const rows = flattenTipLines(items);
     const linksHtml = linksBlock(tip.links, tip.related);
+    if (opts.flat) return renderFlat(rows, linksHtml);
     if (!l1UnifiedFold(opts) && isSingleLineTip(items)) return renderStatic(rows, linksHtml);
     return renderFold(rows, linksHtml, !!opts.expanded);
   }

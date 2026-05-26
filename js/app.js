@@ -3,12 +3,14 @@
   let activeLessonId = null;
   /** 0=単語 1=文法 2=会話 3=作業 4=まとめ */
   let activeGate = -1;
+  /** 从笔记「去学本课」进入时，退出课内回到此视图 */
+  let lessonReturnView = null;
 
   const titles = {
     home: "標日 あと学習",
     lesson: "学習中",
     review: "復習",
-    me: "マイページ",
+    me: "笔记",
   };
 
   /** 从左到右 = 推荐学习顺序；序号与位置一致 */
@@ -26,8 +28,25 @@
     return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit1Mvp(lid);
   }
 
+  /** 第2单元 MVP 五关（第5～8课，同 Lesson1Flow 壳） */
+  function isUnit2MvpFiveGate(lessonId) {
+    const lid = lessonId != null ? Number(lessonId) : activeLessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnit2Mvp(lid);
+  }
+
+  /** 第3–6单元 MVP 五关（第9～24课） */
+  function isUnits3MvpFiveGate(lessonId) {
+    const lid = lessonId != null ? Number(lessonId) : activeLessonId;
+    return typeof Lesson1Flow !== "undefined" && Lesson1Flow.isUnits3to6Mvp(lid);
+  }
+
+  /** 五关课（1–4 · 5–8 · 9–24） */
+  function isMvpFiveGate(lessonId) {
+    return isUnit1MvpFiveGate(lessonId) || isUnit2MvpFiveGate(lessonId) || isUnits3MvpFiveGate(lessonId);
+  }
+
   function isL1FiveGate(lessonId) {
-    return isUnit1MvpFiveGate(lessonId);
+    return isMvpFiveGate(lessonId);
   }
 
   function isUnit1Lesson(lessonId) {
@@ -39,7 +58,7 @@
   function syncL1GateTheme(lessonId, gate) {
     const body = document.getElementById("lesson-flow-body");
     if (!body) return;
-    const l1 = isUnit1MvpFiveGate(lessonId);
+    const l1 = isMvpFiveGate(lessonId);
     const g = String(gate);
     if (l1) {
       body.classList.add("l1-lesson-scope");
@@ -59,11 +78,11 @@
   }
 
   function maxGateIndex(lessonId) {
-    return isUnit1MvpFiveGate(lessonId) ? 4 : 3;
+    return isMvpFiveGate(lessonId) ? 4 : 3;
   }
 
   function cockpitTabsForLesson(lessonId) {
-    if (isUnit1MvpFiveGate(lessonId)) return Lesson1Flow.COCKPIT_TABS;
+    if (isMvpFiveGate(lessonId)) return Lesson1Flow.COCKPIT_TABS;
     return cockpitTabs;
   }
 
@@ -73,7 +92,7 @@
     if (g === "conversation" || g === "convo" || g === 2 || g === "2") return 2;
     if (g === "quiz" || g === "homework" || g === 3 || g === "3") return 3;
     if (g === "extension" || g === "summary" || g === 4 || g === "4") {
-      return isUnit1MvpFiveGate(lessonId) ? 4 : null;
+      return isMvpFiveGate(lessonId) ? 4 : null;
     }
     const n = Number(g);
     const max = maxGateIndex(lessonId);
@@ -82,7 +101,7 @@
 
   /** 单词→会話→文法→(作業/テスト)→拡張；会話未过则优先会話 */
   function defaultGateForLesson(g, lessonId) {
-    if (isUnit1MvpFiveGate(lessonId)) {
+    if (isMvpFiveGate(lessonId)) {
       if (!g.gate0) return 0;
       if (!g.gate2) return 2;
       if (!g.gate1) return 1;
@@ -149,7 +168,7 @@
   function renderLessonFlowHead(L) {
     const head = document.getElementById("lesson-flow-head");
     if (!head || !L) return;
-    if (isUnit1MvpFiveGate(L.lessonId)) {
+    if (isMvpFiveGate(L.lessonId)) {
       head.innerHTML = Lesson1Flow.flowHeadHtml(L, activeGate, state);
       if (typeof SpeakUI !== "undefined") SpeakUI.bind(head);
       return;
@@ -208,9 +227,16 @@
     }
   }
 
-  function enterLesson(lessonId, gate) {
+  function exitLessonView() {
+    const v = lessonReturnView || "home";
+    lessonReturnView = null;
+    showView(v);
+  }
+
+  function enterLesson(lessonId, gate, opts) {
     activeLessonId = Number(lessonId);
     state.lastLessonId = activeLessonId;
+    lessonReturnView = opts && opts.returnView ? opts.returnView : null;
     if (typeof touchCurriculumUnit === "function" && typeof getUnitIdForLesson === "function") {
       touchCurriculumUnit(state, getUnitIdForLesson(activeLessonId));
       saveMvpState(state);
@@ -343,7 +369,7 @@
   }
 
   function pathRailHtml(g) {
-    if (isUnit1MvpFiveGate(activeLessonId)) {
+    if (isMvpFiveGate(activeLessonId)) {
       return "";
     }
     if (typeof formatLessonFourSeaStars === "function" && activeLessonId != null) {
@@ -378,7 +404,7 @@
       ${pathRail ? `<div class="cockpit-path">${pathRail}</div>` : ""}
       <div class="cockpit-tabs" id="cockpit-tabs" role="tablist"></div>
     `;
-    el.querySelector("#cockpit-exit").onclick = () => showView("home");
+    el.querySelector("#cockpit-exit").onclick = () => exitLessonView();
     const tabs = el.querySelector("#cockpit-tabs");
     cockpitTabsForLesson(L.lessonId).forEach((t) => {
       const done = !!g[`gate${t.k}`];
@@ -392,7 +418,7 @@
       b.dataset.gate = String(t.k);
       b.setAttribute("role", "tab");
       b.setAttribute("aria-selected", activeGate === t.k ? "true" : "false");
-      const tabDoneIcon = isUnit1MvpFiveGate(L.lessonId) ? false : done && t.k !== 0;
+      const tabDoneIcon = isMvpFiveGate(L.lessonId) ? false : done && t.k !== 0;
       b.innerHTML = `<span class="cockpit-tab-main">${tabDoneIcon ? "✅ " : ""}${escapeHtml(t.label)}</span>
         <span class="cockpit-tab-sub">${escapeHtml(t.sub)}</span>`;
       b.onclick = (e) => {
@@ -420,7 +446,7 @@
           </button>
           <span class="cockpit-lesson">第${id}課 · 準備中</span>
         </div>`;
-      cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => showView("home"));
+      cockpit.querySelector("#cockpit-exit")?.addEventListener("click", () => exitLessonView());
     }
     if (head) {
       head.innerHTML = `<p class="headline-jp jp">${escapeHtml(meta.headline)}</p>
@@ -496,13 +522,13 @@ function appendGateNextStrip(container, currentGate) {
       return;
     }
 
-    const u1mvp = isUnit1MvpFiveGate(activeLessonId);
+    const mvpFive = isMvpFiveGate(activeLessonId);
     const l1Callbacks = {
       state,
       lessonId: activeLessonId,
       switchGate: (k) => switchGate(k),
       onRefreshCockpit: () => renderLessonCockpit(lessonProgress(activeLessonId)),
-      onCompleteHome: () => showView("home"),
+      onCompleteHome: () => exitLessonView(),
     };
 
     const opts = {
@@ -544,18 +570,19 @@ function appendGateNextStrip(container, currentGate) {
     };
 
     try {
-      const skipScrollHint = u1mvp && activeGate === 0;
+      /* 五关课 l1GatePanelHtml 自带 .l1-gate-scroll，勿再包 ScrollHint 外层（双滚动条） */
+      const skipScrollHint = mvpFive;
       const useScroll =
         !skipScrollHint && typeof ScrollHint !== "undefined" && ScrollHint.setupForGate;
       const host = useScroll ? ScrollHint.setupForGate(body, activeGate) : null;
       const mountEl = host?.region || body;
-      if (u1mvp) {
+      if (mvpFive) {
         mountEl.classList.add("l1-lesson-scope");
         mountEl.setAttribute("data-l1-active-gate", String(activeGate));
         syncL1GateTheme(activeLessonId, activeGate);
       }
 
-      if (activeGate === 0 && u1mvp) {
+      if (activeGate === 0 && mvpFive) {
         Lesson1Flow.mountVocab(mountEl, state, l1Callbacks);
       } else if (activeGate === 0) {
         if (typeof VocabFlash === "undefined") {
@@ -567,18 +594,18 @@ function appendGateNextStrip(container, currentGate) {
         GrammarNetwork.mount(mountEl, activeLessonId, {
           ...opts,
           l1Flow: false,
-          switchGate: u1mvp ? (k) => switchGate(k) : undefined,
+          switchGate: mvpFive ? (k) => switchGate(k) : undefined,
         });
         if (typeof SpeakUI !== "undefined") SpeakUI.bind(mountEl);
       } else if (activeGate === 2) {
         DialogueGate.mount(mountEl, activeLessonId, {
           ...opts,
           l1Flow: false,
-          switchGate: u1mvp ? (k) => switchGate(k) : undefined,
+          switchGate: mvpFive ? (k) => switchGate(k) : undefined,
         });
-      } else if (u1mvp && activeGate === 3) {
+      } else if (mvpFive && activeGate === 3) {
         Lesson1Flow.mountHomework(mountEl, state, l1Callbacks);
-      } else if (u1mvp && activeGate === 4) {
+      } else if (mvpFive && activeGate === 4) {
         Lesson1Flow.mountExtension(mountEl, state, l1Callbacks);
       } else {
         QuizGate.mount(mountEl, activeLessonId, {
@@ -694,47 +721,15 @@ function appendGateNextStrip(container, currentGate) {
   }
 
   function renderMe() {
-    const heat = document.getElementById("heatmap");
-    const progress = document.getElementById("parent-progress");
-    const weak = document.getElementById("weak-top3");
-
-    heat.innerHTML = weekStudyDays(state)
-      .map((d) => {
-        const label = d.date.slice(5);
-        return `<div class="heat-cell ${d.studied ? "on" : ""}" title="${d.date}"><span>${label}</span></div>`;
-      })
-      .join("");
-
-    const progressIds =
-      typeof CURRICULUM_RELEASED_IDS !== "undefined"
-        ? [...CURRICULUM_RELEASED_IDS].sort((a, b) => a - b)
-        : LESSONS_MVP.map((L) => L.lessonId).sort((a, b) => a - b);
-    progress.innerHTML = progressIds
-      .filter((id) => typeof getLessonMvp === "function" && getLessonMvp(id))
-      .map((id) => {
-        const g = lessonProgress(id);
-        const all =
-          g.gate0 &&
-          g.gate1 &&
-          g.gate2 &&
-          g.gate3 &&
-          (!isUnit1MvpFiveGate(id) || g.gate4);
-        const stars =
-          typeof formatLessonFourSeaStars === "function"
-            ? formatLessonFourSeaStars(state, id)
-            : `${g.gate0 ? "★" : "○"}${g.gate2 ? "★" : "○"}${g.gate1 ? "★" : "○"}${g.gate3 ? "★" : "○"}`;
-        return `<div class="parent-row">
-        <span>第${id}課</span>
-        <span class="parent-row-stars">${stars}</span>
-        <span class="${all ? "done-tag" : ""}">${all ? "完了" : "学習中"}</span>
-      </div>`;
-      })
-      .join("");
-
-    const tops = weakGrammarTop3(state);
-    weak.innerHTML = tops.length
-      ? tops.map((t) => `<li><strong>${escapeHtml(t.title)}</strong> · ${t.count}回</li>`).join("")
-      : "<li class='hint-ja'>まだにがてデータがありません。</li>";
+    const root = document.getElementById("notes-panel-root");
+    if (root && typeof NotesPanel !== "undefined") {
+      root.innerHTML = NotesPanel.render(state);
+      NotesPanel.bind(root, state, {
+        enterLesson: (id, gate, opts) => enterLesson(id, gate, opts),
+      });
+    } else if (root) {
+      root.innerHTML = `<p class="hint-ja">笔记模块加载失败，请刷新页面（?v=${typeof ShareWechat !== "undefined" ? ShareWechat.CACHE_VER : ""}）。</p>`;
+    }
 
     const toggle = document.getElementById("toggle-zh");
     if (toggle) {
@@ -745,6 +740,7 @@ function appendGateNextStrip(container, currentGate) {
         applyZhSetting();
         if (document.getElementById("view-home").classList.contains("active")) renderHome();
         if (document.getElementById("view-lesson").classList.contains("active")) renderLessonFlow();
+        if (document.getElementById("view-me").classList.contains("active")) renderMe();
       };
     }
 

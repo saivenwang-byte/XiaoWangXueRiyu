@@ -144,8 +144,49 @@ const NotesPanel = (() => {
 
   const TEACHER_EXTRA = [
     { id: "dialogue", title: "会话要点", short: "話", cls: "me-kp-話" },
+    { id: "matome", title: "本课总结", short: "総", cls: "me-kp-総" },
+    { id: "template", title: "表达模板", short: "模", cls: "me-kp-模" },
+    { id: "unitQuiz", title: "单元测试予告", short: "試", cls: "me-kp-試" },
     { id: "mistakes", title: "常见错误", short: "誤", cls: "me-kp-誤" },
   ];
+
+  const LONG_REF_TABLE_MIN = 18;
+  const LONG_REF_LESSON_IDS = new Set([5, 13]);
+
+  function stripReviewMarkers(s) {
+    return String(s || "")
+      .replace(/【[^】]+】\s*/g, "")
+      .trim();
+  }
+
+  function mistakeDedupeKey(s) {
+    const t = stripReviewMarkers(s);
+    const m = t.match(/×\s*(.+?)\s*○\s*(.+)/);
+    if (m) return `×${m[1]}○${m[2]}`.replace(/\s+/g, "");
+    return t.replace(/\s+/g, "");
+  }
+
+  /** 误用行：拆多行、去重；Top20 与 ×○ 重复时保留一条 */
+  function normalizeMistakeLines(lines) {
+    const flat = [];
+    (lines || []).forEach((line) => {
+      String(line)
+        .split(/\n/)
+        .forEach((part) => {
+          const t = part.trim();
+          if (t) flat.push(t);
+        });
+    });
+    const seen = new Set();
+    const out = [];
+    flat.forEach((t) => {
+      const k = mistakeDedupeKey(t);
+      if (!k || seen.has(k)) return;
+      seen.add(k);
+      out.push(t);
+    });
+    return out;
+  }
 
   /** @returns {Record<string, {meta, lines: string[]}>} */
   function collectTeacherGroups(L) {
@@ -161,13 +202,28 @@ const NotesPanel = (() => {
       (block.lines || []).forEach((line) => push(block.key, meta, line));
     });
     (L?.dialogueKeyPoints || []).forEach((line) => {
-      const m = TEACHER_EXTRA[0];
-      push("dialogue", m, line);
+      push("dialogue", TEACHER_EXTRA[0], line);
     });
     (L?.reviewExtension || []).forEach((sec) => {
-      if (!/よくある誤り|常见误/.test(sec.title || "")) return;
-      const m = TEACHER_EXTRA[1];
-      (sec.lines || []).forEach((line) => push("mistakes", m, line));
+      const title = sec.title || "";
+      if (/模板/.test(title)) {
+        (sec.lines || []).forEach((line) => push("template", TEACHER_EXTRA[2], line));
+        return;
+      }
+      if (/これまでのまとめ/.test(title)) {
+        (sec.lines || []).forEach((line) => {
+          const t = String(line || "").trim();
+          if (!t || /^第\s*\d+\s*课[：:]/.test(t)) return;
+          push("matome", TEACHER_EXTRA[1], t);
+        });
+        return;
+      }
+      if (/单元测试予告/.test(title)) {
+        (sec.lines || []).forEach((line) => push("unitQuiz", TEACHER_EXTRA[3], line));
+        return;
+      }
+      if (!/よくある誤り|常见误/.test(title)) return;
+      normalizeMistakeLines(sec.lines || []).forEach((line) => push("mistakes", TEACHER_EXTRA[4], line));
     });
     return groups;
   }
@@ -201,6 +257,21 @@ const NotesPanel = (() => {
     </details>`;
   }
 
+  function grammarLinksHtml(node) {
+    const links = (node?.links || []).filter((l) => l && (l.label || l.href));
+    if (!links.length) return "";
+    const items = links
+      .map((l) => {
+        const label = escapeHtml(l.label || l.href || "");
+        if (l.href) {
+          return `<li><a class="notes-tb-link" href="${escapeHtml(l.href)}" target="_blank" rel="noopener noreferrer">${label}</a></li>`;
+        }
+        return `<li><span class="notes-tb-link notes-tb-link--text">${label}</span></li>`;
+      })
+      .join("");
+    return `<ul class="notes-tb-links zh-annotation" aria-label="标日对照与关联">${items}</ul>`;
+  }
+
   function textbookDimHtml(L, lessonId) {
     const nodes = L?.grammarNodes || [];
     if (!nodes.length) return { count: 0, html: "" };
@@ -208,10 +279,19 @@ const NotesPanel = (() => {
       .map((n, i) => {
         const label = n.titleZh || n.title || "语法点";
         const body = (n.explanationZh || n.explanation || "").trim();
-        const inner = body
-          ? `<div class="notes-tb-bubble zh-annotation">${highlightKnowledgeText(body)}</div>`
-          : `<p class="notes-empty zh-annotation">（无中文说明）</p>`;
-        return subFoldHtml(lessonId, "tb", `g${i}`, label, 1, inner, "notes-sub--textbook notes-sub--teacher-like");
+        const links = grammarLinksHtml(n);
+        const linkCount = (n.links || []).filter((l) => l && (l.label || l.href)).length;
+        const inner = `${body ? `<div class="notes-tb-bubble zh-annotation">${highlightKnowledgeText(body)}</div>` : `<p class="notes-empty zh-annotation">（无中文说明）</p>`}${links}`;
+        const itemCount = (body ? 1 : 0) + linkCount;
+        return subFoldHtml(
+          lessonId,
+          "tb",
+          `g${i}`,
+          label,
+          itemCount || 1,
+          inner,
+          "notes-sub--textbook notes-sub--teacher-like"
+        );
       })
       .join("");
     return { count: nodes.length, html: `<div class="notes-dim-subs">${subs}</div>` };
@@ -229,6 +309,9 @@ const NotesPanel = (() => {
       "preview",
       "honorific",
       "dialogue",
+      "matome",
+      "template",
+      "unitQuiz",
       "mistakes",
     ];
     let total = 0;
@@ -259,6 +342,25 @@ const NotesPanel = (() => {
     return { count: total, html: subs ? `<div class="notes-dim-subs">${subs}</div>` : "" };
   }
 
+  function isLongRefTable(lessonId, refLines) {
+    return refLines.length >= LONG_REF_TABLE_MIN || LONG_REF_LESSON_IDS.has(Number(lessonId));
+  }
+
+  function refTableFoldHtml(lessonId, refLines) {
+    const body = refLines
+      .map((t) => `<div class="notes-ref-table-line">${escapeHtml(t)}</div>`)
+      .join("");
+    const uid = `n${lessonId}-sc-ref-long`;
+    return `<details class="notes-ref-longtable" data-notes-sub="${uid}">
+      <summary class="notes-ref-longtable-summary">
+        <span class="notes-sub-chevron" aria-hidden="true"></span>
+        <span>参考长表</span>
+        <span class="notes-sub-count">${refLines.length}条</span>
+      </summary>
+      <div class="notes-ref-longtable-body zh-annotation">${body}</div>
+    </details>`;
+  }
+
   function scholarDimHtml(L, lessonId) {
     const coreLines = [];
     const refLines = [];
@@ -283,8 +385,7 @@ const NotesPanel = (() => {
     });
     const errSec = (L?.reviewExtension || []).find((s) => /よくある誤り|常见误/.test(s.title || ""));
     if (errSec) {
-      errSec.lines.forEach((line) => {
-        const t = String(line || "").trim();
+      normalizeMistakeLines(errSec.lines || []).forEach((t) => {
         if (t.startsWith("×") || t.startsWith("○") || /^易错|注意/.test(t)) errLines.push(t);
       });
     }
@@ -304,10 +405,14 @@ const NotesPanel = (() => {
 
     if (refLines.length) {
       blockCount += 1;
-      const inner = refLines.map((t) => scholarBubbleHtml("ref", t)).join("");
-      parts.push(
-        subFoldHtml(lessonId, "sc", "ref", "参考对照", refLines.length, inner, "notes-sub--scholar-fold")
-      );
+      if (isLongRefTable(lessonId, refLines)) {
+        parts.push(refTableFoldHtml(lessonId, refLines));
+      } else {
+        const inner = refLines.map((t) => scholarBubbleHtml("ref", t)).join("");
+        parts.push(
+          subFoldHtml(lessonId, "sc", "ref", "参考对照", refLines.length, inner, "notes-sub--scholar-fold")
+        );
+      }
     }
 
     if (errLines.length) {
