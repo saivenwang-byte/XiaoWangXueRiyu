@@ -103,6 +103,20 @@ const FETCH_MP3_MS_DESKTOP = 5000;
     } catch (_) {}
   }
 
+  // Global: unlock audio on first user touch/click anywhere
+  if (typeof document !== "undefined") {
+    var _unlocked = false;
+    function _globalUnlock() {
+      if (_unlocked) return;
+      _unlocked = true;
+      unlockAudioOnce();
+      document.removeEventListener("touchstart", _globalUnlock);
+      document.removeEventListener("click", _globalUnlock);
+    }
+    document.addEventListener("touchstart", _globalUnlock, { once: false });
+    document.addEventListener("click", _globalUnlock, { once: false });
+  }
+
   function stopAllPlayback() {
     if (currentAudio) {
       try {

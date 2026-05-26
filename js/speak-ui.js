@@ -138,9 +138,9 @@ const SpeakUI = (() => {
     hideToast();
     btn.classList.remove("is-speaking");
     if (!ok) {
-      const wx = /MicroMessenger/i.test(navigator.userAgent || "");
+      const mobile = /MicroMessenger|iPhone|iPad|iPod|Android/i.test(navigator.userAgent || "");
       showToast(
-        wx
+        mobile
           ? "朗读失败：请连 WiFi/流量；跟读请点右上角「···」→ 在浏览器中打开；也可稍后再点"
           : "朗读失败：请再点一次；首次加载语音包约 1～2 秒（请用打开本地预览.bat）"
       );
