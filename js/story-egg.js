@@ -62,9 +62,9 @@ const StoryEgg = (function () {
     const lid = Number(lessonId);
     const uid = Number(unitId);
     const slot = panelIndexForLesson(uid, lid) + 1;
-    const panel = `assets/story/unit-${uid}-panel-${slot}-clean.png`;
-    const egg = `assets/story/lesson-${lid}-egg.webp`;
-    const eggPng = `assets/story/lesson-${lid}-egg.png`;
+    const panel = storyAssetUrl(`assets/story/unit-${uid}-panel-${slot}-clean.png`);
+    const egg = storyAssetUrl(`assets/story/lesson-${lid}-egg.webp`);
+    const eggPng = storyAssetUrl(`assets/story/lesson-${lid}-egg.png`);
     return { primary: panel, fallbacks: [egg, eggPng] };
   }
 
@@ -171,12 +171,25 @@ const StoryEgg = (function () {
     };
   }
 
+  function storyAssetUrl(path) {
+    if (!path) return path;
+    const v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "";
+    if (!v || path.includes("?")) return path;
+    return `${path}?v=${v}`;
+  }
+
   function bindImgFallbacks(root, selector) {
     root?.querySelectorAll(selector).forEach((img) => {
       const fallbacks = (img.dataset.fallbacks || "").split(",").filter(Boolean);
       let fi = 0;
       img.onerror = () => {
-        if (fi < fallbacks.length) img.src = fallbacks[fi++];
+        if (fi < fallbacks.length) {
+          img.src = storyAssetUrl(fallbacks[fi++]);
+          return;
+        }
+        img.classList.add("story-egg-img-missing");
+        img.removeAttribute("src");
+        img.setAttribute("role", "presentation");
       };
     });
   }
@@ -333,7 +346,13 @@ const StoryEgg = (function () {
           activityJp: GRAND_SPOT_NAMES?.[cardId] || "",
           placeJp: "",
         };
-        const card = `assets/story/grand/card-${n}-clean.png`;
+        const cardBase = `assets/story/grand/card-${n}`;
+        const card = storyAssetUrl(`${cardBase}-clean.png`);
+        const cardFallbacks = [
+          `${cardBase}-harmonized.png`,
+          `${cardBase}-draft.png`,
+          "assets/story/egg-grand.webp",
+        ].join(",");
         const capHtml =
           typeof StoryCaptionJp !== "undefined"
             ? StoryCaptionJp.renderL3CapBlockHtml(
@@ -350,7 +369,7 @@ const StoryEgg = (function () {
           </div>`;
         cells.push(`<div class="story-egg-l3-cell" data-card-id="${cardId}" data-grid-row="${row + 1}" data-grid-col="${col + 1}">
           <img src="${escapeHtml(card)}" alt="" decoding="async" loading="lazy"
-            data-fallbacks="assets/story/egg-grand.webp" />
+            data-fallbacks="${escapeHtml(cardFallbacks)}" />
           ${capHtml}
         </div>`);
       }

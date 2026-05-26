@@ -208,7 +208,6 @@
         data-phase="${L.phase}" title="${escapeHtml(title)}">
         <span class="intro-layer-ja jp">${escapeHtml(L.labelJa)}</span>
         <span class="intro-layer-zh">${escapeHtml(L.label)}</span>
-        ${done ? '<span class="intro-layer-check">✓</span>' : ""}
       </button>`;
     }).join("");
   }
@@ -242,6 +241,7 @@
       <div class="intro-script-mini">
         <span class="intro-script-icon">${s.icon}</span>
         <span class="jp">${escapeHtml(s.name)}</span>
+        ${s.zh ? `<span class="intro-script-zh zh-annotation">${escapeHtml(s.zh)}</span>` : ""}
       </div>`
     ).join("");
 
@@ -279,9 +279,15 @@
   }
 
   function goToCourseHome() {
-    const ver = typeof CACHE_VER !== "undefined" ? CACHE_VER : "";
+    const ver =
+      typeof CACHE_VER !== "undefined"
+        ? CACHE_VER
+        : typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER
+          ? ShareWechat.CACHE_VER
+          : "";
     const params = new URLSearchParams();
     if (ver) params.set("v", String(ver));
+    params.set("nosplash", "1");
     if (new URLSearchParams(location.search).get("embed") === "1") params.set("embed", "1");
     const qs = params.toString();
     const url = `index.html${qs ? `?${qs}` : ""}`;
@@ -389,7 +395,7 @@
 
     root.innerHTML = `
       <section class="intro-archive-card" aria-label="注音能力档案">
-        <nav class="intro-layer-nav intro-layer-nav--in-card" id="intro-layer-nav" aria-label="基础·协调·核心">${renderLayerNav(progress, activePhase)}</nav>
+        <nav class="intro-layer-nav intro-layer-nav--in-card" id="intro-layer-nav" aria-label="基础·协同·核心">${renderLayerNav(progress, activePhase)}</nav>
         <div class="intro-archive-body">
           ${renderFoundationPanel()}${renderSynergyPanel()}${renderCorePanel()}
         </div>

@@ -1,6 +1,6 @@
-﻿/** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发 */
+/** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发 */
 const ShareWechat = (() => {
-  const CACHE_VER = "290";
+  const CACHE_VER = "300";
 
   const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
 
@@ -126,7 +126,7 @@ const ShareWechat = (() => {
     if (!btn) return;
     btn.addEventListener("click", shareToWechat);
     if (configuredOrigin() || isPublicHttps()) {
-      btn.title = "复制公网链接，发到微信（人传人转发）";
+      btn.title = "转发学习链接（复制后到微信聊天发送）";
     } else {
       btn.title = "需公网链接；见 帮你发布好了.bat";
     }

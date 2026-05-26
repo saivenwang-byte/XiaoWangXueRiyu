@@ -1,5 +1,6 @@
 {
-  "navigationBarTitleText": "标日课后巩固",
+  "navigationBarTitleText": "标日 あと学習",
   "navigationBarBackgroundColor": "#FF8A80",
-  "navigationBarTextStyle": "white"
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false
 }

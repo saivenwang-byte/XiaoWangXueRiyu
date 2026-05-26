@@ -346,12 +346,12 @@ function curriculumUnitVisualState(state, unitId) {
   const unit = CURRICULUM_UNITS.find((u) => u.id === id);
   if (!unit) return "dormant";
   const prog = curriculumUnitProgress(state, unit);
-  const touched = curriculumUnitLessonsTouched(state, unit);
-  const allDone = prog.total > 0 && prog.cleared >= prog.total;
-  if (allDone) return "cleared";
-  if (touched) return "active";
-  if (id === 1 && curriculumIntroCompleted()) return "start";
-  return "dormant";
+  if (!prog.total) return "dormant";
+  if (prog.cleared >= prog.total) return "cleared";
+  if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
+    return "start";
+  }
+  return "active";
 }
 
 function curriculumPart0VisualState() {
@@ -431,6 +431,7 @@ function curriculumLessonProgressDisplay(state, lessonId, options) {
   const showReal =
     options?.forceReal ||
     curriculumDevCatalogMode() ||
+    d.playable ||
     (typeof curriculumUnitVisualState === "function" &&
       curriculumUnitVisualState(state, unitId) !== "dormant");
 
@@ -523,14 +524,12 @@ function curriculumGetFocusLesson(state) {
   return null;
 }
 
+/** 散点学习：仅拦截未发布/无数据课 */
 function curriculumCanEnterLesson(state, lessonId) {
   const id = Number(lessonId);
   if (curriculumDevCatalogMode()) return id >= 1 && id <= 24;
   const d = getCurriculumLessonDisplay(id);
-  if (!d.playable) return false;
-  if (curriculumFreeExploreMode(state)) return true;
-  const focus = curriculumGetFocusLesson(state);
-  return focus === id;
+  return !!d.playable;
 }
 
 /** 新用户闪烁引导：Part-0 与第1课（或当前 focus 课） */

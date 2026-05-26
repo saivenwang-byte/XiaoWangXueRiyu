@@ -1,1 +1,23 @@
-<web-view wx:if="{{url}}" src="{{url}}"></web-view>
+<view class="study-page">
+  <view wx:if="{{loading && !loadFailed}}" class="study-loading" aria-role="status">
+    <text class="study-loading-text">正在打开学习页…</text>
+  </view>
+
+  <view wx:if="{{loadFailed}}" class="study-fallback">
+    <text class="study-fallback-title">学习页暂时打不开</text>
+    <text class="study-fallback-hint">{{errorHint}}</text>
+    <text class="study-fallback-url" selectable>{{h5UrlDisplay}}</text>
+    <button class="study-retry-btn" type="primary" bindtap="onReloadTap">重新加载</button>
+  </view>
+
+  <web-view
+    wx:if="{{url && !loadFailed}}"
+    src="{{url}}"
+    bindload="onWebViewLoad"
+    binderror="onWebViewError"
+  ></web-view>
+
+  <cover-view wx:if="{{url && !loadFailed && !loading}}" class="study-reload-fab" bindtap="onReloadTap">
+    <cover-view class="study-reload-fab-inner">刷新</cover-view>
+  </cover-view>
+</view>

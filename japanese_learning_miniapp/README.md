@@ -1,14 +1,28 @@
-# 标日课后巩固 · 微信小程序壳（暂缓上线）
+# 标日 あと学習 · 微信小程序壳（暂缓上线）
 
 **现阶段请用链接转发**，见根目录 `怎么用.txt` 与 `帮你发布好了.bat`。
 
 等企业主体成立、人数合适后再发布本目录到微信。  
-`config/h5-url.js` 已与公网 H5 对齐，届时只需走 `docs/微信小程序-发布一次.md`。
+`config/h5-url.js` 的 `CACHE_VER` 须与根目录 `js/share-wechat.js` 一致；H5 改完后 **git push**，再在壳里点「刷新」或重新进入小程序。
 
 ## 目录说明
 
 | 文件 | 作用 |
 |------|------|
-| `pages/study/study` | 唯一首页，`web-view` 加载 `config/h5-url.js` |
+| `pages/study/study` | 唯一首页：`web-view` + 加载失败页 + 右下角「刷新」 |
 | `config/h5-url.js` | 正式 H5 地址（与微信「业务域名」一致） |
-| `project.config.json` | 用微信开发者工具导入本文件夹 |
+| `project.config.json` | 导入前将 `appid` 改为真实小程序 AppID（勿用 touristappid 提审） |
+
+## 壳层验收（提审前）
+
+1. 微信公众平台已配置业务域名：`saivenwang-byte.github.io`
+2. 开发者工具 → 导入本目录 → 编译 → 真机预览
+3. 能打开 H5 首页；点右下角 **刷新** 可重新加载
+4. 故意断网或未配域名时，应显示 **学习页暂时打不开** + 重试按钮（非白屏）
+5. 展开任意单元，点击非顺序课次应能进入（依赖公网 H5 已 push 最新 `v=`）
+
+## 废弃目录（未打进包）
+
+`pages/index`、`pages/lessonHub` 等为历史壳页面，**未写入 app.json**，可忽略。
+
+发布流程：`docs/微信小程序-发布一次.md`

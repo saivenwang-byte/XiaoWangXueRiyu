@@ -331,11 +331,11 @@ const INTRO_SKILLS_CORE = [
 
 const INTRO_SCRIPT_TYPES = [
 
-  { icon: "📝", name: "ひらがな", desc: "柔软字形 · 助词、语法、固有词", example: "わたし・は・を" },
+  { icon: "📝", name: "ひらがな", zh: "平假名", desc: "柔软字形 · 助词、语法、固有词", example: "わたし・は・を" },
 
-  { icon: "🅺", name: "カタカナ", desc: "硬朗字形 · 外来语、强调", example: "コーヒー・パン" },
+  { icon: "🅺", name: "カタカナ", zh: "片假名", desc: "硬朗字形 · 外来语、强调", example: "コーヒー・パン" },
 
-  { icon: "漢", name: "漢字", desc: "有含义 · 本阶段只认识即可", example: "飲・学・日" },
+  { icon: "漢", name: "漢字", zh: "汉字", desc: "有含义 · 本阶段只认识即可", example: "飲・学・日" },
 
 ];
 

@@ -1,5 +1,5 @@
 {
-  "cacheVer": "290",
+  "cacheVer": "291",
   "ttsBase": "https://cdn.jsdelivr.net/gh/saivenwang-byte/XiaoWangXueRiyu@main/tts-cache/",
   "batchSize": 40,
   "note": "由 scripts/sync-tts-sw-manifest.py 维护；与 js/public-url.config.js 一致"

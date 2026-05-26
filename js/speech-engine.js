@@ -28,6 +28,30 @@ const SpeechEngine = (() => {
     }
     return "./" + TTS_CACHE_DIR;
   }
+
+  function ttsPublicOrigin() {
+    const o = (typeof window !== "undefined" && window.HYOUGA_PUBLIC_ORIGIN || "")
+      .trim()
+      .replace(/\/$/, "");
+    if (o && /^https:\/\//i.test(o)) return o;
+    return "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
+  }
+
+  /** jsDelivr → 页面同源 → GitHub Pages（首点失败 / 打不开时依次试） */
+  function ttsMp3UrlCandidates(line) {
+    const file = `${ttsCacheKey(line)}.mp3`;
+    const urls = [];
+    const custom = (typeof window !== "undefined" && window.HYOUGA_TTS_ORIGIN || "")
+      .trim()
+      .replace(/\/$/, "");
+    if (custom && /^https:\/\//i.test(custom)) urls.push(`${custom}/tts-cache/${file}`);
+    if (typeof location !== "undefined" && /^https?:/i.test(location.protocol || "")) {
+      const path = location.pathname.replace(/[^/]*$/, "");
+      urls.push(`${location.origin}${path}tts-cache/${file}`);
+    }
+    urls.push(`${ttsPublicOrigin()}/tts-cache/${file}`);
+    return [...new Set(urls)];
+  }
   /** 直链 Audio 兜底等待（微信已优先 fetch，不再傻等 4.5s） */
   const MP3_WAIT_MS = 2200;
   const MP3_WAIT_WECHAT_MS = 3200;
@@ -82,26 +106,28 @@ const FETCH_MP3_MS_DESKTOP = 5000;
   async function fetchMp3Blob(line, token) {
     if (token != null && token !== speakToken) return null;
     if (typeof location !== "undefined" && location.protocol === "file:") return null;
-    const url = ttsMp3Url(line);
     const ms = preferFetchMp3() ? FETCH_MP3_MS : FETCH_MP3_MS_DESKTOP;
-    const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const timer = ctrl ? setTimeout(() => ctrl.abort(), ms) : null;
-    try {
-      const res = await fetch(url, {
-        cache: "force-cache",
-        credentials: "omit",
-        signal: ctrl?.signal,
-      });
-      if (token != null && token !== speakToken) return null;
-      if (!res.ok) return null;
-      const blob = await res.blob();
-      if (blob.size < 200) return null;
-      return blob;
-    } catch (_) {
-      return null;
-    } finally {
-      if (timer) clearTimeout(timer);
+    for (const url of ttsMp3UrlCandidates(line)) {
+      const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timer = ctrl ? setTimeout(() => ctrl.abort(), ms) : null;
+      try {
+        const res = await fetch(url, {
+          cache: "force-cache",
+          credentials: "omit",
+          signal: ctrl?.signal,
+        });
+        if (token != null && token !== speakToken) return null;
+        if (!res.ok) continue;
+        const blob = await res.blob();
+        if (blob.size < 200) continue;
+        return blob;
+      } catch (_) {
+        /* try next origin */
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
     }
+    return null;
   }
 
   /** 微信 / 手机：首次点击解锁音频（否则 play() 无声） */
@@ -286,26 +312,37 @@ const FETCH_MP3_MS_DESKTOP = 5000;
 
   function warmPhrase(line) {
     const key = ttsCacheKey(line);
-    if (mp3Warm.has(key)) return mp3Warm.get(key);
-    const url = `${TTS_CACHE_DIR}${key}.mp3`;
-    const audio = new Audio(url);
+    const prev = mp3Warm.get(key);
+    if (prev && !prev.failed) return prev;
+    const urls = ttsMp3UrlCandidates(line);
+    const audio = new Audio();
     audio.setAttribute("playsinline", "true");
     audio.playsInline = true;
     audio.preload = "auto";
-    const entry = { audio, ready: false, failed: false, key };
+    const entry = { audio, ready: false, failed: false, key, urls, urlIdx: 0 };
     const markReady = () => {
       entry.ready = true;
     };
-    const markFail = () => {
-      entry.failCount = (entry.failCount || 0) + 1;
-      if (entry.failCount >= 2) entry.failed = true;
+    const loadAt = (idx) => {
+      if (idx >= urls.length) {
+        entry.failed = true;
+        return;
+      }
+      entry.urlIdx = idx;
+      entry.ready = false;
+      audio.src = urls[idx];
+      try {
+        audio.load();
+      } catch (_) {}
     };
-    audio.addEventListener("canplaythrough", markReady, { once: true });
-    audio.addEventListener("loadeddata", markReady, { once: true });
-    audio.addEventListener("error", markFail, { once: true });
-    try {
-      audio.load();
-    } catch (_) {}
+    audio.addEventListener("canplaythrough", markReady);
+    audio.addEventListener("loadeddata", markReady);
+    audio.addEventListener("error", () => {
+      entry.failCount = (entry.failCount || 0) + 1;
+      if (entry.urlIdx + 1 < urls.length) loadAt(entry.urlIdx + 1);
+      else if (entry.failCount >= urls.length) entry.failed = true;
+    });
+    loadAt(0);
     mp3Warm.set(key, entry);
     return entry;
   }
@@ -331,7 +368,8 @@ const FETCH_MP3_MS_DESKTOP = 5000;
   }
 
   function ttsMp3Url(line) {
-    return `${ttsCacheBaseUrl()}${ttsCacheKey(line)}.mp3`;
+    const c = ttsMp3UrlCandidates(line);
+    return c[0] || `${ttsCacheBaseUrl()}${ttsCacheKey(line)}.mp3`;
   }
 
   /** fetch→blob（带超时） */
@@ -423,21 +461,22 @@ const FETCH_MP3_MS_DESKTOP = 5000;
     });
   }
 
-  /** 直链 MP3（预热失败时兜底） */
+  /** 直链 MP3（预热失败时兜底 · 多源依次试） */
   function playBundledMp3Direct(line, token, waitMs) {
-    return new Promise((resolve) => {
-      const url = ttsMp3Url(line);
-      let settled = false;
-      const finish = (ok) => {
-        if (settled) return;
-        settled = true;
-        resolve(!!ok);
-      };
-      const playNow = () => {
+    const urls = ttsMp3UrlCandidates(line);
+    const perUrl = Math.max(900, Math.floor(waitMs / Math.max(1, urls.length)));
+    const tryOne = (url) =>
+      new Promise((resolve) => {
         if (token != null && token !== speakToken) {
-          finish(false);
+          resolve(false);
           return;
         }
+        let settled = false;
+        const finish = (ok) => {
+          if (settled) return;
+          settled = true;
+          resolve(!!ok);
+        };
         stopAllPlayback();
         const audio = new Audio(url);
         audio.setAttribute("playsinline", "true");
@@ -455,12 +494,15 @@ const FETCH_MP3_MS_DESKTOP = 5000;
         } catch (_) {
           finish(false);
         }
-      };
-      playNow();
-      setTimeout(() => {
-        if (!settled) finish(false);
-      }, waitMs);
-    });
+        setTimeout(() => finish(false), perUrl);
+      });
+    return (async () => {
+      for (const url of urls) {
+        if (token != null && token !== speakToken) return false;
+        if (await tryOne(url)) return true;
+      }
+      return false;
+    })();
   }
 
   /** ① 嵌入语音包：预热 → 同元素播放 → fetch → 直链 */

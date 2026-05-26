@@ -21,9 +21,16 @@ const LessonRecap = (function () {
     return { panel: index >= 0 ? sb.panels[index] : null, index };
   }
 
+  function storyAssetUrl(path) {
+    if (!path) return path;
+    const v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "";
+    if (!v || path.includes("?")) return path;
+    return `${path}?v=${v}`;
+  }
+
   function panelImageUrl(unitId, panelIndex) {
     if (panelIndex < 0) return "";
-    return `assets/story/unit-${Number(unitId)}-panel-${panelIndex + 1}-clean.png`;
+    return storyAssetUrl(`assets/story/unit-${Number(unitId)}-panel-${panelIndex + 1}-clean.png`);
   }
 
   function lessonCleared(state, lessonId) {
@@ -221,7 +228,13 @@ const LessonRecap = (function () {
       const fallbacks = (img.dataset.fallbacks || "").split(",").filter(Boolean);
       let fi = 0;
       img.onerror = () => {
-        if (fi < fallbacks.length) img.src = fallbacks[fi++];
+        if (fi < fallbacks.length) {
+          img.src = storyAssetUrl(fallbacks[fi++]);
+          return;
+        }
+        img.classList.add("story-egg-img-missing");
+        img.removeAttribute("src");
+        img.setAttribute("role", "presentation");
       };
     });
   }

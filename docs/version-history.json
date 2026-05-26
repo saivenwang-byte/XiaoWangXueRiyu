@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "290",
+    "cache": "300",
     "date": "2026-05-25",
-    "note": "TTS P0 jsDelivr CDN + P1 SW 分批预缓存；修复每次卸载 SW；cache v290",
+    "note": "散点学习：取消按顺序通关弹窗；六单元/24课可自由进入；cache v300",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

@@ -130,19 +130,34 @@ const SpeakUI = (() => {
     const payload = parsePayload(btn);
     btn.classList.add("is-speaking");
     const preferKey = btn.dataset.ttsKey || "";
-    const ok = await SpeechEngine.speakJa(
+    let ok = await SpeechEngine.speakJa(
       payload,
       0.85,
       preferKey ? { preferTtsKey: preferKey } : undefined
     );
+    if (!ok) {
+      await new Promise((r) => setTimeout(r, 180));
+      if (typeof SpeechEngine.unlockAudioOnce === "function") SpeechEngine.unlockAudioOnce();
+      ok = await SpeechEngine.speakJa(
+        payload,
+        0.85,
+        preferKey ? { preferTtsKey: preferKey } : undefined
+      );
+    }
     hideToast();
     btn.classList.remove("is-speaking");
     if (!ok) {
-      const mobile = /MicroMessenger|iPhone|iPad|iPod|Android/i.test(navigator.userAgent || "");
+      const ua = navigator.userAgent || "";
+      const wechat = /MicroMessenger/i.test(ua);
+      const mobile = wechat || /iPhone|iPad|iPod|Android/i.test(ua);
+      const ver =
+        typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "";
       showToast(
-        mobile
-          ? "朗读失败：请连 WiFi/流量；跟读请点右上角「···」→ 在浏览器中打开；也可稍后再点"
-          : "朗读失败：请再点一次；首次加载语音包约 1～2 秒（请用打开本地预览.bat）"
+        wechat
+          ? `语音加载失败，请再点一次喇叭；确认链接带 ?v=${ver || "最新"}，并允许流量/WiFi`
+          : mobile
+            ? "朗读失败：请再点一次；首次加载约 1～2 秒，请保持网络畅通"
+            : "朗读失败：请再点一次；首次加载语音包约 1～2 秒"
       );
     }
     return ok;

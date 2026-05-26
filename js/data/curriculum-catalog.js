@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 标日初级上 · 课程目录真源（单元 / 课序 / 发布 / 地图段）
  * 首页路径图只读本文件；课内数据仍在 lessons-mvp*.js
  */
@@ -348,12 +348,13 @@ function curriculumUnitVisualState(state, unitId) {
     return "active";
   }
   const prog = curriculumUnitProgress(state, unit);
-  const touched = curriculumUnitLessonsTouched(state, unit);
-  const allDone = prog.total > 0 && prog.cleared >= prog.total;
-  if (allDone) return "cleared";
-  if (touched) return "active";
-  if (id === 1 && curriculumIntroCompleted()) return "start";
-  return "dormant";
+  if (!prog.total) return "dormant";
+  if (prog.cleared >= prog.total) return "cleared";
+  /** 散点学习：有已发布课次的单元一律开放，不循序锁单元 */
+  if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
+    return "start";
+  }
+  return "active";
 }
 
 function curriculumPart0VisualState() {
@@ -671,6 +672,7 @@ function curriculumLessonProgressDisplay(state, lessonId, options) {
   const showReal =
     options?.forceReal ||
     curriculumDevCatalogMode() ||
+    d.playable ||
     (typeof curriculumUnitVisualState === "function" &&
       curriculumUnitVisualState(state, unitId) !== "dormant");
 
@@ -760,7 +762,7 @@ function curriculumLessonRowInnerHtml(L, state, options) {
   });
   const themeZh = L.themeZh || L.theme || "";
   const headline = L.headline || L.lessonTitle || L.titleJa || "";
-  const zhInline = themeZh
+  const zhAside = themeZh
     ? `<span class="lesson-row-zh zh-annotation">${curriculumEscapeHtml(themeZh)}</span>`
     : "";
   const statusSr = prog.status
@@ -768,15 +770,11 @@ function curriculumLessonRowInnerHtml(L, state, options) {
     : "";
   return `<span class="lesson-row-badge" aria-hidden="true">${lessonId}</span>
     <span class="lesson-row-body">
-      <span class="lesson-row-titleline">
-        <span class="lesson-row-title jp">${curriculumEscapeHtml(headline)}</span>
-        ${zhInline}
-      </span>
-      <span class="lesson-row-meta">
-        ${statusSr}
-        <span class="lesson-row-stars" aria-label="${curriculumEscapeHtml(prog.title || "")}">${prog.stars}</span>
-      </span>
-    </span>`;
+      <span class="lesson-row-title jp">${curriculumEscapeHtml(headline)}</span>
+    </span>
+    <span class="lesson-row-stars" aria-label="${curriculumEscapeHtml(prog.title || "")}">${prog.stars}</span>
+    ${zhAside}
+    ${statusSr}`;
 }
 
 /** 课文目录 / 笔记档案 · 可点击课次行 */
@@ -844,14 +842,12 @@ function curriculumGetFocusLesson(state) {
   return null;
 }
 
+/** 散点学习：仅拦截未发布/无数据课；不按 focus 课序锁定 */
 function curriculumCanEnterLesson(state, lessonId) {
   const id = Number(lessonId);
   if (curriculumDevCatalogMode()) return id >= 1 && id <= 24;
   const d = getCurriculumLessonDisplay(id);
-  if (!d.playable) return false;
-  if (curriculumFreeExploreMode(state)) return true;
-  const focus = curriculumGetFocusLesson(state);
-  return focus === id;
+  return !!d.playable;
 }
 
 /** 新用户闪烁引导：Part-0 与第1课（或当前 focus 课） */

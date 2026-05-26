@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja" translate="no">
 <head>
   <meta charset="UTF-8" />
@@ -15,9 +15,9 @@
   <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="css/design-tokens.css?v=290" />
-  <link rel="stylesheet" href="css/app.css?v=290" />
-  <link rel="stylesheet" href="css/mvp.css?v=290" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=300" />
+  <link rel="stylesheet" href="css/app.css?v=300" />
+  <link rel="stylesheet" href="css/mvp.css?v=300" />
   <style>
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
     .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -51,7 +51,7 @@
     <header class="top-bar">
       <h1 id="page-title">标日 あと学習</h1>
       <div class="top-actions">
-        <button type="button" class="icon-btn" id="btn-share-wechat" aria-label="复制学习链接"></button>
+        <button type="button" class="icon-btn icon-btn--wechat-forward" id="btn-share-wechat" aria-label="转发学习链接"></button>
         <a href="share.html" class="icon-btn icon-btn--svg" id="btn-share-page" aria-label="分享页（二维码）"></a>
       </div>
     </header>
@@ -89,7 +89,7 @@
 
       <section id="view-me" class="view" aria-hidden="true">
         <div id="notes-panel-root" class="notes-panel-root" aria-label="笔记"></div>
-        <details class="notes-settings-fold">
+        <details class="notes-settings-fold" open>
           <summary class="notes-settings-summary zh-annotation">设置 · 分享链接</summary>
           <div class="notes-settings-body">
             <label class="settings-toggle">
@@ -97,7 +97,7 @@
               <span>显示中文释义（小字灰色）</span>
             </label>
             <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:12px;width:100%">清除本机学习数据</button>
-            <button type="button" class="btn primary" id="btn-share-me" style="width:100%;margin-top:10px">📤 复制学习链接</button>
+            <button type="button" class="btn primary btn--with-forward-icon" id="btn-share-me" style="width:100%;margin-top:10px"><span class="btn-forward-icon" aria-hidden="true"></span><span>复制学习链接</span></button>
             <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">分享页（QR）</a>
             <p class="hint-ja footer-hint" style="margin-top:10px">朗读优先缓存 MP3 · 单词/会話/测试可 🔊🎤 跟读 · 无需登录</p>
           </div>
@@ -119,63 +119,63 @@
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 19c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span>
         <span class="nav-label">笔记</span>
       </button>
-      <a href="intro.html?v=290" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
+      <a href="intro.html?v=300" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700" font-family="sans-serif">あ</text></svg></span>
         <span class="nav-label">注音</span>
       </a>
     </nav>
   </div>
 
-  <script src="js/lesson-overview.js?v=290"></script>
-  <script src="js/image-tools.js?v=290"></script>
-  <script src="js/public-url.config.js?v=290"></script>
-  <script src="js/tts-sw-register.js?v=290"></script>
-  <script src="js/share-wechat.js?v=290"></script>
-  <script src="js/data/mini-cards.js?v=290"></script>
-  <script src="js/data/lessons-data.js?v=290"></script>
-  <script src="js/data/lessons-mvp.js?v=290"></script>
-  <script src="js/data/curriculum-catalog.js?v=290"></script>
-  <script src="js/ruby-render.js?v=290"></script>
-  <script src="js/mvp-storage.js?v=290"></script>
-  <script src="js/speech-engine.js?v=290"></script>
-  <script src="js/speak-ui.js?v=290"></script>
-  <script src="js/shadow-speak.js?v=290"></script>
-  <script src="js/ui-feedback.js?v=290"></script>
-  <script src="js/sensei-tip-card.js?v=290"></script>
-  <script src="js/data/l1-dialogue-abc.js?v=290"></script>
-  <script src="js/data/unit1-dialogue-abc-l234.js?v=290"></script>
-  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=290"></script>
-  <script src="js/data/dialogue-zh-l9-24.js?v=290"></script>
-  <script src="js/data/lessons-9-24-dialogue-abc.js?v=290"></script>
-  <script src="js/data/knowledge-graph.js?v=290"></script>
-  <script src="js/knowledge-link.js?v=290"></script>
-  <script src="js/data/l1-knowledge-tips.js?v=290"></script>
-  <script src="js/data/unit1-knowledge-tips.js?v=290"></script>
-  <script src="js/data/unit2-knowledge-tips.js?v=290"></script>
-  <script src="js/data/lessons-9-24-knowledge-tips.js?v=290"></script>
-  <script src="js/l1-knowledge-card.js?v=290"></script>
-  <script src="js/grammar-network.js?v=290"></script>
-  <script src="js/dialogue-gate.js?v=290"></script>
-  <script src="js/quiz-gate.js?v=290"></script>
-  <script src="js/vocab-flash.js?v=290"></script>
-  <script src="js/scroll-hint.js?v=290"></script>
-  <script src="js/nav-icons.js?v=290"></script>
-  <script src="js/data/unit-strip-storyboard.js?v=290"></script>
-  <script src="js/story-comic-ui.js?v=290"></script>
-  <script src="js/data/grand-finale-cards.js?v=290"></script>
-  <script src="js/story-caption-jp.js?v=290"></script>
-  <script src="js/story-reward.js?v=290"></script>
-  <script src="js/story-egg-viewport.js?v=290"></script>
-  <script src="js/story-egg.js?v=290"></script>
-  <script src="js/lesson-recap.js?v=290"></script>
-  <script src="js/journey-home.js?v=290"></script>
-  <script src="js/home-splash.js?v=290"></script>
-  <script src="js/hyouga-test-card.js?v=290"></script>
-  <script src="js/learning-notes.js?v=290"></script>
-  <script src="js/study-timer.js?v=290"></script>
-  <script src="js/notes-panel.js?v=290"></script>
-  <script src="js/lesson-1-flow.js?v=290"></script>
-  <script src="js/app.js?v=290"></script>
+  <script src="js/lesson-overview.js?v=300"></script>
+  <script src="js/image-tools.js?v=300"></script>
+  <script src="js/public-url.config.js?v=300"></script>
+  <script src="js/tts-sw-register.js?v=300"></script>
+  <script src="js/share-wechat.js?v=300"></script>
+  <script src="js/data/mini-cards.js?v=300"></script>
+  <script src="js/data/lessons-data.js?v=300"></script>
+  <script src="js/data/lessons-mvp.js?v=300"></script>
+  <script src="js/data/curriculum-catalog.js?v=300"></script>
+  <script src="js/ruby-render.js?v=300"></script>
+  <script src="js/mvp-storage.js?v=300"></script>
+  <script src="js/speech-engine.js?v=300"></script>
+  <script src="js/speak-ui.js?v=300"></script>
+  <script src="js/shadow-speak.js?v=300"></script>
+  <script src="js/ui-feedback.js?v=300"></script>
+  <script src="js/sensei-tip-card.js?v=300"></script>
+  <script src="js/data/l1-dialogue-abc.js?v=300"></script>
+  <script src="js/data/unit1-dialogue-abc-l234.js?v=300"></script>
+  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=300"></script>
+  <script src="js/data/dialogue-zh-l9-24.js?v=300"></script>
+  <script src="js/data/lessons-9-24-dialogue-abc.js?v=300"></script>
+  <script src="js/data/knowledge-graph.js?v=300"></script>
+  <script src="js/knowledge-link.js?v=300"></script>
+  <script src="js/data/l1-knowledge-tips.js?v=300"></script>
+  <script src="js/data/unit1-knowledge-tips.js?v=300"></script>
+  <script src="js/data/unit2-knowledge-tips.js?v=300"></script>
+  <script src="js/data/lessons-9-24-knowledge-tips.js?v=300"></script>
+  <script src="js/l1-knowledge-card.js?v=300"></script>
+  <script src="js/grammar-network.js?v=300"></script>
+  <script src="js/dialogue-gate.js?v=300"></script>
+  <script src="js/quiz-gate.js?v=300"></script>
+  <script src="js/vocab-flash.js?v=300"></script>
+  <script src="js/scroll-hint.js?v=300"></script>
+  <script src="js/nav-icons.js?v=300"></script>
+  <script src="js/data/unit-strip-storyboard.js?v=300"></script>
+  <script src="js/story-comic-ui.js?v=300"></script>
+  <script src="js/data/grand-finale-cards.js?v=300"></script>
+  <script src="js/story-caption-jp.js?v=300"></script>
+  <script src="js/story-reward.js?v=300"></script>
+  <script src="js/story-egg-viewport.js?v=300"></script>
+  <script src="js/story-egg.js?v=300"></script>
+  <script src="js/lesson-recap.js?v=300"></script>
+  <script src="js/journey-home.js?v=300"></script>
+  <script src="js/home-splash.js?v=300"></script>
+  <script src="js/hyouga-test-card.js?v=300"></script>
+  <script src="js/learning-notes.js?v=300"></script>
+  <script src="js/study-timer.js?v=300"></script>
+  <script src="js/notes-panel.js?v=300"></script>
+  <script src="js/lesson-1-flow.js?v=300"></script>
+  <script src="js/app.js?v=300"></script>
   <script>
     (function hideStaleModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
@@ -191,6 +191,9 @@
       const pageBtn = document.getElementById("btn-share-page");
       if (copyBtn) copyBtn.innerHTML = NavIcons.html("share");
       if (pageBtn) pageBtn.innerHTML = NavIcons.html("qrcode");
+      const meShareBtn = document.getElementById("btn-share-me");
+      const meIcon = meShareBtn && meShareBtn.querySelector(".btn-forward-icon");
+      if (meIcon) meIcon.innerHTML = NavIcons.html("share");
     })();
     ShareWechat.mountButton(document.getElementById("btn-share-wechat"));
     ShareWechat.mountButton(document.getElementById("btn-share-me"));

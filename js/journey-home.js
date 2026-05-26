@@ -120,6 +120,7 @@ const JourneyHome = (function () {
       if (cleared) return "is-cleared";
       return "is-unlocked";
     }
+    if (d.playable) return cleared ? "is-cleared" : "is-unlocked";
     if (uv === "dormant") return "is-map-lesson-hidden";
     if (cleared) return "is-cleared";
     if (uv === "active" || uv === "start") return "is-unlocked";
@@ -138,12 +139,7 @@ const JourneyHome = (function () {
       return;
     }
     if (typeof curriculumCanEnterLesson === "function" && !curriculumCanEnterLesson(state, id)) {
-      const focus = getFocusLesson(state);
-      toast(
-        focus
-          ? `请按顺序通关：当前应学 第${focus}課。`
-          : "请按顺序学习。"
-      );
+      toast("该课尚未开放。");
       return;
     }
     if (saveGuide === "part0") {
@@ -159,8 +155,8 @@ const JourneyHome = (function () {
     if (typeof curriculumLessonCatalogRowHtml === "function") {
       return curriculumLessonCatalogRowHtml(L, state, {
         unitId,
-        forceReal: devCatalogMode(),
-        playable: devCatalogMode() && L.hasData,
+        forceReal: L.playable || (devCatalogMode() && L.hasData),
+        playable: L.playable,
       });
     }
     return "";
@@ -346,16 +342,30 @@ const JourneyHome = (function () {
   }
 
   /** 展开单元后：本单元顶对齐目录滚动区，四课尽量一屏可见 */
+  function promoteUnitToTop(det) {
+    const scroller = det?.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
+    if (scroller && det?.parentNode === scroller) {
+      scroller.insertBefore(det, scroller.firstChild);
+    }
+  }
+
   function scrollOpenedUnitIntoView(det) {
     if (!det) return;
-    const scroller = det.closest(".journey-catalog-scroll--accordion");
+    const scroller = det.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
     if (!scroller) {
       det.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     const pad = 6;
-    const delta = det.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
-    scroller.scrollBy({ top: delta - pad, behavior: "smooth" });
+    const sRect = scroller.getBoundingClientRect();
+    const dRect = det.getBoundingClientRect();
+    const topDelta = dRect.top - sRect.top;
+    if (topDelta < pad) {
+      scroller.scrollBy({ top: topDelta - pad, behavior: "smooth" });
+    }
+    if (dRect.bottom > sRect.bottom - pad) {
+      scroller.scrollBy({ top: dRect.bottom - sRect.bottom + pad, behavior: "smooth" });
+    }
   }
 
   function bindCatalogAccordion(board) {
@@ -373,6 +383,7 @@ const JourneyHome = (function () {
           }
         });
         det.classList.add("is-unit-current");
+        promoteUnitToTop(det);
         requestAnimationFrame(() => scrollOpenedUnitIntoView(det));
       });
     });
@@ -470,6 +481,7 @@ const JourneyHome = (function () {
       </header>
       <div class="journey-frame-body journey-frame-body--catalog">
         <div class="journey-catalog-lead">${renderPart0Bar(state)}</div>
+        <p class="journey-catalog-section jp" lang="ja">课文名称（日语）</p>
         ${renderExploreCatalog(state)}
       </div>`;
     bindInteractions(board, state, onEnterLesson);

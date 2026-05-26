@@ -200,6 +200,49 @@
   color: var(--c-text);
 }
 
+/* L0 · 微信转发（绿底白箭头 · 与微信聊天转发一致） */
+body.mvp-app .top-bar .icon-btn--wechat-forward {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: #07c160;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(7, 193, 96, 0.35);
+}
+
+body.mvp-app .top-bar .icon-btn--wechat-forward .ui-icon--wechat-forward-img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+body.mvp-app .top-bar .icon-btn--wechat-forward:active {
+  background: #06ad56;
+}
+
+body.mvp-app .btn--with-forward-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+body.mvp-app .btn--with-forward-icon .btn-forward-icon .ui-icon--wechat-forward-img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+}
+
+body.mvp-app .btn.primary.btn--with-forward-icon .ui-icon--wechat-forward-img {
+  filter: brightness(0) invert(1);
+}
+
 .notes-settings-summary,
 .notes-timer-label {
   color: var(--c-text2);
