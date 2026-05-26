@@ -1,12 +1,11 @@
 /** L0 底栏 · INTEPOINT 角色图标（课程=书 · 我的=人 · 注音=あ框） */
 
 const NavIcons = (function () {
-
-  const SHARE_ICON_PATH = "icons/share-forward.png";
-
-
-
   const icons = {
+    /** 微信「转发」· 弯箭头（顶栏绿底白线 · 不依赖 PNG） */
+    share:
+      '<svg class="ui-icon ui-icon--wechat-forward" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M13 5l6 6-6 6M19 11H8.5a3.5 3.5 0 0 0 0 7H11"/></svg>',
 
     course:
 
@@ -32,20 +31,8 @@ const NavIcons = (function () {
 
 
 
-  /** 微信「转发」· 用户定稿 PNG（L0 顶栏绿底白字） */
-
   function shareHtml() {
-
-    const v =
-
-      typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER
-
-        ? `?v=${encodeURIComponent(ShareWechat.CACHE_VER)}`
-
-        : "";
-
-    return `<img class="ui-icon ui-icon--wechat-forward-img" src="${SHARE_ICON_PATH}${v}" width="24" height="24" alt="" decoding="async" aria-hidden="true" />`;
-
+    return icons.share;
   }
 
 

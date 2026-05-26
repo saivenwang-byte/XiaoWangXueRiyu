@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "303",
+    "cache": "304",
     "date": "2026-05-25",
-    "note": "手机展开单元：四课区纵向滑槽 overflow-y；cache v303",
+    "note": "顶栏转发图标改 SVG 弯箭头（绿底白线）；cache v304",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

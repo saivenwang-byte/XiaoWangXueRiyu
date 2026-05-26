@@ -212,12 +212,11 @@ body.mvp-app .top-bar .icon-btn--wechat-forward {
   box-shadow: 0 1px 3px rgba(7, 193, 96, 0.35);
 }
 
-body.mvp-app .top-bar .icon-btn--wechat-forward .ui-icon--wechat-forward-img {
+body.mvp-app .top-bar .icon-btn--wechat-forward .ui-icon--wechat-forward {
   width: 22px;
   height: 22px;
   display: block;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
+  color: #fff;
 }
 
 body.mvp-app .top-bar .icon-btn--wechat-forward:active {
@@ -231,16 +230,16 @@ body.mvp-app .btn--with-forward-icon {
   gap: 8px;
 }
 
-body.mvp-app .btn--with-forward-icon .btn-forward-icon .ui-icon--wechat-forward-img {
+body.mvp-app .btn--with-forward-icon .btn-forward-icon .ui-icon--wechat-forward {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
   display: block;
-  object-fit: contain;
+  color: inherit;
 }
 
-body.mvp-app .btn.primary.btn--with-forward-icon .ui-icon--wechat-forward-img {
-  filter: brightness(0) invert(1);
+body.mvp-app .btn.primary.btn--with-forward-icon .ui-icon--wechat-forward {
+  color: #fff;
 }
 
 .notes-settings-summary,
