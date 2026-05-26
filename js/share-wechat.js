@@ -1,6 +1,6 @@
 /** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发 */
 const ShareWechat = (() => {
-  const CACHE_VER = "304";
+  const CACHE_VER = "305";
 
   const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
 

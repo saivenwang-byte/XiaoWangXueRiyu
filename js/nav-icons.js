@@ -2,10 +2,14 @@
 
 const NavIcons = (function () {
   const icons = {
-    /** 微信「转发」· 弯箭头（顶栏绿底白线 · 不依赖 PNG） */
+    /**
+     * L0 顶栏 · 转发学习链接（与 qrcode 同系：stroke 2 · 圆角方块 + 右上折箭）
+     * 真源矢量：icons/share-forward.svg
+     */
     share:
-      '<svg class="ui-icon ui-icon--wechat-forward" viewBox="0 0 24 24" aria-hidden="true">' +
-      '<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M13 5l6 6-6 6M19 11H8.5a3.5 3.5 0 0 0 0 7H11"/></svg>',
+      '<svg class="ui-icon ui-icon--share-forward" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<rect x="3" y="12" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>' +
+      '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 10V5h6M18 5l-8 8"/></svg>',
 
     course:
 

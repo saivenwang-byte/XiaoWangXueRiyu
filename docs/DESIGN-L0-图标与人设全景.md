@@ -29,6 +29,7 @@
 | L1 | SK-xx、单元色条、U1–U6 | 色条 + 胶囊字，不用 emoji |
 | L2 | 课号圆、四颗星、地图站点 | 几何+数字，海星 ○☆★ |
 | L3 | 🔊 🎤 等 | 小尺寸操作，灰色次要 |
+| L0 顶栏 | **转发学习链接** | 与二维码成对：`icons/share-forward.svg` · 圆角方块 + 右上折箭 · `stroke-width:2` · `currentColor` = 海军蓝（`--hy-brand-navy`），**不用**微信绿底 |
 
 ---
 
