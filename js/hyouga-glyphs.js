@@ -7,15 +7,27 @@ const HyougaGlyphs = (function () {
   const AUDIO_ACTIVE = "#525252";
   const AUDIO_SIZE = 20;
 
+  /** 与 css/design-tokens.css --gate-*-accent 一致（降饱和） */
+  /** 与 css/design-tokens.css --gate-*-accent 一致（降饱和） */
   const GATE_FOLD = {
-    0: "#1565c0",
-    1: "#e65100",
-    2: "#2e7d32",
-    3: "#6a1b9a",
-    4: "#00695c",
+    0: "#4a6fa5",
+    1: "#b86b3a",
+    2: "#5a8f62",
+    3: "#7d5f8f",
+    4: "#4a8f87",
   };
 
-  const TIP_FOLD = "#e65100";
+  let unitGateFoldOverride = null;
+
+  const TIP_FOLD = "#b86b3a";
+
+  function setUnitGateFoldColors(map) {
+    unitGateFoldOverride = map && typeof map === "object" ? map : null;
+  }
+
+  function clearUnitGateFoldColors() {
+    unitGateFoldOverride = null;
+  }
 
   function svg(inner, viewBox = "0 0 24 24", cls = "hyo-glyph") {
     return `<svg class="${cls}" viewBox="${viewBox}" aria-hidden="true">${inner}</svg>`;
@@ -58,13 +70,12 @@ const HyougaGlyphs = (function () {
   }
 
   function foldToggleInner(isOpen, gate) {
-    const g = Number(gate);
-    const c = GATE_FOLD[g] ?? GATE_FOLD[0];
+    const c = foldColor(gate);
     return isOpen ? foldUpInner(c) : foldDownInner(c);
   }
 
   function foldDownHtml(gate) {
-    return foldDownInner(GATE_FOLD[Number(gate)] ?? GATE_FOLD[0]);
+    return foldDownInner(foldColor(gate));
   }
 
   function warnIconHtml() {
@@ -76,7 +87,9 @@ const HyougaGlyphs = (function () {
   }
 
   function foldColor(gate) {
-    return GATE_FOLD[Number(gate)] ?? GATE_FOLD[0];
+    const g = Number(gate);
+    if (unitGateFoldOverride && unitGateFoldOverride[g]) return unitGateFoldOverride[g];
+    return GATE_FOLD[g] ?? GATE_FOLD[0];
   }
 
   return {
@@ -94,5 +107,7 @@ const HyougaGlyphs = (function () {
     foldDownHtml,
     warnIconHtml,
     foldColor,
+    setUnitGateFoldColors,
+    clearUnitGateFoldColors,
   };
 })();

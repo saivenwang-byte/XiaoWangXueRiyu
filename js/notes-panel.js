@@ -733,21 +733,22 @@ const NotesPanel = (() => {
     const dot = hasUserNote(state, lessonId)
       ? `<span class="notes-lesson-dot" title="已有笔记" aria-label="已有笔记">●</span>`
       : "";
-    const themeZh =
-      L?.themeZh && showZh(state) ? `<span class="notes-lesson-theme zh-annotation">${escapeHtml(L.themeZh)}</span>` : "";
     const wkPlaces = collectLessonWeakPoints(state, lessonId).length;
-    const preview = L ? lessonPreviewChips(L, state, lessonId) : "";
     const weakMark = lessonWeakMarkersHtml(state, lessonId);
     const weakCls = wkPlaces ? " notes-lesson-card--has-weak" : "";
+    const rowOpts = { unitId: unit.unitId };
+    const rowInner =
+      L && typeof curriculumLessonRowInnerHtml === "function"
+        ? curriculumLessonRowInnerHtml(L, state, rowOpts)
+        : `<span class="notes-lesson-title jp">${escapeHtml(lessonSummaryTitle(L, lessonId))}</span>`;
+    const rowCls =
+      L && typeof curriculumLessonRowClass === "function"
+        ? `${curriculumLessonRowClass(L, state, rowOpts)} lesson-row--notes-summary`
+        : "lesson-row lesson-row--notes-summary";
     return `<details class="notes-lesson-card notes-lesson-card--u${unit.unitId}${weakCls}" data-lesson-id="${lessonId}" data-unit-id="${unit.unitId}" data-weak-places="${wkPlaces}" ${unitThemeStyleAttr(unit.theme)}>
-      <summary class="notes-lesson-summary">
+      <summary class="notes-lesson-summary notes-lesson-summary--symbol">
         <span class="notes-lesson-chevron" aria-hidden="true"></span>
-        <span class="notes-lesson-title-wrap">
-          <span class="notes-lesson-title jp">${escapeHtml(lessonSummaryTitle(L, lessonId))}</span>
-          ${preview}
-          ${weakMark}
-        </span>
-        ${themeZh}
+        <div class="lesson-row ${rowCls} lesson-row--notes-summary" aria-hidden="true">${rowInner}${weakMark ? `<span class="notes-lesson-weak-inline">${weakMark}</span>` : ""}</div>
         ${dot}
       </summary>
       ${lessonBodyHtml(L, lessonId, state)}
@@ -766,13 +767,19 @@ const NotesPanel = (() => {
         const weakPill = uwk.totalPlaces
           ? `<span class="notes-unit-weak-pill" title="本单元测验易错合计">易错 ${uwk.totalPlaces} 处 · ${uwk.lessonHits.length} 课</span>`
           : `<span class="notes-unit-weak-pill notes-unit-weak-pill--none">本单元暂无易错记录</span>`;
+        const stacked =
+          typeof curriculumUnitStackedTitleHtml === "function"
+            ? curriculumUnitStackedTitleHtml(unitId)
+            : `<span class="notes-unit-head-label">${escapeHtml(labelZh)}</span>`;
+        const unitStars =
+          typeof curriculumUnitProgressStarsHtml === "function"
+            ? curriculumUnitProgressStarsHtml(state, unitId)
+            : "";
         parts.push(
-          `<div class="notes-unit-head" data-unit-id="${unitId}" data-unit-weak-total="${uwk.totalPlaces}" ${unitThemeStyleAttr(theme)}>
+          `<div class="notes-unit-head hyouga-unit-head-symbol" data-unit-id="${unitId}" data-unit-weak-total="${uwk.totalPlaces}" ${unitThemeStyleAttr(theme)}>
             <span class="notes-unit-head-stripe" aria-hidden="true"></span>
-            <span class="notes-unit-head-main">
-              <span class="notes-unit-head-label">${escapeHtml(labelZh)}</span>
-              ${weakPill}
-            </span>
+            <div class="hyouga-unit-head-body">${stacked}</div>
+            <div class="hyouga-unit-head-end">${unitStars}${weakPill}</div>
           </div>`
         );
       }

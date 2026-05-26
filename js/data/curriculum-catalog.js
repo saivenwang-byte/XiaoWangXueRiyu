@@ -380,6 +380,172 @@ function getStageThemeForLesson(lessonId) {
   return CURRICULUM_STAGE_THEMES[getUnitIdForLesson(lessonId)] || CURRICULUM_STAGE_THEMES[1];
 }
 
+const CURRICULUM_UNIT_LABEL_ZH = [
+  "",
+  "第一单元",
+  "第二单元",
+  "第三单元",
+  "第四单元",
+  "第五单元",
+  "第六单元",
+];
+
+function curriculumUnitLabelZh(unitId) {
+  return CURRICULUM_UNIT_LABEL_ZH[Number(unitId)] || `第${unitId}单元`;
+}
+
+function curriculumUnitDisplayMeta(unitId) {
+  const id = Number(unitId);
+  const unit = CURRICULUM_UNITS.find((u) => u.id === id);
+  const theme = CURRICULUM_STAGE_THEMES[id] || CURRICULUM_STAGE_THEMES[1];
+  return {
+    unitId: id,
+    titleJa: unit?.titleJa || `第${id}单元`,
+    titleZh: unit?.titleZh || "",
+    labelZh: curriculumUnitLabelZh(id),
+    theme,
+  };
+}
+
+/** 五关基色（与 css/design-tokens.css 一致 · 再与单元 accent 混色） */
+const GATE_THEME_BASE = {
+  0: {
+    accent: "#4a6fa5",
+    bg: "#eef3f9",
+    border: "#c5d4e8",
+    activeBg: "#e3ecf6",
+    activeFg: "#1e3a5f",
+  },
+  1: {
+    accent: "#b86b3a",
+    bg: "#faf3ed",
+    border: "#e8d4c4",
+    activeBg: "#f5ebe3",
+    activeFg: "#5d3a1f",
+  },
+  2: {
+    accent: "#5a8f62",
+    bg: "#edf4ee",
+    border: "#c5dcc8",
+    activeBg: "#e4efe6",
+    activeFg: "#2e5a34",
+  },
+  3: {
+    accent: "#7d5f8f",
+    bg: "#f4eff6",
+    border: "#ddd0e4",
+    activeBg: "#ebe4f0",
+    activeFg: "#4a2d5c",
+  },
+  4: {
+    accent: "#4a8f87",
+    bg: "#edf5f4",
+    border: "#c0ddd8",
+    activeBg: "#e2f0ee",
+    activeFg: "#1f4f49",
+  },
+};
+
+function parseHexColor(hex) {
+  const h = String(hex || "")
+    .trim()
+    .replace(/^#/, "");
+  if (h.length === 3) {
+    return [
+      parseInt(h[0] + h[0], 16),
+      parseInt(h[1] + h[1], 16),
+      parseInt(h[2] + h[2], 16),
+    ];
+  }
+  if (h.length === 6) {
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  return null;
+}
+
+function blendHexColor(a, b, ratioB) {
+  const pa = parseHexColor(a);
+  const pb = parseHexColor(b);
+  if (!pa || !pb) return a || b;
+  const t = Math.max(0, Math.min(1, Number(ratioB) || 0));
+  const mix = (i) => Math.max(0, Math.min(255, Math.round(pa[i] * (1 - t) + pb[i] * t)));
+  const hx = (n) => n.toString(16).padStart(2, "0");
+  return `#${hx(mix(0))}${hx(mix(1))}${hx(mix(2))}`;
+}
+
+/** 课内五关 Tab / 左色条：单元 accent 约 30% 混入功能五色 */
+function curriculumApplyGateThemeVars(unitId, rootEl) {
+  const el = rootEl;
+  if (!el) return;
+  const theme = CURRICULUM_STAGE_THEMES[Number(unitId)] || CURRICULUM_STAGE_THEMES[1];
+  const mixAccent = 0.3;
+  const mixBg = 0.2;
+  const foldMap = {};
+  [0, 1, 2, 3, 4].forEach((g) => {
+    const base = GATE_THEME_BASE[g];
+    if (!base) return;
+    const accent = blendHexColor(base.accent, theme.accent, mixAccent);
+    const bg = blendHexColor(base.bg, theme.pageBg, mixBg);
+    const border = blendHexColor(base.border, theme.border, mixBg);
+    const activeBg = blendHexColor(base.activeBg, theme.pageBg, mixBg + 0.08);
+    const activeFg = blendHexColor(base.activeFg, theme.primaryDark, mixAccent * 0.5);
+    el.style.setProperty(`--gate-${g}-accent`, accent);
+    el.style.setProperty(`--gate-${g}-bg`, bg);
+    el.style.setProperty(`--gate-${g}-border`, border);
+    el.style.setProperty(`--gate-${g}-active-bg`, activeBg);
+    el.style.setProperty(`--gate-${g}-active-fg`, activeFg);
+    foldMap[g] = accent;
+  });
+  if (typeof HyougaGlyphs !== "undefined" && typeof HyougaGlyphs.setUnitGateFoldColors === "function") {
+    HyougaGlyphs.setUnitGateFoldColors(foldMap);
+  }
+}
+
+/** 符号表 · 单元行标题（日语大行 + 中文场景小行） */
+function curriculumUnitStackedTitleHtml(unitId) {
+  const m = curriculumUnitDisplayMeta(unitId);
+  const zh = m.titleZh
+    ? `<span class="journey-stage-zh zh-annotation">${m.titleZh}</span>`
+    : "";
+  return `<div class="hyouga-unit-title-stacked journey-unit-summary-main--stacked">
+    <span class="journey-stage-unit jp" lang="ja">${m.titleJa}</span>
+    ${zh}
+  </div>`;
+}
+
+/** 符号表 · 单元四星（与课文首页一致） */
+function curriculumUnitProgressStarsHtml(state, unitId) {
+  const unit = CURRICULUM_UNITS.find((u) => u.id === Number(unitId));
+  if (!unit) return "";
+  const uv = curriculumUnitVisualState(state, unit.id);
+  const prog = curriculumUnitProgress(state, unit);
+  const starN = 4;
+  let label = "未开启";
+  if (uv === "start") label = "START";
+  else if (uv === "active") label = "进行中";
+  else if (uv === "cleared") label = "単元完了";
+
+  let filled = 0;
+  if (uv === "cleared") filled = starN;
+  else if (uv === "active" || uv === "start") {
+    filled =
+      prog.total > 0 ? Math.min(starN, Math.round((prog.cleared / prog.total) * starN)) : 0;
+  }
+
+  if (uv === "dormant") return "";
+
+  const stars = Array.from({ length: starN }, (_, i) =>
+    i < filled
+      ? '<span class="journey-unit-star journey-unit-star--on" aria-hidden="true">★</span>'
+      : '<span class="journey-unit-star journey-unit-star--off" aria-hidden="true">☆</span>'
+  ).join("");
+
+  return `<div class="journey-unit-status-col is-unit-${uv}">
+    <span class="journey-unit-state-label sr-only">${label}</span>
+    <span class="journey-unit-stars" aria-label="单元 ${filled}/${starN} 課">${stars}</span>
+  </div>`;
+}
+
 /** 封面星级展示（四关海星 · 见 formatLessonFourSeaStars） */
 function curriculumLessonStarDisplay(state, lessonId) {
   const p = curriculumLessonProgressDisplay(state, lessonId);
@@ -555,17 +721,87 @@ function curriculumLessonProgressDisplay(state, lessonId, options) {
   };
 }
 
+function curriculumEscapeHtml(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function curriculumLessonRowClass(L, state, options) {
+  const lessonId = Number(L.lessonId);
+  const prog = curriculumLessonProgressDisplay(state, lessonId, {
+    unitId: options?.unitId,
+    lessonDisplay: L,
+    forceReal: options?.forceReal,
+  });
+  let cls = "lesson-row";
+  if (L.devStub) cls += " is-lesson-stub";
+  else if (
+    curriculumLessonCleared(state, lessonId) ||
+    prog.filled >= lessonStarTotal(lessonId)
+  )
+    cls += " is-lesson-cleared";
+  else if (prog.filled > 0) cls += " is-lesson-active";
+  else if (prog.status === "未開啟") cls += " is-lesson-locked";
+  else cls += " is-lesson-idle";
+  if (options?.playable) cls += " is-lesson-playable";
+  return cls;
+}
+
+/** 符号表 · 课次行内容（海星 + 日文；状态仅 sr-only） */
+function curriculumLessonRowInnerHtml(L, state, options) {
+  const lessonId = Number(L.lessonId);
+  const prog = curriculumLessonProgressDisplay(state, lessonId, {
+    unitId: options?.unitId,
+    lessonDisplay: L,
+    forceReal: options?.forceReal,
+  });
+  const themeZh = L.themeZh || L.theme || "";
+  const headline = L.headline || L.lessonTitle || L.titleJa || "";
+  const zhInline = themeZh
+    ? `<span class="lesson-row-zh zh-annotation">${curriculumEscapeHtml(themeZh)}</span>`
+    : "";
+  const statusSr = prog.status
+    ? `<span class="lesson-row-status sr-only">${curriculumEscapeHtml(prog.status)}</span>`
+    : "";
+  return `<span class="lesson-row-badge" aria-hidden="true">${lessonId}</span>
+    <span class="lesson-row-body">
+      <span class="lesson-row-titleline">
+        <span class="lesson-row-title jp">${curriculumEscapeHtml(headline)}</span>
+        ${zhInline}
+      </span>
+      <span class="lesson-row-meta">
+        ${statusSr}
+        <span class="lesson-row-stars" aria-label="${curriculumEscapeHtml(prog.title || "")}">${prog.stars}</span>
+      </span>
+    </span>`;
+}
+
+/** 课文目录 / 笔记档案 · 可点击课次行 */
+function curriculumLessonCatalogRowHtml(L, state, options) {
+  const lessonId = Number(L.lessonId);
+  const themeZh = L.themeZh || L.theme || "";
+  const cls = curriculumLessonRowClass(L, state, options);
+  const headline = L.headline || L.lessonTitle || "";
+  const title = `第${lessonId}課 · ${headline}${themeZh ? " · " + themeZh : ""}`;
+  return `<button type="button" class="${cls}" data-lid="${lessonId}" title="${curriculumEscapeHtml(title)}">
+    ${curriculumLessonRowInnerHtml(L, state, options)}
+  </button>`;
+}
+
 function applyUnitThemeToView(lessonId, rootEl) {
   const theme = getStageThemeForLesson(lessonId);
   const el = rootEl || document.getElementById("view-lesson");
   if (!el || !theme) return;
   const uid = getUnitIdForLesson(lessonId);
   el.dataset.unit = String(uid);
-  el.style.setProperty("--mvp-primary", theme.accent);
-  el.style.setProperty("--mvp-primary-dark", theme.primaryDark);
-  el.style.setProperty("--mvp-border", theme.border);
-  el.style.setProperty("--mvp-bg", theme.pageBg);
   el.style.setProperty("--unit-accent", theme.accent);
+  el.style.setProperty("--unit-bg", theme.bg || theme.pageBg);
+  el.style.setProperty("--mvp-bg", theme.pageBg);
+  el.style.setProperty("--mvp-border", theme.border);
+  curriculumApplyGateThemeVars(uid, el);
 }
 
 /** 首页线框：左列 1–3 单元 · 右列 4–6 单元 */

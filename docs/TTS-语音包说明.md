@@ -51,7 +51,7 @@ python scripts/audit-tts-registry.py --write
 | 测试题题干 | 填空题用 **`questionTts`** 写完整可读日文句，不要用带大量 `＿` 的题干直接 TTS |
 | 界面中文 | 绝不传入 `speakJa`；`prepareJaTtsLine` 会过滤纯中文 |
 | 本地预览 | 必须用 `http://localhost:8765/`（`打开本地预览.bat`），不要用 `file://` |
-| 微信分享 | 优先 **Netlify** 公网地址（`js/public-url.config.js`），`github.io` 易打不开且 MP3 慢 |
+| 微信分享 | 页面可用 `github.io`；**MP3 默认走 jsDelivr**（`HYOUGA_TTS_ORIGIN`），见 [TTS-P0-P1-国内加速与SW.md](./TTS-P0-P1-国内加速与SW.md) |
 
 ## 跟读（录音 / 回放）
 
@@ -60,4 +60,4 @@ python scripts/audit-tts-registry.py --write
 
 ## 版本缓存
 
-改 JS/CSS 后请递增 `index.html` 中 `?v=` 与 `js/share-wechat.js` 的 `CACHE_VER`，并更新 Service Worker 的 purge key。
+改 JS/CSS 后请递增 `index.html` 中 `?v=` 与 `js/share-wechat.js` 的 `CACHE_VER`，运行 `python scripts/sync-tts-sw-manifest.py`，并递增 `HYOUGA_TTS_CACHE_VER`。

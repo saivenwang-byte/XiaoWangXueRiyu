@@ -70,14 +70,9 @@
 
     <div class="wechat-tip" id="wechat-tip"></div>
   </div>
-  <script src="js/public-url.config.js?v=46"></script>
-  <script src="js/share-wechat.js?v=46"></script>
+  <script src="js/public-url.config.js?v=290"></script>
+  <script src="js/share-wechat.js?v=290"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      });
-    }
     const learnUrl = ShareWechat.learnUrl();
     const publicOk = ShareWechat.isPublicHttps();
     const hasOrigin = !!ShareWechat.configuredOrigin();

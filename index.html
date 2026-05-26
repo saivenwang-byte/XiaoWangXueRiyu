@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#FF8A80" />
+  <meta name="theme-color" content="#FFF8E1" />
   <meta name="description" content="标日初级上·学习の道：四岛路径·单元课序·会話中心" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="标日 あと学習 · 学习の道" />
@@ -15,8 +15,9 @@
   <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="css/app.css?v=285" />
-  <link rel="stylesheet" href="css/mvp.css?v=285" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=290" />
+  <link rel="stylesheet" href="css/app.css?v=290" />
+  <link rel="stylesheet" href="css/mvp.css?v=290" />
   <style>
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
     .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -118,92 +119,72 @@
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 19c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span>
         <span class="nav-label">笔记</span>
       </button>
-      <a href="intro.html?v=285" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
+      <a href="intro.html?v=290" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700" font-family="sans-serif">あ</text></svg></span>
         <span class="nav-label">注音</span>
       </a>
     </nav>
   </div>
 
-  <script src="js/lesson-overview.js?v=285"></script>
-  <script src="js/image-tools.js?v=285"></script>
-  <script src="js/public-url.config.js?v=285"></script>
-  <script src="js/share-wechat.js?v=285"></script>
-  <script src="js/data/mini-cards.js?v=285"></script>
-  <script src="js/data/lessons-data.js?v=285"></script>
-  <script src="js/data/lessons-mvp.js?v=285"></script>
-  <script src="js/data/curriculum-catalog.js?v=285"></script>
-  <script src="js/ruby-render.js?v=285"></script>
-  <script src="js/mvp-storage.js?v=285"></script>
-  <script src="js/speech-engine.js?v=285"></script>
-  <script src="js/speak-ui.js?v=285"></script>
-  <script src="js/shadow-speak.js?v=285"></script>
-  <script src="js/ui-feedback.js?v=285"></script>
-  <script src="js/sensei-tip-card.js?v=285"></script>
-  <script src="js/data/l1-dialogue-abc.js?v=285"></script>
-  <script src="js/data/unit1-dialogue-abc-l234.js?v=285"></script>
-  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=285"></script>
-  <script src="js/data/dialogue-zh-l9-24.js?v=285"></script>
-  <script src="js/data/lessons-9-24-dialogue-abc.js?v=285"></script>
-  <script src="js/data/knowledge-graph.js?v=285"></script>
-  <script src="js/knowledge-link.js?v=285"></script>
-  <script src="js/data/l1-knowledge-tips.js?v=285"></script>
-  <script src="js/data/unit1-knowledge-tips.js?v=285"></script>
-  <script src="js/data/unit2-knowledge-tips.js?v=285"></script>
-  <script src="js/data/lessons-9-24-knowledge-tips.js?v=285"></script>
-  <script src="js/l1-knowledge-card.js?v=285"></script>
-  <script src="js/grammar-network.js?v=285"></script>
-  <script src="js/dialogue-gate.js?v=285"></script>
-  <script src="js/quiz-gate.js?v=285"></script>
-  <script src="js/vocab-flash.js?v=285"></script>
-  <script src="js/scroll-hint.js?v=285"></script>
-  <script src="js/nav-icons.js?v=285"></script>
-  <script src="js/data/unit-strip-storyboard.js?v=285"></script>
-  <script src="js/story-comic-ui.js?v=285"></script>
-  <script src="js/data/grand-finale-cards.js?v=285"></script>
-  <script src="js/story-caption-jp.js?v=285"></script>
-  <script src="js/story-reward.js?v=285"></script>
-  <script src="js/story-egg-viewport.js?v=285"></script>
-  <script src="js/story-egg.js?v=285"></script>
-  <script src="js/lesson-recap.js?v=285"></script>
-  <script src="js/journey-home.js?v=285"></script>
-  <script src="js/home-splash.js?v=287"></script>
-  <script src="js/hyouga-test-card.js?v=285"></script>
-  <script src="js/learning-notes.js?v=285"></script>
-  <script src="js/study-timer.js?v=285"></script>
-  <script src="js/notes-panel.js?v=285"></script>
-  <script src="js/lesson-1-flow.js?v=285"></script>
-  <script src="js/app.js?v=285"></script>
+  <script src="js/lesson-overview.js?v=290"></script>
+  <script src="js/image-tools.js?v=290"></script>
+  <script src="js/public-url.config.js?v=290"></script>
+  <script src="js/tts-sw-register.js?v=290"></script>
+  <script src="js/share-wechat.js?v=290"></script>
+  <script src="js/data/mini-cards.js?v=290"></script>
+  <script src="js/data/lessons-data.js?v=290"></script>
+  <script src="js/data/lessons-mvp.js?v=290"></script>
+  <script src="js/data/curriculum-catalog.js?v=290"></script>
+  <script src="js/ruby-render.js?v=290"></script>
+  <script src="js/mvp-storage.js?v=290"></script>
+  <script src="js/speech-engine.js?v=290"></script>
+  <script src="js/speak-ui.js?v=290"></script>
+  <script src="js/shadow-speak.js?v=290"></script>
+  <script src="js/ui-feedback.js?v=290"></script>
+  <script src="js/sensei-tip-card.js?v=290"></script>
+  <script src="js/data/l1-dialogue-abc.js?v=290"></script>
+  <script src="js/data/unit1-dialogue-abc-l234.js?v=290"></script>
+  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=290"></script>
+  <script src="js/data/dialogue-zh-l9-24.js?v=290"></script>
+  <script src="js/data/lessons-9-24-dialogue-abc.js?v=290"></script>
+  <script src="js/data/knowledge-graph.js?v=290"></script>
+  <script src="js/knowledge-link.js?v=290"></script>
+  <script src="js/data/l1-knowledge-tips.js?v=290"></script>
+  <script src="js/data/unit1-knowledge-tips.js?v=290"></script>
+  <script src="js/data/unit2-knowledge-tips.js?v=290"></script>
+  <script src="js/data/lessons-9-24-knowledge-tips.js?v=290"></script>
+  <script src="js/l1-knowledge-card.js?v=290"></script>
+  <script src="js/grammar-network.js?v=290"></script>
+  <script src="js/dialogue-gate.js?v=290"></script>
+  <script src="js/quiz-gate.js?v=290"></script>
+  <script src="js/vocab-flash.js?v=290"></script>
+  <script src="js/scroll-hint.js?v=290"></script>
+  <script src="js/nav-icons.js?v=290"></script>
+  <script src="js/data/unit-strip-storyboard.js?v=290"></script>
+  <script src="js/story-comic-ui.js?v=290"></script>
+  <script src="js/data/grand-finale-cards.js?v=290"></script>
+  <script src="js/story-caption-jp.js?v=290"></script>
+  <script src="js/story-reward.js?v=290"></script>
+  <script src="js/story-egg-viewport.js?v=290"></script>
+  <script src="js/story-egg.js?v=290"></script>
+  <script src="js/lesson-recap.js?v=290"></script>
+  <script src="js/journey-home.js?v=290"></script>
+  <script src="js/home-splash.js?v=290"></script>
+  <script src="js/hyouga-test-card.js?v=290"></script>
+  <script src="js/learning-notes.js?v=290"></script>
+  <script src="js/study-timer.js?v=290"></script>
+  <script src="js/notes-panel.js?v=290"></script>
+  <script src="js/lesson-1-flow.js?v=290"></script>
+  <script src="js/app.js?v=290"></script>
   <script>
-    (function purgeSwAndModals() {
+    (function hideStaleModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {
         m.hidden = true;
         m.setAttribute("aria-hidden", "true");
         m.style.display = "none";
         m.style.pointerEvents = "none";
       });
-      if (!("serviceWorker" in navigator)) return;
-      var key = "hyouga-sw-purged-v94";
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (r) { return r.unregister(); }));
-      }).then(function () {
-        if (sessionStorage.getItem(key)) return;
-        sessionStorage.setItem(key, "1");
-        if (!/\breloaded=1\b/.test(location.search)) {
-          try {
-            var u = new URL(location.href);
-            u.searchParams.set("reloaded", "1");
-            location.replace(u.pathname + u.search + u.hash);
-          } catch (e) {
-            var q = location.search ? location.search + "&reloaded=1" : "?reloaded=1";
-            location.replace(location.pathname + q + location.hash);
-          }
-        }
-      });
     })();
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js?v=285").catch(function(){});
-    }
     (function mountTopShareIcons() {
       if (typeof NavIcons === "undefined") return;
       const copyBtn = document.getElementById("btn-share-wechat");

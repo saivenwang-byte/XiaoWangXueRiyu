@@ -142,6 +142,10 @@ def main() -> int:
     cropped = im.crop(box)
     box2 = shrink_from_border(cropped)
     cropped = cropped.crop(box2)
+    inset = 20
+    cw, ch = cropped.size
+    if cw > inset * 4 and ch > inset * 4:
+        cropped = cropped.crop((inset, inset, cw - inset, ch - inset))
     out = cropped.resize((OUT_W, OUT_H), Image.Resampling.LANCZOS)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     out.save(OUT, "PNG", optimize=True)

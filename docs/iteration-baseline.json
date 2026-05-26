@@ -41,6 +41,20 @@
     "spec": "过程讨论内容/19-20260525-笔记板块规范.md",
     "note": "易错红上蓝下对照；关联倒三角可点开；单元易错汇总；不动 U1L1 五关"
   },
+  "p0_splash_cover_design": {
+    "status": "locked",
+    "name": "P0 开机封面 · 设计阶段定稿锁",
+    "locked_at": "2026-05-25",
+    "splash_asset_ver": "21",
+    "home_splash_js": "v=287",
+    "doc": "docs/locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md",
+    "cover_asset": "assets/splash/cover-base.png",
+    "source_art": "地图/64649377-e0e1-4239-a073-118630981bb6 (1).png",
+    "bake_script": "scripts/apply-splash-v1-style.py",
+    "preview": "splash-cover-live-preview.html",
+    "user_confirmed": "2026-05-25",
+    "note": "纯色 #FFF8E1 · 蓝虚线 #4A6FA5 · 六圆 02/04/03/01/05/06 · 无左列课表/无封面50音圆；无用户明示不得改 cover-base 构图；App 壳层（顶栏/令牌）可随 global-vi-v1 调整"
+  },
   "paradigm": {
     "name_cn": "文递自归",
     "name_en": "Autoregressive Generation",
@@ -64,15 +78,17 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "279",
+    "cache": "290",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
       "share.html ?v=",
-      "japanese_learning_miniapp/config/h5-url.js"
+      "japanese_learning_miniapp/config/h5-url.js",
+      "js/public-url.config.js HYOUGA_TTS_CACHE_VER",
+      "tts-cache/sw-manifest.json"
     ],
-    "local": "http://localhost:8765/index.html?v=279",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=279",
+    "local": "http://localhost:8765/index.html?v=290",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=290",
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
     "mvp_unit1_lessons_1_4": "第1单元第1–4课五关+会話ABC 已锁定 v246"
@@ -584,8 +600,11 @@
     },
     {
       "id": "cover-design-u10",
-      "status": "planned",
-      "note": "U-10 封面收官；用户确认 U-08/09 后再做"
+      "status": "done",
+      "since_cache": "279",
+      "merged_into": "p0-splash-cover-design-lock-v21",
+      "note": "U-10 封面设计阶段已锁；工程发布另议 bump CACHE_VER",
+      "doc": "docs/locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md"
     },
     {
       "id": "lesson1-ui-five-tabs-extension-fold",
@@ -677,6 +696,93 @@
         "scripts/cleanup-notes-lessons-data.py"
       ],
       "acceptance": "老师含模板·总结·单元予告；课本 grammar links；L5/L13 参考长表折叠；L1拆行；L13+占位易错与L13参考表去重"
+    },
+    {
+      "id": "p0-splash-cover-design-lock-v21",
+      "since_cache": "279",
+      "title": "P0 开机封面设计锁 · cover-base + SPLASH v1 叠层",
+      "files": [
+        "assets/splash/cover-base.png",
+        "js/home-splash.js",
+        "css/mvp.css",
+        "scripts/apply-splash-v1-style.py",
+        "splash-cover-live-preview.html",
+        "docs/locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md"
+      ],
+      "acceptance": "纯色米黄底；蓝虚线 #4A6FA5；六圆南→北 02/04/03/01/05/06；品牌+CTA 版式见锁文档；SPLASH_ASSET_VER=21"
+    },
+    {
+      "id": "global-vi-tokens-v1-v286",
+      "since_cache": "286",
+      "title": "全域视觉令牌 v1 · 档2首轮（顶栏/五关/首页符号/笔记token）",
+      "files": [
+        "css/design-tokens.css",
+        "docs/DESIGN-TOKENS-v1.md",
+        "mock/design-tokens-v1-sample.html",
+        "css/mvp.css",
+        "css/app.css",
+        "js/journey-home.js",
+        "js/hyouga-glyphs.js",
+        "js/share-wechat.js",
+        "index.html"
+      ],
+      "acceptance": "Q1珊瑚主按钮；Q2米黄顶栏48px海军字；Q3五关降饱和；Q4单元两行+四星无开发文案；Q5笔记chip对齐gate；Q6入門紫不动；cover-base构图未改"
+    },
+    {
+      "id": "global-vi-tier2-phase2a-v287",
+      "since_cache": "287",
+      "title": "档2 Phase2A · 符号统一 + 五关随单元混色",
+      "files": [
+        "js/data/curriculum-catalog.js",
+        "js/hyouga-glyphs.js",
+        "js/journey-home.js",
+        "js/notes-panel.js",
+        "js/app.js",
+        "css/mvp.css",
+        "docs/PR-GLOBAL-VI-TIER2-PHASE2.md"
+      ],
+      "acceptance": "笔记单元头=首页两行+四星；课内view-lesson gate vars随单元；主按钮仍珊瑚；见 PR-GLOBAL-VI-TIER2-PHASE2"
+    },
+    {
+      "id": "global-vi-tier2-phase2bc-v288",
+      "since_cache": "288",
+      "title": "档2 Phase2B+2C · 课内壳层/档案课行/地图站点/设计板",
+      "files": [
+        "js/data/curriculum-catalog.js",
+        "js/journey-home.js",
+        "js/notes-panel.js",
+        "css/mvp.css",
+        "mock/design-system-v1-board.html",
+        "docs/PR-GLOBAL-VI-TIER2-PHASE2.md"
+      ],
+      "acceptance": "课内浅单元底；笔记课次=lesson-row符号；地图站stage-accent；条带缩略单元框；设计板HTML"
+    },
+    {
+      "id": "global-vi-tier2-phase2d-sweep-v289",
+      "since_cache": "289",
+      "title": "档2 Phase2D · 硬编码色扫尾 vi-token-sweep",
+      "files": [
+        "css/design-tokens.css",
+        "css/vi-token-sweep.css",
+        "css/mvp.css",
+        "docs/PR-GLOBAL-VI-TIER2-PHASE2.md"
+      ],
+      "acceptance": "海星/ABC/链式底栏/评分/录音/me-kp 等 hex 改读 design-tokens"
+    },
+    {
+      "id": "tts-p0-p1-cdn-sw-v290",
+      "since_cache": "290",
+      "title": "TTS P0 jsDelivr + P1 SW 分批预缓存",
+      "files": [
+        "js/public-url.config.js",
+        "js/speech-engine.js",
+        "sw.js",
+        "js/tts-sw-register.js",
+        "tts-cache/sw-manifest.json",
+        "scripts/sync-tts-sw-manifest.py",
+        "docs/TTS-P0-P1-国内加速与SW.md"
+      ],
+      "acceptance": "MP3 走 HYOUGA_TTS_ORIGIN；SW 仅代际变更清理；index 不再每次 unregister"
     }
   ],
   "forbidden_without_explicit_user_request": [
@@ -685,7 +791,8 @@
     "重写 app.js 路由或替换 lessons 数据源",
     "未跑四关回归即改 speech-engine.js 排序/回退链",
     "修改 js/lesson-1-flow.js 或第1单元第1–4课课内五关/会話ABC（unit1_lessons_1_4_mvp locked）",
-    "修改 js/data/unit1-dialogue-abc-l234.js 或 lessonId 1–4 课内五关数据字段（无用户明示）"
+    "修改 js/data/unit1-dialogue-abc-l234.js 或 lessonId 1–4 课内五关数据字段（无用户明示）",
+    "修改 P0 cover-base 构图/六圆编号/蓝线色（p0_splash_cover_design；App 壳层除外见 global-vi-tokens-v1）"
   ],
   "regression_smoke_lesson": 14,
   "regression_gates": ["vocab", "grammar", "dialogue", "quiz"]

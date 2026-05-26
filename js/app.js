@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   let state = loadMvpState();
   let activeLessonId = null;
   /** 0=単語 1=文法 2=会話 3=作業 4=まとめ */
@@ -230,6 +230,9 @@
   function exitLessonView() {
     const v = lessonReturnView || "home";
     lessonReturnView = null;
+    if (typeof HyougaGlyphs !== "undefined" && typeof HyougaGlyphs.clearUnitGateFoldColors === "function") {
+      HyougaGlyphs.clearUnitGateFoldColors();
+    }
     showView(v);
   }
 
@@ -530,6 +533,9 @@
     }
     renderLessonFlowHead(L);
     renderLessonCockpit(g);
+    if (typeof applyUnitThemeToView === "function") {
+      applyUnitThemeToView(L.lessonId);
+    }
     syncL1GateTheme(L.lessonId, activeGate);
     mountGate();
     if (typeof SpeakUI !== "undefined") {

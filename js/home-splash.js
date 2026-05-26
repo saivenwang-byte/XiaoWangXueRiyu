@@ -1,10 +1,10 @@
 /**
- * P0 开机页 · 整图 cover-base.png 全屏（地图+虚线+六圆均在图内）
- * 缺图时回退 kO3 锁定红列岛 + 开发叠层
- * 换图：install-cover-base.py → bump SPLASH_ASSET_VER
+ * P0 开机页 · 定稿底图 + 品牌/按钮叠层（SPLASH Cover 2.0）
+ * 🔒 设计锁：docs/locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md · SPLASH_ASSET_VER 与锁一致
+ * 底图：cover-base.png（地图+蓝虚线+六圆）· 缺图回退 kO3
  */
 const HomeSplash = (function () {
-  const SPLASH_ASSET_VER = "8";
+  const SPLASH_ASSET_VER = "21";
   const SPLASH_COVER_BASE = "assets/splash/cover-base.png";
   const SPLASH_MAP_BODY = "assets/splash/japan-map-ko3.png";
 
@@ -27,6 +27,12 @@ const HomeSplash = (function () {
     return SPLASH_ASSET_VER ? `?s=${encodeURIComponent(SPLASH_ASSET_VER)}` : "";
   }
 
+  function cacheVer() {
+    return typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER
+      ? ShareWechat.CACHE_VER
+      : "";
+  }
+
   function devPathD() {
     return SPLASH_DEV_STOPS.map((p, i) => `${i === 0 ? "M" : " L"} ${p.x} ${p.y}`).join("");
   }
@@ -46,38 +52,60 @@ const HomeSplash = (function () {
     </div>`;
   }
 
+  function uiChromeHtml() {
+    const v = cacheVer();
+    const iconSrc = v ? `icons/icon.svg?v=${v}` : "icons/icon.svg";
+    return `
+      <div class="splash-ui">
+        <header class="splash-brand">
+          <div class="splash-logo" aria-hidden="true">
+            <span class="splash-logo-bg"></span>
+            <img src="${escapeHtml(iconSrc)}" alt="" width="36" height="36" decoding="async" />
+          </div>
+          <h1 class="splash-title">标日 あと学習</h1>
+          <p class="splash-path jp">学習の道</p>
+          <p class="splash-sub jp">新幹線 24 駅</p>
+        </header>
+        <div class="splash-map-stage" aria-hidden="true"></div>
+        <footer class="splash-cta">
+          <p class="splash-cta-lead zh-annotation">轻触进入学习地图</p>
+          <button type="button" class="btn primary splash-btn-start" id="btn-splash-start">开始学习</button>
+          <p class="splash-cta-hint zh-annotation">注音 · 五十音在底栏「注音」</p>
+        </footer>
+      </div>`;
+  }
+
   function render() {
     const root = document.getElementById("splash-root");
     if (!root) return;
     const q = coverQuery();
     root.innerHTML = `
-      <div class="splash-screen splash-screen--base" role="button" tabindex="0" aria-label="标日 あと学習 · 学习の道 · 点击进入">
-        <div class="splash-base-panel" id="splash-base-panel">
+      <div class="splash-screen splash-screen--complete">
+        <div class="splash-bg" id="splash-bg">
           <img
             class="splash-cover-full"
             id="splash-cover-img"
             src="${escapeHtml(SPLASH_COVER_BASE + q)}"
-            alt="标日 あと学習 · 学习の道"
+            alt=""
             width="390"
             height="844"
             decoding="async"
           />
         </div>
+        ${uiChromeHtml()}
       </div>`;
 
     const img = root.querySelector("#splash-cover-img");
-    const panel = root.querySelector("#splash-base-panel");
-    if (!img || !panel) return;
+    const bg = root.querySelector("#splash-bg");
+    if (!img || !bg) return;
 
     function useKo3Fallback() {
-      panel.classList.add("is-splash-ko3", "is-splash-ko3-fallback");
+      const screen = root.querySelector(".splash-screen--complete");
+      screen?.classList.add("is-splash-ko3-fallback");
       img.className = "splash-map-locked";
-      img.id = "splash-map-body";
       img.src = SPLASH_MAP_BODY + q;
       img.alt = "日本列岛学习路径";
-      img.width = 548;
-      img.height = 625;
-      panel.insertAdjacentHTML("beforeend", devOverlayHtml());
+      bg.insertAdjacentHTML("beforeend", devOverlayHtml());
     }
 
     img.addEventListener("error", function onErr() {
@@ -87,20 +115,9 @@ const HomeSplash = (function () {
   }
 
   function bind(onStart) {
-    const screen = document.querySelector(".splash-screen--base");
-    if (!screen || typeof onStart !== "function") return;
-
-    function go() {
-      onStart();
-    }
-
-    screen.addEventListener("click", go);
-    screen.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        go();
-      }
-    });
+    const btn = document.getElementById("btn-splash-start");
+    if (!btn || typeof onStart !== "function") return;
+    btn.onclick = () => onStart();
   }
 
   return {

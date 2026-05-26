@@ -13,6 +13,21 @@ const SpeechEngine = (() => {
   const mp3Warm = new Map();
 
   const TTS_CACHE_DIR = "tts-cache/";
+
+  /** P0：可与页面不同源（见 js/public-url.config.js HYOUGA_TTS_ORIGIN） */
+  function ttsCacheBaseUrl() {
+    const custom = (typeof window !== "undefined" && window.HYOUGA_TTS_ORIGIN || "")
+      .trim()
+      .replace(/\/$/, "");
+    if (custom && /^https:\/\//i.test(custom)) {
+      return custom + "/tts-cache/";
+    }
+    if (typeof location !== "undefined" && /^https?:/i.test(location.protocol)) {
+      const path = location.pathname.replace(/[^/]*$/, "");
+      return location.origin + path + TTS_CACHE_DIR;
+    }
+    return "./" + TTS_CACHE_DIR;
+  }
   /** 直链 Audio 兜底等待（微信已优先 fetch，不再傻等 4.5s） */
   const MP3_WAIT_MS = 2200;
   const MP3_WAIT_WECHAT_MS = 3200;
@@ -316,11 +331,7 @@ const FETCH_MP3_MS_DESKTOP = 5000;
   }
 
   function ttsMp3Url(line) {
-    const base =
-      typeof location !== "undefined" && location.pathname.includes("/")
-        ? location.pathname.replace(/[^/]*$/, "")
-        : "./";
-    return `${base}${TTS_CACHE_DIR}${ttsCacheKey(line)}.mp3`;
+    return `${ttsCacheBaseUrl()}${ttsCacheKey(line)}.mp3`;
   }
 
   /** fetch→blob（带超时） */

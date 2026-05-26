@@ -1,5 +1,8 @@
 # P0 开机封面 2.0 · 底图专用 AI 出图提示词
 
+> **设计阶段已锁定（2026-05-25）**：[`docs/locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md`](locks/P0-SPLASH-COVER-DESIGN-LOCK-20260525.md) · `SPLASH_ASSET_VER=21`  
+> 换底图/改版式须用户解锁；烘焙脚本 `scripts/apply-splash-v1-style.py`
+
 > **原则**：封面 = **一张底图 PNG**（`cover-base.png`）。  
 > **无**「开始学习」按钮、**无**五十音说明、**无**火车图标、**无** HTML 叠字。  
 > 进门方式：工程后续用编程（当前：点按整屏进入 P1）。  

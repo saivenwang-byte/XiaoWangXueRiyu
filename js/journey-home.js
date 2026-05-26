@@ -82,34 +82,11 @@ const JourneyHome = (function () {
     return { cleared: prog?.cleared || 0, total: prog?.total || unit.lessons?.length || 4 };
   }
 
-  /** 单元右侧：状态文案 + 5 颗五角星（完成为 5 颗实心）；彩蛋按钮在最右 */
-  function unitStatusHtml(state, unit, uv) {
-    const { cleared, total } = unitProgressCounts(state, unit);
-    const starN = 5;
-    let label = "未开启";
-    if (uv === "start") label = "START";
-    else if (uv === "active") label = "进行中";
-    else if (uv === "cleared") label = "已完成";
-
-    let filled = 0;
-    if (uv === "cleared") filled = starN;
-    else if (uv === "active" || uv === "start") {
-      filled = total > 0 ? Math.min(starN, Math.round((cleared / total) * starN)) : 0;
+  function unitStatusHtml(state, unit) {
+    if (typeof curriculumUnitProgressStarsHtml === "function") {
+      return curriculumUnitProgressStarsHtml(state, unit.id);
     }
-
-    const showStars = uv !== "dormant";
-    const stars = showStars
-      ? Array.from({ length: starN }, (_, i) =>
-          i < filled
-            ? '<span class="journey-unit-star journey-unit-star--on" aria-hidden="true">★</span>'
-            : '<span class="journey-unit-star journey-unit-star--off" aria-hidden="true">☆</span>'
-        ).join("")
-      : "";
-
-    return `<div class="journey-unit-status-col is-unit-${uv}">
-      <span class="journey-unit-state-label">${escapeHtml(label)}</span>
-      ${stars ? `<span class="journey-unit-stars" aria-label="单元进度 ${filled}/${starN}">${stars}</span>` : ""}
-    </div>`;
+    return "";
   }
 
   function lessonEggThumbHtml(state, unitId, lessonId) {
@@ -127,7 +104,7 @@ const JourneyHome = (function () {
     const panel = `assets/story/unit-${uid}-panel-${slot}-clean.png`;
     const primary = panel;
     const fallbacks = `assets/story/lesson-${lid}-egg.webp,assets/story/lesson-${lid}-egg.png`;
-    return `<button type="button" class="journey-lesson-egg-btn" data-lesson-egg="${lid}" title="本课插画" aria-label="第${lid}課 插画">
+    return `<button type="button" class="journey-lesson-egg-btn is-egg-revealed" data-lesson-egg="${lid}" title="本课条带 · 单元彩蛋" aria-label="第${lid}課 条带">
       <img src="${escapeHtml(primary)}" alt="" loading="lazy" decoding="async" data-fallbacks="${escapeHtml(fallbacks)}" />
     </button>`;
   }
@@ -177,46 +154,16 @@ const JourneyHome = (function () {
     onEnterLesson(id, gate != null ? gate : 2);
   }
 
-  /** 课次行：圆圈第 N 課 · 上浅中文主题 · 下一行日文课名 · 状态+海星 */
-  function renderLessonRow(L, state, unitId, slotIndex) {
-    const prog =
-      typeof curriculumLessonProgressDisplay === "function"
-        ? curriculumLessonProgressDisplay(state, L.lessonId, {
-            unitId,
-            lessonDisplay: L,
-            forceReal: devCatalogMode(),
-          })
-        : { status: "", stars: "", filled: 0 };
-    const themeZh = L.themeZh || L.theme || "";
-    let cls = "lesson-row";
-    if (L.devStub) cls += " is-lesson-stub";
-    else if (
-      (typeof curriculumLessonCleared === "function" && curriculumLessonCleared(state, L.lessonId)) ||
-      prog.filled >= (typeof lessonStarTotal === "function" ? lessonStarTotal(L.lessonId) : 4)
-    )
-      cls += " is-lesson-cleared";
-    else if (prog.filled > 0) cls += " is-lesson-active";
-    else if (prog.status === "未開啟") cls += " is-lesson-locked";
-    else cls += " is-lesson-idle";
-    if (devCatalogMode() && L.hasData) cls += " is-lesson-playable";
-    const zhInline = themeZh
-      ? `<span class="lesson-row-zh zh-annotation">${escapeHtml(themeZh)}</span>`
-      : "";
-    return `
-      <button type="button" class="${cls}" data-lid="${L.lessonId}"
-        title="第${L.lessonId}課 · ${escapeHtml(L.headline)}${themeZh ? " · " + escapeHtml(themeZh) : ""} · ${escapeHtml(prog.title || "")}">
-        <span class="lesson-row-badge" aria-hidden="true">${L.lessonId}</span>
-        <span class="lesson-row-body">
-          <span class="lesson-row-titleline">
-            <span class="lesson-row-title jp">${escapeHtml(L.headline)}</span>
-            ${zhInline}
-          </span>
-          <span class="lesson-row-meta">
-            <span class="lesson-row-status">${escapeHtml(prog.status)}</span>
-            <span class="lesson-row-stars" aria-label="${escapeHtml(prog.title || "")}">${prog.stars}</span>
-          </span>
-        </span>
-      </button>`;
+  /** 课次行 · 符号表真源 curriculumLessonCatalogRowHtml */
+  function renderLessonRow(L, state, unitId) {
+    if (typeof curriculumLessonCatalogRowHtml === "function") {
+      return curriculumLessonCatalogRowHtml(L, state, {
+        unitId,
+        forceReal: devCatalogMode(),
+        playable: devCatalogMode() && L.hasData,
+      });
+    }
+    return "";
   }
 
   function renderExploreCatalog(state) {
@@ -249,15 +196,16 @@ const JourneyHome = (function () {
           <summary class="journey-unit-summary">
             <div class="journey-unit-summary-bar">
               <span class="journey-unit-chevron" aria-hidden="true"></span>
-              <div class="journey-unit-summary-main" title="${unitLabel} ${unitJp} ${unitZh}">
-                <span class="journey-unit-label-zh">${unitLabel}</span>
-                <span class="journey-unit-title-sep" aria-hidden="true">·</span>
-                <span class="journey-stage-theme jp" lang="ja">${unitJp}</span>
-                <span class="journey-unit-title-sep" aria-hidden="true">·</span>
-                <span class="journey-stage-zh zh-annotation">${unitZh}</span>
-              </div>
+              ${
+                typeof curriculumUnitStackedTitleHtml === "function"
+                  ? curriculumUnitStackedTitleHtml(unit.id)
+                  : `<div class="journey-unit-summary-main journey-unit-summary-main--stacked" title="${unitLabel} ${unitJp} ${unitZh}">
+                <span class="journey-stage-unit jp" lang="ja">${unitLabel}</span>
+                <span class="journey-stage-zh zh-annotation">${unitZh || unitJp}</span>
+              </div>`
+              }
               <div class="journey-unit-summary-end">
-                ${unitStatusHtml(state, unit, uv)}
+                ${unitStatusHtml(state, unit)}
                 ${typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : ""}
               </div>
             </div>
