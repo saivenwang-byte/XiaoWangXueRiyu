@@ -343,23 +343,34 @@ const JourneyHome = (function () {
       </a>`;
   }
 
-  /** 展开单元后：滚动对齐，不改变 DOM 顺序（保持第1→第6单元） */
+  /** 展开单元后：滚动对齐，不改变 DOM 顺序（保持第1→第6单元）；并尽量露出四课 */
   function scrollOpenedUnitIntoView(det) {
     if (!det) return;
     const scroller = det.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
-    if (!scroller) {
-      det.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
     const pad = 6;
-    requestAnimationFrame(() => {
+
+    function align() {
+      if (!scroller) {
+        det.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
       const sRect = scroller.getBoundingClientRect();
       const dRect = det.getBoundingClientRect();
       const topDelta = dRect.top - sRect.top - pad;
       if (Math.abs(topDelta) > 2) {
         scroller.scrollBy({ top: topDelta, behavior: "smooth" });
       }
-    });
+      const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
+      if (lastSlot) {
+        const lRect = lastSlot.getBoundingClientRect();
+        const sRect2 = scroller.getBoundingClientRect();
+        if (lRect.bottom > sRect2.bottom - pad) {
+          scroller.scrollBy({ top: lRect.bottom - sRect2.bottom + pad, behavior: "smooth" });
+        }
+      }
+    }
+
+    requestAnimationFrame(() => requestAnimationFrame(align));
   }
 
   function bindCatalogAccordion(board) {

@@ -6372,6 +6372,57 @@ details.journey-unit-details[open] .journey-catalog-unit {
   padding-bottom: 8px;
 }
 
+/* 手机：展开某单元时只显示该单元四课（隐藏其余折叠行），四课 2×2 紧凑格 */
+@media (max-width: 520px) {
+  .journey-catalog-scroll--accordion:has(.journey-unit-details[open])
+    > .journey-unit-details:not([open]) {
+    display: none;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-slot {
+    min-width: 0;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-row-wrap {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row {
+    min-height: 46px;
+    padding: 5px 6px;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 4px;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-title {
+    font-size: 11px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-zh {
+    display: none;
+  }
+
+  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-egg-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
 .journey-map-core--explore {
   flex: 0 0 auto;
   position: relative;
@@ -6385,11 +6436,20 @@ details.journey-unit-details[open] .journey-catalog-unit {
 }
 
 /* 课文目录：无地图，START 下直连六单元 */
+.journey-shinkansen--catalog {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
 .journey-shinkansen--catalog .journey-frame-body--catalog {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-height: 0;
+  flex: 1 1 auto;
 }
 
 .journey-shinkansen--catalog .journey-catalog-lead {
