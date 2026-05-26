@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "278",
+    "cache": "279",
     "date": "2026-05-25",
-    "note": "首页单元展开顶对齐四课可见；单词延展一次展开；cache v278",
+    "note": "每次打开封面进门；课文底栏不进封面；五十音在课文首行 00 入門；cache v279",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   let state = loadMvpState();
   let activeLessonId = null;
   /** 0=単語 1=文法 2=会話 3=作業 4=まとめ */
@@ -272,7 +272,57 @@
     showView(view);
   };
 
+  function splashOverlayEl() {
+    return document.getElementById("home-splash-overlay");
+  }
+
+  function isSplashOpen() {
+    const el = splashOverlayEl();
+    return !!(el && !el.classList.contains("is-hidden"));
+  }
+
+  function hideSplash() {
+    const el = splashOverlayEl();
+    if (!el) return;
+    el.classList.add("is-hidden");
+    el.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("is-splash-open");
+    const top = document.querySelector(".top-bar");
+    if (top) top.style.display = "";
+  }
+
+  function showSplash() {
+    const el = splashOverlayEl();
+    if (!el) return;
+    el.classList.remove("is-hidden");
+    el.setAttribute("aria-hidden", "false");
+    document.body.classList.add("is-splash-open");
+    const nav = document.querySelector(".bottom-nav");
+    const top = document.querySelector(".top-bar");
+    if (nav) nav.style.display = "none";
+    if (top) top.style.display = "none";
+    if (typeof HomeSplash !== "undefined") {
+      HomeSplash.render({ state });
+      HomeSplash.bind(enterFromSplash);
+    }
+  }
+
+  function shouldShowSplashOnBoot() {
+    try {
+      if (/[?&]nosplash=1(?:&|$)/.test(location.search || "")) return false;
+    } catch (_) {
+      /* ignore */
+    }
+    return true;
+  }
+
+  function enterFromSplash() {
+    hideSplash();
+    showView("home");
+  }
+
   function showView(name) {
+    if (isSplashOpen()) hideSplash();
     const ae = document.activeElement;
     if (ae && typeof ae.blur === "function") ae.blur();
     const targetId = `view-${name}`;
@@ -774,10 +824,17 @@ function appendGateNextStrip(container, currentGate) {
     },
     renderHome: () => renderHome(),
     showView,
+    showSplash,
+    hideSplash,
+    enterFromSplash,
   };
 
   applyZhSetting();
-  showView("home");
+  if (shouldShowSplashOnBoot() && splashOverlayEl()) {
+    showSplash();
+  } else {
+    showView("home");
+  }
 
   if (typeof StoryRewardDev !== "undefined") {
     StoryRewardDev.bootFromUrl(window.MvpDev);

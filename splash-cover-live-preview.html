@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>封面 2.0 · 实时预览（Cursor 用）</title>
+  <script>
+    (function () {
+      if (location.protocol !== "file:") return;
+      location.replace("http://127.0.0.1:8765/splash-cover-live-preview.html" + (location.search || ""));
+    })();
+  </script>
+  <link rel="stylesheet" href="css/mvp.css" id="mvp-css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #263238;
+      color: #eceff1;
+      font-family: system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+      padding: 12px 16px 24px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1rem; }
+    .lead { margin: 0 0 10px; font-size: 0.82rem; color: #b0bec5; max-width: 44rem; line-height: 1.5; }
+    .lead code { color: #80cbc4; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .toolbar a, .toolbar button {
+      font-size: 0.8rem; padding: 7px 11px; border-radius: 8px;
+      border: 1px solid #546e7a; background: #455a64; color: #fff;
+      text-decoration: none; cursor: pointer;
+    }
+    .toolbar .is-primary { background: #00897b; border-color: #00695c; }
+    .ver-chip {
+      display: inline-block; margin-bottom: 10px; padding: 4px 10px;
+      border-radius: 6px; background: #37474f; font-size: 0.78rem; color: #ffcc80;
+    }
+    .stage-center { display: flex; flex-direction: column; align-items: center; }
+    .scale-wrap { transform-origin: top center; }
+    .phone-bezel {
+      padding: 14px 10px 18px; border-radius: 40px;
+      background: linear-gradient(160deg, #78909c 0%, #455a64 45%, #263238 100%);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
+    }
+    .screen-boundary {
+      width: 390px; height: 844px; border-radius: 24px;
+      outline: 2px solid #ff7043; overflow: hidden; background: #fff8e1;
+      position: relative;
+    }
+    .screen-boundary .splash-root {
+      width: 100%; height: 100%;
+    }
+    .scale-label { margin-top: 10px; font-size: 11px; color: #90a4ae; text-align: center; }
+    .warn {
+      display: none; margin-bottom: 10px; padding: 8px 10px;
+      background: #ff8a80; color: #3e2723; border-radius: 8px; font-size: 0.82rem;
+    }
+    .warn.is-show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="warn" id="file-warn">请用 <code>http://127.0.0.1:8765/splash-cover-live-preview.html</code> 打开</div>
+
+  <h1>封面 2.0 · 实时预览（无 iframe 缓存）</h1>
+  <p class="lead">
+    整图 <code>cover-base.png</code>（72c63460 定稿 · 无程序叠线/圆）。缺图时回退 kO3。点橙框进入（alert）。
+  </p>
+  <p class="ver-chip" id="ver-chip">加载中…</p>
+
+  <div class="toolbar">
+    <button type="button" class="is-primary" id="btn-reload">刷新最新</button>
+    <a href="index.html?v=280" target="_blank">完整 App（iframe 可能旧缓存）</a>
+    <a href="splash-phone-preview.html">1∶1 外框 + iframe</a>
+  </div>
+
+  <div class="stage-center">
+    <div class="scale-wrap" id="scale-wrap">
+      <div class="phone-bezel">
+        <div class="screen-boundary" id="phone-screen">
+          <div id="splash-root" class="splash-root"></div>
+        </div>
+      </div>
+    </div>
+    <p class="scale-label" id="scale-label"></p>
+  </div>
+
+  <script>
+    (function () {
+      if (location.protocol === "file:") {
+        document.getElementById("file-warn").classList.add("is-show");
+      }
+
+      var bust = String(Date.now());
+
+      function splashScriptUrl() {
+        var v = typeof HomeSplash !== "undefined" && HomeSplash.ASSET_VER ? HomeSplash.ASSET_VER : bust;
+        return "js/home-splash.js?v=" + encodeURIComponent(v) + "&_=" + bust;
+      }
+
+      function loadScript(src, cb) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.onload = cb;
+        s.onerror = cb;
+        document.body.appendChild(s);
+      }
+
+      function renderSplash() {
+        if (typeof HomeSplash === "undefined") return;
+        HomeSplash.render();
+        HomeSplash.bind(function () {
+          alert("预览：点击进入 · 正式 App 进 P1 学习地图");
+        });
+        var chip = document.getElementById("ver-chip");
+        chip.textContent =
+          "SPLASH_ASSET_VER=" +
+          (HomeSplash.ASSET_VER || "?") +
+          " · 目标 " +
+          (HomeSplash.COVER_BASE || "cover-base.png") +
+          " · 刷新 " +
+          new Date().toLocaleTimeString();
+      }
+
+      function boot() {
+        document.getElementById("mvp-css").href = "css/mvp.css?_=" + bust;
+        var old = document.getElementById("home-splash-script");
+        if (old) old.remove();
+        loadScript(splashScriptUrl(), renderSplash);
+      }
+
+      document.getElementById("btn-reload").onclick = function () {
+        location.replace("splash-cover-live-preview.html?_=" + Date.now());
+      };
+
+      function fitScale() {
+        var pad = 40;
+        var s = Math.min(1, (window.innerWidth - pad) / 410, (window.innerHeight - 200) / 900);
+        document.getElementById("scale-wrap").style.transform = "scale(" + s + ")";
+        document.getElementById("scale-label").textContent =
+          "390×844 · 缩放 " + (s * 100).toFixed(0) + "% · 点「刷新最新」看每次改动";
+      }
+
+      boot();
+      fitScale();
+      window.addEventListener("resize", fitScale);
+    })();
+  </script>
+</body>
+</html>

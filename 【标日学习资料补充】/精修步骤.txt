@@ -1,0 +1,199 @@
+先说清：「全部对齐标日真源」指什么
+规范真源在 作业与拡張-标日真源规范。全书对齐要过 三层，不要混成一步：
+
+层	含义	你现在的大致状态
+A · 工程壳
+五关、9 段作業、12 小测、拡張 5 块、PRD 单词、TTS、pre-ship
+已基本绿（路线图写 2–24 结构收口）
+B · 课文锚点
+作業/拡張能标出「来自哪句 basicText / 会話」；小测与作業 Q1–12 同源
+align-homework-extension-biaori-l2-4.py 已铺 2–24 锚点前缀，不等于每题语义都验过
+C · 标日语义
+例句=课本原句；易错=当课句型；无「进行…的」「见本课…」；会話 A=课文译法
+主要工作量；审计里 2–24 仍普遍有讲义腔/模板句
+「全部对齐」= A 保持绿 + B 每课可回溯 + C 人工验收通过。
+lessons-detailed.js 不能自动验 24 课全文，必须 标日纸质/电子版 + 你抽检 并行。
+
+硬约束（动手前写进任务单）
+第 1 单元 1–4 课已锁定（MVP-UNIT1-LESSONS-1-4-FREEZE）：默认 不改 lesson-1-flow.js、课 1–4 五关字段。
+若课 1 也要真源修：只能 你明文解锁「仅改 lessons-data 文案、不动壳」。
+真源顺序（规范 § 开头）：标日课文 → lessons-data 的 basicText / dialogues → lessons-detailed 摘要 → 练习册思路（不另造句义）。
+每轮只动 4 课一批，改完跑门禁再进下一批（文递自归，禁止 24 课一夜重写）。
+推荐总路线（6 阶段 · 约 6–8 周兼职节奏）
+阶段0 基线与表
+阶段1 课文真源入库
+阶段2 文法+小测
+阶段3 作業九段
+阶段4 拡張五块
+阶段5 会話+知识卡
+阶段6 全书门禁+发版
+阶段 0 · 半天（只做一次）
+动作	具体做法
+建课次总表
+复制 MVP-L9-24-严齐L1-补课单 勾选表，加列：锚点B / 语义C / 抽检人 / cache
+定批次
+建议顺序：U2(5–8) → U3(9–12) → U4(13–16) → U5(17–20) → U6(21–24) → U1(2–4，需解锁) → L1(仅错句)
+定抽检课
+每单元必抽 1 课全文 + 全书 14 / 18 / 24 作業+拡張各读 10 分钟
+PM 会话
+hyouga-product-pm 输出 docs/tasks/round-标日真源-U2.json（只列文件与验收）
+阶段 1 · 每课第一步：把「标日课文」钉死
+对每一课（lessonId = N）按同一工单做：
+
+打开标日初级上册 当课会話 + 基本课文（纸书或 PDF）。
+对照 js/data/lessons-data.js 里该课的：
+basicText（逐句）
+dialogues A 轨日文
+不一致 → 先改 data（日文走 项目知识库-标日日文书写），再动作業/小测。
+在作業区顶部固化锚点（规范 1.2 格式）：
+【标日课文】基本课文：……（2–4 句）
+【标日课文】会話摘录：……（1–2 句）
+已有脚本：align-homework-extension-biaori-l2-4.py（名虽 l2-4，代码里 LESSON_IDS = 2..24）。
+建议：每批新课在脚本 BIAORI_ANCHOR[N] 里补 你刚从课本抄的原句（不要只靠自动生成），再跑：
+python scripts/align-homework-extension-biaori-l2-4.py
+无 lessons-detailed 的课：以课本为准，在总表备注「detailed 未覆盖，人工真源」。
+阶段 1 完成标准：打开作業 Tab，第一段能看见【标日课文】且与纸书一致。
+
+阶段 2 · 文法 + 小测（P1 语义）
+按课修改 grammarNodes + quizQuestions：
+
+检查项	做法
+example
+必须来自标日该语法点的例句（或 basicText 同形变体）
+exampleZh
+手写，禁止「见本课基本课文…」类兜底
+links
+只写标日允许的「对比/延展」，延展句末标「延展：第 N 课」
+小测 12 题
+与作業 Q1–Q12 一一对应；Q12 综合 ≥2 个当课语法点
+explanationZh
+已用 patch-quiz-explanation-zh.py；每批后抽检 3 题，不对则改 homeworkSections 的 → 行
+单元已有补丁可参考（按单元重跑或手改）：
+
+U2：patch-unit2-grammar-l5-7-biaori.py、patch-unit2-lesson8-u2c.py
+U3–U6：patch-unit3-lessons9-12-biaori.py … patch-unit6-lessons21-24-biaori.py
+阶段 2 完成标准：文法 Tab 每节点有日文例+中文灰字；作業关 12 题错后能说出「对应课文哪句」。
+
+阶段 3 · 作業九段（P2-1）
+对 homeworkSections 每一段：
+
+列出本段 Q 的日文是否只用 当课词表 + 当课语法。
+每题格式：Qn：… + → 答案 + 「对应课文：……」（规范 1.2）。
+删掉/改写三类句（audit-five-modules 评估 已点名）：
+「第 N 课：本课文法用ます形…」
+与课文无关的泛化刷题
+机翻腔（虽然/呢。/进行…的）
+批量去讲义腔（跳过 L1）：
+
+python scripts/patch-zh-lecture-tone.py
+阶段 3 完成标准：9 段齐全；随机抽 3 题能在 basicText/会話 里找到出处。
+
+阶段 4 · 拡張五块（P2-2 / P2-3）
+reviewExtension 五块按规范 § 2.2 填，并 显式打标签：
+
+块	内容要求
+📖 迄今总结
+先 2–4 条课文原句，再写跨课链接
+🗂️ 参考表
+只列课文出现过的词/形
+📋 模板
+槽位来自课文句型，例句用课文变体
+⚠️ 常见误用
+≥3 条 ×/○，针对当课句型；超纲写 【知识延展】
+📝 单元预告
+标日单元练习范围 + 下单元入口
+summaryBlocks / dialogueKeyPoints / rolePlayTasks：扮演任务必须能对应 会話 ABC 场景。
+
+阶段 4 完成标准：拡張 Tab 无「百科段」；误用条不是复制粘贴模板。
+
+阶段 5 · 会話 + 単語（与真源规范交叉）
+板块	做法
+会話 A 轨
+中文按标日课文译法；L9–24 用 patch-dialogue-zh-l*.py + audit-dialogue-zh-mt.py
+会話 B/C + 黄卡
+对照 dialogue-zh-l9-24.js、ABC 元数据；密度对齐 L1 黄卡（补课单 P1-5）
+単語
+PRD 对账：python scripts/audit-lessons-biaori-prd.py --from 1 --to 24（pre-ship 已拦 FAIL）
+知识卡
+L2–4、L1 仍弱；按课补 lN_v_* 或单元 vocab_tips_curated_u*.py（P3，可与 P2 并行但别阻塞发版）
+阶段 5 完成标准：会話关 A 与课本意思一致；单词关无 PRD 缺失。
+
+阶段 6 · 每批必跑门禁（发版前）
+python scripts/audit-all-lessons-2-24-vs-l1.py
+python scripts/audit-ja-text.py
+python scripts/audit-lessons-biaori-prd.py --from 1 --to 24
+python scripts/audit-dialogue-zh-mt.py
+python scripts/audit-five-blocks-l1-vs-9-24.py
+发布前自检.bat
+然后：
+
+bump js/share-wechat.js 的 CACHE_VER + 同步作者链接.bat（或手改 index.html ?v=）
+手机：regression_smoke_lesson 建议 本批最后一课（如 U2 用 8，U3 用 12）
+你确认后：让 Agent 把条目写入 docs/iteration-baseline.json 的 confirmed[]
+说明：文档里的 scripts/_audit-five-modules-biaori.py 仓库里目前没有；用上面组合 + audit-five-modules-biaori-评估 人工表代替，或以后补一个聚合脚本。
+
+单课「标日真源对齐」勾选清单（复制即用）
+每完成一课，打勾：
+
+
+ basicText / 会話 A 与纸书一致
+
+ 作業段首有【标日课文】锚点
+
+ 作業 Q1–12 与小测 12 题同源；Q12 综合 ≥2 语法点
+
+ 文法每节点有标日 example + 手写 exampleZh
+
+ 拡張 5 块齐；总结先课文句；误用非模板
+
+ 无讲义腔/机翻腔（或已跑 patch-zh-lecture-tone）
+
+ audit-ja-text + PRD + pre-ship 本批后仍全 OK
+
+ 手机四关 + 会話 ABC 冒烟通过
+批次与人力建议（可执行日历）
+周	批次	课	重点
+1
+U2
+5–8
+ます形移动；你已有锚点脚本，主攻 作業说明 + 拡張误用
+2
+U3
+9–12
+形容詞/比较；会話黄卡
+3
+U4
+13–16
+L14 全文抽检
+4
+U5
+17–20
+L18 全文抽检
+5
+U6
+21–24
+L24 全文抽检 + 全书讲义腔 sweep
+6
+U1
+2–4
+需解锁；补 U1 知识卡
+缓冲
+L1
+1
+仅标日明确错句；不动五关壳
+每批角色：PM 拆单 → Dev（hyouga-author）按清单改 lessons-data.js → Review（pre-ship+日文+TTS）→ QA（四关冒烟）→ 你签字 → Release。
+
+脚本 vs 人工（别指望全自动「全书真源」）
+能自动化	必须人工
+锚点前缀、讲义腔替换、小测 explanationZh 草稿、PRD/TTS/结构审计
+课本逐句对错、Q12 是否真综合当课、拡張易错是否贴标日练习册、会話语气
+单元 patch-unit*-biaori.py 批量骨架
+删模板、改 grammarNodeId 绑错
+务实目标：24 课全部达到 B 层（锚点+同源） 约 2–3 批人工；C 层（语义严齐） 靠抽检课 + 其余课「无模板句」即可先发布，再迭代。
+
+若你「现在就要开工」的最小第一步
+拍板：是否解锁 U1 课 2–4（是/否）。
+从 第 5 课 打开标日 + lessons-data 作業 Tab，按上面单课清单改 一课。
+跑阶段 6 门禁；本地 ?v= 加 1，手机过课 5。
+课 5 模板满意后，复制工单到 6–8，再扩到 9–12。
+你回复 「按 U2→U6 开工」 或 「先解锁 2–4」，我可以直接帮你写第一份 docs/tasks/round-标日真源-U2.json（只含文件路径与验收句，仍不自动改代码，除非你明确说可以开工）。
