@@ -11,6 +11,21 @@
 
 **原则**：不删、不改绑 `origin`；需要更新旧链接时再单独 `git push origin`（一般不必）。
 
+## GitHub Pages 开通（Gmail 报错「Deploy failed」时必做）
+
+本地能开、公网 404 / 邮件报错，**不是代码坏了**，是 **v2 仓库 Pages 未用 Actions 发布成功**。
+
+1. 打开：https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages  
+2. **Build and deployment → Source** 必须选 **GitHub Actions**（不要选 Deploy from a branch）  
+3. **Settings → Actions → General → Workflow permissions** 选 **Read and write permissions** → Save  
+4. **Actions** 页左侧 **Deploy GitHub Pages** → **Run workflow** 重跑一次  
+5. 变绿后约 1～3 分钟访问：  
+   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
+
+失败日志若在 **Setup Pages / configure-pages**：几乎都是第 1 步仍选了「从分支部署」。
+
+---
+
 ## 一次性：在 GitHub 上建仓
 
 任选其一。
