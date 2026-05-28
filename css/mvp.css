@@ -6589,65 +6589,32 @@ details.journey-unit-details[open] .journey-catalog-unit {
   padding-bottom: 8px;
 }
 
-/* 手机：展开某单元时只显示该单元四课（隐藏其余折叠行），四课 2×2 紧凑格 */
-@media (max-width: 520px) {
-  .journey-catalog-scroll--accordion:has(.journey-unit-details[open])
-    > .journey-unit-details:not([open]) {
-    display: none;
-  }
+/* 课文目录 · 对齐笔记：展开当前单元时隐藏其它单元；四课纵向一行一课（非 2×2） */
+.journey-home-scroll.journey-catalog-scroll--accordion:has(.journey-unit-details[open])
+  > .journey-unit-details:not([open]) {
+  display: none;
+}
 
-  /* 与笔记一致：仅 .journey-home-scroll 一条主滑槽，单元内不再嵌套滚动 */
-  .journey-home-scroll.journey-catalog-scroll--accordion
-    .journey-unit-details[open]
-    .journey-unit-body {
-    max-height: none;
-    overflow: visible;
-    padding-bottom: 10px;
-    border-radius: 0 0 10px 10px;
-  }
+.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 10px;
+  border-radius: 0 0 10px 10px;
+}
 
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
+.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
 
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-slot {
-    min-width: 0;
-  }
+.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-slot {
+  min-width: 0;
+}
 
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-row-wrap {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row {
-    min-height: 46px;
-    padding: 5px 6px;
-    grid-template-columns: 24px minmax(0, 1fr) auto;
-    gap: 4px;
-  }
-
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-badge {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-  }
-
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-title {
-    font-size: 11px;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-  }
-
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .lesson-row-zh {
-    display: none;
-  }
-
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-egg-btn {
-    width: 38px;
-    height: 38px;
-  }
+.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-row-wrap {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: stretch;
 }
 
 .journey-map-core--explore {
