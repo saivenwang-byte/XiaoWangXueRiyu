@@ -57,10 +57,13 @@ const SpeechEngine = (() => {
   const MP3_WAIT_WECHAT_MS = 3200;
   const MP3_READY_MS = 2800;
   const MP3_READY_WECHAT_MS = 3500;
+  /** 预热已判定无包时，不再傻等满额 MP3_READY_MS */
+  const MP3_READY_FAILED_MS = 120;
+  const MP3_DIRECT_FAILED_MS = 700;
 const FETCH_MP3_MS = 8000;
 const FETCH_MP3_MS_DESKTOP = 5000;
   let audioUnlocked = false;
-  const ONLINE_TTS_MS = 2200;
+  const ONLINE_TTS_MS = 3200;
   let loadingListener = null;
   const ONLINE_TTS_URLS = [
     "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=ja&q=",
@@ -340,7 +343,7 @@ const FETCH_MP3_MS_DESKTOP = 5000;
     audio.addEventListener("error", () => {
       entry.failCount = (entry.failCount || 0) + 1;
       if (entry.urlIdx + 1 < urls.length) loadAt(entry.urlIdx + 1);
-      else if (entry.failCount >= urls.length) entry.failed = true;
+      else entry.failed = true;
     });
     loadAt(0);
     mp3Warm.set(key, entry);
@@ -418,7 +421,19 @@ const FETCH_MP3_MS_DESKTOP = 5000;
       try {
         a.load();
       } catch (_) {}
-      setTimeout(() => done(entry.ready || a.readyState >= 2), maxMs);
+      const poll = setInterval(() => {
+        if (entry.failed) {
+          clearInterval(poll);
+          done(false);
+        } else if (entry.ready || a.readyState >= 3) {
+          clearInterval(poll);
+          done(true);
+        }
+      }, 90);
+      setTimeout(() => {
+        clearInterval(poll);
+        done(entry.ready || a.readyState >= 2);
+      }, maxMs);
     });
   }
 
@@ -505,25 +520,40 @@ const FETCH_MP3_MS_DESKTOP = 5000;
     })();
   }
 
-  /** ① 嵌入语音包：预热 → 同元素播放 → fetch → 直链 */
+  /** ① 嵌入语音包：预热 → 同元素播放 → fetch → 直链（无包时快速让给在线/本机） */
   async function playBundledMp3(line, token) {
     const entry = warmPhrase(line);
-    const readyMs = preferFetchMp3() ? MP3_READY_WECHAT_MS : MP3_READY_MS;
+    if (entry.failed) {
+      return false;
+    }
+    const readyMs = entry.failed
+      ? MP3_READY_FAILED_MS
+      : preferFetchMp3()
+        ? MP3_READY_WECHAT_MS
+        : MP3_READY_MS;
     if (await waitForMp3Ready(entry, readyMs)) {
       const ok = await playWarmMp3Entry(entry, token);
       if (ok) return true;
     }
+    if (entry.failed) {
+      return false;
+    }
+    const directWait = entry.failed
+      ? MP3_DIRECT_FAILED_MS
+      : preferFetchMp3()
+        ? isWeChatBrowser()
+          ? MP3_WAIT_WECHAT_MS
+          : MP3_WAIT_MS
+        : MP3_WAIT_MS;
     if (preferFetchMp3()) {
       const ok = await playBundledMp3Fetch(line, token);
       if (ok) return true;
-      return playBundledMp3Direct(
-        line,
-        token,
-        isWeChatBrowser() ? MP3_WAIT_WECHAT_MS : MP3_WAIT_MS
-      );
+      if (entry.failed) return false;
+      return playBundledMp3Direct(line, token, directWait);
     }
-    const okDirect = await playBundledMp3Direct(line, token, MP3_WAIT_MS);
+    const okDirect = await playBundledMp3Direct(line, token, directWait);
     if (okDirect) return true;
+    if (entry.failed) return false;
     return playBundledMp3Fetch(line, token);
   }
 

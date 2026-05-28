@@ -136,7 +136,16 @@ const SpeakUI = (() => {
       preferKey ? { preferTtsKey: preferKey } : undefined
     );
     if (!ok) {
-      await new Promise((r) => setTimeout(r, 180));
+      await new Promise((r) => setTimeout(r, 220));
+      if (typeof SpeechEngine.unlockAudioOnce === "function") SpeechEngine.unlockAudioOnce();
+      ok = await SpeechEngine.speakJa(
+        payload,
+        0.85,
+        preferKey ? { preferTtsKey: preferKey } : undefined
+      );
+    }
+    if (!ok) {
+      await new Promise((r) => setTimeout(r, 420));
       if (typeof SpeechEngine.unlockAudioOnce === "function") SpeechEngine.unlockAudioOnce();
       ok = await SpeechEngine.speakJa(
         payload,

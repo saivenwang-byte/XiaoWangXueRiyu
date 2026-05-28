@@ -6137,8 +6137,7 @@ button.is-speaking {
   padding: 10px 12px 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: block;
   box-sizing: border-box;
 }
 
