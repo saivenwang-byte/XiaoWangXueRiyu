@@ -162,7 +162,34 @@ const JourneyHome = (function () {
     return "";
   }
 
-  function renderExploreCatalog(state) {
+  function renderExploreCatalogDevHint(state) {
+    if (typeof StoryReward !== "undefined" && StoryReward.storyDevMode && StoryReward.storyDevMode()) {
+      const v = cacheVer();
+      const unitRow = (u) => `
+            <div class="journey-story-dev-row">
+              <span class="journey-story-dev-label">U${u}</span>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="preview" data-unit="${u}">预览</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="complete" data-unit="${u}">模拟看完</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="reset" data-unit="${u}">重测首次弹</button>
+              <button type="button" class="btn secondary story-dev-btn" data-story-dev="status" data-unit="${u}">状态</button>
+            </div>`;
+      return `<div class="journey-dev-banner journey-story-dev journey-home-dock">
+          <p class="journey-story-dev-title">四格验收 · 2×2 条带 · <a href="story-unit-phone-real.html" target="_blank" rel="noopener">竖屏真比例↗</a> · <a href="http://127.0.0.1:8777/storyboard-preview.html" target="_blank" rel="noopener">分镜↗</a> · <code>StoryRewardDev.help()</code></p>
+          <p class="journey-story-dev-hint zh-annotation">顺序：U1→U6 ·「模拟看完」= 四课金星+四格齐+排队首次弹 ·「重测首次弹」= 仅重置已读（须单元已齐）</p>
+          <div class="journey-story-dev-grid">${[1, 2, 3, 4, 5, 6].map(unitRow).join("")}</div>
+          <div class="journey-story-dev-actions">
+            <a class="btn secondary story-dev-link" href="index.html?v=${v}&storyDev=1&storyAuto=1">一键 U1 看完待弹</a>
+            <button type="button" class="btn secondary story-dev-btn" data-story-dev="open-unit" data-unit="1">展开 U1</button>
+          </div>
+        </div>`;
+    }
+    if (devCatalogMode()) {
+      return `<p class="journey-dev-banner journey-home-dock">試用：真实进度 · 四关金星 ○☆★=未学/未满分/通关</p>`;
+    }
+    return "";
+  }
+
+  function renderExploreCatalogBlocks(state) {
     const units = getCurriculumUnitsForHome();
     const expandedId = getExpandedUnitId(state);
     const blocks = units
@@ -214,32 +241,12 @@ const JourneyHome = (function () {
         </details>`;
       })
       .join("");
-    const devHint =
-      typeof StoryReward !== "undefined" && StoryReward.storyDevMode && StoryReward.storyDevMode()
-        ? (() => {
-            const v = cacheVer();
-            const unitRow = (u) => `
-            <div class="journey-story-dev-row">
-              <span class="journey-story-dev-label">U${u}</span>
-              <button type="button" class="btn secondary story-dev-btn" data-story-dev="preview" data-unit="${u}">预览</button>
-              <button type="button" class="btn secondary story-dev-btn" data-story-dev="complete" data-unit="${u}">模拟看完</button>
-              <button type="button" class="btn secondary story-dev-btn" data-story-dev="reset" data-unit="${u}">重测首次弹</button>
-              <button type="button" class="btn secondary story-dev-btn" data-story-dev="status" data-unit="${u}">状态</button>
-            </div>`;
-            return `<div class="journey-dev-banner journey-story-dev">
-          <p class="journey-story-dev-title">四格验收 · 2×2 条带 · <a href="story-unit-phone-real.html" target="_blank" rel="noopener">竖屏真比例↗</a> · <a href="http://127.0.0.1:8777/storyboard-preview.html" target="_blank" rel="noopener">分镜↗</a> · <code>StoryRewardDev.help()</code></p>
-          <p class="journey-story-dev-hint zh-annotation">顺序：U1→U6 ·「模拟看完」= 四课金星+四格齐+排队首次弹 ·「重测首次弹」= 仅重置已读（须单元已齐）</p>
-          <div class="journey-story-dev-grid">${[1, 2, 3, 4, 5, 6].map(unitRow).join("")}</div>
-          <div class="journey-story-dev-actions">
-            <a class="btn secondary story-dev-link" href="index.html?v=${v}&storyDev=1&storyAuto=1">一键 U1 看完待弹</a>
-            <button type="button" class="btn secondary story-dev-btn" data-story-dev="open-unit" data-unit="1">展开 U1</button>
-          </div>
-        </div>`;
-          })()
-        : devCatalogMode()
-          ? `<p class="journey-dev-banner">試用：真实进度 · 四关金星 ○☆★=未学/未满分/通关</p>`
-          : "";
-    return `<div class="journey-catalog-scroll journey-catalog-scroll--accordion">${blocks}</div>${devHint}`;
+    return blocks;
+  }
+
+  /** @deprecated 仅保留旧调用；新结构用 renderExploreCatalogBlocks + journey-home-scroll */
+  function renderExploreCatalog(state) {
+    return `<div class="journey-catalog-scroll journey-catalog-scroll--accordion">${renderExploreCatalogBlocks(state)}</div>${renderExploreCatalogDevHint(state)}`;
   }
 
   function renderUnitMapStations(state) {
@@ -346,7 +353,9 @@ const JourneyHome = (function () {
   /** 展开单元后：滚动对齐，不改变 DOM 顺序（保持第1→第6单元）；并尽量露出四课 */
   function scrollOpenedUnitIntoView(det) {
     if (!det) return;
-    const scroller = det.closest(".journey-catalog-scroll--accordion, .journey-catalog-scroll");
+    const scroller = det.closest(
+      ".journey-home-scroll, .journey-catalog-scroll--accordion, .journey-catalog-scroll"
+    );
     const pad = 6;
 
     function align() {
@@ -363,9 +372,6 @@ const JourneyHome = (function () {
       if (Math.abs(topDelta) > 2) {
         scroller.scrollBy({ top: topDelta, behavior: "smooth" });
       }
-      /* 四课在单元内滑槽滚动时，由 .journey-unit-body overflow-y 承担，不再强拉外层 */
-      if (body && body.scrollHeight > body.clientHeight + 4) return;
-
       const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
       if (lastSlot) {
         const lRect = lastSlot.getBoundingClientRect();
@@ -485,14 +491,19 @@ const JourneyHome = (function () {
         : "";
     board.innerHTML = `
       ${testCardBanner}
-      <header class="journey-frame-head journey-frame-head--slim">
-        <p class="journey-frame-tagline">${FRAME_TAGLINE}</p>
-        <p class="journey-frame-sub" id="journey-frame-progress"></p>
-      </header>
-      <div class="journey-frame-body journey-frame-body--catalog">
-        <div class="journey-catalog-lead">${renderPart0Bar(state)}</div>
-        <p class="journey-catalog-section jp" lang="ja">课文名称（日语）</p>
-        ${renderExploreCatalog(state)}
+      <div class="journey-home-shell">
+        <div class="journey-home-head">
+          <header class="journey-frame-head journey-frame-head--slim">
+            <p class="journey-frame-tagline">${FRAME_TAGLINE}</p>
+            <p class="journey-frame-sub" id="journey-frame-progress"></p>
+          </header>
+          <div class="journey-catalog-lead">${renderPart0Bar(state)}</div>
+          <p class="journey-catalog-section jp" lang="ja">课文名称（日语）</p>
+        </div>
+        <div class="journey-home-scroll journey-catalog-scroll journey-catalog-scroll--accordion" role="region" aria-label="课文目录">
+          ${renderExploreCatalogBlocks(state)}
+        </div>
+        ${renderExploreCatalogDevHint(state)}
       </div>`;
     bindInteractions(board, state, onEnterLesson);
     return board;

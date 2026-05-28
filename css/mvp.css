@@ -5101,7 +5101,7 @@ button.is-speaking {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  padding: 4px 6px 2px;
+  padding: 0;
 }
 
 #view-home.view.active .mvp-hero--hidden-title {
@@ -5112,6 +5112,60 @@ button.is-speaking {
   flex: 1;
   min-height: 0;
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 课文首页 · 与笔记同构：固定顶区 + 主滚动区（右侧细滑槽） */
+.journey-home-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.journey-home-head {
+  flex-shrink: 0;
+  padding: 4px 10px 6px;
+  border-bottom: 1px solid var(--hy-border-soft, var(--mvp-border, #e0e0e0));
+  background: var(--hy-surface-white, var(--mvp-card, #fff));
+}
+
+.journey-home-head .journey-frame-head--slim {
+  padding: 2px 0 4px;
+  border-bottom: none;
+  background: transparent;
+}
+
+.journey-home-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 144, 156, 0.55) rgba(0, 0, 0, 0.04);
+  padding: 6px 8px 12px;
+}
+
+.journey-home-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.journey-home-scroll::-webkit-scrollbar-thumb {
+  background: rgba(120, 144, 156, 0.45);
+  border-radius: 6px;
+}
+
+.journey-home-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.journey-home-dock {
+  flex-shrink: 0;
 }
 
 .journey-frame-head--slim {
@@ -6542,20 +6596,12 @@ details.journey-unit-details[open] .journey-catalog-unit {
     display: none;
   }
 
-  /* 单元内四课 · 纵向滑槽（装不下时在单元内上下滑，不挡整页） */
-  .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
-    max-height: min(
-      58dvh,
-      calc(
-        100dvh - 52px - 56px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
-          10.5rem
-      )
-    );
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    scroll-padding-bottom: 10px;
+  /* 与笔记一致：仅 .journey-home-scroll 一条主滑槽，单元内不再嵌套滚动 */
+  .journey-home-scroll.journey-catalog-scroll--accordion
+    .journey-unit-details[open]
+    .journey-unit-body {
+    max-height: none;
+    overflow: visible;
     padding-bottom: 10px;
     border-radius: 0 0 10px 10px;
   }
@@ -6625,12 +6671,9 @@ details.journey-unit-details[open] .journey-catalog-unit {
   height: 100%;
 }
 
-.journey-shinkansen--catalog .journey-frame-body--catalog {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 0;
+.journey-shinkansen--catalog .journey-home-shell {
   flex: 1 1 auto;
+  min-height: 0;
 }
 
 .journey-shinkansen--catalog .journey-catalog-lead {
@@ -6648,8 +6691,9 @@ details.journey-unit-details[open] .journey-catalog-unit {
   letter-spacing: 0.02em;
 }
 
-.journey-shinkansen--catalog .journey-catalog-scroll--accordion {
+.journey-shinkansen--catalog .journey-home-scroll.journey-catalog-scroll--accordion {
   flex: 1 1 auto;
+  min-height: 0;
 }
 
 /* 开机封面 · 真机 100dvh + safe-area（390×844 逻辑屏对齐 mock） */

@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "318",
+    "cache": "319",
     "date": "2026-05-28",
-    "note": "index.html UTF-8 乱码修复（底栏课文/笔记/注音）；中文字体回退优先；cache v318",
+    "note": "课文首页与笔记同构：journey-home-shell 固定顶区 + journey-home-scroll 单滑槽；cache v319",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

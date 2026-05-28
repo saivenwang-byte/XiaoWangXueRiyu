@@ -80,7 +80,8 @@ html.hyouga-miniapp-webview #view-me.view.active {
   overflow: hidden;
 }
 
-html.hyouga-miniapp-webview .notes-panel-scroll {
+html.hyouga-miniapp-webview .notes-panel-scroll,
+html.hyouga-miniapp-webview .journey-home-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
