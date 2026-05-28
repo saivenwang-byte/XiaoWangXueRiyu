@@ -22,11 +22,14 @@
      Folder: / (root)
      → Save
 
-  B) 与自动部署一致
+  B) 与自动部署一致（推荐）
      Source: Deploy from a branch
      Branch: gh-pages
      Folder: / (root)
      → Save
+
+  × 不要选「GitHub Actions」
+    （会出现 configure-pages / Resource not accessible、Deployments 红叉）
 
   等 1～3 分钟后打开（微信转发这条）：
 
