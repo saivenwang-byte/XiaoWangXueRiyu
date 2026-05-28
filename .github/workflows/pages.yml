@@ -1,12 +1,9 @@
-# GitHub Pages · 官方 Actions 部署（与 Settings → GitHub Actions 来源匹配）
-# 首次开通：Settings → Pages → Source 选 GitHub Actions → 选本 workflow → Save
-# 或改用分支：Source → Deploy from branch → gh-pages 或 main → / (root)
-#
-# Settings → Actions → General → Workflow permissions → Read and write permissions
+# push main → 同步 gh-pages（配合 Settings：Deploy from branch → gh-pages → /）
+# 不要选 GitHub Actions 作为 Pages 来源（否则会 configure-pages 失败、Deployments 红叉）
 #
 # 学员链接：https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
 
-name: Deploy GitHub Pages
+name: Sync gh-pages branch
 
 on:
   push:
@@ -14,35 +11,22 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: gh-pages-sync
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  sync:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Prepare site
-        run: touch .nojekyll
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v4
+      - run: touch .nojekyll
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          branch: gh-pages
+          folder: .
+          clean: true
+          single-commit: true
+          commit-message: "deploy: sync gh-pages from main @ ${{ github.sha }}"
