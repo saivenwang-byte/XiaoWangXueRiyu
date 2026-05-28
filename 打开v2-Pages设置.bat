@@ -1,35 +1,35 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title v2 公网开通（修复 404）
+title v2 公网开通
 
 echo.
 echo  ==========================================
-echo    v2 公网 404 修复（必做 1 次）
+echo    v2 公网 404 / Deployments 红叉
 echo  ==========================================
 echo.
-echo  【原因】
-echo    代码已在 GitHub（Actions 推 gh-pages 已成功）
-echo    但 Pages 未绑定分支 → 公网显示「没有 GitHub Pages 网站」
+echo  你若在 Deployments 看到 github-pages 失败：
+echo    多半是因为 Pages 来源 = GitHub Actions，
+echo    但之前 workflow 只推了 gh-pages 分支（已对）。
 echo.
-echo  【Deployments 里红色 X】
-echo    多为旧流程 configure-pages，请忽略
-echo    或你把 Source 设成了 GitHub Actions（请改掉）
+echo  请二选一（推荐 A）：
 echo.
-echo  【请严格按下面选】
-echo    Source:  Deploy from a branch
-echo            ^^^ 不要选 GitHub Actions ^^^
-echo    Branch:  gh-pages   （推荐，与自动部署一致）
-echo            或 main
-echo    Folder:  / (root)
-echo    点 Save，等 1～3 分钟
+echo  [A] 从分支发布（最简单）
+echo      Settings - Pages
+echo      Source: Deploy from a branch
+echo      Branch: gh-pages  或 main
+echo      Folder: / (root)  - Save
+echo.
+echo  [B] 继续用 GitHub Actions
+echo      Settings - Pages - Source: GitHub Actions
+echo      选中 workflow: Deploy GitHub Pages
+echo      Actions - General - Workflow permissions: Read and write
+echo      等 Actions 最新一条变绿
 echo.
 echo  学员链接：
 echo  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
 echo.
 
 start "" "https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages"
-echo  设置 Save 后按任意键打开公网链接...
-pause >nul
-start "" "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314"
+start "" "https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/actions/workflows/pages.yml"
 pause

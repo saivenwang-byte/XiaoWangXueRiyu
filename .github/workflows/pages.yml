@@ -1,12 +1,12 @@
-# v2 公网发布：push main → 自动更新 gh-pages 分支
-# 你必须在 GitHub 做一次（否则永远 404）：
-#   Settings → Pages → Source: Deploy from a branch
-#   Branch: gh-pages  或  main   Folder: / (root)  → Save
-# 不要选「GitHub Actions」（否则会走 configure-pages 并报 Resource not accessible）
+# GitHub Pages · 官方 Actions 部署（与 Settings → GitHub Actions 来源匹配）
+# 首次开通：Settings → Pages → Source 选 GitHub Actions → 选本 workflow → Save
+# 或改用分支：Source → Deploy from branch → gh-pages 或 main → / (root)
+#
+# Settings → Actions → General → Workflow permissions → Read and write permissions
 #
 # 学员链接：https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
 
-name: Publish to gh-pages
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -14,26 +14,35 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: gh-pages-publish
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  publish:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Prepare static site
+      - name: Prepare site
         run: touch .nojekyll
 
-      - name: Push to gh-pages branch
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          branch: gh-pages
-          folder: .
-          clean: true
-          single-commit: true
-          commit-message: "deploy: GitHub Pages from main @ ${{ github.sha }}"
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
