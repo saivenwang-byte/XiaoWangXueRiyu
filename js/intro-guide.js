@@ -89,7 +89,7 @@
     }).join("");
 
     return `
-      <section class="intro-block intro-block--map">
+      <section class="intro-block intro-block--map intro-block--sk01-edge">
         <header class="intro-block-head">${skillPill("SK-01")}<span class="intro-block-title">注音全景</span></header>
         <div class="intro-panorama-scroll">
           <table class="intro-panorama-table" aria-label="注音全景表">
@@ -219,7 +219,7 @@
   function renderFoundationPanel() {
     const L = INTRO_LAYERS[0];
     return `
-      <section class="intro-phase-panel intro-panel--foundation" data-phase-panel="1">
+      <section class="intro-phase-panel intro-phase-panel--flat intro-panel--foundation" data-phase-panel="1">
         ${renderPanoramaTable()}
         <p class="intro-check-line" data-check>${escapeHtml(L.check)}</p>
       </section>`;
@@ -228,8 +228,8 @@
   function renderSynergyPanel() {
     const L = INTRO_LAYERS[1];
     return `
-      <section class="intro-phase-panel intro-panel--synergy" data-phase-panel="2" hidden>
-        <div class="intro-synergy-accordion">${renderSynergyAccordion()}</div>
+      <section class="intro-phase-panel intro-phase-panel--flat intro-panel--synergy" data-phase-panel="2" hidden>
+        <div class="intro-synergy-accordion intro-synergy-accordion--edge">${renderSynergyAccordion()}</div>
         <p class="intro-check-line" data-check>${escapeHtml(L.check)}</p>
       </section>`;
   }
@@ -249,7 +249,7 @@
     const classroom = INTRO_CLASSROOM.map((item, i) => renderPhraseRow(item, i, "class")).join("");
 
     return `
-      <section class="intro-phase-panel intro-panel--core" data-phase-panel="3" hidden>
+      <section class="intro-phase-panel intro-phase-panel--flat intro-panel--core" data-phase-panel="3" hidden>
         <section class="intro-block intro-block--script">
           <header class="intro-block-head">${skillPill("SK-08")}<span class="intro-block-title">三种字</span></header>
           <div class="intro-script-row">${scripts}</div>

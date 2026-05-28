@@ -21,6 +21,7 @@
 | **U1L1 UI 统筹** | [docs/项目知识库-U1L1-MVP-UI统筹审查.md](docs/项目知识库-U1L1-MVP-UI统筹审查.md)（课内 UI/密度/色 · 前置条件） |
 | **版本沿革** | [docs/version-history.json](docs/version-history.json) · [VERSION.md](VERSION.md) |
 | **Cursor 本机设置** | [docs/Cursor推荐设置.md](docs/Cursor推荐设置.md) |
+| **学员端双界面（首要执行）** | [docs/学员端双界面显示标准-首要执行.md](docs/学员端双界面显示标准-首要执行.md) · [docs/学员端显示界面要求-会议纪要汇编.md](docs/学员端显示界面要求-会议纪要汇编.md) |
 | **协作入口** | [AGENTS.md](AGENTS.md) |
 | **多 Agent 流水线** | [docs/Agent流水线-多角色分工.md](docs/Agent流水线-多角色分工.md) · [docs/agent-pipeline.json](docs/agent-pipeline.json) |
 | **PM 任务单** | [docs/pm-tasks-template.json](docs/pm-tasks-template.json) · `docs/tasks/` |
@@ -60,7 +61,7 @@
 | 学员费用 | 静态 Pages + MP3，无运行时 AI API |
 | 迭代 | **文递自归**：在 `confirmed` 基线上增量改，禁止每会话重写全站 |
 | 发布 | 用户未要求不 push；发链接前必自检 |
-| 本地 | **铁律**：`cursor-miniapp-phone.html?live=1`（真机 390×844 · 持续同步）· `Cursor真机持续预览.bat`；双通道 `打开双通道预览.bat`；禁止 `file://` · [双通道验收](docs/双通道验收-浏览器与手机真机框.md) |
+| 本地 | **双界面**：① `cursor-miniapp-phone.html?live=1`（**390×844 锁定**，切换页尺寸不变）② 微信 https `?v=` · [双界面首要执行](docs/学员端双界面显示标准-首要执行.md) · `打开双通道预览.bat` · 禁止 `file://` |
 
 ---
 

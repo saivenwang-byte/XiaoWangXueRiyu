@@ -123,10 +123,6 @@ const SenseiTipCard = (() => {
     </article>`;
   }
 
-  function l1UnifiedFold(opts) {
-    return !!(opts && (opts.l1Scope || opts.alwaysFold));
-  }
-
   /**
    * @param {{ lines?: {zh?: string, ja?: string}[], links?: object[] }} tip
    * @param {{ l1Scope?: boolean, alwaysFold?: boolean, expanded?: boolean }} [opts]
@@ -146,7 +142,7 @@ const SenseiTipCard = (() => {
     const rows = flattenTipLines(items, opts);
     const linksHtml = linksBlock(tip.links, tip.related);
     if (opts.flat) return renderFlat(rows, linksHtml);
-    if (!l1UnifiedFold(opts) && isSingleLineTip(items, opts)) return renderStatic(rows, linksHtml);
+    if (isSingleLineTip(items, opts)) return renderStatic(rows, linksHtml);
     return renderFold(rows, linksHtml, !!opts.expanded);
   }
 

@@ -6,6 +6,15 @@
 
 ---
 
+## 显示界面 · Cursor 浏览器刷新前必读
+
+在 **内置浏览器 / 双通道真机框硬刷新** 或声称 UI 验收前，重读：
+
+📄 [docs/学员端显示界面要求-会议纪要汇编.md](docs/学员端显示界面要求-会议纪要汇编.md)（**§0 三十秒清单 R1–R10**）  
+📄 Cursor 规则 `.cursor/rules/ui-display-reread-before-preview.mdc`
+
+---
+
 ## 多 Agent 流水线（PM → Dev → Review → QA → Fix → Release）
 
 | 你的角色 | Skill | 何时用 |
@@ -75,12 +84,15 @@
 
 ---
 
-## 本地 vs 公网
+## 本地 vs 公网（最终成果 · 双界面）
 
-| 用途 | 链接 |
-|------|------|
-| 本机 | `http://localhost:8765/index.html?v=` + `CACHE_VER`（`js/share-wechat.js`） |
-| 微信 | `https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=` + `CACHE_VER` |
+> 首要执行：[docs/学员端双界面显示标准-首要执行.md](docs/学员端双界面显示标准-首要执行.md)
+
+| 界面 | 用途 | 链接 |
+|------|------|------|
+| **① Cursor 真机壳** | 改 UI / 交付目视（390×844 锁定，切换页尺寸不变） | `http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1` |
+| **② 微信可转发** | 学员学习 | `https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=` + `CACHE_VER` |
+| 开发对照（非单独交付） | 全宽逻辑 / 数据 | `http://localhost:8765/index.html?v=` + `CACHE_VER` |
 
 **铁律 · 真机预览（每一次改 UI / 刷星）**：`http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1` · `Cursor真机持续预览.bat` · Cursor **Simple Browser** 侧边固定 → [docs/双通道验收-浏览器与手机真机框.md](docs/双通道验收-浏览器与手机真机框.md) · 规则 `miniapp-real-device-preview-iron-law.mdc`
 

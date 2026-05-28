@@ -3,7 +3,8 @@
 > **项目级 Soul**：[过程讨论内容/11-五十音INTEPOINT全景模型启发.md](../过程讨论内容/11-五十音INTEPOINT全景模型启发.md) — 全阶段用全景维度思考，非岗位套娃。  
 > **产品叙事**：[我们-产品愿景-学习の道.md](我们-产品愿景-学习の道.md)  
 > **单元四格**：[story-art-brief-绘本参照.md](story-art-brief-绘本参照.md)（グルミ叙述 · 绘本真源）  
-> **Cursor 规则**：`.cursor/rules/intepoint-panorama-governance.mdc`
+> **Cursor 规则**：`.cursor/rules/intepoint-panorama-governance.mdc`  
+> **UI 补充（双界面交付）**：[学员端双界面显示标准-首要执行.md](./学员端双界面显示标准-首要执行.md) — Cursor 真机壳 390×844 + 微信 https 链
 
 ---
 

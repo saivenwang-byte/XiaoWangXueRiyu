@@ -5,13 +5,19 @@ alwaysApply: true
 
 # 真机尺寸小程序预览 · 铁律（与讨论优先并列）
 
-> 真源：[docs/双通道验收-浏览器与手机真机框.md](../../docs/双通道验收-浏览器与手机真机框.md)
+> 真源：[docs/学员端双界面显示标准-首要执行.md](../../docs/学员端双界面显示标准-首要执行.md) · [docs/双通道验收-浏览器与手机真机框.md](../../docs/双通道验收-浏览器与手机真机框.md)
+
+## 最终成果 · 两种显示界面
+
+1. **本地 Cursor 预览器**：`cursor-miniapp-phone.html?live=1`（§二 锁定显示）  
+2. **可转发微信链接**：`index.html?v=CACHE_VER` 公网 https（`发布前自检` 后）
 
 ## 铁律（用户拍板 · 每一次改 UI / 刷星 / 修改）
 
 1. **最终呈现**必须以 **真实手机逻辑尺寸（390×844 壳 · web-view 753px 高）** 内、展示 **小程序 WebView 真实使用界面** 为准；不得以桌面全宽、未套壳 iframe 或口头描述代替。
-2. **每一次**刷星、改样式、改课内/マイ/笔记/入門 后，交付前须在真机框内看到 **本轮最新保存** 的界面。
-3. **Cursor 开发**：Simple Browser 打开 **`cursor-miniapp-phone.html?live=1`**；`local-preview-server.py --watch` 监听保存后 **刷新 web-view 一次**（非 4 秒盲轮询）；Agent 收尾 `python scripts/preview-notify-reload.py`。
+2. **在壳内操作各 UI**；切换课文/笔记/注音/课内/五关时，**外壳 390×844 尺寸不变**（仅壳内内容滚动/换页）。
+3. **每一次**刷星、改样式、改课内/マイ/笔记/入門 后，交付前须在真机框内看到 **本轮最新保存** 的界面。
+4. **Cursor 开发**：Simple Browser 打开 **`cursor-miniapp-phone.html?live=1`**；`local-preview-server.py --watch` 监听保存后 **刷新 web-view 一次**；Agent 收尾 `python scripts/preview-notify-reload.py`。
 
 ## Agent 强制动作
 

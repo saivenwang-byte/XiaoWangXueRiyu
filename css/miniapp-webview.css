@@ -89,7 +89,8 @@ html.hyouga-miniapp-webview .notes-panel-scroll {
 
 /* 小程序 web-view：会話/单词全文可见，折叠条可点 */
 html.hyouga-miniapp-webview .l1-lesson-scope .dg-reply-head--abc .dg-reply-jp,
-html.hyouga-miniapp-webview .l1-lesson-scope .dg-reply-extra--abc .dg-reply-zh,
+html.hyouga-miniapp-webview .l1-lesson-scope .dg-reply-body--abc .dg-reply-zh,
+html.hyouga-miniapp-webview .l1-lesson-scope .dg-reply-body--abc .dg-reply-scene-note,
 html.hyouga-miniapp-webview .l1-lesson-scope .dg-line-content .jp,
 html.hyouga-miniapp-webview .l1-lesson-scope .hyo-fold-overview-jp,
 html.hyouga-miniapp-webview .l1-lesson-scope .l1-vocab-jp,

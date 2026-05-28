@@ -361,13 +361,14 @@ const DialogueGate = (() => {
     </div>`;
   }
 
-  function renderL1AbcTip(reply) {
-    if (!reply?.noteZh || !showZh()) return "";
-    if (typeof SenseiTipCard !== "undefined") {
-      const card = SenseiTipCard.fromTipPayload({ lines: [{ zh: reply.noteZh }] }, { l1Scope: true });
-      return card ? `<div class="l1-tip-slot l1-tip-slot--abc">${card}</div>` : "";
+  /** B/C 第3行：场景说明（常显灰字 · 见 docs/会話-ABC三答-产品真源.md） */
+  function renderL1AbcSceneNote(reply, label) {
+    const note = (reply?.noteZh || "").trim();
+    if (!note || !showPedagogyZh()) return "";
+    if (label === "B" || label === "C") {
+      return `<p class="zh-annotation dg-reply-scene-note">${escapeHtml(note)}</p>`;
     }
-    return "";
+    return `<p class="zh-annotation dg-reply-scene-note dg-reply-scene-note--a">${escapeHtml(note)}</p>`;
   }
 
   function sceneTitleZh(d) {
@@ -414,14 +415,14 @@ const DialogueGate = (() => {
             <div class="dg-reply-head dg-reply-head--abc" title="${escapeHtml(jpPlain)}">
               <span class="dg-abc-label" aria-label="${escapeHtml(label)}答">${escapeHtml(label)}</span>
               ${tier ? `<span class="dg-abc-tier">${escapeHtml(tier)}</span>` : ""}
-              <p class="jp dg-reply-jp">${jp}</p>
               <div class="dg-actions-col">
                 ${speakBtn(linePayload(reply), dialogueSpeakAttrs(reply), `dg-r-${sceneIdx}-${i}`)}
               </div>
             </div>
-            <div class="dg-reply-extra--abc">
+            <div class="dg-reply-body--abc">
+              <p class="jp dg-reply-jp">${jp}</p>
               ${zhText && showPedagogyZh() ? `<p class="zh-annotation dg-reply-zh dg-zh-below-jp">${escapeHtml(zhText)}</p>` : ""}
-              ${renderL1AbcTip(reply)}
+              ${renderL1AbcSceneNote(reply, label)}
               <div class="dg-score-slot dg-score-slot--inline" data-dg-score-for="dg-r-${sceneIdx}-${i}" aria-live="polite" hidden></div>
             </div>
             ${
