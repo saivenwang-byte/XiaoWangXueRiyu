@@ -471,7 +471,7 @@ const GrammarNetwork = (() => {
         </span>
         <span class="gn-node-fold-chevron hyo-fold-slot" aria-hidden="true">${
           typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(1) : "▼"
-        }</span><span class="hyo-fold-hint">展开</span>`;
+        }</span>`;
     }
     if (l1Flow) {
       return `${escapeHtml(tag)} · <span class="jp">${titleHtml(node)}</span>`;
@@ -626,19 +626,6 @@ const GrammarNetwork = (() => {
     updateGateDoneButton();
   }
 
-  function openFirstNodeFold() {
-    const first = container?.querySelector(`${nodeFoldSelector()}[data-gidx="0"]`);
-    if (!first || first.open) return;
-    first.open = true;
-    onNodeFoldOpen(first);
-    const slot = first.querySelector(".hyo-fold-slot");
-    if (slot && typeof HyougaGlyphs !== "undefined") {
-      slot.innerHTML = HyougaGlyphs.foldUpInner(1);
-    }
-    const hint = first.querySelector(".hyo-fold-hint");
-    if (hint) hint.textContent = "收起";
-  }
-
   function bindNodeAccordion() {
     if (typeof Lesson1Flow !== "undefined" && Lesson1Flow.bindSingleOpenAccordion) {
       Lesson1Flow.bindSingleOpenAccordion(container, onNodeFoldOpen);
@@ -743,7 +730,6 @@ const GrammarNetwork = (() => {
         lessonId: lesson.lessonId,
       });
       bindNodeAccordion();
-      openFirstNodeFold();
       updateGateDoneButton();
       const panel = container.querySelector(".l1-gate-panel") || container;
       Lesson1Flow.bindChainFooter(panel, 1, { switchGate, lessonId: lesson.lessonId });

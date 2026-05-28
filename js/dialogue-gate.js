@@ -574,7 +574,6 @@ const DialogueGate = (() => {
           ? HyougaFoldOverview.summaryBlock(ov.jp, ov.zh, { showZh: showPedagogyZh() })
           : "";
       const badge = sceneBadge(d, { inSummary: true });
-      const foldHint = `<span class="hyo-fold-hint">展开</span>`;
       return `
       <span class="l1-seq-num">${i + 1}</span>
       <span class="dg-scene-fold-meta dg-scene-fold-meta--stack">
@@ -583,7 +582,7 @@ const DialogueGate = (() => {
       </span>
       <span class="dg-scene-fold-chevron hyo-fold-slot" aria-hidden="true">${
         typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(2) : "▼"
-      }</span>${foldHint}`;
+      }</span>`;
     }
     const preview = (d.opener?.japanese || d.title || "").trim().slice(0, 36);
     if (l1Flow) {
@@ -683,23 +682,9 @@ const DialogueGate = (() => {
     }
   }
 
-  function openFirstSceneFold() {
-    const first = container?.querySelector(`${sceneFoldSelector()}[data-didx="0"]`);
-    if (!first || first.open) return;
-    first.open = true;
-    fillSceneFoldBody(first);
-    const slot = first.querySelector(".hyo-fold-slot");
-    if (slot && typeof HyougaGlyphs !== "undefined") {
-      slot.innerHTML = HyougaGlyphs.foldUpInner(2);
-    }
-    const hint = first.querySelector(".hyo-fold-hint");
-    if (hint) hint.textContent = "收起";
-  }
-
   function bindSceneAccordion() {
     if (typeof Lesson1Flow !== "undefined" && Lesson1Flow.bindSingleOpenAccordion) {
       Lesson1Flow.bindSingleOpenAccordion(container, fillSceneFoldBody);
-      openFirstSceneFold();
       return;
     }
     const folds = container.querySelectorAll(sceneFoldSelector());
@@ -708,8 +693,6 @@ const DialogueGate = (() => {
       if (slot && typeof HyougaGlyphs !== "undefined") {
         slot.innerHTML = det.open ? HyougaGlyphs.foldUpInner(2) : HyougaGlyphs.foldDownInner(2);
       }
-      const hint = det.querySelector(".hyo-fold-hint");
-      if (hint) hint.textContent = det.open ? "收起" : "展开";
     };
     folds.forEach((det) => {
       det.addEventListener("toggle", () => {
@@ -726,7 +709,6 @@ const DialogueGate = (() => {
       });
       syncFoldChevron(det);
     });
-    openFirstSceneFold();
   }
 
   function renderFooter(scopeEl, idx) {
@@ -850,7 +832,6 @@ const DialogueGate = (() => {
         lessonId: lesson.lessonId,
       });
       bindSceneAccordion();
-      openFirstSceneFold();
       bindSpeak();
       const panel = container.querySelector(".l1-gate-panel") || container;
       Lesson1Flow.bindChainFooter(panel, 2, { switchGate, lessonId: lesson.lessonId });

@@ -759,6 +759,18 @@ const NotesPanel = (() => {
     </div>`;
   }
 
+  /** 易错分类角标放进标题列，避免 grid 多占一行把折叠条撑高 */
+  function notesRowInnerWithWeak(rowInner, weakMark) {
+    if (!weakMark || !rowInner) return rowInner || "";
+    if (rowInner.includes("lesson-row-body")) {
+      return rowInner.replace(
+        /<span class="lesson-row-body">([\s\S]*?)<\/span>/,
+        `<span class="lesson-row-body">$1<span class="notes-lesson-weak-inline">${weakMark}</span></span>`
+      );
+    }
+    return `${rowInner}<span class="notes-lesson-weak-inline">${weakMark}</span>`;
+  }
+
   function lessonCardHtml(lessonId, state) {
     const L = getLesson(lessonId);
     const unit = unitMetaForLesson(lessonId);
@@ -769,10 +781,11 @@ const NotesPanel = (() => {
     const weakMark = lessonWeakMarkersHtml(state, lessonId);
     const weakCls = wkPlaces ? " notes-lesson-card--has-weak" : "";
     const rowOpts = { unitId: unit.unitId };
-    const rowInner =
+    let rowInner =
       L && typeof curriculumLessonRowInnerHtml === "function"
         ? curriculumLessonRowInnerHtml(L, state, rowOpts)
         : `<span class="notes-lesson-title jp">${escapeHtml(lessonSummaryTitle(L, lessonId))}</span>`;
+    rowInner = notesRowInnerWithWeak(rowInner, weakMark);
     const rowCls =
       L && typeof curriculumLessonRowClass === "function"
         ? `${curriculumLessonRowClass(L, state, rowOpts)} lesson-row--notes-summary`
@@ -780,7 +793,7 @@ const NotesPanel = (() => {
     return `<details class="notes-lesson-card notes-lesson-card--u${unit.unitId}${weakCls}" data-lesson-id="${lessonId}" data-unit-id="${unit.unitId}" data-weak-places="${wkPlaces}" ${unitThemeStyleAttr(unit.theme)}>
       <summary class="notes-lesson-summary notes-lesson-summary--symbol">
         <span class="notes-lesson-chevron" aria-hidden="true"></span>
-        <div class="lesson-row ${rowCls} lesson-row--notes-summary" aria-hidden="true">${rowInner}${weakMark ? `<span class="notes-lesson-weak-inline">${weakMark}</span>` : ""}</div>
+        <div class="lesson-row ${rowCls} lesson-row--notes-summary" aria-hidden="true">${rowInner}</div>
         ${dot}
       </summary>
       ${lessonBodyHtml(L, lessonId, state)}

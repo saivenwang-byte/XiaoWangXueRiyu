@@ -33,7 +33,7 @@
 
   等 1～3 分钟后打开（微信转发这条）：
 
-  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
+  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=316
 
 【若 Actions 仍报 Resource not accessible】
 

@@ -315,8 +315,6 @@ const Lesson1Flow = (function () {
       const gate = foldGateFromEl(det);
       slot.innerHTML = HyougaGlyphs.foldToggleInner(!!det.open, gate);
     }
-    const hint = det.querySelector(".hyo-fold-hint");
-    if (hint) hint.textContent = det.open ? "收起" : "展开";
   }
 
   /** 手风琴：同时只展开一条（与作業/拡張 gw-group 一致） */
@@ -377,8 +375,8 @@ const Lesson1Flow = (function () {
     const titleStack = `<span class="gw-group-title-stack">${titleInner}${overviewHtml ? `<span class="gw-group-overview">${overviewHtml}</span>` : ""}</span>`;
     const head =
       typeof seq === "number"
-        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${titleStack}</span>${foldSlot}<span class="hyo-fold-hint">展开</span>`
-        : `<span class="gw-group-title-text">${titleStack}</span>${foldSlot}<span class="hyo-fold-hint">展开</span>`;
+        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${titleStack}</span>${foldSlot}`
+        : `<span class="gw-group-title-text">${titleStack}</span>${foldSlot}`;
     const cardSlot = card ? `<div class="l1-tip-slot l1-tip-slot--gate">${card}</div>` : "";
     return `
       <details class="gw-group l1-gw-group" ${attrs}>
@@ -607,7 +605,7 @@ const Lesson1Flow = (function () {
         const fold0 =
           typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldToggleInner(false, 0) : "▼";
         const expandBtn = hasExtra
-          ? `<button type="button" class="hyo-fold-toggle l1-vocab-expand-btn" aria-expanded="false" aria-label="${escapeHtml(expandLabel)}">${fold0}<span class="l1-vocab-expand-label">展开</span></button>`
+          ? `<button type="button" class="hyo-fold-toggle l1-vocab-expand-btn" aria-expanded="false" aria-label="${escapeHtml(expandLabel)}">${fold0}</button>`
           : `<span class="l1-vocab-expand-spacer" aria-hidden="true"></span>`;
         const metaHtml = metaLine
           ? `<span class="l1-vocab-meta-inline hint-ja" title="${escapeHtml(metaLine)}">${escapeHtml(metaLine)}</span>`
@@ -1110,10 +1108,6 @@ const Lesson1Flow = (function () {
         updateExtFooter();
       });
     });
-    if (extDetails.length && !extDetails[0].open) {
-      extDetails[0].open = true;
-      extOpened[0] = true;
-    }
     bindChainFooter(extPanel, 4, callbacks);
     updateExtFooter();
 

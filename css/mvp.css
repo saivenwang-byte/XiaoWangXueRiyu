@@ -7,7 +7,7 @@
 body.mvp-app {
   background: var(--mvp-bg);
   color: var(--mvp-text);
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "PingFang SC", sans-serif;
+  font-family: "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   line-height: 1.6;
 }
 
@@ -3428,6 +3428,34 @@ body.mvp-app .gate-tab.active:active {
   gap: 6px 8px;
 }
 
+/* 会話/文法折叠条 · 徽章 + 概述纵向叠放（勿并排挤乱） */
+.l1-lesson-scope .dg-scene-fold-meta--stack,
+.l1-lesson-scope .gn-node-fold-meta--stack {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.l1-lesson-scope .dg-scene-fold-summary:has(.dg-scene-fold-meta--stack),
+.l1-lesson-scope .gn-node-fold-summary:has(.gn-node-fold-meta--stack) {
+  align-items: flex-start;
+}
+
+.l1-lesson-scope .dg-scene-fold-badge-row {
+  display: block;
+  width: 100%;
+}
+
+.l1-lesson-scope .dg-scene-fold-badge-row .dg-scene-badge {
+  margin-bottom: 0;
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
 .l1-lesson-scope .dg-scene-fold-preview,
 .l1-lesson-scope .gn-node-fold-title {
   font-size: var(--l1-body-size);
@@ -3470,22 +3498,21 @@ body.mvp-app .gate-tab.active:active {
   align-items: center;
 }
 
-.l1-lesson-scope .hyo-fold-hint {
-  flex-shrink: 0;
-  margin-left: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mvp-primary-dark);
+.l1-lesson-scope .hyo-fold-hint,
+.l1-lesson-scope .l1-vocab-expand-label {
+  display: none !important;
 }
 
-/* 收起态概述：日文在上、中文在下（不并排、不省略号） */
+/* 收起态概述：日文在上、中文在下（不并排、不省略号；无「日语/中文」栏目标签） */
 .l1-lesson-scope .hyo-fold-overview {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: stretch;
+  gap: 3px;
+  width: 100%;
   min-width: 0;
   flex: 1;
+  font-weight: 400;
 }
 
 .l1-lesson-scope .hyo-fold-overview-jp,
@@ -7338,6 +7365,7 @@ body.mvp-app .nav-item .ui-icon {
 body.mvp-app .nav-item .nav-label {
   font-size: 10px;
   line-height: 1.1;
+  font-family: "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body.mvp-app .nav-item.active .ui-icon {
@@ -11982,10 +12010,10 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   flex: 1;
   min-width: 0;
   display: grid;
-  grid-template-columns: 32px 1fr auto auto;
-  gap: 8px;
+  grid-template-columns: 32px 1fr auto;
+  gap: 6px 8px;
   align-items: center;
-  min-height: 0;
+  min-height: 44px;
   height: auto;
   padding: 0;
   margin: 0;
@@ -12000,8 +12028,9 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   grid-column: 3;
 }
 
+/* 笔记折叠条：主题中文在下方色块里已有，标题行只保留日文+海星 */
 .notes-lesson-summary--symbol .lesson-row--notes-summary .lesson-row-zh {
-  grid-column: 4;
+  display: none;
 }
 
 .notes-lesson-summary--symbol .lesson-row--notes-summary.is-lesson-active {
@@ -12017,17 +12046,17 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   width: 24px;
   height: 24px;
   font-size: 12px;
-}
-
-.notes-lesson-summary--symbol .lesson-row-zh {
-  font-size: 10px;
-  line-height: 1.2;
+  background: #eceff1;
+  color: #455a64;
 }
 
 .notes-lesson-weak-inline {
-  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 2px;
   font-size: 10px;
-  margin-top: -2px;
+  line-height: 1.2;
 }
 
 .notes-lesson-theme {

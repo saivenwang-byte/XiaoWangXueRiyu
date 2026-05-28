@@ -26,7 +26,7 @@
 2. **Source** → Deploy from a branch  
 3. **Branch** → `main`（最快）或 `gh-pages`（与自动部署一致）  
 4. **Folder** → `/ (root)` → **Save**  
-5. 1～3 分钟后：`https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
+5. 1～3 分钟后：`https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=315`
 
 `Resource not accessible by integration` 只出现在旧 run #1～#3，不是当前 gh-pages 发布流程。
 
@@ -68,7 +68,7 @@ git push -u v2 main
 1. 仓库 **Settings → Pages → Source**：`Deploy from a branch` → `main` → `/ (root)`
 2. 约 1～3 分钟后：
 
-   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
+   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=315`
 
 （`v=` 与 `js/share-wechat.js` 的 `CACHE_VER` 一致；**微信默认分享已切 v2**。）
 

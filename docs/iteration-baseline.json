@@ -78,7 +78,7 @@
   "instruction": "每轮迭代结束且用户确认或冒烟通过后，将条目追加到 confirmed；禁止删除 confirmed 除非用户要求回滚。新会话 Agent 必须先读 current + confirmed + backlog + paradigm.doc，再改代码。",
   "current": {
     "product": "1.0.2",
-    "cache": "314",
+    "cache": "318",
     "cache_files": [
       "js/share-wechat.js CACHE_VER",
       "index.html ?v=",
@@ -87,13 +87,25 @@
       "js/public-url.config.js HYOUGA_TTS_CACHE_VER",
       "tts-cache/sw-manifest.json"
     ],
-    "local": "http://localhost:8765/index.html?v=314",
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314",
+    "local": "http://localhost:8765/index.html?v=318",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=318",
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
     "mvp_unit1_lesson1_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
     "mvp_unit1_lessons_1_4": "第1单元第1–4课五关+会話ABC 已锁定 v246"
   },
   "confirmed": [
+    {
+      "id": "five-gate-fold-default-collapsed",
+      "since_cache": "317",
+      "title": "五关折叠 · 进入默认全收拢 + 展开仅图例无文字",
+      "files": [
+        "js/dialogue-gate.js",
+        "js/grammar-network.js",
+        "js/lesson-1-flow.js",
+        "css/mvp.css"
+      ],
+      "acceptance": "单词/会話/文法/作業/拡張切换进入均为折叠；不自动展开第一条；summary 仅 hyo-fold-slot 图例"
+    },
     {
       "id": "dual-channel-preview-acceptance",
       "since_cache": "295",
