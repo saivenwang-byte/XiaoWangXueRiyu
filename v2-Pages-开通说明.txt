@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════
+  XiaoWangXueRiyu-v2 · 公网开通（本地能开、微信 404 时看这里）
+═══════════════════════════════════════════════════════
+
+【结论】
+  代码已在 GitHub（main + gh-pages 分支都有）。
+  Gmail 里 #1 失败是「旧工作流」，可忽略。
+  最新 Actions 第 4 次应已是绿色（推 gh-pages 分支）。
+  公网 404 = 还差「仓库里点一次 Pages 开关」。
+
+【请你做 1 次 · 约 1 分钟】
+
+  双击：打开v2-Pages设置.bat
+  或浏览器打开：
+  https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages
+
+  任选一种（推荐 A）：
+
+  A) 最快
+     Source: Deploy from a branch
+     Branch: main
+     Folder: / (root)
+     → Save
+
+  B) 与自动部署一致
+     Source: Deploy from a branch
+     Branch: gh-pages
+     Folder: / (root)
+     → Save
+
+  等 1～3 分钟后打开（微信转发这条）：
+
+  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
+
+【若 Actions 仍报 Resource not accessible】
+
+  那是旧的 #1～#3（configure-pages），不是当前流程。
+  打开 Actions 看最新一条「fix: Pages deploy via gh-pages branch」是否绿色。
+
+  若最新 deploy 也红：
+  Settings → Actions → General
+  → Workflow permissions → Read and write permissions → Save
+
+【以后更新公网】
+
+  双击：笔记本推送到GitHub-v2.bat
+  （推 v2 远程，不要只推 origin 旧仓）
+
+═══════════════════════════════════════════════════════
