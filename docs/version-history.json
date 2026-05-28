@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "320",
+    "cache": "321",
     "date": "2026-05-28",
-    "note": "课文单元展开：仅当前单元+四课纵向一行一课（对齐笔记交互）；cache v320",
+    "note": "微信/手机课文目录：单列强制+is-catalog-unit-focus 回退；cache v321",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

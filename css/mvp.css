@@ -6589,29 +6589,32 @@ details.journey-unit-details[open] .journey-catalog-unit {
   padding-bottom: 8px;
 }
 
-/* 课文目录 · 对齐笔记：展开当前单元时隐藏其它单元；四课纵向一行一课（非 2×2） */
-.journey-home-scroll.journey-catalog-scroll--accordion:has(.journey-unit-details[open])
-  > .journey-unit-details:not([open]) {
+/* 课文目录 · 对齐笔记：展开仅当前单元；四课纵向一行一课（覆盖微信内旧 2×2 缓存样式） */
+.journey-catalog-scroll--accordion.is-catalog-unit-focus > .journey-unit-details:not([open]),
+.journey-catalog-scroll--accordion:has(.journey-unit-details[open]) > .journey-unit-details:not([open]) {
   display: none;
 }
 
-.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
+.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
   max-height: none;
   overflow: visible;
   padding-bottom: 10px;
   border-radius: 0 0 10px 10px;
 }
 
-.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
-  grid-template-columns: 1fr;
+.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-grid {
+  display: grid;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: none !important;
   gap: 8px;
 }
 
-.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-slot {
+.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-slot {
   min-width: 0;
+  width: 100%;
 }
 
-.journey-home-scroll.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-row-wrap {
+.journey-catalog-scroll--accordion .journey-unit-details[open] .journey-lesson-row-wrap {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 6px;
   align-items: stretch;

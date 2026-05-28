@@ -385,12 +385,26 @@ const JourneyHome = (function () {
     requestAnimationFrame(() => requestAnimationFrame(align));
   }
 
+  function catalogScrollEl(board) {
+    return board?.querySelector?.(
+      ".journey-home-scroll.journey-catalog-scroll--accordion, .journey-catalog-scroll--accordion"
+    );
+  }
+
+  /** 微信旧 WebView 无 :has() 时用 class 隐藏其它单元 */
+  function syncCatalogUnitFocusMode(board) {
+    const scroll = catalogScrollEl(board);
+    if (!scroll) return;
+    scroll.classList.toggle("is-catalog-unit-focus", !!scroll.querySelector(".journey-unit-details[open]"));
+  }
+
   function bindCatalogAccordion(board) {
     const all = board.querySelectorAll("details.journey-unit-details");
     all.forEach((det) => {
       det.addEventListener("toggle", () => {
         if (!det.open) {
           det.classList.remove("is-unit-current");
+          syncCatalogUnitFocusMode(board);
           return;
         }
         all.forEach((other) => {
@@ -400,9 +414,11 @@ const JourneyHome = (function () {
           }
         });
         det.classList.add("is-unit-current");
+        syncCatalogUnitFocusMode(board);
         scrollOpenedUnitIntoView(det);
       });
     });
+    syncCatalogUnitFocusMode(board);
   }
 
   function openUnitDetails(board, uid) {
@@ -413,6 +429,7 @@ const JourneyHome = (function () {
       d.classList.toggle("is-unit-current", d === el);
     });
     scrollOpenedUnitIntoView(el);
+    syncCatalogUnitFocusMode(board);
     el.classList.add("is-map-reveal-flash");
     setTimeout(() => el.classList.remove("is-map-reveal-flash"), 1200);
   }
