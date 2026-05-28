@@ -1,3 +1,6 @@
+# v2 新仓：用 gh-pages 分支发布（不依赖 configure-pages，避免新仓 17s 失败）
+# 仓库 Settings → Pages → Source: Deploy from branch → gh-pages → / (root)
+
 name: Deploy GitHub Pages
 
 on:
@@ -6,20 +9,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: pages-gh-branch
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -28,16 +26,11 @@ jobs:
           touch .nojekyll
           echo "deploy-v2-$(date -u +%Y%m%d%H%M%S)" > build-id.txt
 
-      # 勿用 enablement:true（新仓若 Pages 已选「从分支部署」会在此步失败）
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: .
-          retention-days: 1
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          branch: gh-pages
+          folder: .
+          clean: true
+          single-commit: true
+          commit-message: "deploy: GitHub Pages from main"

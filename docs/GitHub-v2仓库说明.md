@@ -13,16 +13,17 @@
 
 ## GitHub Pages 开通（Gmail 报错「Deploy failed」时必做）
 
-本地能开、公网 404 / 邮件报错，**不是代码坏了**，是 **v2 仓库 Pages 未用 Actions 发布成功**。
+本地能开、公网 404 / 邮件报错，**不是代码坏了**，是 **v2 还没把 Pages 发布成功**。
 
-1. 打开：https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages  
-2. **Build and deployment → Source** 必须选 **GitHub Actions**（不要选 Deploy from a branch）  
-3. **Settings → Actions → General → Workflow permissions** 选 **Read and write permissions** → Save  
-4. **Actions** 页左侧 **Deploy GitHub Pages** → **Run workflow** 重跑一次  
-5. 变绿后约 1～3 分钟访问：  
-   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
+v2 工作流改为：推送到 **`gh-pages` 分支**（避免新仓 `configure-pages` 17 秒失败）。
 
-失败日志若在 **Setup Pages / configure-pages**：几乎都是第 1 步仍选了「从分支部署」。
+1. 双击本仓库 **`打开v2-Pages设置.bat`**（或打开 Settings → Pages）  
+2. **Build and deployment → Source** 选 **Deploy from a branch**  
+3. **Branch** 选 **`gh-pages`**，文件夹 **`/ (root)`** → Save  
+4. **Actions** 里等 **Deploy GitHub Pages** 变绿（首次约 2～5 分钟）  
+5. 访问：`https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
+
+若 Actions 仍红：Settings → Actions → General → Workflow permissions → **Read and write** → Save，再 **Re-run**。
 
 ---
 
