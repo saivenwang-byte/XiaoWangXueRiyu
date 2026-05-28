@@ -13,4 +13,4 @@ window.HYOUGA_TTS_ORIGIN =
   "https://cdn.jsdelivr.net/gh/saivenwang-byte/XiaoWangXueRiyu@main";
 
 /** 与 share-wechat.js CACHE_VER、tts-cache/sw-manifest.json 同步 */
-window.HYOUGA_TTS_CACHE_VER = "305";
+window.HYOUGA_TTS_CACHE_VER = "306";

@@ -24,7 +24,11 @@ const GrammarNetwork = (() => {
   }
 
   function isMvpFiveGatePanel() {
-    return isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel();
+    if (isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel()) return true;
+    const id = Number(lesson?.lessonId);
+    if (!id || id > 24) return false;
+    if (typeof Lesson1Flow === "undefined") return id >= 1 && id <= 24;
+    return false;
   }
 
   function escapeHtml(s) {
@@ -34,7 +38,13 @@ const GrammarNetwork = (() => {
   }
 
   function showZh() {
+    if (document.documentElement.dataset.showZh === "0") return false;
     return state?.showChineseZh !== false;
+  }
+
+  /** 五关课内：中文说明/提示为教学主文案，不受「显示中文释义」开关隐藏 */
+  function showPedagogyZh() {
+    return isMvpFiveGatePanel() || showZh();
   }
 
   function speakJp(textOrNode) {
@@ -107,14 +117,20 @@ const GrammarNetwork = (() => {
   }
 
   function explainBlock(node) {
-    const zh = node.explanationZh || node.explainZh || (showZh() ? node.titleZh : "");
-    let html = `<p class="gn-section-label">日文说明</p>
-      <p class="gn-explain-ja jp">${escapeHtml(node.explanation)}</p>`;
-    if (showZh() && zh) {
-      html += `<p class="gn-section-label gn-label-zh">中文说明 · 怎么用</p>
-        <p class="gn-explain-zh zh-annotation">${escapeHtml(zh)}</p>`;
+    const zh = (node.explanationZh || node.explainZh || "").trim();
+    const jp = (node.explanation || "").trim();
+    if (showPedagogyZh() && zh) {
+      return `
+        <p class="gn-section-label gn-label-zh">中文说明</p>
+        <p class="gn-explain-zh zh-annotation">${escapeHtml(zh)}</p>
+        ${
+          jp && jp !== zh
+            ? `<p class="gn-section-label">日语句型</p><p class="gn-explain-ja jp">${escapeHtml(jp)}</p>`
+            : ""
+        }`;
     }
-    return html;
+    return `<p class="gn-section-label">日文说明</p>
+      <p class="gn-explain-ja jp">${escapeHtml(jp)}</p>`;
   }
 
   function titleHtml(node, hero = false) {
@@ -122,11 +138,11 @@ const GrammarNetwork = (() => {
       node.titleRuby && RubyRender.fromSegments
         ? RubyRender.fromSegments(node.title, node.titleRuby)
         : escapeHtml(node.title);
-    if (hero && node.titleZh && showZh()) {
+    if (hero && node.titleZh && showPedagogyZh()) {
       return `${ruby}<p class="gn-hero-zh zh-annotation">${escapeHtml(node.titleZh)}</p>`;
     }
     const zh =
-      node.titleZh && showZh()
+      node.titleZh && showPedagogyZh()
         ? `<span class="zh-annotation title-zh">（${escapeHtml(node.titleZh)}）</span>`
         : "";
     return `${ruby}${zh}`;
@@ -328,7 +344,7 @@ const GrammarNetwork = (() => {
           <p class="gn-example jp">${RubyRender.nodeExample(node)}</p>
           ${speak}
         </div>
-        ${zhText && showZh() ? `<p class="gn-example-zh zh-annotation">${escapeHtml(zhText)}</p>` : ""}
+        ${zhText && showPedagogyZh() ? `<p class="gn-example-zh zh-annotation dg-zh-below-jp">${escapeHtml(zhText)}</p>` : ""}
       </div>`;
     }
     const marks = ["①", "②", "③"];
@@ -359,7 +375,7 @@ const GrammarNetwork = (() => {
             <p class="gn-example jp">${jpHtml}</p>
             ${speak}
           </div>
-          ${zh && showZh() ? `<p class="gn-example-zh zh-annotation">${escapeHtml(zh)}</p>` : ""}
+          ${zh && showPedagogyZh() ? `<p class="gn-example-zh zh-annotation dg-zh-below-jp">${escapeHtml(zh)}</p>` : ""}
         </div>`;
       })
       .join("");
@@ -382,16 +398,17 @@ const GrammarNetwork = (() => {
       return `<div class="gn-depth-fallback">${renderDepthHtml(secs)}</div>`;
     }
     const [first, ...rest] = secs;
+    const depthExpanded = isMvpFiveGatePanel();
     let html = SenseiTipCard.wrap({
       bodyHtml: renderDepthHtml([first]),
       subtitle: first.heading || "",
-      expanded: false,
+      expanded: depthExpanded,
     });
     if (rest.length) {
       html += SenseiTipCard.wrap({
         bodyHtml: renderDepthHtml(rest),
         subtitle: "もっと秘技を見る",
-        expanded: false,
+        expanded: depthExpanded,
       });
     }
     return html;
@@ -434,18 +451,27 @@ const GrammarNetwork = (() => {
   }
 
   function nodeFoldSummary(node, i) {
-    const zh = node.titleZh && showZh() ? node.titleZh.slice(0, 20) : "";
+    const zh = node.titleZh && showPedagogyZh() ? node.titleZh : "";
     const tag = node.supplement ? "補充" : node.core ? "★必学" : "必学";
     if (isMvpFiveGatePanel()) {
+      const ov =
+        typeof HyougaFoldOverview !== "undefined"
+          ? HyougaFoldOverview.grammarNodeOverview(node)
+          : { jp: (node.explanation || "").trim(), zh: (node.explanationZh || node.titleZh || "").trim() };
+      const overview =
+        typeof HyougaFoldOverview !== "undefined"
+          ? HyougaFoldOverview.summaryBlock(ov.jp, ov.zh, { showZh: showPedagogyZh() })
+          : "";
       return `
         <span class="l1-seq-num">${i + 1}</span>
-        <span class="dg-scene-fold-meta">
+        <span class="dg-scene-fold-meta gn-node-fold-meta--stack">
           <span class="gn-node-fold-title jp">${titleHtml(node)}</span>
           ${zh ? `<span class="gn-node-fold-zh zh-annotation">${escapeHtml(zh)}</span>` : ""}
+          ${overview}
         </span>
         <span class="gn-node-fold-chevron hyo-fold-slot" aria-hidden="true">${
-          typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(1) : ""
-        }</span>`;
+          typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(1) : "▼"
+        }</span><span class="hyo-fold-hint">展开</span>`;
     }
     if (l1Flow) {
       return `${escapeHtml(tag)} · <span class="jp">${titleHtml(node)}</span>`;
@@ -600,6 +626,19 @@ const GrammarNetwork = (() => {
     updateGateDoneButton();
   }
 
+  function openFirstNodeFold() {
+    const first = container?.querySelector(`${nodeFoldSelector()}[data-gidx="0"]`);
+    if (!first || first.open) return;
+    first.open = true;
+    onNodeFoldOpen(first);
+    const slot = first.querySelector(".hyo-fold-slot");
+    if (slot && typeof HyougaGlyphs !== "undefined") {
+      slot.innerHTML = HyougaGlyphs.foldUpInner(1);
+    }
+    const hint = first.querySelector(".hyo-fold-hint");
+    if (hint) hint.textContent = "收起";
+  }
+
   function bindNodeAccordion() {
     if (typeof Lesson1Flow !== "undefined" && Lesson1Flow.bindSingleOpenAccordion) {
       Lesson1Flow.bindSingleOpenAccordion(container, onNodeFoldOpen);
@@ -704,6 +743,7 @@ const GrammarNetwork = (() => {
         lessonId: lesson.lessonId,
       });
       bindNodeAccordion();
+      openFirstNodeFold();
       updateGateDoneButton();
       const panel = container.querySelector(".l1-gate-panel") || container;
       Lesson1Flow.bindChainFooter(panel, 1, { switchGate, lessonId: lesson.lessonId });

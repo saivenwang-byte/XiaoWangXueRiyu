@@ -4,7 +4,7 @@
  * 底图：cover-base.png（地图+蓝虚线+六圆）· 缺图回退 kO3
  */
 const HomeSplash = (function () {
-  const SPLASH_ASSET_VER = "21";
+  const SPLASH_ASSET_VER = "23";
   const SPLASH_COVER_BASE = "assets/splash/cover-base.png";
   const SPLASH_MAP_BODY = "assets/splash/japan-map-ko3.png";
 
@@ -68,9 +68,7 @@ const HomeSplash = (function () {
         </header>
         <div class="splash-map-stage" aria-hidden="true"></div>
         <footer class="splash-cta">
-          <p class="splash-cta-lead zh-annotation">轻触进入学习地图</p>
           <button type="button" class="btn primary splash-btn-start" id="btn-splash-start">开始学习</button>
-          <p class="splash-cta-hint zh-annotation">注音 · 五十音在底栏「注音」</p>
         </footer>
       </div>`;
   }

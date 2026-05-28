@@ -10,7 +10,7 @@
 
 | 角色 | 你要的界面 | 正确入口（不要用 legacy） |
 |------|------------|---------------------------|
-| **开发者（电脑）** | 竖屏真机框内跑完整 App | 双击 **`开发者竖屏验收.bat`** → `dev-phone-preview.html` |
+| **开发者（电脑）** | 竖屏真机框内跑完整 App | 日常改 UI：**`打开双通道预览.bat`**（见 [双通道验收-浏览器与手机真机框.md](./双通道验收-浏览器与手机真机框.md)）；满配四关/彩蛋：**`开发者竖屏验收.bat`** → `dev-phone-preview.html` |
 | **开发者（手机）** | 满配全开、无通关锁 | 公网/本机链接必须带 **`testcard=1&developer=1`** |
 | **学员** | 正常闯关 | 仅 `index.html?v=N`，**禁止**带 testcard |
 
@@ -19,7 +19,8 @@
 ## 二、强制流程（R0→R7）
 
 ```text
-R0  读 iteration-baseline.json + 本 SOP
+R0  读 iteration-baseline.json + 本 SOP + 双通道验收 doc
+R0b 改 UI：打开双通道预览.bat → A 浏览器 + B 390×844 持续强刷对照
 R1  电脑：开发者竖屏验收.bat → 看 iframe 内 App（满配）
 R2  电脑：story-unit-phone-real.html → 彩蛋 L1/L2/L3 排版
 R3  python scripts/pre-ship-check.py → 全部 [OK]

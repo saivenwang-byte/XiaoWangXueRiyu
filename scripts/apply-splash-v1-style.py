@@ -12,7 +12,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PIL import Image
+import math
+
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "地图" / "64649377-e0e1-4239-a073-118630981bb6 (1).png"
@@ -20,6 +22,16 @@ OUT = ROOT / "assets" / "splash" / "cover-base.png"
 
 CREAM = (255, 248, 225)
 TRACK_BLUE = (74, 111, 165)
+MAP_SHIFT_Y = 100
+REF_W, REF_H = 240, 360
+STATIONS_REF = [
+    ("02", 95, 248),
+    ("04", 128, 168),
+    ("03", 138, 148),
+    ("01", 148, 128),
+    ("05", 152, 88),
+    ("06", 142, 38),
+]
 GRAD_SOUTH = (255, 167, 130)
 GRAD_MID = (255, 112, 67)
 GRAD_NORTH = (233, 74, 38)
@@ -84,6 +96,65 @@ def in_corner_rim(x: int, y: int, w: int, h: int) -> bool:
     )
 
 
+def scale_stations(w: int, h: int, dy: int = 0) -> list[tuple[str, int, int]]:
+    sx, sy = w / REF_W, h / REF_H
+    return [(code, int(x * sx), int(y * sy) + dy) for code, x, y in STATIONS_REF]
+
+
+def shift_canvas_down(im: Image.Image, dy: int) -> Image.Image:
+    w, h = im.size
+    shifted = Image.new("RGB", (w, h), CREAM)
+    shifted.paste(im, (0, dy))
+    return shifted
+
+
+def draw_dashed_line(
+    draw: ImageDraw.ImageDraw,
+    p0: tuple[int, int],
+    p1: tuple[int, int],
+    fill: tuple[int, int, int],
+    width: int,
+    dash: int = 18,
+    gap: int = 14,
+) -> None:
+    x0, y0 = p0
+    x1, y1 = p1
+    dist = math.hypot(x1 - x0, y1 - y0)
+    if dist < 1:
+        return
+    ux, uy = (x1 - x0) / dist, (y1 - y0) / dist
+    pos = 0.0
+    while pos < dist:
+        end = min(pos + dash, dist)
+        draw.line(
+            [(x0 + ux * pos, y0 + uy * pos), (x0 + ux * end, y0 + uy * end)],
+            fill=fill,
+            width=width,
+        )
+        pos += dash + gap
+
+
+def apply_track_overlays(im: Image.Image) -> None:
+    """六站蓝外环 + 补全 02→04 虚线（与 js/home-splash.js 标尺一致）。"""
+    w, h = im.size
+    draw = ImageDraw.Draw(im)
+    stations = {code: (x, y) for code, x, y in scale_stations(w, h, MAP_SHIFT_Y)}
+    stroke = max(5, int(3.2 * w / REF_W))
+    ring_r = int(15.5 * w / REF_W)
+    ring_w = max(4, int(2.8 * w / REF_W))
+
+    p02 = stations["02"]
+    p04 = stations["04"]
+    draw_dashed_line(draw, p02, p04, TRACK_BLUE, stroke)
+
+    for _code, (cx, cy) in stations.items():
+        draw.ellipse(
+            (cx - ring_r, cy - ring_r, cx + ring_r, cy + ring_r),
+            outline=TRACK_BLUE,
+            width=ring_w,
+        )
+
+
 def main() -> int:
     if not SRC.is_file():
         print(f"[FAIL] missing {SRC}", file=sys.stderr)
@@ -118,8 +189,6 @@ def main() -> int:
             ):
                 continue
             if is_track_pixel(r, g, b):
-                dpx[x, y] = TRACK_BLUE
-                track_n += 1
                 continue
             if is_map_land(r, g, b):
                 t = (y - y_min) / max(1, y_max - y_min)
@@ -139,11 +208,13 @@ def main() -> int:
                     dpx[x, y] = (r, g, b)
                     label_n += 1
 
+    out = shift_canvas_down(out, MAP_SHIFT_Y)
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     out.save(OUT, "PNG", optimize=True)
     print(
         f"[OK] cover-base cream={CREAM} map={grad_n} track_blue={track_n} "
-        f"circles={circle_n} labels={label_n} -> {OUT} {out.size}"
+        f"circles={circle_n} labels={label_n} shift_y={MAP_SHIFT_Y} -> {OUT} {out.size}"
     )
     return 0
 

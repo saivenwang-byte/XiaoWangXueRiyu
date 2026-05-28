@@ -12,12 +12,20 @@
   <meta property="og:description" content="10分钟串联单词·会話·文法·测试。🔊听读，链接点开即学。" />
   <meta property="og:image" content="icons/icon.svg" />
   <title>标日 あと学習 · 学习の道</title>
+  <script>
+    (function () {
+      if (/[?&]miniappPreview=1(?:&|$)/.test(location.search)) {
+        document.documentElement.classList.add("hyouga-miniapp-webview");
+      }
+    })();
+  </script>
   <!-- 不用 Google Fonts：国内/微信内易被墙导致白屏 -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="css/design-tokens.css?v=305" />
-  <link rel="stylesheet" href="css/app.css?v=305" />
-  <link rel="stylesheet" href="css/mvp.css?v=305" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=306" />
+  <link rel="stylesheet" href="css/app.css?v=306" />
+  <link rel="stylesheet" href="css/mvp.css?v=306" />
+  <link rel="stylesheet" href="css/miniapp-webview.css?v=306" />
   <style>
     .gn-modal { display: none !important; pointer-events: none !important; visibility: hidden !important; }
     .mvp-backdrop { display: none !important; pointer-events: none !important; visibility: hidden !important; }
@@ -88,20 +96,24 @@
       </section>
 
       <section id="view-me" class="view" aria-hidden="true">
-        <div id="notes-panel-root" class="notes-panel-root" aria-label="笔记"></div>
-        <details class="notes-settings-fold" open>
-          <summary class="notes-settings-summary zh-annotation">设置 · 分享链接</summary>
-          <div class="notes-settings-body">
-            <label class="settings-toggle">
-              <input type="checkbox" id="toggle-zh" checked />
-              <span>显示中文释义（小字灰色）</span>
-            </label>
-            <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:12px;width:100%">清除本机学习数据</button>
-            <button type="button" class="btn primary btn--with-forward-icon" id="btn-share-me" style="width:100%;margin-top:10px"><span class="btn-forward-icon" aria-hidden="true"></span><span>复制学习链接</span></button>
-            <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">分享页（QR）</a>
-            <p class="hint-ja footer-hint" style="margin-top:10px">朗读优先缓存 MP3 · 单词/会話/测试可 🔊🎤 跟读 · 无需登录</p>
+        <div class="notes-me-shell">
+          <div id="notes-panel-root" class="notes-panel-root notes-panel-scroll" aria-label="笔记"></div>
+          <div class="notes-me-dock" aria-label="设置与分享">
+            <details class="notes-settings-fold">
+              <summary class="notes-settings-summary zh-annotation">设置 · 分享链接</summary>
+              <div class="notes-settings-body">
+                <label class="settings-toggle">
+                  <input type="checkbox" id="toggle-zh" checked />
+                  <span>显示中文释义（小字灰色）</span>
+                </label>
+                <button type="button" class="btn ghost" id="btn-clear-mvp" style="margin-top:12px;width:100%">清除本机学习数据</button>
+                <button type="button" class="btn primary" id="btn-share-me" style="width:100%;margin-top:10px">📤 复制学习链接</button>
+                <a href="share.html" class="btn secondary" style="display:block;text-align:center;margin-top:10px;text-decoration:none">分享页（QR）</a>
+                <p class="hint-ja footer-hint" style="margin-top:10px">朗读优先缓存 MP3 · 单词/会話/测试可 🔊🎤 跟读 · 无需登录</p>
+              </div>
+            </details>
           </div>
-        </details>
+        </div>
       </section>
     </main>
 
@@ -119,63 +131,64 @@
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 19c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span>
         <span class="nav-label">笔记</span>
       </button>
-      <a href="intro.html?v=305" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
+      <a href="intro.html?v=306" class="nav-item nav-item--link" id="nav-intro" title="五十音·入門">
         <span class="nav-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700" font-family="sans-serif">あ</text></svg></span>
         <span class="nav-label">注音</span>
       </a>
     </nav>
   </div>
 
-  <script src="js/lesson-overview.js?v=305"></script>
-  <script src="js/image-tools.js?v=305"></script>
-  <script src="js/public-url.config.js?v=305"></script>
-  <script src="js/tts-sw-register.js?v=305"></script>
-  <script src="js/share-wechat.js?v=305"></script>
-  <script src="js/data/mini-cards.js?v=305"></script>
-  <script src="js/data/lessons-data.js?v=305"></script>
-  <script src="js/data/lessons-mvp.js?v=305"></script>
-  <script src="js/data/curriculum-catalog.js?v=305"></script>
-  <script src="js/ruby-render.js?v=305"></script>
-  <script src="js/mvp-storage.js?v=305"></script>
-  <script src="js/speech-engine.js?v=305"></script>
-  <script src="js/speak-ui.js?v=305"></script>
-  <script src="js/shadow-speak.js?v=305"></script>
-  <script src="js/ui-feedback.js?v=305"></script>
-  <script src="js/sensei-tip-card.js?v=305"></script>
-  <script src="js/data/l1-dialogue-abc.js?v=305"></script>
-  <script src="js/data/unit1-dialogue-abc-l234.js?v=305"></script>
-  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=305"></script>
-  <script src="js/data/dialogue-zh-l9-24.js?v=305"></script>
-  <script src="js/data/lessons-9-24-dialogue-abc.js?v=305"></script>
-  <script src="js/data/knowledge-graph.js?v=305"></script>
-  <script src="js/knowledge-link.js?v=305"></script>
-  <script src="js/data/l1-knowledge-tips.js?v=305"></script>
-  <script src="js/data/unit1-knowledge-tips.js?v=305"></script>
-  <script src="js/data/unit2-knowledge-tips.js?v=305"></script>
-  <script src="js/data/lessons-9-24-knowledge-tips.js?v=305"></script>
-  <script src="js/l1-knowledge-card.js?v=305"></script>
-  <script src="js/grammar-network.js?v=305"></script>
-  <script src="js/dialogue-gate.js?v=305"></script>
-  <script src="js/quiz-gate.js?v=305"></script>
-  <script src="js/vocab-flash.js?v=305"></script>
-  <script src="js/scroll-hint.js?v=305"></script>
-  <script src="js/nav-icons.js?v=305"></script>
-  <script src="js/data/unit-strip-storyboard.js?v=305"></script>
-  <script src="js/story-comic-ui.js?v=305"></script>
-  <script src="js/data/grand-finale-cards.js?v=305"></script>
-  <script src="js/story-caption-jp.js?v=305"></script>
-  <script src="js/story-reward.js?v=305"></script>
-  <script src="js/story-egg-viewport.js?v=305"></script>
-  <script src="js/story-egg.js?v=305"></script>
-  <script src="js/lesson-recap.js?v=305"></script>
-  <script src="js/journey-home.js?v=305"></script>
-  <script src="js/home-splash.js?v=305"></script>
-  <script src="js/hyouga-test-card.js?v=305"></script>
-  <script src="js/learning-notes.js?v=305"></script>
-  <script src="js/study-timer.js?v=305"></script>
-  <script src="js/notes-panel.js?v=305"></script>
-  <script src="js/lesson-1-flow.js?v=305"></script>
-  <script src="js/app.js?v=305"></script>
+  <script src="js/lesson-overview.js?v=306"></script>
+  <script src="js/image-tools.js?v=306"></script>
+  <script src="js/public-url.config.js?v=306"></script>
+  <script src="js/tts-sw-register.js?v=306"></script>
+  <script src="js/share-wechat.js?v=306"></script>
+  <script src="js/data/mini-cards.js?v=306"></script>
+  <script src="js/data/lessons-data.js?v=306"></script>
+  <script src="js/data/lessons-mvp.js?v=306"></script>
+  <script src="js/data/curriculum-catalog.js?v=306"></script>
+  <script src="js/ruby-render.js?v=306"></script>
+  <script src="js/mvp-storage.js?v=306"></script>
+  <script src="js/speech-engine.js?v=306"></script>
+  <script src="js/speak-ui.js?v=306"></script>
+  <script src="js/shadow-speak.js?v=306"></script>
+  <script src="js/ui-feedback.js?v=306"></script>
+  <script src="js/sensei-tip-card.js?v=306"></script>
+  <script src="js/hyouga-fold-overview.js?v=306"></script>
+  <script src="js/data/l1-dialogue-abc.js?v=306"></script>
+  <script src="js/data/unit1-dialogue-abc-l234.js?v=306"></script>
+  <script src="js/data/unit2-dialogue-abc-l5-8.js?v=306"></script>
+  <script src="js/data/dialogue-zh-l9-24.js?v=306"></script>
+  <script src="js/data/lessons-9-24-dialogue-abc.js?v=306"></script>
+  <script src="js/data/knowledge-graph.js?v=306"></script>
+  <script src="js/knowledge-link.js?v=306"></script>
+  <script src="js/data/l1-knowledge-tips.js?v=306"></script>
+  <script src="js/data/unit1-knowledge-tips.js?v=306"></script>
+  <script src="js/data/unit2-knowledge-tips.js?v=306"></script>
+  <script src="js/data/lessons-9-24-knowledge-tips.js?v=306"></script>
+  <script src="js/lesson-1-flow.js?v=306"></script>
+  <script src="js/l1-knowledge-card.js?v=306"></script>
+  <script src="js/grammar-network.js?v=306"></script>
+  <script src="js/dialogue-gate.js?v=306"></script>
+  <script src="js/quiz-gate.js?v=306"></script>
+  <script src="js/vocab-flash.js?v=306"></script>
+  <script src="js/scroll-hint.js?v=306"></script>
+  <script src="js/nav-icons.js?v=306"></script>
+  <script src="js/data/unit-strip-storyboard.js?v=306"></script>
+  <script src="js/story-comic-ui.js?v=306"></script>
+  <script src="js/data/grand-finale-cards.js?v=306"></script>
+  <script src="js/story-caption-jp.js?v=306"></script>
+  <script src="js/story-reward.js?v=306"></script>
+  <script src="js/story-egg-viewport.js?v=306"></script>
+  <script src="js/story-egg.js?v=306"></script>
+  <script src="js/lesson-recap.js?v=306"></script>
+  <script src="js/journey-home.js?v=306"></script>
+  <script src="js/home-splash.js?v=306"></script>
+  <script src="js/hyouga-test-card.js?v=306"></script>
+  <script src="js/learning-notes.js?v=306"></script>
+  <script src="js/study-timer.js?v=306"></script>
+  <script src="js/notes-panel.js?v=306"></script>
+  <script src="js/app.js?v=306"></script>
   <script>
     (function hideStaleModals() {
       document.querySelectorAll(".mvp-backdrop, .gn-modal").forEach(function (m) {

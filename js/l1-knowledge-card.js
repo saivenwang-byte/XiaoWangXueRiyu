@@ -9,8 +9,22 @@ const L1KnowledgeCard = (function () {
       payload = KnowledgeLink.enrichTip(tip, anchorId, lessonId != null ? lessonId : 1);
     }
     if (typeof SenseiTipCard !== "undefined" && SenseiTipCard.fromTipPayload) {
-      const l1Scope = lessonId == null || Number(lessonId) === 1;
-      return SenseiTipCard.fromTipPayload(payload, { l1Scope });
+      const lid = lessonId != null ? Number(lessonId) : 1;
+      const l1Scope = lid === 1;
+      let mvpScope = lid >= 1 && lid <= 24;
+      if (typeof Lesson1Flow !== "undefined") {
+        mvpScope =
+          Lesson1Flow.isUnit1Mvp(lid) ||
+          Lesson1Flow.isUnit2Mvp(lid) ||
+          Lesson1Flow.isUnits3to6Mvp(lid);
+      }
+      return SenseiTipCard.fromTipPayload(payload, {
+        l1Scope: l1Scope || mvpScope,
+        expanded: mvpScope,
+        zhFirst: mvpScope,
+        flat: mvpScope,
+        forceZh: mvpScope,
+      });
     }
     return "";
   }

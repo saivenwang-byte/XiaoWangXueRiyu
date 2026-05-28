@@ -386,6 +386,31 @@ def check_local_preview_hint() -> bool:
     return True
 
 
+def check_dual_channel_preview() -> bool:
+    """双通道：浏览器持续预览 + 小程序真机框 390×844（见 docs/双通道验收-浏览器与手机真机框.md）"""
+    required = [
+        ROOT / "打开双通道预览.bat",
+        ROOT / "Cursor真机持续预览.bat",
+        ROOT / "打开小程序Cursor预览.bat",
+        ROOT / ".cursor/rules/miniapp-real-device-preview-iron-law.mdc",
+        ROOT / "cursor-miniapp-phone.html",
+        ROOT / "css" / "miniapp-webview.css",
+        ROOT / "docs" / "双通道验收-浏览器与手机真机框.md",
+        ROOT / "scripts" / "echo-dual-channel-reminder.bat",
+    ]
+    missing = [p.name for p in required if not p.is_file()]
+    if missing:
+        fail(f"双通道验收文件缺失: {', '.join(missing)}")
+        return False
+    phone = ROOT / "cursor-miniapp-phone.html"
+    html = phone.read_text(encoding="utf-8", errors="replace")
+    if "390" not in html or "844" not in html:
+        fail("cursor-miniapp-phone.html 未标注 390×844 真机逻辑像素")
+        return False
+    ok("双通道验收入口齐全（打开双通道预览.bat + cursor-miniapp-phone 390×844）")
+    return True
+
+
 def tts_required_missing() -> tuple[int, int]:
     try:
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -507,11 +532,14 @@ def print_delivery_block(passed: bool) -> None:
     print("| PRD 单词 1–24课 | 见上方 [OK]/[FAIL] |")
     print("| 本地 HTTP | 见上方 [OK]/[FAIL] |")
     print("| 本地冒烟 | Agent 改 UI/会話/语音后须自测 |")
+    print("| 双通道目视 | 交付前须 打开双通道预览.bat → A 浏览器 + B 390×844 真机框均已刷新目视 |")
     print("\n## 链接\n")
     print(f"- 本地：http://localhost:8765/index.html?v={ver}")
     print(f"- 公网：https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v={ver}")
     print("- 本地打开：双击 `打开本地预览.bat`")
-    print("\n（详见 docs/Agent交付前工作流.md）\n")
+    print("- 铁律真机预览：http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1")
+    print("- 双通道：`打开双通道预览.bat` · `Cursor真机持续预览.bat`")
+    print("\n（详见 docs/Agent交付前工作流.md · docs/双通道验收-浏览器与手机真机框.md）\n")
 
 
 def main() -> int:
@@ -529,6 +557,7 @@ def main() -> int:
         run_audit_dialogue_zh_mt(),
         run_audit_tts_registry(),
         check_local_preview_hint(),
+        check_dual_channel_preview(),
         check_local_http(),
         check_tts_mp3_http(),
     ]

@@ -9,8 +9,8 @@ for /f "tokens=5" %%p in ('netstat -ano ^| findstr ":8765" ^| findstr LISTENING'
 )
 timeout /t 2 /nobreak >nul
 
-echo 正在启动 python http.server 8765 ...
-start "日语学习-本地服务" /min cmd /c "cd /d "%~dp0" && python -m http.server 8765"
+echo 正在启动 local-preview-server 8765 （改码即刷 + 静态文件）...
+start "日语学习-本地服务" /min cmd /c "cd /d "%~dp0" && python scripts\local-preview-server.py --watch"
 timeout /t 2 /nobreak >nul
 
 python scripts\start-local-server.py --probe

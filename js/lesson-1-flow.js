@@ -116,48 +116,84 @@ const Lesson1Flow = (function () {
   }
 
   function showZh(state) {
+    if (document.documentElement.dataset.showZh === "0") return false;
     return state?.showChineseZh !== false;
   }
 
+  /** 五关课内：作业/扩展主文案中文必显（与文法 showPedagogyZh 一致） */
+  function showPedagogyZh(state) {
+    return true;
+  }
+
   function renderLines(lines, showChinese) {
-    return (lines || [])
-      .map((ln) => {
-        const s = String(ln || "").trim();
-        if (!s) return "";
-        const hasKana = /[\u3040-\u309f\u30a0-\u30ff]/.test(s);
-        if (hasKana) return `<li class="l1-prose-line jp">${escapeHtml(s)}</li>`;
-        if (!showChinese) return "";
-        if (/\t/.test(s) && !hasKana) {
-          const cells = s.split(/\t+/).map((c) => c.trim()).filter(Boolean);
-          if (cells.length >= 2) {
-            return `<li class="l1-prose-line l1-prose-tab zh-annotation">${cells
-              .map((c) => `<span>${escapeHtml(c)}</span>`)
-              .join("")}</li>`;
-          }
+    const show = showChinese || showPedagogyZh();
+    const arr = (lines || []).map((ln) => String(ln || "").trim()).filter(Boolean);
+    const out = [];
+    const hasKana = (s) =>
+      typeof HyougaFoldOverview !== "undefined"
+        ? HyougaFoldOverview.hasKana(s)
+        : /[\u3040-\u309f\u30a0-\u30ff]/.test(s);
+    const hasHan = (s) =>
+      typeof HyougaFoldOverview !== "undefined"
+        ? HyougaFoldOverview.hasHan(s)
+        : /[\u4e00-\u9fff]/.test(s);
+
+    for (let i = 0; i < arr.length; i++) {
+      const s = arr[i];
+      if (!s) continue;
+      if (hasKana(s)) {
+        let zhFollow = "";
+        const next = arr[i + 1];
+        if (next && show && hasHan(next) && !hasKana(next) && !/^Q\d|^【|^[×✕○◯→]/.test(next)) {
+          zhFollow = next;
+          i += 1;
         }
-        const wrong = /^[×✕]/.test(s);
-        const right = /^[○◯]/.test(s);
-        const quiz = /^Q\d/.test(s);
-        const ans = /^→/.test(s);
-        const body = wrong || right ? s.replace(/^[×✕○◯]\s*/, "") : s;
-        const extra = [
-          "l1-prose-line",
-          "zh-annotation",
-          wrong ? "l1-prose-wrong" : "",
-          right ? "l1-prose-right" : "",
-          quiz ? "l1-prose-quiz" : "",
-          ans ? "l1-prose-ans" : "",
-        ]
-          .filter(Boolean)
-          .join(" ");
-        const mark = wrong ? '<span class="l1-prose-mark" aria-hidden="true">×</span>' : right ? '<span class="l1-prose-mark" aria-hidden="true">○</span>' : "";
-        if (wrong || right) {
-          return `<li class="${extra}">${mark}<span class="l1-prose-text">${escapeHtml(body)}</span></li>`;
+        out.push(
+          `<li class="l1-prose-pair"><p class="l1-prose-line jp">${escapeHtml(s)}</p>${
+            zhFollow
+              ? `<p class="l1-prose-line zh-annotation dg-zh-below-jp">${escapeHtml(zhFollow)}</p>`
+              : ""
+          }</li>`
+        );
+        continue;
+      }
+      if (!show) continue;
+      if (/\t/.test(s) && !hasKana(s)) {
+        const cells = s.split(/\t+/).map((c) => c.trim()).filter(Boolean);
+        if (cells.length >= 2) {
+          out.push(
+            `<li class="l1-prose-pair"><p class="l1-prose-line jp">${escapeHtml(cells[0])}</p><p class="l1-prose-line zh-annotation dg-zh-below-jp">${escapeHtml(cells.slice(1).join(" "))}</p></li>`
+          );
+          continue;
         }
-        return `<li class="${extra}">${escapeHtml(s)}</li>`;
-      })
-      .filter(Boolean)
-      .join("");
+      }
+      const wrong = /^[×✕]/.test(s);
+      const right = /^[○◯]/.test(s);
+      const quiz = /^Q\d/.test(s);
+      const ans = /^→/.test(s);
+      const body = wrong || right ? s.replace(/^[×✕○◯]\s*/, "") : s;
+      const extra = [
+        "l1-prose-line",
+        "zh-annotation",
+        wrong ? "l1-prose-wrong" : "",
+        right ? "l1-prose-right" : "",
+        quiz ? "l1-prose-quiz" : "",
+        ans ? "l1-prose-ans" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      const mark = wrong
+        ? '<span class="l1-prose-mark" aria-hidden="true">×</span>'
+        : right
+          ? '<span class="l1-prose-mark" aria-hidden="true">○</span>'
+          : "";
+      if (wrong || right) {
+        out.push(`<li class="${extra}">${mark}<span class="l1-prose-text">${escapeHtml(body)}</span></li>`);
+      } else {
+        out.push(`<li class="${extra}">${escapeHtml(s)}</li>`);
+      }
+    }
+    return out.join("");
   }
 
   function stripEmojiTitle(title) {
@@ -275,9 +311,12 @@ const Lesson1Flow = (function () {
 
   function syncFoldSlot(det) {
     const slot = det.querySelector(".hyo-fold-slot, .hyo-fold-toggle-static");
-    if (!slot || typeof HyougaGlyphs === "undefined") return;
-    const gate = foldGateFromEl(det);
-    slot.innerHTML = HyougaGlyphs.foldToggleInner(!!det.open, gate);
+    if (slot && typeof HyougaGlyphs !== "undefined") {
+      const gate = foldGateFromEl(det);
+      slot.innerHTML = HyougaGlyphs.foldToggleInner(!!det.open, gate);
+    }
+    const hint = det.querySelector(".hyo-fold-hint");
+    if (hint) hint.textContent = det.open ? "收起" : "展开";
   }
 
   /** 手风琴：同时只展开一条（与作業/拡張 gw-group 一致） */
@@ -317,7 +356,7 @@ const Lesson1Flow = (function () {
     return L1KnowledgeCard.html(tip, anchorId, lid);
   }
 
-  function gwGroupHtml({ title, body, tip, attrs = "", seq, foldGate, lessonId }) {
+  function gwGroupHtml({ title, body, tip, attrs = "", seq, foldGate, lessonId, overviewLines }) {
     const card =
       typeof tip === "object" && tip?.lines
         ? kcardHtml(tip, tip._anchor, lessonId)
@@ -330,10 +369,16 @@ const Lesson1Flow = (function () {
         ? `<span class="hyo-fold-slot gw-fold-slot" aria-hidden="true">${HyougaGlyphs.foldDownInner(g)}</span>`
         : "";
     const titleInner = `<span class="gw-group-title-label">${escapeHtml(title)}</span>`;
+    let overviewHtml = "";
+    if (overviewLines?.length && typeof HyougaFoldOverview !== "undefined") {
+      const ov = HyougaFoldOverview.proseSectionOverview(overviewLines);
+      overviewHtml = HyougaFoldOverview.summaryBlock(ov.jp, ov.zh, { showZh: true });
+    }
+    const titleStack = `<span class="gw-group-title-stack">${titleInner}${overviewHtml ? `<span class="gw-group-overview">${overviewHtml}</span>` : ""}</span>`;
     const head =
       typeof seq === "number"
-        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${titleInner}</span>${foldSlot}`
-        : `<span class="gw-group-title-text">${titleInner}</span>${foldSlot}`;
+        ? `<span class="l1-seq-num" aria-hidden="true">${seq}</span><span class="gw-group-title-text">${titleStack}</span>${foldSlot}<span class="hyo-fold-hint">展开</span>`
+        : `<span class="gw-group-title-text">${titleStack}</span>${foldSlot}<span class="hyo-fold-hint">展开</span>`;
     const cardSlot = card ? `<div class="l1-tip-slot l1-tip-slot--gate">${card}</div>` : "";
     return `
       <details class="gw-group l1-gw-group" ${attrs}>
@@ -530,7 +575,7 @@ const Lesson1Flow = (function () {
         const colKana = normKana(v.kana || "");
         const colPitch = (v.pitch || "").trim();
         const colPos = (v.pos || "").trim();
-        const colZh = showZh(state) && v.meaningZh ? v.meaningZh : "";
+        const colZh = v.meaningZh ? v.meaningZh : "";
         const metaParts = [colKana, colPitch, colPos].filter(Boolean);
         const metaLine = metaParts.length ? metaParts.join(" · ") : "";
         const payload = speakPayload(v);
@@ -562,23 +607,23 @@ const Lesson1Flow = (function () {
         const fold0 =
           typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldToggleInner(false, 0) : "▼";
         const expandBtn = hasExtra
-          ? `<button type="button" class="hyo-fold-toggle l1-vocab-expand-btn" aria-expanded="false" aria-label="${escapeHtml(expandLabel)}">${fold0}</button>`
+          ? `<button type="button" class="hyo-fold-toggle l1-vocab-expand-btn" aria-expanded="false" aria-label="${escapeHtml(expandLabel)}">${fold0}<span class="l1-vocab-expand-label">展开</span></button>`
           : `<span class="l1-vocab-expand-spacer" aria-hidden="true"></span>`;
         const metaHtml = metaLine
           ? `<span class="l1-vocab-meta-inline hint-ja" title="${escapeHtml(metaLine)}">${escapeHtml(metaLine)}</span>`
           : "";
         const zhHtml = colZh
-          ? `<span class="l1-vocab-zh-inline zh-annotation">${escapeHtml(colZh)}</span>`
+          ? `<span class="l1-vocab-zh-inline zh-annotation dg-zh-below-jp">${escapeHtml(colZh)}</span>`
           : "";
         return `
         <li class="l1-vocab-item${rowCls}" data-idx="${i}" data-vocab-id="${escapeHtml(v.id || "")}">
           <div class="l1-vocab-item-main">
             <span class="l1-seq-num l1-vocab-seq" aria-label="第${i + 1}项">${i + 1}</span>
             ${expandBtn}
-            <div class="l1-vocab-core">
+            <div class="l1-vocab-core l1-vocab-core--stack">
               <span class="l1-vocab-jp jp">${jpHtml}</span>
-              ${metaHtml}
               ${zhHtml}
+              ${metaHtml}
             </div>
             ${vocabTagsColumnHtml(badges)}
             <div class="l1-vocab-act">${actions}</div>
@@ -769,7 +814,7 @@ const Lesson1Flow = (function () {
       return t.trim() && !/^（本课无/.test(t.trim());
     });
     sections = mergeTranslationHomeworkSections(sections);
-    const show = showZh(state);
+    const show = showPedagogyZh(state) || showZh(state);
     const quizCount = (L?.quizQuestions || []).length;
 
     const HW_TIPS = {
@@ -810,6 +855,7 @@ const Lesson1Flow = (function () {
           body: `<ul class="l1-prose-list">${inner}</ul>`,
           tip: tipForTitle(title),
           lessonId: lid,
+          overviewLines: s.lines,
         });
       })
       .filter(Boolean)
@@ -900,7 +946,7 @@ const Lesson1Flow = (function () {
     const reviewExt = L?.reviewExtension || [];
     const keyPoints = L?.dialogueKeyPoints || [];
     const rolePlay = L?.rolePlayTasks || [];
-    const show = showZh(state);
+    const show = showPedagogyZh(state) || showZh(state);
 
     const renderLn = (lines) => renderLines(lines, show);
     const extTip = (key, fallback, title) => {
@@ -919,6 +965,7 @@ const Lesson1Flow = (function () {
         extKey: "pronunciation",
         title: "発音ポイント",
         body: `<ul class="l1-prose-list">${renderLn(pron.lines)}</ul>`,
+        overviewLines: pron.lines,
         tip: extTip("pronunciation", {
           lines: [{ zh: "注意助词「は」读「わ」、长音拉长一拍、促音停顿等。" }],
         }),
@@ -933,6 +980,7 @@ const Lesson1Flow = (function () {
         extKey: "grammar",
         title: "文法まとめ",
         body: `<ul class="l1-prose-list">${renderLn(glines)}</ul>`,
+        overviewLines: glines,
         tip: extTip("grammar", {
           lines: [{ zh: "以上为本课全部语法节点，建议逐条对照例句复习。" }],
         }),
@@ -944,6 +992,7 @@ const Lesson1Flow = (function () {
         extKey: "preview",
         title: "活用予告",
         body: `<ul class="l1-prose-list">${renderLn(preview.lines)}</ul>`,
+        overviewLines: preview.lines,
         tip: extTip("preview", {
           lines: [{ zh: "提前了解后续课程的活用变化，心中有数。" }],
         }),
@@ -955,6 +1004,7 @@ const Lesson1Flow = (function () {
         extKey: "honorific",
         title: "敬語レベル表示",
         body: `<ul class="l1-prose-list">${renderLn(honor.lines)}</ul>`,
+        overviewLines: honor.lines,
         tip: extTip("honorific", {
           lines: [{ zh: "掌握敬体与简体的使用场景，避免失礼。" }],
         }),
@@ -966,6 +1016,7 @@ const Lesson1Flow = (function () {
         extKey: "etymology",
         title: "語源メモ",
         body: `<ul class="l1-prose-list">${renderLn(etym.lines)}</ul>`,
+        overviewLines: etym.lines,
         tip: extTip("etymology", { lines: [{ zh: "了解词语来源有助于记忆。" }] }),
       });
     }
@@ -974,6 +1025,7 @@ const Lesson1Flow = (function () {
         extKey: "keyPoints",
         title: "会話のキーポイント",
         body: `<ul class="l1-prose-list">${renderLn(keyPoints)}</ul>`,
+        overviewLines: keyPoints,
         tip: extTip("keyPoints", {
           lines: [{ zh: "朗读对话时留意这些要点，模仿语调。" }],
         }),
@@ -984,6 +1036,7 @@ const Lesson1Flow = (function () {
         extKey: "rolePlay",
         title: "ロールプレイ課題",
         body: `<ul class="l1-prose-list">${renderLn(rolePlay)}</ul>`,
+        overviewLines: rolePlay,
         tip: extTip("rolePlay", {
           lines: [{ zh: "找伙伴练习，或自己扮演两个角色轮流说。" }],
         }),
@@ -994,6 +1047,7 @@ const Lesson1Flow = (function () {
         extKey: "review",
         title: stripEmojiTitle(sec.title || `まとめ ${si + 1}`),
         body: `<ul class="l1-prose-list">${renderLn(sec.lines)}</ul>`,
+        overviewLines: sec.lines,
         tip: extTip(null, { lines: [{ zh: "回顾本课核心内容，建立与前后课程的联系。" }] }, sec.title),
       });
     });
@@ -1002,6 +1056,7 @@ const Lesson1Flow = (function () {
         extKey: "basicText",
         title: "基本课文（4句型）",
         body: `<ul class="l1-prose-list">${renderLn(L.basicText)}</ul>`,
+        overviewLines: L.basicText,
         tip: extTip("basicText", { lines: [{ zh: "课本4个核心句型，务必朗读并记忆。" }] }),
       });
     }
@@ -1015,6 +1070,7 @@ const Lesson1Flow = (function () {
           body: g.body,
           tip: g.tip,
           lessonId: lid,
+          overviewLines: g.overviewLines,
         })
       )
       .join("");

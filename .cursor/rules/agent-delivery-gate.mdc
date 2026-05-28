@@ -26,13 +26,21 @@ alwaysApply: true
 3. 本轮 scope 仅用户原话；`backlog` 项不得擅自提前做
 4. **若改课内単語**（`vocab-flash` / `lesson-1-flow` / `l1-knowledge-tips` / 单词 CSS）：先读 `docs/项目知识库-课内单词标黄范式.md` + 记忆库 §11
 
+## 改码前必执行（铁律 · 真机预览）
+
+1. 改 UI/刷星/课内/マイ/笔记/入門：**`cursor-miniapp-phone.html?live=1`**（或 `Cursor真机持续预览.bat`）
+2. Cursor：`Ctrl+Shift+P` → **Simple Browser: Show** → 粘贴上址，侧边固定
+3. 见 `.cursor/rules/miniapp-real-device-preview-iron-law.mdc` · `docs/双通道验收-浏览器与手机真机框.md`
+4. 每一次保存后须在真机框内看到最新态；**禁止**未目视就声称修好
+5. **改 UI 收尾**：`python scripts/preview-notify-reload.py`（须 watch 服务；与文件保存监听二选一或并用）
+
 ## 交付前必执行
 
-1. 读 `docs/Agent交付前工作流.md` 第二节【项目级·反复】
+1. 读 `docs/Agent交付前工作流.md` 第二节【项目级·反复】含 **C2 双通道**
 2. 运行 `python scripts/pre-ship-check.py`（或 `发布前自检.bat`）
 3. 本地须 `start-local-server.py --probe` 为 OK，否则提示 `重启本地服务.bat`
-4. 若改会話/语音/UI：本地冒烟（评语切换、🔊、按钮对齐）
-5. 回复必须含「交付反馈块」：自检表 + 产品版 + cache v + 双链接
+4. 若改会話/语音/UI：双通道目视 + 本地冒烟（评语切换、🔊、按钮对齐）
+5. 回复必须含「交付反馈块」：自检表 + **真机框已目视（live）** + 产品版 + cache v + 双链接 + **`http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1`**
 
 ## 禁止
 

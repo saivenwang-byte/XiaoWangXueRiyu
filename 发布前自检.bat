@@ -15,5 +15,7 @@ if %ERR% neq 0 (
   exit /b %ERR%
 )
 echo [通过] 可 git push 并分享 ?v= 链接
+call "%~dp0scripts\echo-dual-channel-reminder.bat"
+echo  交付前终检: 打开双通道预览.bat → 目视 A+B 后再 push/发链接
 pause
 exit /b 0

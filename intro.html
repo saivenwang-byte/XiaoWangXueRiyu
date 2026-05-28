@@ -4,17 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>00 入門 · 標日 あと学習</title>
-  <link rel="stylesheet" href="css/app.css?v=295" />
-  <link rel="stylesheet" href="css/mvp.css?v=295" />
+  <script>
+    (function () {
+      if (/[?&]miniappPreview=1(?:&|$)/.test(location.search)) {
+        document.documentElement.classList.add("hyouga-miniapp-webview");
+      }
+      if (window.self !== window.top) document.documentElement.classList.add("hyouga-embed-preview");
+    })();
+  </script>
+  <link rel="stylesheet" href="css/app.css?v=306" />
+  <link rel="stylesheet" href="css/mvp.css?v=306" />
+  <link rel="stylesheet" href="css/miniapp-webview.css?v=306" />
 </head>
 <body class="mvp-body intro-body">
-  <script>
-    if (window.self !== window.top) document.documentElement.classList.add("hyouga-embed-preview");
-  </script>
-  <header class="top-bar intro-top-bar">
-    <a href="index.html?v=295&nosplash=1" class="btn-back" id="intro-back-link">← 標日 あと学習</a>
+  <header class="top-bar">
+    <a href="index.html?v=306&embed=1" class="btn-back" id="intro-back-link">← 標日 あと学習</a>
     <h1>00 入門</h1>
-    <a href="index.html?v=295&nosplash=1" class="btn-top-link intro-home-link" id="intro-home-link">课文首页</a>
+    <a href="index.html?v=306&nosplash=1" class="btn-top-link intro-home-link" id="intro-home-link">课文首页</a>
   </header>
   <main class="intro-page">
     <div class="mvp-hero intro-hero intro-hero--minimal">
@@ -24,7 +30,7 @@
     </div>
     <div id="intro-root" class="intro-root"></div>
   </main>
-  <script src="js/share-wechat.js?v=295"></script>
+  <script src="js/share-wechat.js?v=306"></script>
   <script>
     (function () {
       var v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "292";
@@ -41,13 +47,13 @@
       }
     })();
   </script>
-  <script src="js/speech-engine.js?v=295"></script>
-  <script src="js/speak-ui.js?v=295"></script>
-  <script src="js/shadow-speak.js?v=295"></script>
-  <script src="js/sensei-tip-card.js?v=295"></script>
-  <script src="js/data/intro-content.js?v=295"></script>
-  <script src="js/data/intro-kana-tips.js?v=295"></script>
-  <script src="js/intro-kana-tip.js?v=295"></script>
-  <script src="js/intro-guide.js?v=295"></script>
+  <script src="js/speech-engine.js?v=306"></script>
+  <script src="js/speak-ui.js?v=306"></script>
+  <script src="js/shadow-speak.js?v=306"></script>
+  <script src="js/sensei-tip-card.js?v=306"></script>
+  <script src="js/data/intro-content.js?v=306"></script>
+  <script src="js/data/intro-kana-tips.js?v=306"></script>
+  <script src="js/intro-kana-tip.js?v=306"></script>
+  <script src="js/intro-guide.js?v=306"></script>
 </body>
 </html>

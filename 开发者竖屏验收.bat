@@ -15,6 +15,7 @@ echo  开发者竖屏真机框 + 满配 App（testcard+developer）
 echo  http://127.0.0.1:8765/dev-phone-preview.html
 echo.
 echo  流程：docs\开发者验收-SOP.md
+echo  双通道（日常改 UI）: 打开双通道预览.bat — docs\双通道验收-浏览器与手机真机框.md
 echo.
 
 start "" "http://127.0.0.1:8765/dev-phone-preview.html"

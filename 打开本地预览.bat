@@ -19,8 +19,8 @@ echo.
 
 python scripts\start-local-server.py --probe >nul 2>&1
 if errorlevel 1 (
-  echo  本地服务未就绪，正在启动 8765 ...
-  start "日语学习-本地服务" /min cmd /c "cd /d "%~dp0" && python -m http.server 8765"
+  echo  本地服务未就绪，正在启动 8765 （改码即刷）...
+  python scripts\start-local-server.py --start
   timeout /t 3 /nobreak >nul
   python scripts\start-local-server.py --probe >nul 2>&1
   if errorlevel 1 (
@@ -35,4 +35,8 @@ if errorlevel 1 (
 start "" "%URL%"
 echo.
 echo  已打开浏览器。Cursor 里也可复制上面链接预览。
+echo.
+echo  [双通道] 小程序真机框 390x844: 打开双通道预览.bat 或 打开小程序Cursor预览.bat
+echo  规范: docs\双通道验收-浏览器与手机真机框.md
+call "%~dp0scripts\echo-dual-channel-reminder.bat"
 pause

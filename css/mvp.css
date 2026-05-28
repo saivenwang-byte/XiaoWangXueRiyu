@@ -2,6 +2,7 @@
 @import url("story-egg-caption.css");
 @import url("story-egg-typography.css");
 @import url("vi-token-sweep.css");
+@import url("notes-ui-system.css");
 
 body.mvp-app {
   background: var(--mvp-bg);
@@ -1572,7 +1573,13 @@ body.mvp-app .nav-item.active {
   cursor: pointer;
 }
 .gn-link-prerequisite { background: var(--c-accent-blue-bg); color: var(--c-accent-blue); }
-.gn-link-contrast { background: var(--c-primary-light); color: #c62828; }
+/* 对比/警示链：浅底深字，禁止用 --c-primary-light（深蓝底+深红字看不清） */
+.gn-link-contrast {
+  background: #fff3e0;
+  color: #bf360c;
+  border: 1px solid #ffcc80;
+  font-weight: 600;
+}
 .gn-link-extension { background: var(--c-accent-green-bg); color: var(--c-accent-green); }
 
 .gn-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -3425,6 +3432,38 @@ body.mvp-app .gate-tab.active:active {
   content: none;
 }
 
+/* 折叠条：图标 + 文字，避免小程序里看不出可点开 */
+.l1-lesson-scope .gw-group-summary .hyo-fold-slot,
+.l1-lesson-scope .dg-scene-fold-chevron.hyo-fold-slot,
+.l1-lesson-scope .gn-node-fold-chevron.hyo-fold-slot {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.l1-lesson-scope .hyo-fold-hint {
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mvp-primary-dark);
+}
+
+.l1-lesson-scope .l1-vocab-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 28px;
+}
+
+.l1-lesson-scope .l1-vocab-expand-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mvp-primary-dark);
+  line-height: 1;
+}
+
 .l1-lesson-scope .gw-group-summary:not(:has(.hyo-fold-slot)):not(:has(.dg-scene-fold-chevron)):not(:has(.gn-node-fold-chevron))::after {
   content: "▸";
   font-size: 12px;
@@ -4521,11 +4560,11 @@ button.l1-chain-node:not(.is-current):hover {
   flex: 1 1 auto;
   min-width: 0;
   margin: 0;
-  font-size: 14px;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 1.45;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
 }
 
 .l1-lesson-scope .dg-reply-head--abc .dg-actions-col {
@@ -4540,12 +4579,12 @@ button.l1-chain-node:not(.is-current):hover {
 }
 
 .l1-lesson-scope .dg-reply-extra--abc .dg-reply-zh {
-  margin: 1px 0 0;
-  font-size: 11px;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
 }
 
 .l1-lesson-scope .dg-reply-extra--abc .l1-tip-slot--abc .hyouga-tip-fold-head {
@@ -6652,20 +6691,6 @@ body.mvp-app.is-splash-open #main-content {
   color: #90a4ae;
 }
 
-.splash-screen--complete .splash-cta-lead {
-  margin: 0 0 10px;
-  font-size: 11px;
-  line-height: 1.35;
-  color: #90a4ae;
-}
-
-.splash-screen--complete .splash-cta-hint {
-  margin: 8px 0 0;
-  font-size: 10px;
-  line-height: 1.35;
-  color: #b0bec5;
-}
-
 .splash-screen--complete .splash-btn-start,
 .home-splash-overlay .splash-screen--complete .btn.primary.splash-btn-start {
   box-sizing: border-box;
@@ -8562,6 +8587,9 @@ body.intro-body .intro-flow-dot.active {
 .intro-phase-actions .btn {
   width: 100%;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .intro-finish-banner,
@@ -8795,6 +8823,44 @@ body.intro-body .intro-flow-dot.active {
   border-radius: 10px;
   background: var(--c-surface);
   -webkit-overflow-scrolling: touch;
+}
+
+/* 基础层 · SK-01 与五十音表分框；取消 phase-panel + intro-block 双层套娃 */
+.intro-phase-panel--flat {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.intro-panel--foundation .intro-sk-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.intro-panel--foundation .intro-panorama-scroll {
+  max-height: min(68vh, calc(100dvh - 220px));
+  min-height: min(320px, calc(100dvh - 260px));
+  border-color: var(--intro-ci-border, #d1c4e9);
+  -webkit-overflow-scrolling: touch;
+}
+
+.intro-panel--foundation .intro-panorama-legend {
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.intro-panel--foundation .intro-check-line--panorama {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(237, 231, 246, 0.55);
+  border: 1px dashed var(--intro-ci-border, #d1c4e9);
 }
 
 .intro-panorama-table {
@@ -9289,17 +9355,35 @@ body.intro-body .intro-flow-dot.active {
 
 .intro-script-mini {
   flex: 1;
-  min-width: 80px;
+  min-width: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  padding: 8px 4px;
+  padding: 8px 6px 10px;
   background: var(--c-bg);
   border-radius: 8px;
-  font-size: 12px;
+  gap: 2px;
 }
 
 .intro-script-mini .intro-script-icon {
   display: block;
   font-size: 20px;
+  line-height: 1.1;
+}
+
+.intro-script-jp {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.intro-script-zh {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--c-text2);
 }
 
 .intro-script-zh {
@@ -11204,16 +11288,88 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 /* ── 笔记板块（规范 19）── */
-#view-me {
-  padding-bottom: 8px;
+#view-me.view.active {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.notes-me-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.notes-panel-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 144, 156, 0.55) rgba(0, 0, 0, 0.04);
+}
+
+.notes-panel-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notes-panel-scroll::-webkit-scrollbar-thumb {
+  background: rgba(120, 144, 156, 0.45);
+  border-radius: 6px;
+}
+
+.notes-panel-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.notes-me-dock {
+  flex-shrink: 0;
+  border-top: 1px solid var(--hy-border-soft, #e0e0e0);
+  background: var(--hy-surface-white, #fff);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.notes-settings-fold {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.notes-settings-fold > .notes-settings-summary {
+  padding: 10px 14px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #616161;
+  list-style: none;
+  cursor: pointer;
+}
+
+.notes-settings-fold[open] > .notes-settings-summary {
+  border-bottom: 1px solid var(--hy-border-soft, #e0e0e0);
+}
+
+.notes-settings-body {
+  padding: 10px 14px 14px;
+  max-height: min(42vh, 280px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .notes-panel-root {
-  margin: 0 -4px;
+  margin: 0;
 }
 
 .notes-panel {
-  padding: 0 2px 8px;
+  padding: 4px 8px 12px;
 }
 
 .notes-timer-bar {
@@ -11384,22 +11540,22 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 .notes-lesson-accordion {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 8px 12px;
+  gap: 5px;
+  padding: 0 8px 8px;
 }
 
 /* 课次行 · 左边线色 = 课文目录六单元（--stage-accent） */
 .notes-unit-head {
   display: flex;
   align-items: stretch;
-  gap: 8px;
-  margin: 10px 0 4px;
-  padding: 4px 2px 4px 0;
+  gap: 6px;
+  margin: 6px 0 2px;
+  padding: 2px 2px 2px 0;
 }
 
 .notes-unit-head.hyouga-unit-head-symbol {
   align-items: center;
-  padding: 6px 8px 6px 0;
+  padding: 4px 6px 4px 0;
   border-radius: 10px;
   background: color-mix(in srgb, var(--notes-unit-bg, var(--hy-surface-cream)) 55%, transparent);
 }
@@ -11542,11 +11698,11 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 8px;
-  padding: 10px 10px 10px 6px;
+  gap: 4px 6px;
+  padding: 6px 8px 6px 4px;
   cursor: pointer;
   list-style: none;
-  min-height: 44px;
+  min-height: 0;
 }
 
 .notes-lesson-stars-wrap {
@@ -11556,8 +11712,8 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 .notes-lesson-stars-wrap .lesson-sea-stars {
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
 }
 
 .notes-unit-tag {
@@ -11613,10 +11769,10 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 .notes-lesson-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--c-text);
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .notes-lesson-preview {
@@ -11677,6 +11833,17 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   background: transparent;
 }
 
+.notes-lesson-summary--symbol .lesson-row-badge {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}
+
+.notes-lesson-summary--symbol .lesson-row-zh {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
 .notes-lesson-weak-inline {
   grid-column: 2;
   font-size: 10px;
@@ -11696,40 +11863,42 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 .notes-lesson-body {
-  padding: 6px 10px 10px;
-  border-top: 1px solid rgba(211, 47, 47, 0.12);
+  padding: 4px 8px 6px;
+  border-top: 1px solid rgba(211, 47, 47, 0.1);
 }
 
 .notes-lesson-hint {
-  margin: 0 0 8px;
-  font-size: 10px;
+  margin: 0 0 4px;
+  font-size: 9px;
   color: #9e9e9e;
   text-align: center;
+  line-height: 1.3;
 }
 
 .notes-dim-stack {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 /* 三维色块 · 默认折叠 */
 .notes-dim {
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--mvp-border);
-  overflow: hidden;
+  overflow: visible;
   background: var(--mvp-card);
 }
 
 .notes-dim-summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
+  gap: 5px;
+  padding: 5px 8px;
   cursor: pointer;
   list-style: none;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .notes-dim-summary::-webkit-details-marker {
@@ -11752,12 +11921,13 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 .notes-dim[open] > .notes-dim-summary .notes-dim-chevron,
-.notes-sub[open] > .notes-sub-summary .notes-sub-chevron {
+.notes-sub[open] > .notes-sub-summary .notes-sub-chevron,
+.notes-sub.is-open > .notes-sub-summary .notes-sub-chevron {
   transform: rotate(90deg);
 }
 
 .notes-dim-icon {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
 }
 
@@ -11773,7 +11943,7 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 }
 
 .notes-dim-panel {
-  padding: 0 8px 8px;
+  padding: 0 6px 4px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -11964,9 +12134,12 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   display: none;
 }
 
-.notes-ref-longtable-body {
+.notes-ref-longtable-body,
+.notes-sub--ref-long.is-open .notes-sub-body:not([hidden]) {
   max-height: min(52vh, 320px);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 6px 10px 10px;
   font-size: 11px;
   line-height: 1.5;
@@ -12064,7 +12237,7 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 .notes-dim-subs {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .notes-sub {
@@ -12076,17 +12249,42 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 .notes-sub-summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
+  gap: 5px;
+  width: 100%;
+  padding: 4px 6px;
+  margin: 0;
+  border: none;
+  background: transparent;
   cursor: pointer;
   list-style: none;
   font-size: 12px;
   font-weight: 600;
   color: #424242;
+  text-align: left;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .notes-sub-summary::-webkit-details-marker {
   display: none;
+}
+
+.notes-sub--fold .notes-sub-body[hidden] {
+  display: none !important;
+}
+
+.notes-sub--fold.is-open .notes-sub-body {
+  display: block;
+}
+
+.notes-sub--fold.is-open .notes-sub-body:not([hidden]) {
+  display: block !important;
+}
+
+.notes-sub--scholar-fold.is-open .notes-sub-body:not([hidden]) {
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .notes-sub-title {
@@ -12551,9 +12749,11 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
 
 .notes-go-lesson {
   width: 100%;
-  margin-top: 8px;
-  font-size: 13px;
-  padding: 8px 12px;
+  margin-top: 4px;
+  font-size: 12px;
+  padding: 6px 10px;
+  min-height: 0;
+  line-height: 1.25;
 }
 
 .notes-empty {

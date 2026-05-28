@@ -13,6 +13,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8765
+PREVIEW_SERVER = ROOT / "scripts" / "local-preview-server.py"
+
+
+def reload_api_ok(port: int = PORT, timeout: float = 2.0) -> bool:
+    url = f"http://127.0.0.1:{port}/__preview_reload"
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as r:
+            return r.status == 200
+    except (urllib.error.URLError, OSError, TimeoutError):
+        return False
 
 
 def http_ok(port: int = PORT, timeout: float = 4.0) -> bool:
@@ -31,26 +41,20 @@ def port_listening(port: int = PORT) -> bool:
         return s.connect_ex(("127.0.0.1", port)) == 0
 
 
-def start_server(port: int = PORT) -> None:
+def start_server(port: int = PORT, watch: bool = True) -> None:
+    cmd = [sys.executable, str(PREVIEW_SERVER), "--port", str(port)]
+    if watch:
+        cmd.append("--watch")
     if sys.platform == "win32":
+        # 不用 cmd start（易静默失败）；新开控制台跑 watch 服务
         subprocess.Popen(
-            [
-                "cmd",
-                "/c",
-                "start",
-                "日语学习-本地服务",
-                "/min",
-                "python",
-                "-m",
-                "http.server",
-                str(port),
-            ],
+            cmd,
             cwd=str(ROOT),
             creationflags=subprocess.CREATE_NEW_CONSOLE,
         )
     else:
         subprocess.Popen(
-            [sys.executable, "-m", "http.server", str(port)],
+            cmd,
             cwd=str(ROOT),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -65,7 +69,15 @@ def main() -> int:
     args = ap.parse_args()
 
     if http_ok(args.port):
-        print(f"[OK] http://127.0.0.1:{args.port}/index.html")
+        if reload_api_ok(args.port):
+            print(
+                f"[OK] http://127.0.0.1:{args.port}/index.html · 改码即刷 /__preview_reload"
+            )
+        else:
+            print(f"[OK] http://127.0.0.1:{args.port}/index.html")
+            print(
+                "[WARN] 无改码即刷 API（请 重启本地服务.bat → local-preview-server --watch）"
+            )
         return 0
 
     if args.probe:

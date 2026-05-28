@@ -76,13 +76,25 @@ echo.
 
 echo [3/4] 尝试使用本机代理（若你已开 Clash/V2Ray）...
 
-for %%P in 7890 7897 10808 10809 1080 do (
+rem 优先：系统代理端口（当前 clash-win64 常为 61905，7890 可能只监听不可用）
+for /f "usebackq delims=" %%G in (`powershell -NoProfile -Command "$i=Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'; if($i.ProxyEnable -and $i.ProxyServer -match ':(\d+)'){ $matches[1] }"`) do set "SYSPROXY=%%G"
 
-  powershell -NoProfile -Command "try{$c=New-Object Net.Sockets.TcpClient;$c.Connect('127.0.0.1',%%P);if($c.Connected){$c.Close();exit 0}}catch{};exit 1" >nul 2>&1
+if defined SYSPROXY (
+  powershell -NoProfile -Command "try{$z=(curl.exe -sS -m 8 -x 'http://127.0.0.1:%SYSPROXY%' https://api.github.com/zen 2>&1); if($LASTEXITCODE -eq 0){exit 0}else{exit 1}}catch{exit 1}" >nul 2>&1
+  if not errorlevel 1 (
+    echo   系统代理端口 %SYSPROXY% 可访问 GitHub，已为 git 设置
+    git config --global http.https://github.com.proxy http://127.0.0.1:%SYSPROXY%
+    goto :push
+  )
+)
+
+for %%P in 61905 61903 7890 7897 10808 10809 1080 do (
+
+  powershell -NoProfile -Command "try{$z=(curl.exe -sS -m 8 -x 'http://127.0.0.1:%%P' https://api.github.com/zen 2>&1); if($LASTEXITCODE -eq 0){exit 0}else{exit 1}}catch{exit 1}" >nul 2>&1
 
   if not errorlevel 1 (
 
-    echo   检测到本地代理端口 %%P，已为 git 设置 http://127.0.0.1:%%P
+    echo   检测到可用代理端口 %%P，已为 git 设置 http://127.0.0.1:%%P
 
     git config --global http.https://github.com.proxy http://127.0.0.1:%%P
 

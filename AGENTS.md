@@ -82,7 +82,11 @@
 | 本机 | `http://localhost:8765/index.html?v=` + `CACHE_VER`（`js/share-wechat.js`） |
 | 微信 | `https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=` + `CACHE_VER` |
 
-`打开本地预览.bat` · 失败则 `重启本地服务.bat`
+**铁律 · 真机预览（每一次改 UI / 刷星）**：`http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1` · `Cursor真机持续预览.bat` · Cursor **Simple Browser** 侧边固定 → [docs/双通道验收-浏览器与手机真机框.md](docs/双通道验收-浏览器与手机真机框.md) · 规则 `miniapp-real-device-preview-iron-law.mdc`
+
+**双通道**：`打开双通道预览.bat` = 浏览器全宽 + 真机框 live
+
+`打开本地预览.bat` · 仅通道 A · 失败则 `重启本地服务.bat`
 
 ---
 

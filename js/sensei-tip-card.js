@@ -24,12 +24,21 @@ const SenseiTipCard = (() => {
     return document.documentElement.dataset.showZh !== "0";
   }
 
-  function flattenTipLines(items) {
+  function flattenTipLines(items, opts = {}) {
+    const zhFirst = !!opts.zhFirst;
     const rows = [];
     (items || []).forEach((l) => {
       if (!l) return;
-      if (l.ja) rows.push({ kind: "ja", text: String(l.ja).trim() });
-      if (l.zh && showZh()) rows.push({ kind: "zh", text: String(l.zh).trim() });
+      const ja = l.ja ? String(l.ja).trim() : "";
+      const zh =
+        l.zh && (showZh() || opts.forceZh) ? String(l.zh).trim() : "";
+      if (zhFirst) {
+        if (zh) rows.push({ kind: "zh", text: zh });
+        if (ja) rows.push({ kind: "ja", text: ja });
+      } else {
+        if (ja) rows.push({ kind: "ja", text: ja });
+        if (zh) rows.push({ kind: "zh", text: zh });
+      }
     });
     return rows.filter((r) => r.text);
   }
@@ -44,8 +53,8 @@ const SenseiTipCard = (() => {
     return out;
   }
 
-  function isSingleLineTip(items) {
-    const rows = flattenTipLines(items);
+  function isSingleLineTip(items, opts = {}) {
+    const rows = flattenTipLines(items, opts);
     if (rows.length !== 1) return false;
     const text = rows[0].text;
     if (/[\n\r]/.test(text)) return false;
@@ -134,10 +143,10 @@ const SenseiTipCard = (() => {
     if (!tip) return "";
     const items = (tip.lines || []).filter((l) => l && (l.zh || l.ja));
     if (!items.length) return "";
-    const rows = flattenTipLines(items);
+    const rows = flattenTipLines(items, opts);
     const linksHtml = linksBlock(tip.links, tip.related);
     if (opts.flat) return renderFlat(rows, linksHtml);
-    if (!l1UnifiedFold(opts) && isSingleLineTip(items)) return renderStatic(rows, linksHtml);
+    if (!l1UnifiedFold(opts) && isSingleLineTip(items, opts)) return renderStatic(rows, linksHtml);
     return renderFold(rows, linksHtml, !!opts.expanded);
   }
 

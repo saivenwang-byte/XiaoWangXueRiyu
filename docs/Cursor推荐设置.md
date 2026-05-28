@@ -76,6 +76,7 @@
 
 流程：PM 拆任务 → Dev → Review → QA →（FAIL→Fix→Review）→ Release → 我验收。
 禁止跳过 python scripts/pre-ship-check.py。
+铁律（每一次改 UI/刷星）：Cursor Simple Browser 固定打开 http://127.0.0.1:8765/cursor-miniapp-phone.html?live=1（保存后自动刷新）；或 Cursor真机持续预览.bat。交付前须在真机框内目视最新态。见 miniapp-real-device-preview-iron-law.mdc · docs/双通道验收-浏览器与手机真机框.md。
 
 现在请 PM Agent 处理我的需求：[在这里写需求]
 ```

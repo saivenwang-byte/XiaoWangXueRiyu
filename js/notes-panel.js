@@ -151,7 +151,7 @@ const NotesPanel = (() => {
   ];
 
   const LONG_REF_TABLE_MIN = 18;
-  const LONG_REF_LESSON_IDS = new Set([5, 13]);
+  const LONG_REF_LESSON_IDS = new Set([5, 13, 14]);
 
   function stripReviewMarkers(s) {
     return String(s || "")
@@ -231,14 +231,15 @@ const NotesPanel = (() => {
   function subFoldHtml(lessonId, dim, subKey, title, count, innerHtml, extraCls) {
     if (!count) return "";
     const uid = `n${lessonId}-${dim}-${subKey}`;
-    return `<details class="notes-sub ${extraCls || ""}" data-notes-sub="${uid}">
-      <summary class="notes-sub-summary">
+    const bodyId = `${uid}-body`;
+    return `<div class="notes-sub notes-sub--fold ${extraCls || ""}" data-notes-sub="${uid}">
+      <button type="button" class="notes-sub-summary" aria-expanded="false" aria-controls="${bodyId}">
         <span class="notes-sub-chevron" aria-hidden="true"></span>
         <span class="notes-sub-title">${escapeHtml(title)}</span>
         <span class="notes-sub-count">${count}条</span>
-      </summary>
-      <div class="notes-sub-body">${innerHtml}</div>
-    </details>`;
+      </button>
+      <div class="notes-sub-body" id="${bodyId}" hidden>${innerHtml}</div>
+    </div>`;
   }
 
   function dimFoldHtml(lessonId, dim, icon, label, count, innerHtml, openMine, countLabelText) {
@@ -278,11 +279,23 @@ const NotesPanel = (() => {
     const subs = nodes
       .map((n, i) => {
         const label = n.titleZh || n.title || "语法点";
-        const body = (n.explanationZh || n.explanation || "").trim();
+        const bodyZh = (n.explanationZh || "").trim();
+        const bodyJp = (n.explanation || "").trim();
         const links = grammarLinksHtml(n);
         const linkCount = (n.links || []).filter((l) => l && (l.label || l.href)).length;
-        const inner = `${body ? `<div class="notes-tb-bubble zh-annotation">${highlightKnowledgeText(body)}</div>` : `<p class="notes-empty zh-annotation">（无中文说明）</p>`}${links}`;
-        const itemCount = (body ? 1 : 0) + linkCount;
+        let bodyHtml = "";
+        if (bodyZh) {
+          bodyHtml += `<div class="notes-tb-bubble notes-tb-bubble--zh zh-annotation">${highlightKnowledgeText(bodyZh)}</div>`;
+          if (bodyJp && bodyJp !== bodyZh) {
+            bodyHtml += `<p class="notes-tb-ja jp">${escapeHtml(bodyJp)}</p>`;
+          }
+        } else if (bodyJp) {
+          bodyHtml += `<div class="notes-tb-bubble zh-annotation">${highlightKnowledgeText(bodyJp)}</div>`;
+        } else {
+          bodyHtml = `<p class="notes-empty zh-annotation">（无中文说明）</p>`;
+        }
+        const inner = `${bodyHtml}${links}`;
+        const itemCount = (bodyZh || bodyJp ? 1 : 0) + linkCount;
         return subFoldHtml(
           lessonId,
           "tb",
@@ -348,17 +361,17 @@ const NotesPanel = (() => {
 
   function refTableFoldHtml(lessonId, refLines) {
     const body = refLines
-      .map((t) => `<div class="notes-ref-table-line">${escapeHtml(t)}</div>`)
+      .map((t) => `<div class="notes-ref-table-line zh-annotation">${escapeHtml(t)}</div>`)
       .join("");
-    const uid = `n${lessonId}-sc-ref-long`;
-    return `<details class="notes-ref-longtable" data-notes-sub="${uid}">
-      <summary class="notes-ref-longtable-summary">
-        <span class="notes-sub-chevron" aria-hidden="true"></span>
-        <span>参考长表</span>
-        <span class="notes-sub-count">${refLines.length}条</span>
-      </summary>
-      <div class="notes-ref-longtable-body zh-annotation">${body}</div>
-    </details>`;
+    return subFoldHtml(
+      lessonId,
+      "sc",
+      "ref-long",
+      "参考长表",
+      refLines.length,
+      body,
+      "notes-sub--scholar-fold notes-sub--ref-long"
+    );
   }
 
   function scholarDimHtml(L, lessonId) {
@@ -369,12 +382,24 @@ const NotesPanel = (() => {
     if (nodes.length) {
       const first = nodes[0];
       const last = nodes[nodes.length - 1];
-      coreLines.push({
-        kind: "core",
-        text: `${first.title || ""} — ${(first.explanation || "").replace(/\s+/g, " ").trim()}`,
-      });
-      const oneLine = (last.explanationZh || last.explanation || "").split(/\n/)[0].trim();
-      if (oneLine) coreLines.push({ kind: "one", text: oneLine });
+      const firstZh = (first.explanationZh || first.titleZh || "").replace(/\s+/g, " ").trim();
+      const firstJp = (first.explanation || first.title || "").replace(/\s+/g, " ").trim();
+      if (firstZh) {
+        coreLines.push({ kind: "core", text: `${first.titleZh || first.title || ""} — ${firstZh}` });
+        if (firstJp && firstJp !== firstZh) {
+          coreLines.push({ kind: "ref", text: `日语句型：${firstJp}` });
+        }
+      } else if (firstJp) {
+        coreLines.push({ kind: "core", text: `${first.title || ""} — ${firstJp}` });
+      }
+      const lastZh = (last.explanationZh || "").trim();
+      if (lastZh) {
+        const head = last.titleZh || last.title || "";
+        coreLines.push({
+          kind: "one",
+          text: head ? `${head} — ${lastZh.split("\n")[0]}` : lastZh.split("\n")[0],
+        });
+      }
     }
     (L?.reviewExtension || []).forEach((sec) => {
       if (!/参考表/.test(sec.title || "")) return;
@@ -386,7 +411,14 @@ const NotesPanel = (() => {
     const errSec = (L?.reviewExtension || []).find((s) => /よくある誤り|常见误/.test(s.title || ""));
     if (errSec) {
       normalizeMistakeLines(errSec.lines || []).forEach((t) => {
-        if (t.startsWith("×") || t.startsWith("○") || /^易错|注意/.test(t)) errLines.push(t);
+        if (
+          t.startsWith("×") ||
+          t.startsWith("○") ||
+          /^易错|注意|【/.test(t) ||
+          /×.+○/.test(t)
+        ) {
+          errLines.push(t);
+        }
       });
     }
 
@@ -876,6 +908,8 @@ const NotesPanel = (() => {
 
   function bindSingleOpen(container, selector) {
     container.querySelectorAll(selector).forEach((det) => {
+      if (det.dataset.notesAccordionBound === "1") return;
+      det.dataset.notesAccordionBound = "1";
       det.addEventListener("toggle", () => {
         if (!det.open) return;
         container.querySelectorAll(selector).forEach((other) => {
@@ -885,12 +919,58 @@ const NotesPanel = (() => {
     });
   }
 
+  function setSubFoldOpen(wrap, open) {
+    const btn = wrap.querySelector(".notes-sub-summary");
+    const body = wrap.querySelector(".notes-sub-body");
+    if (!btn || !body) return;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      body.removeAttribute("hidden");
+      wrap.classList.add("is-open");
+    } else {
+      body.setAttribute("hidden", "");
+      wrap.classList.remove("is-open");
+    }
+  }
+
+  /** 课本/老师/学霸子项：不用嵌套 details（微信 WebView 易「无法打开」） */
+  function bindSubFolds(scope) {
+    scope.querySelectorAll(".notes-sub--fold").forEach((wrap) => {
+      if (wrap.dataset.notesSubBound === "1") return;
+      wrap.dataset.notesSubBound = "1";
+      const btn = wrap.querySelector(".notes-sub-summary");
+      if (!btn) return;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = btn.getAttribute("aria-expanded") !== "true";
+        const panel = wrap.closest(".notes-dim-panel");
+        if (willOpen && panel) {
+          panel.querySelectorAll(".notes-sub--fold.is-open").forEach((other) => {
+            if (other !== wrap) setSubFoldOpen(other, false);
+          });
+        }
+        setSubFoldOpen(wrap, willOpen);
+      });
+    });
+  }
+
+  function bindDimPanel(panel) {
+    if (!panel) return;
+    bindSubFolds(panel);
+  }
+
   function bindAccordions(root) {
     bindSingleOpen(root, ".notes-lesson-card");
     root.querySelectorAll(".notes-lesson-body").forEach((body) => {
       bindSingleOpen(body, ".notes-dim");
-      body.querySelectorAll(".notes-dim-panel").forEach((panel) => {
-        bindSingleOpen(panel, ".notes-sub");
+      body.querySelectorAll(".notes-dim-panel").forEach((panel) => bindDimPanel(panel));
+      body.querySelectorAll(".notes-dim").forEach((det) => {
+        if (det.dataset.notesDimToggleBound === "1") return;
+        det.dataset.notesDimToggleBound = "1";
+        det.addEventListener("toggle", () => {
+          if (det.open) bindDimPanel(det.querySelector(".notes-dim-panel"));
+        });
       });
     });
   }

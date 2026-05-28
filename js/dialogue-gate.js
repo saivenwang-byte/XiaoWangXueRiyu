@@ -55,7 +55,13 @@ const DialogueGate = (() => {
   }
 
   function isMvpFiveGatePanel() {
-    return isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel();
+    if (isUnit1MvpPanel() || isUnit2MvpPanel() || isUnits3MvpPanel()) return true;
+    const id = Number(lesson?.lessonId);
+    return id >= 1 && id <= 24;
+  }
+
+  function showPedagogyZh() {
+    return isMvpFiveGatePanel() || showZh();
   }
 
   function isSequentialMode() {
@@ -113,12 +119,13 @@ const DialogueGate = (() => {
   }
 
   function showZh() {
+    if (document.documentElement.dataset.showZh === "0") return false;
     return state?.showChineseZh !== false;
   }
 
   function zhLine(text) {
-    if (!text || !showZh()) return "";
-    return `<p class="zh-annotation">${escapeHtml(text)}</p>`;
+    if (!text || !showPedagogyZh()) return "";
+    return `<p class="zh-annotation dg-zh-below-jp">${escapeHtml(text)}</p>`;
   }
 
   function wrapL1TipSlot(html) {
@@ -140,7 +147,7 @@ const DialogueGate = (() => {
     }
     let h = "";
     if (line.noteJa) h += `<p class="note-ja">${escapeHtml(line.noteJa)}</p>`;
-    if (line.noteZh && showZh()) h += `<p class="zh-annotation">${escapeHtml(line.noteZh)}</p>`;
+    if (line.noteZh && showPedagogyZh()) h += `<p class="zh-annotation dg-zh-below-jp">${escapeHtml(line.noteZh)}</p>`;
     return h;
   }
 
@@ -385,7 +392,7 @@ const DialogueGate = (() => {
           listenOnly: true,
           extraClass: "dg-line-row--npc dg-line-row--l1-opener",
         })}
-        ${zh && showZh() ? `<p class="dg-l1-opener-zh zh-annotation">${escapeHtml(zh)}</p>` : ""}
+        ${zh && showPedagogyZh() ? `<p class="dg-l1-opener-zh zh-annotation dg-zh-below-jp">${escapeHtml(zh)}</p>` : ""}
       </div>`;
   }
 
@@ -413,7 +420,7 @@ const DialogueGate = (() => {
               </div>
             </div>
             <div class="dg-reply-extra--abc">
-              ${zhText && showZh() ? `<p class="zh-annotation dg-reply-zh" title="${escapeHtml(zhText)}">${escapeHtml(zhText)}</p>` : ""}
+              ${zhText && showPedagogyZh() ? `<p class="zh-annotation dg-reply-zh dg-zh-below-jp">${escapeHtml(zhText)}</p>` : ""}
               ${renderL1AbcTip(reply)}
               <div class="dg-score-slot dg-score-slot--inline" data-dg-score-for="dg-r-${sceneIdx}-${i}" aria-live="polite" hidden></div>
             </div>
@@ -554,25 +561,30 @@ const DialogueGate = (() => {
   }
 
   function sceneFoldSummary(d, i) {
-    const preview = (d.opener?.japanese || d.title || "").trim().slice(0, 36);
     const tag = d.isBranch ? "分岐" : d.scenePlace ? `第${d.scenePlace}句` : `第${i + 1}句`;
     const done = dialoguePassed[i];
     if (isMvpFiveGatePanel()) {
-      const zhHint = sceneTitleZh(d);
-      const zhCol =
-        zhHint && showZh()
-          ? `<span class="dg-scene-zh-hint zh-annotation">${escapeHtml(zhHint)}</span>`
+      const ov =
+        typeof HyougaFoldOverview !== "undefined"
+          ? HyougaFoldOverview.dialogueSceneOverview(d, sceneTitleZh)
+          : { jp: (d.opener?.japanese || d.title || "").trim(), zh: sceneTitleZh(d) };
+      const overview =
+        typeof HyougaFoldOverview !== "undefined"
+          ? HyougaFoldOverview.summaryBlock(ov.jp, ov.zh, { showZh: showPedagogyZh() })
           : "";
+      const badge = sceneBadge(d, { inSummary: true });
+      const foldHint = `<span class="hyo-fold-hint">展开</span>`;
       return `
       <span class="l1-seq-num">${i + 1}</span>
-      <span class="dg-scene-fold-meta">
-        <span class="dg-scene-fold-preview jp">${escapeHtml(preview)}${preview.length >= 36 ? "…" : ""}</span>
-        ${zhCol}
+      <span class="dg-scene-fold-meta dg-scene-fold-meta--stack">
+        ${badge ? `<span class="dg-scene-fold-badge-row">${badge}</span>` : ""}
+        ${overview}
       </span>
       <span class="dg-scene-fold-chevron hyo-fold-slot" aria-hidden="true">${
-        typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(2) : ""
-      }</span>`;
+        typeof HyougaGlyphs !== "undefined" ? HyougaGlyphs.foldDownInner(2) : "▼"
+      }</span>${foldHint}`;
     }
+    const preview = (d.opener?.japanese || d.title || "").trim().slice(0, 36);
     if (l1Flow) {
       const mark = done ? " ✓" : "";
       return `${escapeHtml(tag)}${mark} · <span class="jp">${escapeHtml(preview)}${preview.length >= 28 ? "…" : ""}</span>`;
@@ -670,16 +682,33 @@ const DialogueGate = (() => {
     }
   }
 
+  function openFirstSceneFold() {
+    const first = container?.querySelector(`${sceneFoldSelector()}[data-didx="0"]`);
+    if (!first || first.open) return;
+    first.open = true;
+    fillSceneFoldBody(first);
+    const slot = first.querySelector(".hyo-fold-slot");
+    if (slot && typeof HyougaGlyphs !== "undefined") {
+      slot.innerHTML = HyougaGlyphs.foldUpInner(2);
+    }
+    const hint = first.querySelector(".hyo-fold-hint");
+    if (hint) hint.textContent = "收起";
+  }
+
   function bindSceneAccordion() {
     if (typeof Lesson1Flow !== "undefined" && Lesson1Flow.bindSingleOpenAccordion) {
       Lesson1Flow.bindSingleOpenAccordion(container, fillSceneFoldBody);
+      openFirstSceneFold();
       return;
     }
     const folds = container.querySelectorAll(sceneFoldSelector());
     const syncFoldChevron = (det) => {
       const slot = det.querySelector(".hyo-fold-slot");
-      if (!slot || typeof HyougaGlyphs === "undefined") return;
-      slot.innerHTML = det.open ? HyougaGlyphs.foldUpInner(2) : HyougaGlyphs.foldDownInner(2);
+      if (slot && typeof HyougaGlyphs !== "undefined") {
+        slot.innerHTML = det.open ? HyougaGlyphs.foldUpInner(2) : HyougaGlyphs.foldDownInner(2);
+      }
+      const hint = det.querySelector(".hyo-fold-hint");
+      if (hint) hint.textContent = det.open ? "收起" : "展开";
     };
     folds.forEach((det) => {
       det.addEventListener("toggle", () => {
@@ -696,6 +725,7 @@ const DialogueGate = (() => {
       });
       syncFoldChevron(det);
     });
+    openFirstSceneFold();
   }
 
   function renderFooter(scopeEl, idx) {
@@ -819,6 +849,7 @@ const DialogueGate = (() => {
         lessonId: lesson.lessonId,
       });
       bindSceneAccordion();
+      openFirstSceneFold();
       bindSpeak();
       const panel = container.querySelector(".l1-gate-panel") || container;
       Lesson1Flow.bindChainFooter(panel, 2, { switchGate, lessonId: lesson.lessonId });

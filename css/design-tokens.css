@@ -123,4 +123,23 @@
   --space-md: 12px;
   --space-lg: 16px;
   --space-xl: 20px;
+
+  /* 笔记 · 三维+薄弱（对齐五关色 · 规范19） */
+  --notes-dim-tb-bg: var(--gate-0-bg);
+  --notes-dim-tb-border: var(--gate-0-border);
+  --notes-dim-tb-accent: var(--gate-0-accent);
+  --notes-dim-tb-fg: var(--gate-0-active-fg);
+  --notes-dim-tc-bg: var(--gate-2-bg);
+  --notes-dim-tc-border: var(--gate-2-border);
+  --notes-dim-tc-accent: var(--gate-2-accent);
+  --notes-dim-tc-fg: var(--gate-2-active-fg);
+  --notes-dim-sc-bg: var(--gate-3-bg);
+  --notes-dim-sc-border: var(--gate-3-border);
+  --notes-dim-sc-accent: var(--gate-3-accent);
+  --notes-dim-sc-fg: var(--gate-3-active-fg);
+  --notes-dim-wk-bg: var(--gate-1-bg);
+  --notes-dim-wk-border: var(--gate-1-border);
+  --notes-dim-wk-accent: var(--gate-1-accent);
+  --notes-dim-wk-fg: var(--gate-1-active-fg);
+  --notes-dot: var(--hy-star-tried);
 }
