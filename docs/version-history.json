@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "332",
-    "date": "2026-05-28",
-    "note": "index.html UTF-8 恢复；单元展开第4课不被下一单元压住；cache v332",
+    "cache": "338",
+    "date": "2026-05-29",
+    "note": "书写 P0.5：默认一览分色；起点仅数字+短箭头",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
@@ -28,6 +28,14 @@
     "local": "http://localhost:8765/index.html?v=46"
   },
   "releases": [
+    {
+      "product": "1.0.2",
+      "cache": "333",
+      "date": "2026-05-29",
+      "note": "底栏四格；L0 五十音书写（米字格 Canvas）；独立进度不计海星",
+      "local": "http://localhost:8765/index.html?v=333",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=333"
+    },
     {
       "product": "1.0.0",
       "cache": "11",

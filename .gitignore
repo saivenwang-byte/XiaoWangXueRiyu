@@ -16,6 +16,7 @@ _func_balance.txt
 .agent-transcripts/
 terminals/
 *.pyc
+_tmp_animCJK/
 _fix_*.py
 _*.py
 _*.js

@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "index.html"
-CACHE_VER = "332"  # bump when re-running restore
+CACHE_VER = "335"  # bump when re-running restore
 
 
 def main() -> None:

@@ -73,6 +73,7 @@ function mvpDefaultState() {
     showChineseZh: true,
     story: { units: {}, pendingAuto: null },
     notes: { lesson: {}, unit: {}, bookExtra: "" },
+    write: { kanaDone: {}, script: "hiragana" },
     ui: { returnAfterLesson: null, meNotebookOpen: false, meNotebookScope: null },
   };
   return applyMvpInternalSeed(base);
@@ -119,6 +120,16 @@ function loadMvpState() {
               meNotebookScope: parsed.ui.meNotebookScope || null,
             }
           : { returnAfterLesson: null, meNotebookOpen: false, meNotebookScope: null },
+      write:
+        parsed.write && typeof parsed.write === "object"
+          ? {
+              kanaDone:
+                parsed.write.kanaDone && typeof parsed.write.kanaDone === "object"
+                  ? { ...parsed.write.kanaDone }
+                  : {},
+              script: parsed.write.script === "katakana" ? "katakana" : "hiragana",
+            }
+          : { kanaDone: {}, script: "hiragana" },
     };
     Object.keys(merged.lessons || {}).forEach((lid) => {
       const g = merged.lessons[lid];

@@ -10,6 +10,7 @@
     home: "標日 あと学習",
     lesson: "学習中",
     review: "復習",
+    write: "书写",
     me: "笔记",
   };
 
@@ -351,9 +352,19 @@
     else if (name === "flash") {
       if (activeLessonId) enterLesson(activeLessonId, 0);
       else showView("home");
-    } else if (name === "review") renderReview();
+    }     else if (name === "review") renderReview();
+    else if (name === "write") renderWrite();
     else if (name === "me") renderMe();
     updateReviewBadge();
+  }
+
+  function renderWrite() {
+    const root = document.getElementById("write-l0-root");
+    if (!root || typeof WriteKanaL0 === "undefined") return;
+    WriteKanaL0.render(root, state, (next) => {
+      state = next;
+      saveMvpState(state);
+    });
   }
 
   function updateReviewBadge() {

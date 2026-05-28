@@ -168,7 +168,7 @@
 
     "product": "1.0.2",
 
-    "cache": "332",
+    "cache": "338",
 
     "cache_files": [
 
@@ -186,9 +186,9 @@
 
     ],
 
-    "local": "http://localhost:8765/index.html?v=332",
+    "local": "http://localhost:8765/index.html?v=338",
 
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=332",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=338",
 
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
 
@@ -199,6 +199,42 @@
   },
 
   "confirmed": [
+
+    {
+
+      "id": "write-l0-four-tab-nav",
+
+      "since_cache": "333",
+
+      "title": "底栏四格：注音·课文·书写·笔记 + L0 五十音米字格书写",
+
+      "files": [
+
+        "index.html",
+
+        "js/nav-icons.js",
+
+        "js/write-kana-l0.js",
+
+        "js/app.js",
+
+        "js/mvp-storage.js",
+
+        "css/write-l0.css",
+
+        "js/write-kana-stroke-ui.js",
+
+        "js/data/kana-stroke-guide.js",
+
+        "书写板块/P0-L0-范围锁定.md",
+
+        "书写板块/五十音书写-完整学习方法-v1.md"
+
+      ],
+
+      "acceptance": "P0.5：默认一览分色；起点仅数字+短箭头（无空心圆）；专注可选；米字格摹写+完成勾选；不计海星"
+
+    },
 
     {
 
@@ -1158,7 +1194,7 @@
 
       ],
 
-      "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=225",
+      "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=338",
 
       "user_confirmed": "2026-05-25"
 
@@ -1202,7 +1238,7 @@
 
       ],
 
-      "acceptance": "底栏笔记；单开手风琴；关联弹窗不跳课；笔记失焦保存+橙点；?v=227",
+      "acceptance": "底栏笔记；单开手风琴；关联弹窗不跳课；笔记失焦保存+橙点；?v=338",
 
       "user_confirmed": "2026-05-25"
 
@@ -1238,7 +1274,7 @@
 
       ],
 
-      "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=242",
+      "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=338",
 
       "user_confirmed": "2026-05-25"
 
@@ -1278,7 +1314,7 @@
 
       ],
 
-      "acceptance": "课1–4 五关与课1 MVP 同壳；会話 A/B/C+提示；pre-ship OK；?v=246",
+      "acceptance": "课1–4 五关与课1 MVP 同壳；会話 A/B/C+提示；pre-ship OK；?v=338",
 
       "user_confirmed": "2026-05-25"
 
