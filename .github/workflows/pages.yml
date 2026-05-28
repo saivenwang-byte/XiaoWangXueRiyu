@@ -1,36 +1,28 @@
-# v2 新仓：用 gh-pages 分支发布（不依赖 configure-pages，避免新仓 17s 失败）
-# 仓库 Settings → Pages → Source: Deploy from branch → gh-pages → / (root)
+# v2 公网：不要用本工作流里的「GitHub Actions + configure-pages」（会 17 秒失败）。
+# 正确做法（一次即可）：
+#   仓库 Settings → Pages → Deploy from a branch → main → / (root) → Save
+# 学员链接：https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
+#
+# 下面仅保留「手动同步 gh-pages」；日常 push main 后只要 Pages 指向 main 即可，不必跑 Actions。
 
-name: Deploy GitHub Pages
+name: Sync gh-pages (manual only)
 
 on:
-  push:
-    branches: [main, master]
   workflow_dispatch:
 
 permissions:
   contents: write
 
-concurrency:
-  group: pages-gh-branch
-  cancel-in-progress: true
-
 jobs:
-  deploy:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Prepare static site
-        run: |
-          touch .nojekyll
-          echo "deploy-v2-$(date -u +%Y%m%d%H%M%S)" > build-id.txt
-
-      - name: Publish to gh-pages branch
-        uses: JamesIves/github-pages-deploy-action@v4
+      - run: touch .nojekyll
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: .
           clean: true
           single-commit: true
-          commit-message: "deploy: GitHub Pages from main"
+          commit-message: "deploy: manual gh-pages sync"

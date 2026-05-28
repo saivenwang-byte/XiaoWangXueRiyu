@@ -1,5 +1,27 @@
 # 标日课后巩固（小王日语学习）
 
+## v2 公网（XiaoWangXueRiyu-v2）· 本地能开、GitHub 邮件报错时
+
+| 现象 | 说明 |
+|------|------|
+| Actions **#1 红**、`configure-pages` | **旧记录，可忽略**（已停用该流程） |
+| Actions **#4/#5 绿** | 代码已在 GitHub，**不等于**公网已开通 |
+| 打开 v2 链接 **404** | 还差 **Settings → Pages → Save 一次** |
+
+**请你做（约 1 分钟）**：双击仓库内 **`打开v2-Pages设置.bat`**，或打开  
+https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages  
+
+- **Source**：`Deploy from a branch`（不要选 GitHub Actions）  
+- **Branch**：`main`  
+- **Folder**：`/ (root)`  
+- 点 **Save** → 等 1～3 分钟  
+
+**学员链接（v2）**：https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314  
+
+详细说明：`v2-Pages-开通说明.txt` · `docs/GitHub-v2仓库说明.md`
+
+---
+
 第 14 / 16 / 18 课 H5 巩固练习。**正式上线**：微信发 **公网 https 链接**（任何网络可用，不依赖同一 WiFi）。
 
 ## MVP 阶段成果（已冻结 · 2026-05-21）

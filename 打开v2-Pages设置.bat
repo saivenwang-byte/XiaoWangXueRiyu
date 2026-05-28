@@ -1,31 +1,33 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title v2 公网 Pages 一次开通
+title v2 公网开通（勿看 Actions #1）
 
 echo.
 echo  ==========================================
-echo    v2 公网开通（本地能开、微信 404 时）
+echo    重要：Gmail 里 #1 失败可以忽略
+echo    那是旧的 configure-pages，不是现在的问题
 echo  ==========================================
 echo.
-echo  Gmail 里 #1 失败 = 旧流程，可忽略。
-echo  请看 Actions 最新一条是否绿色。
+echo  公网 404 的原因：v2 仓库还没在 GitHub 点「开通 Pages」
+echo  代码已在 main 分支，只差下面这一步 Save。
 echo.
-echo  即将打开 GitHub Pages 设置页，请：
-echo    Source: Deploy from a branch
-echo    Branch: main  或  gh-pages
-echo    Folder: / (root)
-echo    点 Save
+echo  即将打开设置页，请严格按下面选：
 echo.
-echo  开通后学员链接：
+echo    Source:  Deploy from a branch
+echo            （不要选 GitHub Actions！）
+echo    Branch:  main
+echo    Folder:  / (root)
+echo    然后点 Save
+echo.
+echo  Save 后等 1～3 分钟，再开学员链接：
 echo  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314
 echo.
 
 start "" "https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/settings/pages"
-start "" "https://github.com/saivenwang-byte/XiaoWangXueRiyu-v2/actions/workflows/pages.yml"
-timeout /t 2 >nul
-start "" "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314"
 
-echo  详细说明见：v2-Pages-开通说明.txt
+echo  按任意键后再打开公网链接试一次...
+pause >nul
+start "" "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314"
 echo.
 pause
