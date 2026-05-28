@@ -18,7 +18,8 @@ alwaysApply: true
 
 - **学员侧**：微信里发 **https 学习链接**，人传人转发；不是 bat、不是 localhost、不是同 WiFi。
 
-- **正式链接**：`https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=29`（见 `js/public-url.config.js`）
+- **正式链接**：`https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=` + `CACHE_VER`（见 `js/public-url.config.js`）
+- **旧仓冻结**：`https://saivenwang-byte.github.io/XiaoWangXueRiyu/`（不再作为默认分享）
 
 - **作者发链接**：双击 `帮你发布好了.bat`，或首页 📤 / `share.html`
 

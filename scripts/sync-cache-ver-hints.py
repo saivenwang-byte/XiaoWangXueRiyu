@@ -7,7 +7,15 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu"
+LEGACY_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu"
+
+
+def get_public_origin() -> str:
+    text = (ROOT / "js" / "public-url.config.js").read_text(encoding="utf-8")
+    m = re.search(r'HYOUGA_PUBLIC_ORIGIN\s*=\s*"([^"]+)"', text)
+    if not m:
+        raise SystemExit("[FAIL] 无法读取 HYOUGA_PUBLIC_ORIGIN")
+    return m.group(1).rstrip("/")
 
 
 def get_cache_ver() -> str:
@@ -18,31 +26,56 @@ def get_cache_ver() -> str:
     return m.group(1)
 
 
-def replace_v_in_text(text: str, ver: str) -> tuple[str, int]:
-    new, n = re.subn(
-        rf"({re.escape(ORIGIN)}/(?:index\.html|share\.html)\?v=)\d+",
-        rf"\g<1>{ver}",
-        text,
-    )
-    new, n2 = re.subn(
-        rf"({re.escape(ORIGIN)}/index\.html\?v=)\d+",
-        rf"\g<1>{ver}",
-        new,
-    )
-    return new, n + n2
+def replace_v_in_text(text: str, origin: str, ver: str) -> tuple[str, int]:
+    total = 0
+    new = text
+    for base in (origin, LEGACY_ORIGIN):
+        new, n = re.subn(
+            rf"({re.escape(base)}/(?:index\.html|share\.html)\?v=)\d+",
+            rf"\g<1>{ver}",
+            new,
+        )
+        new, n2 = re.subn(
+            rf"({re.escape(base)}/index\.html\?v=)\d+",
+            rf"\g<1>{ver}",
+            new,
+        )
+        new, n3 = re.subn(
+            re.escape(LEGACY_ORIGIN) + r"(/share\.html)(?!\?v=)",
+            origin + r"\1",
+            new,
+        )
+        new, n4 = re.subn(
+            re.escape(LEGACY_ORIGIN) + r"(/index\.html)(?!\?v=)",
+            origin + r"\1",
+            new,
+        )
+        new, n5 = re.subn(
+            re.escape(LEGACY_ORIGIN) + r"/index\.html\?v=\d+",
+            f"{origin}/index.html?v={ver}",
+            new,
+        )
+        new, n6 = re.subn(
+            re.escape(LEGACY_ORIGIN) + r"/share\.html\?v=\d+",
+            f"{origin}/share.html?v={ver}",
+            new,
+        )
+        total += n + n2 + n3 + n4 + n5 + n6
+    return new, total
 
 
-def sync_file(path: Path, ver: str) -> int:
+def sync_file(path: Path, origin: str, ver: str) -> int:
     if not path.is_file():
         return 0
     raw = path.read_text(encoding="utf-8")
-    new, n = replace_v_in_text(raw, ver)
+    new, n = replace_v_in_text(raw, origin, ver)
     if n and new != raw:
         path.write_text(new, encoding="utf-8", newline="\n")
     return n
 
 
 def main() -> int:
+    origin = get_public_origin()
     ver = get_cache_ver()
     targets = [
         ROOT / "怎么用.txt",
@@ -54,7 +87,7 @@ def main() -> int:
     ]
     total = 0
     for p in targets:
-        c = sync_file(p, ver)
+        c = sync_file(p, origin, ver)
         if c:
             print(f"[OK] 已同步 {p.relative_to(ROOT)} ({c} 处 → v={ver})")
             total += c

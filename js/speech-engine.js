@@ -34,7 +34,7 @@ const SpeechEngine = (() => {
       .trim()
       .replace(/\/$/, "");
     if (o && /^https:\/\//i.test(o)) return o;
-    return "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
+    return "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
   }
 
   /** jsDelivr → 页面同源 → GitHub Pages（首点失败 / 打不开时依次试） */

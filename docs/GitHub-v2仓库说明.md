@@ -47,9 +47,9 @@ git push -u v2 main
 1. 仓库 **Settings → Pages → Source**：`Deploy from a branch` → `main` → `/ (root)`
 2. 约 1～3 分钟后：
 
-   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=313`
+   `https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=314`
 
-（`v=` 与 `js/share-wechat.js` 的 `CACHE_VER` 一致。）
+（`v=` 与 `js/share-wechat.js` 的 `CACHE_VER` 一致；**微信默认分享已切 v2**。）
 
 旧链接仍可用（内容停在最后一次 `origin` 推送）：
 

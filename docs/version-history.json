@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "313",
-    "date": "2026-05-26",
-    "note": "会話 ABC：A/B/C 日文中分行；B/C noteZh 常显；index UTF-8 修复；cache v313",
+    "cache": "314",
+    "date": "2026-05-28",
+    "note": "微信默认分享切至 XiaoWangXueRiyu-v2；公网/TTS CDN 同源 v2；cache v314",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

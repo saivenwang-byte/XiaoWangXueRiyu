@@ -1,7 +1,7 @@
 /** 小程序内加载的正式学习页（须与微信公众平台「业务域名」一致） */
 /** CACHE_VER 与仓库根目录 js/share-wechat.js 保持同步 */
 const CACHE_VER = "306";
-const ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
+const ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
 module.exports = {
   H5_URL: `${ORIGIN}/index.html?v=${CACHE_VER}`,

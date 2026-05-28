@@ -6,11 +6,11 @@
  * 日后自有备案域名 / 腾讯云 COS：只改 HYOUGA_TTS_ORIGIN，并运行
  *   python scripts/sync-tts-sw-manifest.py
  */
-window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu";
+window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
 /** 语音包静态根（不含 /tts-cache/）；留空 = 与当前页面同源 */
 window.HYOUGA_TTS_ORIGIN =
-  "https://cdn.jsdelivr.net/gh/saivenwang-byte/XiaoWangXueRiyu@main";
+  "https://cdn.jsdelivr.net/gh/saivenwang-byte/XiaoWangXueRiyu-v2@main";
 
 /** 与 share-wechat.js CACHE_VER、tts-cache/sw-manifest.json 同步 */
 window.HYOUGA_TTS_CACHE_VER = "306";
