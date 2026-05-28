@@ -68,6 +68,7 @@ MVP 桥接   mvp-*          按钮、底栏、正文棕字
 | **Phase 2B** | **v288** | 课内壳层、笔记课行同构、chip→gate |
 | **Phase 2C** | **v288** | 地图站点、条带缩略、[`design-system-v1-board.html`](../mock/design-system-v1-board.html) |
 | **Phase 2D** | **v289** | 硬编码色扫尾 · [`vi-token-sweep.css`](../css/vi-token-sweep.css) |
+| **Phase 2E** | **v328** | 字号/图标/配色美化（仅 CSS）· [`vi-typography-sweep.css`](../css/vi-typography-sweep.css) |
 
 ---
 

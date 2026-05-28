@@ -666,6 +666,10 @@ const GrammarNetwork = (() => {
         ready: ok,
         lessonId: lesson?.lessonId,
       });
+      if (Lesson1Flow.MVP_HIDE_CHAIN_FOOTER && ok) {
+        setGateDone(state, lesson.lessonId, 1);
+        saveMvpState(state);
+      }
       return;
     }
     btn.disabled = !ok;
@@ -732,7 +736,7 @@ const GrammarNetwork = (() => {
       bindNodeAccordion();
       updateGateDoneButton();
       const panel = container.querySelector(".l1-gate-panel") || container;
-      Lesson1Flow.bindChainFooter(panel, 1, { switchGate, lessonId: lesson.lessonId });
+      Lesson1Flow.finishGatePanelMount(panel, { switchGate, lessonId: lesson.lessonId });
     } else {
       container.innerHTML = `
       <div class="gn-wrap gn-compact gn-accordion">

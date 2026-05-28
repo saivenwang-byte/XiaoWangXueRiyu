@@ -89,6 +89,11 @@ body.mvp-app .btn.secondary {
 }
 
 body.mvp-app .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
   background: var(--mvp-card);
   border-top: 1px solid var(--mvp-border);
 }
@@ -3042,11 +3047,13 @@ body.mvp-app .gate-tab.active:active {
 }
 
 .lesson-cockpit-view .l1-gate-panel {
-  margin: 0 8px 6px;
-  border-radius: 0 8px 8px 0;
+  margin: 0;
+  border-radius: 0;
   box-sizing: border-box;
   border: none;
   background: var(--c-surface);
+  width: 100%;
+  max-width: 100%;
 }
 
 .lesson-cockpit-view .l1-gate-panel[data-l1-active-gate] {
@@ -4250,7 +4257,63 @@ button.l1-chain-node:not(.is-current):hover {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: #b0aea8 #eceae6;
-  padding-right: 4px;
+  padding: 0 var(--space-sm, 8px) var(--space-md, 12px);
+}
+
+.l1-gate-panel--no-chain-footer > .gate-scroll-region.l1-gate-scroll {
+  padding-bottom: calc(var(--space-md, 12px) + env(safe-area-inset-bottom, 0px));
+}
+
+.l1-gate-scroll-dock {
+  margin: 16px 0 4px;
+  padding: 12px var(--space-sm, 8px);
+  border-top: 1px solid var(--hy-border-soft, var(--mvp-border, #e0e0e0));
+  background: var(--hy-surface-white, var(--c-surface, #fff));
+}
+
+.l1-gate-scroll-dock-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--hy-brand-navy-muted, #607d8b);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.l1-gate-scroll-dock-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.l1-gate-scroll-dock-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 1px solid var(--hy-border-soft, #e0e0e0);
+  border-radius: 10px;
+  background: var(--hy-surface-white, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hy-brand-navy, var(--mvp-text, #263238));
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.l1-gate-scroll-dock-btn:active {
+  background: var(--mvp-bg, #f5f5f5);
+}
+
+.l1-gate-scroll-dock-link {
+  color: inherit;
+}
+
+.l1-gate-panel--no-chain-footer > .l1-chain-footer {
+  display: none !important;
 }
 
 .l1-gate-panel > .gate-scroll-region.l1-gate-scroll::-webkit-scrollbar {
@@ -4586,6 +4649,19 @@ button.l1-chain-node:not(.is-current):hover {
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px dashed var(--mvp-border);
+}
+
+.lesson-cockpit-view .l1-gate-panel .l1-fold-list,
+.lesson-cockpit-view .l1-gate-panel .dg-scene-fold-list {
+  margin: 0;
+  padding: 0;
+}
+
+.lesson-cockpit-view .l1-gate-panel .gw-group,
+.lesson-cockpit-view .l1-gate-panel .l1-scene-fold,
+.lesson-cockpit-view .l1-gate-panel .dg-scene-fold {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .l1-flow-wrap .dg-line-row {
@@ -5127,7 +5203,7 @@ button.is-speaking {
 
 .journey-home-head {
   flex-shrink: 0;
-  padding: 4px 10px 6px;
+  padding: var(--space-sm, 8px) var(--space-md, 12px) var(--space-sm, 6px);
   border-bottom: 1px solid var(--hy-border-soft, var(--mvp-border, #e0e0e0));
   background: var(--hy-surface-white, var(--mvp-card, #fff));
 }
@@ -5148,7 +5224,7 @@ button.is-speaking {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: rgba(120, 144, 156, 0.55) rgba(0, 0, 0, 0.04);
-  padding: 6px 8px 12px;
+  padding: 0 var(--space-sm, 8px) var(--space-sm, 12px);
 }
 
 .journey-home-scroll::-webkit-scrollbar {
@@ -6589,12 +6665,7 @@ details.journey-unit-details[open] .journey-catalog-unit {
   padding-bottom: 8px;
 }
 
-/* 课文目录 · 对齐笔记：展开仅当前单元；四课纵向一行一课（覆盖微信内旧 2×2 缓存样式） */
-.journey-catalog-scroll--accordion.is-catalog-unit-focus > .journey-unit-details:not([open]),
-.journey-catalog-scroll--accordion:has(.journey-unit-details[open]) > .journey-unit-details:not([open]) {
-  display: none;
-}
-
+/* 课文目录 · 展开单元：四课纵向一行一课；其它单元保持折叠可见（对齐笔记长列表） */
 .journey-catalog-scroll--accordion .journey-unit-details[open] .journey-unit-body {
   max-height: none;
   overflow: visible;
@@ -6632,13 +6703,60 @@ details.journey-unit-details[open] .journey-catalog-unit {
   overflow: hidden;
 }
 
-/* 课文目录：无地图，START 下直连六单元 */
-.journey-shinkansen--catalog {
+/* 课文目录：无地图 · 全宽铺底（对齐笔记 #view-me 边距） */
+.journey-shinkansen.journey-shinkansen--catalog {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.journey-unit-overview {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--unit-border, var(--mvp-border, #e0e0e0));
+  border-left: 4px solid var(--stage-accent, var(--mvp-primary));
+  background: var(--unit-page-bg, var(--hy-surface-white, #fff));
+}
+
+.journey-unit-overview-label {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--hy-brand-navy-muted, #607d8b);
+  letter-spacing: 0.04em;
+}
+
+.journey-unit-overview-jp {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--mvp-text, #263238);
+}
+
+.journey-unit-overview-theme {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.journey-unit-overview-arc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--hy-zh-muted, #6d6d6d);
 }
 
 .journey-shinkansen--catalog .journey-home-shell {
@@ -6661,9 +6779,56 @@ details.journey-unit-details[open] .journey-catalog-unit {
   letter-spacing: 0.02em;
 }
 
+.journey-shinkansen--catalog .journey-home-head {
+  padding-left: var(--space-sm, 8px);
+  padding-right: var(--space-sm, 8px);
+}
+
 .journey-shinkansen--catalog .journey-home-scroll.journey-catalog-scroll--accordion {
   flex: 1 1 auto;
   min-height: 0;
+  padding-left: var(--space-sm, 8px);
+  padding-right: var(--space-sm, 8px);
+}
+
+/* 展开单元：四课+概述完整露出，禁止 details 内裁切第4课 */
+.journey-shinkansen--catalog .journey-unit-details[open] {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: 0;
+}
+
+.journey-shinkansen--catalog .journey-unit-details[open].journey-catalog-unit {
+  display: block;
+  min-height: 0;
+}
+
+.journey-shinkansen--catalog .journey-unit-details[open] .journey-unit-body {
+  overflow: visible !important;
+  max-height: none !important;
+  flex: none !important;
+  padding-bottom: 12px;
+}
+
+.journey-shinkansen--catalog .journey-unit-details[open] .journey-lesson-grid {
+  flex: none !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.journey-shinkansen--catalog .journey-unit-details[open] .journey-lesson-slot:last-child {
+  scroll-margin-bottom: 10px;
+}
+
+.journey-shinkansen--catalog .journey-unit-overview {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+}
+
+.journey-shinkansen--catalog .journey-unit-overview-arc {
+  font-size: 10px;
+  line-height: 1.4;
 }
 
 /* 开机封面 · 真机 100dvh + safe-area（390×844 逻辑屏对齐 mock） */
@@ -6725,14 +6890,14 @@ body.mvp-app.is-splash-open #main-content {
 
 /* 封面定稿 · 底图 + 品牌/按钮叠层（SPLASH v1 色板 · 美工排版 v18） */
 .splash-screen--complete {
-  --splash-pad-x: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  --splash-pad-x: 0px;
   --splash-safe-top: env(safe-area-inset-top, 0px);
   --splash-safe-bottom: env(safe-area-inset-bottom, 0px);
-  --splash-brand-inset-top: 54px;
-  --splash-cta-inset-bottom: 56px;
+  --splash-brand-inset-top: max(10px, env(safe-area-inset-top, 0px));
+  --splash-cta-inset-bottom: max(12px, env(safe-area-inset-bottom, 0px));
   --splash-cover-anchor-x: 50%;
-  --splash-cover-anchor-y: 94%;
-  --splash-cover-fit: contain;
+  --splash-cover-anchor-y: 52%;
+  --splash-cover-fit: cover;
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -6777,7 +6942,7 @@ body.mvp-app.is-splash-open #main-content {
   padding:
     calc(var(--splash-brand-inset-top) + var(--splash-safe-top))
     var(--splash-pad-x)
-    calc(150px + var(--splash-safe-bottom));
+    calc(72px + var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
   pointer-events: none;
 }
 
@@ -6798,8 +6963,8 @@ body.mvp-app.is-splash-open #main-content {
 /* CTA dock：上移一框，留拇指区 */
 .splash-screen--complete .splash-cta {
   position: absolute;
-  left: var(--splash-pad-x);
-  right: var(--splash-pad-x);
+  left: max(12px, env(safe-area-inset-left, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
   bottom: calc(var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
   z-index: 4;
   margin: 0;
@@ -6832,8 +6997,8 @@ body.mvp-app.is-splash-open #main-content {
 .splash-screen--complete .splash-btn-start,
 .home-splash-overlay .splash-screen--complete .btn.primary.splash-btn-start {
   box-sizing: border-box;
-  width: min(78%, 300px);
-  max-width: 300px;
+  width: min(88%, 340px);
+  max-width: 340px;
   min-height: 48px;
   margin: 0 auto;
   display: block;

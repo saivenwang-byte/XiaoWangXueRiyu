@@ -14,6 +14,11 @@ const CURRICULUM_RELEASED_IDS = [
  * 关：localStorage hyouga_dev_catalog=0
  * 满级测试卡说明：docs/测试卡-满级链接.md
  */
+/** 自由选课：任意已发布且有数据的单元/课可进（不改课内五关形式） */
+function curriculumFreeJumpMode() {
+  return true;
+}
+
 function curriculumDevCatalogMode() {
   try {
     if (/[?&]testcard=1(?:&|$)/.test(location.search || "")) return true;
@@ -342,15 +347,22 @@ function curriculumUnitVisualState(state, unitId) {
   const id = Number(unitId);
   const unit = CURRICULUM_UNITS.find((u) => u.id === id);
   if (!unit) return "dormant";
+  const prog = curriculumUnitProgress(state, unit);
   if (typeof HyougaTestCard !== "undefined" && HyougaTestCard.active()) {
-    const prog = curriculumUnitProgress(state, unit);
     if (prog.total > 0 && prog.cleared >= prog.total) return "cleared";
     return "active";
   }
-  const prog = curriculumUnitProgress(state, unit);
+  if (curriculumFreeJumpMode()) {
+    const hasPlayable = unit.lessonIds.some((lid) => getCurriculumLessonDisplay(lid).playable);
+    if (!hasPlayable) return "dormant";
+    if (prog.cleared >= prog.total && prog.total > 0) return "cleared";
+    if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
+      return "start";
+    }
+    return "active";
+  }
   if (!prog.total) return "dormant";
   if (prog.cleared >= prog.total) return "cleared";
-  /** 散点学习：有已发布课次的单元一律开放，不循序锁单元 */
   if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
     return "start";
   }
@@ -746,8 +758,9 @@ function curriculumLessonRowClass(L, state, options) {
   )
     cls += " is-lesson-cleared";
   else if (prog.filled > 0) cls += " is-lesson-active";
-  else if (prog.status === "未開啟") cls += " is-lesson-locked";
-  else cls += " is-lesson-idle";
+  else if (prog.status === "未開啟") {
+    cls += L.playable || options?.playable ? " is-lesson-idle" : " is-lesson-locked";
+  } else cls += " is-lesson-idle";
   if (options?.playable) cls += " is-lesson-playable";
   return cls;
 }
@@ -832,6 +845,7 @@ function curriculumFreeExploreMode(state) {
 
 /** 线性通关：当前应攻克的下一课（仅计可 play 的课） */
 function curriculumGetFocusLesson(state) {
+  if (curriculumFreeJumpMode()) return null;
   if (curriculumDevCatalogMode()) return null;
   if (curriculumFreeExploreMode(state)) return null;
   for (const id of CURRICULUM_LESSON_ORDER) {

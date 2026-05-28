@@ -20,6 +20,9 @@ const Lesson1Flow = (function () {
     { k: 4, label: "拡張", sub: "まとめ" },
   ];
 
+  /** 五关课内：取消屏底传送链 dock，改顶栏 Tab + 滚动区末尾「学習の道」 */
+  const MVP_HIDE_CHAIN_FOOTER = true;
+
   function isLesson(lessonId) {
     return Number(lessonId) === LESSON_ID;
   }
@@ -292,13 +295,63 @@ const Lesson1Flow = (function () {
     return list.filter((v) => seen.includes(v.id)).length;
   }
 
-  function l1GatePanelHtml(bodyHtml, activeGate, footerOpts = {}) {
+  function introDockHref() {
+    const nav = typeof document !== "undefined" ? document.getElementById("nav-intro") : null;
+    if (nav?.getAttribute("href")) return nav.getAttribute("href");
+    const v =
+      typeof window !== "undefined" && window.HyougaShare?.CACHE_VER
+        ? window.HyougaShare.CACHE_VER
+        : "322";
+    return `intro.html?v=${v}`;
+  }
+
+  function gateScrollEndDockHtml() {
     return `
-      <div class="l1-gate-panel l1-lesson-scope" data-l1-active-gate="${activeGate}">
-        <div class="gate-scroll-region l1-gate-scroll" role="region" aria-label="课内内容">
-          ${bodyHtml}
+      <div class="l1-gate-scroll-dock" role="navigation" aria-label="学習の道">
+        <p class="l1-gate-scroll-dock-label zh-annotation">学習の道</p>
+        <div class="l1-gate-scroll-dock-tabs">
+          <button type="button" class="l1-gate-scroll-dock-btn" data-app-view="home">课文</button>
+          <button type="button" class="l1-gate-scroll-dock-btn" data-app-view="me">笔记</button>
+          <a class="l1-gate-scroll-dock-btn l1-gate-scroll-dock-link" href="${escapeHtml(introDockHref())}">注音</a>
         </div>
-        ${chainFooterHtml(activeGate, footerOpts)}
+      </div>`;
+  }
+
+  function bindGateScrollEndDock(root) {
+    if (!root) return;
+    root.querySelectorAll(".l1-gate-scroll-dock [data-app-view]").forEach((btn) => {
+      if (btn.dataset.dockBound === "1") return;
+      btn.dataset.dockBound = "1";
+      btn.addEventListener("click", () => {
+        const view = btn.dataset.appView;
+        if (typeof window.MvpDev?.showView === "function") {
+          window.MvpDev.showView(view);
+          return;
+        }
+        document.querySelector(`.bottom-nav .nav-item[data-view="${view}"]`)?.click();
+      });
+    });
+  }
+
+  function finishGatePanelMount(panel, callbacks = {}) {
+    if (!MVP_HIDE_CHAIN_FOOTER) {
+      bindGateScrollEndDock(panel);
+      const gate = Number(panel?.dataset?.l1ActiveGate);
+      if (!Number.isNaN(gate)) bindChainFooter(panel, gate, callbacks);
+    }
+  }
+
+  function l1GatePanelHtml(bodyHtml, activeGate, footerOpts = {}) {
+    const hideFooter =
+      footerOpts.hideChainFooter !== false && MVP_HIDE_CHAIN_FOOTER;
+    const panelCls = hideFooter ? " l1-gate-panel--no-chain-footer" : "";
+    const scrollInner = hideFooter ? bodyHtml : `${bodyHtml}${gateScrollEndDockHtml()}`;
+    return `
+      <div class="l1-gate-panel l1-lesson-scope${panelCls}" data-l1-active-gate="${activeGate}">
+        <div class="gate-scroll-region l1-gate-scroll" role="region" aria-label="课内内容">
+          ${scrollInner}
+        </div>
+        ${hideFooter ? "" : chainFooterHtml(activeGate, footerOpts)}
       </div>`;
   }
 
@@ -680,15 +733,24 @@ const Lesson1Flow = (function () {
     );
 
     const vocabPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
+    finishGatePanelMount(vocabPanel, callbacks);
     const updateVocabFooter = () => {
       const seen = vocabSeenCount(state, list, lid);
       const ready = seen >= total && total > 0;
-      updateChainFooterButton(vocabPanel.querySelector("#l1-vocab-done"), 0, {
-        done: seen,
-        total,
-        ready,
-        lessonId: lid,
-      });
+      const btn = vocabPanel.querySelector("#l1-vocab-done");
+      if (btn) {
+        updateChainFooterButton(btn, 0, {
+          done: seen,
+          total,
+          ready,
+          lessonId: lid,
+        });
+      }
+      if (MVP_HIDE_CHAIN_FOOTER && ready) {
+        setGateDone(state, lid, 0);
+        saveMvpState(state);
+        callbacks.onRefreshCockpit?.();
+      }
     };
 
     mountEl.querySelector("#l1-vocab-done")?.addEventListener("click", () => {
@@ -886,16 +948,25 @@ const Lesson1Flow = (function () {
     });
 
     const hwPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
+    finishGatePanelMount(hwPanel, callbacks);
     const hwOpened = {};
     const updateHwFooter = () => {
       const done = Object.keys(hwOpened).length;
       const ready = hwTotal === 0 || done >= hwTotal;
-      updateChainFooterButton(hwPanel.querySelector("#l1-hw-done"), 3, {
-        done,
-        total: hwTotal || 1,
-        ready,
-        lessonId: lid,
-      });
+      const btn = hwPanel.querySelector("#l1-hw-done");
+      if (btn) {
+        updateChainFooterButton(btn, 3, {
+          done,
+          total: hwTotal || 1,
+          ready,
+          lessonId: lid,
+        });
+      }
+      if (MVP_HIDE_CHAIN_FOOTER && ready) {
+        setGateDone(state, lid, 3);
+        saveMvpState(state);
+        callbacks.onRefreshCockpit?.();
+      }
     };
     hwPanel.querySelectorAll(".gw-group").forEach((det, i) => {
       det.addEventListener("toggle", () => {
@@ -903,7 +974,6 @@ const Lesson1Flow = (function () {
         updateHwFooter();
       });
     });
-    bindChainFooter(hwPanel, 3, callbacks);
     updateHwFooter();
 
     const quizDetails = mountEl.querySelector("#l1-hw-quiz")?.closest("details");
@@ -1088,18 +1158,27 @@ const Lesson1Flow = (function () {
     );
 
     const extPanel = mountEl.querySelector(".l1-gate-panel") || mountEl;
+    finishGatePanelMount(extPanel, callbacks);
     const extOpened = {};
     const extReadyMin = () => (extTotal === 0 ? 0 : 1);
     const updateExtFooter = () => {
       const done = Object.keys(extOpened).length;
       const need = extReadyMin();
       const ready = extTotal === 0 || done >= need;
-      updateChainFooterButton(extPanel.querySelector("#l1-sum-done"), 4, {
-        done: extTotal === 0 ? 1 : done,
-        total: extTotal || 1,
-        ready,
-        lessonId: lid,
-      });
+      const btn = extPanel.querySelector("#l1-sum-done");
+      if (btn) {
+        updateChainFooterButton(btn, 4, {
+          done: extTotal === 0 ? 1 : done,
+          total: extTotal || 1,
+          ready,
+          lessonId: lid,
+        });
+      }
+      if (MVP_HIDE_CHAIN_FOOTER && ready) {
+        setGateDone(state, lid, 4);
+        saveMvpState(state);
+        callbacks.onRefreshCockpit?.();
+      }
     };
     const extDetails = extPanel.querySelectorAll(".gw-group");
     extDetails.forEach((det, i) => {
@@ -1108,7 +1187,6 @@ const Lesson1Flow = (function () {
         updateExtFooter();
       });
     });
-    bindChainFooter(extPanel, 4, callbacks);
     updateExtFooter();
 
     mountEl.querySelector("#l1-sum-done")?.addEventListener("click", () => {
@@ -1173,6 +1251,9 @@ const Lesson1Flow = (function () {
     updateChainFooterButton,
     bindChainFooter,
     l1GatePanelHtml,
+    finishGatePanelMount,
+    bindGateScrollEndDock,
+    MVP_HIDE_CHAIN_FOOTER,
     bindSingleOpenAccordion,
   };
 })();

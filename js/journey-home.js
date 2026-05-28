@@ -162,6 +162,31 @@ const JourneyHome = (function () {
     return "";
   }
 
+  function unitStripStoryboard(unitId) {
+    if (typeof UNIT_STRIP_STORYBOARD === "undefined") return null;
+    return UNIT_STRIP_STORYBOARD.find((u) => u.unitId === Number(unitId)) || null;
+  }
+
+  /** 单元展开 · 课文概述（画外旁白 · 真源 unit-strip-storyboard + soul-lock） */
+  function renderUnitOverviewHtml(unit) {
+    const sb = unitStripStoryboard(unit.id);
+    const stripTitle = (sb?.stripTitle || unit.titleJa || "").trim();
+    const arcZh = (sb?.unitArcZh || "").trim();
+    const themeZh = (unit.titleZh || "").trim();
+    if (!stripTitle && !arcZh && !themeZh) return "";
+    return `
+      <section class="journey-unit-overview" aria-label="课文概述">
+        <p class="journey-unit-overview-label zh-annotation">课文概述</p>
+        ${stripTitle ? `<p class="journey-unit-overview-jp jp" lang="ja">${escapeHtml(stripTitle)}</p>` : ""}
+        ${themeZh ? `<p class="journey-unit-overview-theme zh-annotation">${escapeHtml(themeZh)}</p>` : ""}
+        ${
+          arcZh
+            ? `<p class="journey-unit-overview-arc zh-annotation">四课情绪弧：${escapeHtml(arcZh)}</p>`
+            : ""
+        }
+      </section>`;
+  }
+
   function renderExploreCatalogDevHint(state) {
     if (typeof StoryReward !== "undefined" && StoryReward.storyDevMode && StoryReward.storyDevMode()) {
       const v = cacheVer();
@@ -182,9 +207,6 @@ const JourneyHome = (function () {
             <button type="button" class="btn secondary story-dev-btn" data-story-dev="open-unit" data-unit="1">展开 U1</button>
           </div>
         </div>`;
-    }
-    if (devCatalogMode()) {
-      return `<p class="journey-dev-banner journey-home-dock">試用：真实进度 · 四关金星 ○☆★=未学/未满分/通关</p>`;
     }
     return "";
   }
@@ -236,6 +258,7 @@ const JourneyHome = (function () {
             </div>
           </summary>
           <div class="journey-unit-body">
+            ${renderUnitOverviewHtml(unit)}
             <div class="journey-lesson-grid">${rows}</div>
           </div>
         </details>`;
@@ -265,7 +288,11 @@ const JourneyHome = (function () {
       if (!pt) return;
       const uv = unitVisual(state, unit.id);
       const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
-      const hidden = uv === "dormant" ? " is-map-hidden" : "";
+      const hidden =
+        uv === "dormant" &&
+        !(typeof curriculumFreeJumpMode === "function" && curriculumFreeJumpMode())
+          ? " is-map-hidden"
+          : "";
       html += `<button type="button" class="unit-station is-unit-${uv}${hidden}" data-unit="${unit.id}"
         style="left:${(pt.x / 240) * 100}%;top:${(pt.y / 360) * 100}%;--stage-accent:${theme.accent}"
         title="${escapeHtml(unit.titleJa)}">
@@ -363,39 +390,32 @@ const JourneyHome = (function () {
       if (body) body.scrollTop = 0;
 
       if (!scroller) {
-        det.scrollIntoView({ behavior: "smooth", block: "start" });
+        det.scrollIntoView({ behavior: "smooth", block: "nearest" });
         return;
       }
       const sRect = scroller.getBoundingClientRect();
       const dRect = det.getBoundingClientRect();
       const topDelta = dRect.top - sRect.top - pad;
-      if (Math.abs(topDelta) > 2) {
+      if (topDelta < -2) {
         scroller.scrollBy({ top: topDelta, behavior: "smooth" });
       }
-      const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
-      if (lastSlot) {
-        const lRect = lastSlot.getBoundingClientRect();
+      requestAnimationFrame(() => {
         const sRect2 = scroller.getBoundingClientRect();
+        const dRect2 = det.getBoundingClientRect();
+        if (dRect2.bottom > sRect2.bottom - pad) {
+          scroller.scrollBy({ top: dRect2.bottom - sRect2.bottom + pad, behavior: "smooth" });
+          return;
+        }
+        const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
+        if (!lastSlot) return;
+        const lRect = lastSlot.getBoundingClientRect();
         if (lRect.bottom > sRect2.bottom - pad) {
           scroller.scrollBy({ top: lRect.bottom - sRect2.bottom + pad, behavior: "smooth" });
         }
-      }
+      });
     }
 
     requestAnimationFrame(() => requestAnimationFrame(align));
-  }
-
-  function catalogScrollEl(board) {
-    return board?.querySelector?.(
-      ".journey-home-scroll.journey-catalog-scroll--accordion, .journey-catalog-scroll--accordion"
-    );
-  }
-
-  /** 微信旧 WebView 无 :has() 时用 class 隐藏其它单元 */
-  function syncCatalogUnitFocusMode(board) {
-    const scroll = catalogScrollEl(board);
-    if (!scroll) return;
-    scroll.classList.toggle("is-catalog-unit-focus", !!scroll.querySelector(".journey-unit-details[open]"));
   }
 
   function bindCatalogAccordion(board) {
@@ -404,7 +424,6 @@ const JourneyHome = (function () {
       det.addEventListener("toggle", () => {
         if (!det.open) {
           det.classList.remove("is-unit-current");
-          syncCatalogUnitFocusMode(board);
           return;
         }
         all.forEach((other) => {
@@ -414,11 +433,9 @@ const JourneyHome = (function () {
           }
         });
         det.classList.add("is-unit-current");
-        syncCatalogUnitFocusMode(board);
         scrollOpenedUnitIntoView(det);
       });
     });
-    syncCatalogUnitFocusMode(board);
   }
 
   function openUnitDetails(board, uid) {
@@ -429,7 +446,6 @@ const JourneyHome = (function () {
       d.classList.toggle("is-unit-current", d === el);
     });
     scrollOpenedUnitIntoView(el);
-    syncCatalogUnitFocusMode(board);
     el.classList.add("is-map-reveal-flash");
     setTimeout(() => el.classList.remove("is-map-reveal-flash"), 1200);
   }
@@ -519,8 +535,8 @@ const JourneyHome = (function () {
         </div>
         <div class="journey-home-scroll journey-catalog-scroll journey-catalog-scroll--accordion" role="region" aria-label="课文目录">
           ${renderExploreCatalogBlocks(state)}
+          ${renderExploreCatalogDevHint(state)}
         </div>
-        ${renderExploreCatalogDevHint(state)}
       </div>`;
     bindInteractions(board, state, onEnterLesson);
     return board;
@@ -538,15 +554,18 @@ const JourneyHome = (function () {
     }
     const boardSlot = document.getElementById("journey-board-slot");
     const heroProg = document.getElementById("home-path-progress");
+    const freeJump =
+      typeof curriculumFreeJumpMode === "function" && curriculumFreeJumpMode();
     const free =
-      typeof curriculumFreeExploreMode === "function" && curriculumFreeExploreMode(state);
-    const focus = getFocusLesson(state);
+      freeJump ||
+      (typeof curriculumFreeExploreMode === "function" && curriculumFreeExploreMode(state));
+    const focus = freeJump ? null : getFocusLesson(state);
 
     let progText = "";
     if (typeof curriculumPathProgress === "function") {
       const p = curriculumPathProgress(state);
       progText = free
-        ? `進捗 ${p.label} · 可自由选课`
+        ? `進捗 ${p.label} · 自由选课`
         : `進捗 ${p.label}${focus ? ` · 第${focus}課` : ""}`;
     }
     if (mapRevealedAll(state)) progText = (progText ? `${progText} · ` : "") + "地図全開";

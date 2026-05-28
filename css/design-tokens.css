@@ -142,4 +142,20 @@
   --notes-dim-wk-accent: var(--gate-1-accent);
   --notes-dim-wk-fg: var(--gate-1-active-fg);
   --notes-dot: var(--hy-star-tried);
+
+  /* ── 字号阶梯（PR-2E · 仅视觉） ── */
+  --hy-type-micro: 9px;
+  --hy-type-caption: 10px;
+  --hy-type-label: 11px;
+  --hy-type-body-sm: 12px;
+  --hy-type-body: 14px;
+  --hy-type-body-lg: 15px;
+  --hy-type-title-sm: 16px;
+  --hy-type-title: 17px;
+
+  /* ── 图标尺寸（DESIGN-L0） ── */
+  --hy-icon-l0: 24px;
+  --hy-icon-l1: 22px;
+  --hy-icon-l2: 20px;
+  --hy-icon-l3: 18px;
 }

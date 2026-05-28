@@ -766,6 +766,10 @@ const DialogueGate = (() => {
     }
     if (isMvpFiveGatePanel() || l1Flow) {
       updateL1Footer();
+      if (isMvpFiveGatePanel() && allDialoguesPassed()) {
+        setGateDone(state, lesson.lessonId, 2);
+        saveMvpState(state);
+      }
       return;
     }
     if (allDialoguesPassed()) {
@@ -834,7 +838,7 @@ const DialogueGate = (() => {
       bindSceneAccordion();
       bindSpeak();
       const panel = container.querySelector(".l1-gate-panel") || container;
-      Lesson1Flow.bindChainFooter(panel, 2, { switchGate, lessonId: lesson.lessonId });
+      Lesson1Flow.finishGatePanelMount(panel, { switchGate, lessonId: lesson.lessonId });
       panel.querySelector("#dg-l1-done")?.addEventListener("click", () => {
         if (!allDialoguesPassed()) return;
         setGateDone(state, lesson.lessonId, 2);

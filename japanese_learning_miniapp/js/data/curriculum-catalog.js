@@ -13,6 +13,10 @@ const CURRICULUM_RELEASED_IDS = [
  * 开：?dev=1 · localStorage hyouga_dev_catalog=1 · localhost/file 默认
  * 关：localStorage hyouga_dev_catalog=0
  */
+function curriculumFreeJumpMode() {
+  return true;
+}
+
 function curriculumDevCatalogMode() {
   try {
     if (/[?&]dev=1/.test(location.search || "")) return true;
@@ -346,6 +350,15 @@ function curriculumUnitVisualState(state, unitId) {
   const unit = CURRICULUM_UNITS.find((u) => u.id === id);
   if (!unit) return "dormant";
   const prog = curriculumUnitProgress(state, unit);
+  if (curriculumFreeJumpMode()) {
+    const hasPlayable = unit.lessonIds.some((lid) => getCurriculumLessonDisplay(lid).playable);
+    if (!hasPlayable) return "dormant";
+    if (prog.cleared >= prog.total && prog.total > 0) return "cleared";
+    if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
+      return "start";
+    }
+    return "active";
+  }
   if (!prog.total) return "dormant";
   if (prog.cleared >= prog.total) return "cleared";
   if (id === 1 && !curriculumUnitLessonsTouched(state, unit) && curriculumIntroCompleted()) {
@@ -514,6 +527,7 @@ function curriculumFreeExploreMode(state) {
 
 /** 线性通关：当前应攻克的下一课（仅计可 play 的课） */
 function curriculumGetFocusLesson(state) {
+  if (curriculumFreeJumpMode()) return null;
   if (curriculumDevCatalogMode()) return null;
   if (curriculumFreeExploreMode(state)) return null;
   for (const id of CURRICULUM_LESSON_ORDER) {

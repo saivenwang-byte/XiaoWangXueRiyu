@@ -291,7 +291,9 @@
     el.setAttribute("aria-hidden", "true");
     document.body.classList.remove("is-splash-open");
     const top = document.querySelector(".top-bar");
+    const nav = document.querySelector(".bottom-nav");
     if (top) top.style.display = "";
+    if (nav) nav.style.removeProperty("display");
   }
 
   function showSplash() {
@@ -334,11 +336,12 @@
       v.classList.toggle("active", on);
       v.setAttribute("aria-hidden", on ? "false" : "true");
     });
+    const navHighlight = name === "lesson" ? "home" : name;
     document.querySelectorAll(".nav-item").forEach((n) => {
-      n.classList.toggle("active", n.dataset.view === name);
+      n.classList.toggle("active", n.dataset.view === navHighlight);
     });
     const nav = document.querySelector(".bottom-nav");
-    if (nav) nav.style.display = ["home", "review", "me"].includes(name) ? "flex" : "none";
+    if (nav) nav.style.display = "flex";
     document.getElementById("page-title").textContent = titles[name] || titles.home;
 
     if (name !== "lesson") closeAllModals();

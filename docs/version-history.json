@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "321",
+    "cache": "329",
     "date": "2026-05-28",
-    "note": "微信/手机课文目录：单列强制+is-catalog-unit-focus 回退；cache v321",
+    "note": "自由选课：任意已发布单元/课可进；cache v329",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
@@ -17,7 +17,11 @@
     "date": "2026-05-21",
     "git_tag": "mvp-v1.0.1-biaori-141618",
     "commit_note": "af22cac 及此前 main 上 MVP 交付链",
-    "lessons": [14, 16, 18],
+    "lessons": [
+      14,
+      16,
+      18
+    ],
     "doc": "docs/MVP-FREEZE.md",
     "checklist": "docs/MVP收官-手机验收清单.md",
     "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=46",
@@ -74,7 +78,16 @@
       "cache": "47",
       "date": "2026-05-21",
       "note": "阶段二种子包：第13/15/17/19/20课四关数据+depth+vocab；+139 TTS",
-      "lessons": [13, 14, 15, 16, 17, 18, 19, 20],
+      "lessons": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
       "local": "http://localhost:8765/index.html?v=47",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=47"
     },
@@ -100,7 +113,9 @@
       "cache": "146",
       "date": "2026-05-25",
       "note": "第1单元第1課 MVP 冻结：五关课内壳、提示/传送链、分关色、知识关联阶段A",
-      "lessons": [1],
+      "lessons": [
+        1
+      ],
       "mvp_freeze_doc": "docs/MVP-UNIT1-LESSON1-FREEZE.md",
       "local": "http://localhost:8765/index.html?v=146",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=146"
@@ -111,7 +126,9 @@
       "date": "2026-05-25",
       "note": "L1 五关提示统一（提示：+折叠+l1-tip-slot）、单词序号栅格、开屏地图与单元行 IA",
       "archive": "过程讨论内容/20-20260525-L1五关提示统一与课内UI阶段归档.md",
-      "lessons": [1],
+      "lessons": [
+        1
+      ],
       "local": "http://localhost:8765/index.html?v=225",
       "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu/index.html?v=225"
     },

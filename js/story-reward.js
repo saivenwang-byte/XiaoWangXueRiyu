@@ -5,6 +5,7 @@
 const StoryReward = (function () {
   let modalEl = null;
 
+  /** 仅开发者显式开启（学员端默认不显示四格验收条） */
   function storyDevMode() {
     try {
       if (/[?&]storyDev=1/.test(location.search || "")) return true;
@@ -13,7 +14,7 @@ const StoryReward = (function () {
     } catch (_) {
       /* ignore */
     }
-    return typeof curriculumDevCatalogMode === "function" && curriculumDevCatalogMode();
+    return false;
   }
 
   function escapeHtml(s) {
