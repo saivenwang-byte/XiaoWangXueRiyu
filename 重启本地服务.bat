@@ -25,5 +25,5 @@ echo.
 echo  服务正常。请再双击「打开本地预览.bat」或打开：
 for /f "usebackq tokens=2 delims==" %%v in (`findstr /C:"CACHE_VER" "js\share-wechat.js"`) do set "VER=%%~v"
 set "VER=%VER:"=%"
-echo  http://localhost:8765/index.html?v=%VER%
+echo  http://127.0.0.1:8765/index.html?v=%VER%
 pause

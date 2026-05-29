@@ -52,7 +52,8 @@ const HomeSplash = (function () {
     </div>`;
   }
 
-  const LOGO_ICON = "assets/brand/intepoint-logo-icon.png";
+  /** 橘框+海军蓝+白 emblem · scripts/build-shell-app-icon.py */
+  const LOGO_ICON = "assets/brand/intepoint-logo-app-shell.png";
 
   function uiChromeHtml() {
     const v = cacheVer();

@@ -87,18 +87,15 @@ def main() -> int:
             print(f"[WARN] 端口 {args.port} 未启动（请双击 打开本地预览.bat）")
         return 1
 
-    if args.start:
-        start_server(args.port)
-        for _ in range(12):
-            time.sleep(0.5)
-            if http_ok(args.port):
-                print(f"[OK] 已启动 http://127.0.0.1:{args.port}/index.html")
-                return 0
-        print(f"[FAIL] 启动后仍无法访问 :{args.port}")
-        return 1
-
-    ap.print_help()
-    return 2
+    # 无 --probe：自动启动（无参或 --start）
+    start_server(args.port)
+    for _ in range(12):
+        time.sleep(0.5)
+        if http_ok(args.port):
+            print(f"[OK] 已启动 http://127.0.0.1:{args.port}/index.html")
+            return 0
+    print(f"[FAIL] 启动后仍无法访问 :{args.port}")
+    return 1
 
 
 if __name__ == "__main__":

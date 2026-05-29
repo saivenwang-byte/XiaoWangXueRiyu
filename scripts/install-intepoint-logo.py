@@ -73,13 +73,9 @@ def process_raster(src: Path) -> None:
     BRAND.mkdir(parents=True, exist_ok=True)
     img.save(FULL_OUT, "PNG", optimize=True)
     icon512.save(ICON_OUT, "PNG", optimize=True)
-    for dest in (MINIAPP, APP_ICON):
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        icon512.resize((192, 192), Image.Resampling.LANCZOS).save(dest, "PNG", optimize=True)
     print(f"[OK] full  -> {FULL_OUT} ({FULL_OUT.stat().st_size} B)")
     print(f"[OK] icon -> {ICON_OUT} ({ICON_OUT.stat().st_size} B)")
-    print(f"[OK] miniapp -> {MINIAPP}")
-    print(f"[OK] icons  -> {APP_ICON}")
+    print("[i] 橘框壳图标请再运行: python scripts/build-shell-app-icon.py")
 
 
 def main() -> None:

@@ -7,7 +7,7 @@ for /f "usebackq tokens=2 delims==" %%v in (`findstr /C:"CACHE_VER" "js\share-we
 set "VER=%VER:"=%"
 if not defined VER set "VER=39"
 
-set "URL=http://localhost:8765/index.html?v=%VER%"
+set "URL=http://127.0.0.1:8765/index.html?v=%VER%"
 
 echo.
 echo  本地学习页（请用此链接，不要用 GitHub 公网链接在本机打开）

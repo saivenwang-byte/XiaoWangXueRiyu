@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import json
 import http.server
+import socket
 import socketserver
 import sys
 import threading
@@ -74,6 +75,22 @@ def watch_loop(interval: float, debounce: float) -> None:
             last_bump = time.time()
 
 
+def _make_preview_server(port: int, handler) -> socketserver.ThreadingTCPServer:
+    """同时接受 127.0.0.1 与 localhost(IPv6)，避免 Cursor Simple Browser 拒连。"""
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    try:
+
+        class _Dual(socketserver.ThreadingTCPServer):
+            address_family = socket.AF_INET6
+            allow_reuse_address = True
+
+        srv = _Dual(("::", port), handler)
+        srv.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        return srv
+    except OSError:
+        return socketserver.ThreadingTCPServer(("127.0.0.1", port), handler)
+
+
 class PreviewHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
@@ -128,9 +145,11 @@ def main() -> int:
         t.start()
         print(f"[watch] 改码即刷 · 监听 js/css/html · debounce {args.debounce}s")
 
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.ThreadingTCPServer(("127.0.0.1", args.port), PreviewHandler) as httpd:
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    httpd = _make_preview_server(args.port, PreviewHandler)
+    with httpd:
         print(f"[OK] http://127.0.0.1:{args.port}/ · reload ping /__preview_reload")
+        print(f"     Cursor 请用 127.0.0.1（勿用 localhost，避免 IPv6 拒连）")
         print(f"     真机框 http://127.0.0.1:{args.port}/cursor-miniapp-phone.html?live=1")
         try:
             httpd.serve_forever()

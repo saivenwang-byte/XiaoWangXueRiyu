@@ -7154,20 +7154,16 @@ body.mvp-app.is-splash-open #main-content {
 }
 
 .splash-logo-bg {
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  background: rgba(30, 58, 95, 0.94);
-  box-shadow: 0 4px 14px rgba(26, 54, 93, 0.22);
-  z-index: 0;
+  display: none;
 }
 
 .splash-logo img {
   position: relative;
   z-index: 1;
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(26, 54, 93, 0.2));
 }
 
 .splash-title {
