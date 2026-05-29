@@ -2,7 +2,7 @@
 const ShareWechat = (() => {
   const CACHE_VER = "385";
 
-  const OFFICIAL_ORIGIN = "https://saivenwang-byte.gitee.io/xiao-wang-xue-riyu-v2";
+  const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
   function configuredOrigin() {
     const o = (window.HYOUGA_PUBLIC_ORIGIN || "").trim().replace(/\/$/, "");

@@ -6,7 +6,7 @@
  * 切换频道：python scripts/apply-deploy-target.py --channel gitee|cos|github
  * 手册：docs/国内发行-A-Gitee过渡-B-COS正式.md
  */
-window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.gitee.io/xiao-wang-xue-riyu-v2";
+window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
 /** 语音包静态根（不含 /tts-cache/）；留空 = 与当前页面同源 */
 window.HYOUGA_TTS_ORIGIN = "";

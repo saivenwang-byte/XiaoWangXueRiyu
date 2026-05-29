@@ -1,7 +1,7 @@
 {
   "schema": "deploy-target-v1",
-  "active": "gitee",
-  "wechatPrimary": "gitee",
+  "active": "github",
+  "wechatPrimary": "github",
   "channels": {
     "github": {
       "label": "GitHub Pages（备份·开发对照）",
