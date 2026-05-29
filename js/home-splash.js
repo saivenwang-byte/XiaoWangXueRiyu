@@ -76,9 +76,17 @@ const HomeSplash = (function () {
       </div>`;
   }
 
+  function clearBootFailTimer() {
+    if (window.__hyougaBootFailTimer) {
+      clearTimeout(window.__hyougaBootFailTimer);
+      window.__hyougaBootFailTimer = null;
+    }
+  }
+
   function render() {
     const root = document.getElementById("splash-root");
     if (!root) return;
+    clearBootFailTimer();
     const q = coverQuery();
     root.innerHTML = `
       <div class="splash-screen splash-screen--complete">
@@ -124,8 +132,24 @@ const HomeSplash = (function () {
   return {
     render,
     bind,
+    clearBootFailTimer,
     ASSET_VER: SPLASH_ASSET_VER,
     COVER_BASE: SPLASH_COVER_BASE,
     MAP_BODY: SPLASH_MAP_BODY,
   };
+})();
+
+/** 不等待 app.js：脚本一到即绘开机页，避免微信内 5s 误报「未正常加载」 */
+(function hyougaSplashEarlyBoot() {
+  function tryRender() {
+    if (typeof HomeSplash === "undefined") return;
+    const root = document.getElementById("splash-root");
+    if (!root || root.querySelector(".splash-btn-start")) return;
+    HomeSplash.render();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tryRender);
+  } else {
+    tryRender();
+  }
 })();
