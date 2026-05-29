@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   let state = loadMvpState();
   let activeLessonId = null;
   /** 0=単語 1=文法 2=会話 3=作業 4=まとめ */

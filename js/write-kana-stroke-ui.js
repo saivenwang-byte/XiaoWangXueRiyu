@@ -6,8 +6,9 @@ const WriteKanaStrokeUI = (function () {
   /** 与教材笔顺表一致：①红 ②绿 ③蓝 ④紫 */
   const STROKE_COLORS = ["#E53935", "#43A047", "#1E88E5", "#8E24AA", "#7B1FA2"];
   const ARROW_STROKE = "#212121";
-  const ARROW_LEN = { normal: 20, focus: 26 };
-  const PATH_W = { overview: 14, focus: 18, dim: 11 };
+  const ARROW_LEN = { normal: 18, focus: 22 };
+  /** viewBox 1024 · 教辅线宽（再细一档） */
+  const PATH_W = { overview: 9, focus: 12, dim: 7 };
 
   let wrapEl = null;
   let svgEl = null;
@@ -38,11 +39,11 @@ const WriteKanaStrokeUI = (function () {
   function svgDefs() {
     const colorMarkers = STROKE_COLORS.map(
       (c, i) =>
-        `<marker id="write-arr-${i}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">` +
+        `<marker id="write-arr-${i}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">` +
         `<path d="M0,0 L10,5 L0,10 Z" fill="${ARROW_STROKE}"/></marker>`
     ).join("");
     return `<defs>${colorMarkers}
-      <marker id="write-arr-dot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <marker id="write-arr-dot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">
         <path d="M0,0 L10,5 L0,10 Z" fill="${ARROW_STROKE}"/>
       </marker></defs>`;
   }
@@ -67,10 +68,10 @@ const WriteKanaStrokeUI = (function () {
       const al = emphasis ? ARROW_LEN.focus : ARROW_LEN.normal;
       const ex = sx + (dx / len) * al;
       const ey = sy + (dy / len) * al;
-      arrowPart = `<line class="write-stroke-arrow" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${ARROW_STROKE}" stroke-width="4" stroke-linecap="round" marker-end="url(#write-arr-dot)"/>`;
+      arrowPart = `<line class="write-stroke-arrow" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${ARROW_STROKE}" stroke-width="2.5" stroke-linecap="round" marker-end="url(#write-arr-dot)"/>`;
     }
     return (
-      `<text class="write-stroke-num" x="${nx}" y="${ny + fs * 0.32}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" stroke="#fff" stroke-width="3" paint-order="stroke fill">${num}</text>` +
+      `<text class="write-stroke-num" x="${nx}" y="${ny + fs * 0.32}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" stroke="#fff" stroke-width="2" paint-order="stroke fill">${num}</text>` +
       arrowPart
     );
   }
