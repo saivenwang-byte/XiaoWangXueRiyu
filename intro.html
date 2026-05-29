@@ -3,19 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#FFF8E1" />
   <title>00 入門 · 標日 あと学習</title>
-  <link rel="stylesheet" href="css/app.css?v=348" />
-  <link rel="stylesheet" href="css/mvp.css?v=348" />
-  <link rel="stylesheet" href="css/vi-typography-sweep.css?v=348" />
+  <script>
+    (function () {
+      if (/[?&]miniappPreview=1(?:&|$)/.test(location.search)) {
+        document.documentElement.classList.add("hyouga-miniapp-webview");
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/design-tokens.css?v=353" />
+  <link rel="stylesheet" href="css/app.css?v=353" />
+  <link rel="stylesheet" href="css/mvp.css?v=353" />
+  <link rel="stylesheet" href="css/hyo-top-bar.css?v=353" />
+  <link rel="stylesheet" href="css/vi-typography-sweep.css?v=353" />
 </head>
-<body class="mvp-body intro-body">
+<body class="mvp-app intro-body">
   <script>
     if (window.self !== window.top) document.documentElement.classList.add("hyouga-embed-preview");
   </script>
-  <header class="top-bar intro-top-bar">
-    <a href="index.html?v=348&nosplash=1" class="btn-back" id="intro-back-link">← 標日 あと学習</a>
+  <header class="top-bar hyo-top-bar hyo-top-bar--intro">
+    <a href="index.html?v=353&nosplash=1" class="hyo-top-bar__back" id="intro-back-link">← <span class="hyo-top-bar__back-ja jp">標日 あと学習</span></a>
     <h1>00 入門</h1>
-    <a href="index.html?v=348&nosplash=1" class="btn-top-link intro-home-link" id="intro-home-link">课文首页</a>
+    <a href="index.html?v=353&nosplash=1" class="hyo-top-bar__pill" id="intro-home-link">课文首页</a>
   </header>
   <main class="intro-page">
     <div class="mvp-hero intro-hero intro-hero--minimal">
@@ -25,10 +35,10 @@
     </div>
     <div id="intro-root" class="intro-root"></div>
   </main>
-  <script src="js/share-wechat.js?v=348"></script>
+  <script src="js/share-wechat.js?v=353"></script>
   <script>
     (function () {
-      var v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "292";
+      var v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "353";
       var homeQs = "index.html?v=" + encodeURIComponent(v) + "&nosplash=1";
       var back = document.getElementById("intro-back-link");
       var home = document.getElementById("intro-home-link");
@@ -42,13 +52,13 @@
       }
     })();
   </script>
-  <script src="js/speech-engine.js?v=348"></script>
-  <script src="js/speak-ui.js?v=348"></script>
-  <script src="js/shadow-speak.js?v=348"></script>
-  <script src="js/sensei-tip-card.js?v=348"></script>
-  <script src="js/data/intro-content.js?v=348"></script>
-  <script src="js/data/intro-kana-tips.js?v=348"></script>
-  <script src="js/intro-kana-tip.js?v=348"></script>
-  <script src="js/intro-guide.js?v=348"></script>
+  <script src="js/speech-engine.js?v=353"></script>
+  <script src="js/speak-ui.js?v=353"></script>
+  <script src="js/shadow-speak.js?v=353"></script>
+  <script src="js/sensei-tip-card.js?v=353"></script>
+  <script src="js/data/intro-content.js?v=353"></script>
+  <script src="js/data/intro-kana-tips.js?v=353"></script>
+  <script src="js/intro-kana-tip.js?v=353"></script>
+  <script src="js/intro-guide.js?v=353"></script>
 </body>
 </html>

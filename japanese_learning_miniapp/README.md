@@ -14,6 +14,7 @@
 | `pages/study/study` | 唯一首页：`web-view` + 加载失败页 + 右下角「刷新」 |
 | `config/h5-url.js` | 正式 H5 地址（与微信「业务域名」一致） |
 | `project.config.json` | 导入前将 `appid` 改为真实小程序 AppID（勿用 touristappid 提审） |
+| `assets/logo.png` | **INTEPOINT** 品牌图标（开机加载 / 开发者工具「小程序头像」同源） |
 
 ## 壳层验收（提审前）
 

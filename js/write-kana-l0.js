@@ -1,5 +1,5 @@
 /**
- * L0 五十音书写 · 清音 46+ん · 米字格 Canvas
+ * L0 五十音书写 · 清音 46+ん · 田字格 Canvas
  * 独立进度 state.write.kanaDone，不影响课内海星。
  */
 const WriteKanaL0 = (function () {
@@ -127,20 +127,21 @@ const WriteKanaL0 = (function () {
     }
 
     function cellHtml(c) {
-      if (!c) return '<td class="write-l0-cell is-empty"></td>';
+      if (!c) return '<td class="write-l0-empty" aria-hidden="true"></td>';
       return `<td>${cellInner(c)}</td>`;
     }
 
     let body = "";
     if (typeof INTRO_GOJUON_SEION !== "undefined") {
       body = INTRO_GOJUON_SEION.map((row) => {
+        const sparse = (row.cells || []).filter(Boolean).length < 5;
+        const rowCls = sparse ? ' class="write-l0-row-sparse"' : "";
         if (row.row === "ん") {
           const c = row.cells[0];
-          const empties = [null, null, null, null].map((x) => cellHtml(x)).join("");
-          return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cellHtml(c)}${empties}</tr>`;
+          return `<tr class="write-l0-row-n"><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cellHtml(c)}<td colspan="4" class="write-l0-empty" aria-hidden="true"></td></tr>`;
         }
         const cells = row.cells.map((c) => cellHtml(c)).join("");
-        return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
+        return `<tr${rowCls}><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
       }).join("");
     }
 
@@ -164,7 +165,7 @@ const WriteKanaL0 = (function () {
           <ol class="write-l0-learn-steps zh-annotation">
             <li><strong>认</strong>：底栏「注音」听清读音与行段</li>
             <li><strong>看</strong>：点假名 → 一览笔顺（分色·数字·箭头）</li>
-            <li><strong>写</strong>：米字格内跟分色笔顺摹写</li>
+            <li><strong>写</strong>：田字格内跟分色笔顺摹写</li>
             <li><strong>完成</strong>：点完成打勾，随时可重练</li>
           </ol>
           <p class="write-l0-learn-link zh-annotation">
@@ -304,16 +305,15 @@ const WriteKanaL0 = (function () {
           ${speakBtnHtml(entry.kana)}
         </div>
         ${readNote ? `<p class="write-l0-biaori-note zh-annotation">${escapeHtml(readNote)}</p>` : ""}
-        <p class="write-l0-hint write-l0-hint--sheet">米字格 · 按标日笔顺分色摹写（一览默认）</p>
+        <p class="write-l0-hint write-l0-hint--sheet zh-annotation">田字格 · 分色笔顺 · 跟数字与箭头在格内摹写</p>
         <div class="write-l0-mizige-wrap">
           <div class="write-l0-mizige" id="write-l0-mizige">
             <div class="write-l0-mizige-gridlines" aria-hidden="true"></div>
             <canvas class="write-l0-canvas" id="write-l0-canvas" aria-label="书写区域"></canvas>
           </div>
         </div>
-        <div class="write-l0-sheet-actions">
-          <button type="button" class="btn ghost" id="write-l0-clear">清除</button>
-          <button type="button" class="btn primary" id="write-l0-done">完成</button>
+        <div class="write-l0-sheet-actions write-l0-sheet-actions--solo">
+          <button type="button" class="btn primary" id="write-l0-done">完成 · 返回清音表</button>
         </div>
       </div>`;
 
@@ -328,7 +328,7 @@ const WriteKanaL0 = (function () {
       if (!WriteKanaStrokeUI.hasGuide(entry.kana)) {
         const hint = hostEl.querySelector(".write-l0-hint");
         if (hint) {
-          hint.textContent = "在米字格内书写 · 该字笔顺数据准备中";
+          hint.textContent = "在田字格内书写 · 该字笔顺数据准备中";
         }
       } else {
         WriteKanaStrokeUI.mount(mizige, entry.kana);
@@ -340,7 +340,6 @@ const WriteKanaL0 = (function () {
       window.removeEventListener("resize", resizeCanvas);
     }
 
-    document.getElementById("write-l0-clear").addEventListener("click", clearCanvas);
     document.getElementById("write-l0-done").addEventListener("click", () => {
       setDone(entry, true);
       if (typeof touchStudyDay === "function") touchStudyDay(stateRef);

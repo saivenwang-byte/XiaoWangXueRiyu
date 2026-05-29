@@ -2,7 +2,7 @@
   "pages": ["pages/study/study"],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FF8A80",
+    "navigationBarBackgroundColor": "#1a365d",
     "navigationBarTitleText": "标日 あと学習",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#FFF8E1"

@@ -3,13 +3,13 @@
 const NavIcons = (function () {
   const icons = {
     /**
-     * L0 顶栏 · 转发学习链接（与 qrcode 同系：stroke 2 · 圆角方块 + 右上折箭）
+     * L0 顶栏 · 转发学习链接（与 qrcode 同系：stroke 2 · 圆角卡片 + 向上外链箭头）
      * 真源矢量：icons/share-forward.svg
      */
     share:
       '<svg class="ui-icon ui-icon--share-forward" viewBox="0 0 24 24" aria-hidden="true">' +
-      '<rect x="3" y="12" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>' +
-      '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 10V5h6M18 5l-8 8"/></svg>',
+      '<rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>' +
+      '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 8V5M9.5 6.5 12 4l2.5 2.5"/></svg>',
 
     course:
       '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 4h9l3 3v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path fill="none" stroke="currentColor" stroke-width="2" d="M15 4v4h4"/><path fill="none" stroke="currentColor" stroke-width="1.5" d="M8 11h8M8 14h6"/></svg>',

@@ -21,6 +21,12 @@ page {
   text-align: center;
 }
 
+.study-logo {
+  width: 128rpx;
+  height: 128rpx;
+  margin-bottom: 28rpx;
+}
+
 .study-loading-text {
   font-size: 30rpx;
   color: #546e7a;

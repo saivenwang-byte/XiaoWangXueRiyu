@@ -1,5 +1,6 @@
 <view class="study-page">
   <view wx:if="{{loading && !loadFailed}}" class="study-loading" aria-role="status">
+    <image class="study-logo" src="/assets/logo.png" mode="aspectFit" aria-label="INTEPOINT" />
     <text class="study-loading-text">正在打开学习页…</text>
   </view>
 

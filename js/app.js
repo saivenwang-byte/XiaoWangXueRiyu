@@ -343,7 +343,11 @@
     });
     const nav = document.querySelector(".bottom-nav");
     if (nav) nav.style.display = "flex";
-    document.getElementById("page-title").textContent = titles[name] || titles.home;
+    if (typeof HyoTopBar !== "undefined") {
+      HyoTopBar.update(name);
+    } else {
+      document.getElementById("page-title").textContent = titles[name] || titles.home;
+    }
 
     if (name !== "lesson") closeAllModals();
 

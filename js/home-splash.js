@@ -52,15 +52,17 @@ const HomeSplash = (function () {
     </div>`;
   }
 
+  const LOGO_ICON = "assets/brand/intepoint-logo-icon.png";
+
   function uiChromeHtml() {
     const v = cacheVer();
-    const iconSrc = v ? `icons/icon.svg?v=${v}` : "icons/icon.svg";
+    const iconSrc = v ? `${LOGO_ICON}?v=${v}` : LOGO_ICON;
     return `
       <div class="splash-ui">
         <header class="splash-brand">
           <div class="splash-logo" aria-hidden="true">
             <span class="splash-logo-bg"></span>
-            <img src="${escapeHtml(iconSrc)}" alt="" width="36" height="36" decoding="async" />
+            <img src="${escapeHtml(iconSrc)}" alt="INTEPOINT" width="52" height="52" decoding="async" />
           </div>
           <h1 class="splash-title">标日 あと学習</h1>
           <p class="splash-path jp">学習の道</p>

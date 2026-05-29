@@ -111,7 +111,7 @@
   scroll-margin-bottom: 12px;
 }
 
-/* 书写页 · 主区可滚 + 底栏不裁切米字格 */
+/* 书写页 · 主区可滚 + 底栏不裁切田字格 */
 #view-write.view.active {
   display: flex;
   flex-direction: column;

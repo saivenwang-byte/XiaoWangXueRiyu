@@ -183,6 +183,7 @@ const WriteKanaStrokeUI = (function () {
     updateLabels();
   }
 
+  /** 田字格内分色笔顺（无工具栏 · 默认一览） */
   function mount(mizigeEl, kana) {
     destroy();
     guide = hasGuide(kana) ? KANA_STROKE_GUIDE[kana] : null;
@@ -191,32 +192,7 @@ const WriteKanaStrokeUI = (function () {
     stepIndex = 0;
     guideOn = true;
     viewMode = "overview";
-
-    wrapEl = document.createElement("div");
-    wrapEl.className = "write-l0-stroke-bar";
-    wrapEl.innerHTML = `
-      <div class="write-l0-stroke-toolbar">
-        <label class="write-l0-stroke-toggle">
-          <input type="checkbox" id="write-stroke-guide-cb" checked />
-          <span>笔顺</span>
-        </label>
-        <div class="write-l0-view-toggle" role="group" aria-label="查看模式">
-          <button type="button" class="btn ghost btn-sm is-on" data-mode="overview">一览</button>
-          <button type="button" class="btn ghost btn-sm" data-mode="focus">专注</button>
-        </div>
-        <span class="write-l0-stroke-step" aria-live="polite"></span>
-        <div class="write-l0-stroke-nav">
-          <button type="button" class="btn ghost btn-sm" id="write-stroke-prev" title="上一笔">‹</button>
-          <button type="button" class="btn ghost btn-sm" id="write-stroke-next" title="下一笔">›</button>
-        </div>
-      </div>
-      <p class="write-l0-stroke-legend zh-annotation">
-        <span class="write-l0-swatch" style="background:#E53935"></span>1
-        <span class="write-l0-swatch" style="background:#43A047"></span>2
-        <span class="write-l0-swatch" style="background:#1E88E5"></span>3
-        <span class="write-l0-swatch" style="background:#8E24AA"></span>4
-        每笔一色 · 数字=笔序 · 黑箭头=起笔（标日笔顺表）
-      </p>`;
+    wrapEl = null;
 
     svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgEl.setAttribute("class", "write-l0-stroke-svg");
@@ -226,30 +202,7 @@ const WriteKanaStrokeUI = (function () {
     const canvas = mizigeEl.querySelector(".write-l0-canvas");
     mizigeEl.insertBefore(svgEl, canvas);
 
-    const sheet = mizigeEl.closest(".write-l0-sheet");
-    const hint = sheet && sheet.querySelector(".write-l0-hint--sheet");
-    if (hint && hint.parentNode) {
-      hint.parentNode.insertBefore(wrapEl, hint.nextSibling);
-    }
-
-    wrapEl.querySelector("#write-stroke-guide-cb").addEventListener("change", (e) => {
-      setGuideEnabled(e.target.checked);
-    });
-    wrapEl.querySelectorAll(".write-l0-view-toggle button").forEach((btn) => {
-      btn.addEventListener("click", () => setViewMode(btn.getAttribute("data-mode")));
-    });
-    wrapEl.querySelector("#write-stroke-prev").addEventListener("click", () => {
-      setViewMode("focus");
-      setStep(stepIndex - 1);
-    });
-    wrapEl.querySelector("#write-stroke-next").addEventListener("click", () => {
-      setViewMode("focus");
-      setStep(stepIndex + 1);
-    });
-
     renderSvg();
-    updateLabels();
-    syncFocusNavVisibility();
     return true;
   }
 

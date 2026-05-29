@@ -40,6 +40,19 @@ MANUAL_KEEP: dict[str, list[int]] = {
     "の": [0],
 }
 
+# animCJK 笔序/左右式与标日教辅不一致 → 手工校正（viewBox 1024）
+# よ：d1 为右侧横笔，标日第1笔为左上短横
+MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
+    "よ": {
+        0: [[280, 355], [500, 335]],
+    },
+}
+
+# や：animCJK 导出顺序为下横→右上→左竖；标日为左竖→右上→下横
+MANUAL_ORDER: dict[str, list[int]] = {
+    "や": [2, 1, 0],
+}
+
 CENTER = VB / 2
 
 
@@ -131,12 +144,25 @@ def drop_mirror_variant_strokes(strokes: list[list[list[float]]]) -> list[list[l
     while i < len(strokes):
         if i + 1 < len(strokes) and _pair_variant(strokes[i], strokes[i + 1]):
             a, b = strokes[i], strokes[i + 1]
-            out.append(a if _x_mean(a) >= _x_mean(b) else b)
+            # 镜像副线：标日笔顺多从左起笔，保留 x 较小的一侧（如本应居左的横笔）
+            out.append(a if _x_mean(a) <= _x_mean(b) else b)
             i += 2
         else:
             out.append(strokes[i])
             i += 1
     return out
+
+
+def apply_manual_fixes(kana: str, strokes: list[list[list[float]]]) -> list[list[list[float]]]:
+    if kana in MANUAL_ORDER:
+        order = MANUAL_ORDER[kana]
+        if all(0 <= i < len(strokes) for i in order):
+            strokes = [strokes[i] for i in order]
+    if kana in MANUAL_REPLACE:
+        for idx, pts in MANUAL_REPLACE[kana].items():
+            if 0 <= idx < len(strokes):
+                strokes[idx] = [list(p) for p in pts]
+    return strokes
 
 
 def clean_strokes(kana: str, raw: list[list[list[float]]]) -> list[list[list[float]]]:
@@ -146,6 +172,7 @@ def clean_strokes(kana: str, raw: list[list[list[float]]]) -> list[list[list[flo
     if kana in MANUAL_KEEP:
         keep = MANUAL_KEEP[kana]
         strokes = [strokes[i] for i in keep if i < len(strokes)]
+    strokes = apply_manual_fixes(kana, strokes)
     return strokes
 
 
