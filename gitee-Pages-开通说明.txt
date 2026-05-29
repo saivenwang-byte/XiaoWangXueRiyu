@@ -1,0 +1,44 @@
+═══════════════════════════════════════════════════════
+  Gitee Pages · 国内微信链接开通（xiao-wang-xue-riyu-v2）
+═══════════════════════════════════════════════════════
+
+【结论】
+  代码已在 Gitee（main 分支，含 tts-cache 整站）。
+  API 显示 has_page = false → Pages 服务未启动。
+  公网 404 = 还差「登录 Gitee 点一次 Pages 启动」。
+
+【请你做 1 次 · 约 1 分钟】
+
+  双击：打开Gitee-Pages设置.bat
+
+  或手动：
+  1. 登录 https://gitee.com
+  2. 打开仓库 saivenwang-byte/xiao-wang-xue-riyu-v2
+  3. 服务 → Gitee Pages → 分支 main → 目录 / → 启动
+  4. 等 1～3 分钟
+
+  检查：python scripts/gitee-pages-status.py
+
+【Pages 生效后 · 微信转发】
+
+  https://saivenwang-byte.gitee.io/xiao-wang-xue-riyu-v2/index.html?v=385
+
+  双击：帮你发布-Gitee国内.bat（复制到剪贴板）
+
+【若提示未实名认证】
+
+  Gitee 要求账号实名后才可部署 Pages。
+  设置 → 账号设置 → 实名认证 → 完成后再启动 Pages。
+
+【日常更新】
+
+  1. 发布前自检.bat
+  2. git push gitee main
+  3. Gitee Pages 会自动重新部署（或 Pages 页点「更新」）
+  4. 帮你发布-Gitee国内.bat
+
+【备份链接（GitHub · 已可用）】
+
+  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=385
+
+═══════════════════════════════════════════════════════

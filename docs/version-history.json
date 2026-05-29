@@ -2,7 +2,7 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "384",
+    "cache": "385",
     "date": "2026-05-29",
     "note": "微信书写页笔顺图加载与移动端布局 v384",
     "git_tag": null,
