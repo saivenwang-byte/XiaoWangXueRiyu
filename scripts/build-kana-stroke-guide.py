@@ -35,59 +35,30 @@ STD_STROKES = {
     "ら": 2, "り": 2, "る": 1, "れ": 2, "ろ": 1, "わ": 2, "を": 3, "ん": 1,
 }
 
-# animCJK 偶发整笔重复或副线，按索引保留
-MANUAL_KEEP: dict[str, list[int]] = {
-    "の": [0],
-}
-
-# animCJK 笔序/左右式与标日教辅不一致 → 手工校正（viewBox 1024）
-# よ：d1 为右侧横笔，标日第1笔为左上短横
-MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
-    "よ": {
-        0: [[280, 355], [500, 335]],
-    },
-}
-
-# や：animCJK 导出顺序为下横→右上→左竖；标日为左竖→右上→下横
-MANUAL_ORDER: dict[str, list[int]] = {
-    "や": [2, 1, 0],
-}
-
-# 标日教辅笔形（viewBox 1024）· animCJK 中线折点过多时整笔替换
-MANUAL_REPLACE.update({
+# ── 平假名专用手工表（勿用于片假名）────────────────────────────
+HIRA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
+    "よ": {0: [[280, 355], [500, 335]]},
     "か": {
         0: [[270, 410], [610, 410], [390, 560]],
         1: [[390, 200], [390, 760]],
         2: [[580, 500], [680, 590]],
     },
-    "き": {
-        0: [[300, 200], [300, 520]],
-        1: [[300, 520], [620, 520]],
-        2: [[480, 520], [480, 780]],
-        3: [[620, 780], [720, 680]],
-    },
-    "け": {
-        0: [[280, 220], [280, 780]],
-        1: [[280, 420], [600, 420]],
-        2: [[600, 420], [600, 780]],
-    },
-    "さ": {
-        0: [[320, 240], [320, 780]],
-        1: [[320, 420], [680, 420]],
-        2: [[680, 420], [520, 780]],
-    },
-    "そ": {
-        0: [[280, 380], [720, 380], [450, 780]],
-    },
-    "ね": {
-        0: [[300, 200], [300, 780]],
-        1: [[300, 620], [680, 480], [720, 720]],
-    },
-    "ぬ": {
-        0: [[300, 220], [300, 780]],
-        1: [[300, 500], [700, 500], [700, 780]],
-    },
-})
+}
+
+HIRA_MANUAL_ORDER: dict[str, list[int]] = {
+    "や": [2, 1, 0],
+}
+
+HIRA_MANUAL_KEEP: dict[str, list[int]] = {
+    "の": [0],
+}
+
+# ── 片假名专用（与平假名分开对账；默认仅 canonicalize animCJK 片假名 SVG）──
+KATA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {}
+
+KATA_MANUAL_ORDER: dict[str, list[int]] = {}
+
+KATA_MANUAL_KEEP: dict[str, list[int]] = {}
 
 CENTER = VB / 2
 RDP_EPS = 95
@@ -116,8 +87,12 @@ def extract_medians(svg_text: str) -> list[list[list[float]]]:
     return strokes
 
 
-def in_viewbox(stroke: list[list[float]]) -> bool:
-    return all(0 <= x <= VB and 0 <= y <= VB for x, y in stroke)
+def point_in_viewbox(p: list[float]) -> bool:
+    return 0 <= p[0] <= VB and 0 <= p[1] <= VB
+
+
+def stroke_in_viewbox(stroke: list[list[float]]) -> bool:
+    return len(stroke) >= 2 and all(point_in_viewbox(p) for p in stroke)
 
 
 def dedup_strokes(strokes: list[list[list[float]]], tol: float = 40) -> list[list[list[float]]]:
@@ -233,26 +208,48 @@ def canonicalize_stroke(pts: list[list[float]]) -> list[list[float]]:
     return simp
 
 
-def apply_manual_fixes(kana: str, strokes: list[list[list[float]]]) -> list[list[list[float]]]:
-    if kana in MANUAL_ORDER:
-        order = MANUAL_ORDER[kana]
-        if all(0 <= i < len(strokes) for i in order):
-            strokes = [strokes[i] for i in order]
-    if kana in MANUAL_REPLACE:
-        for idx, pts in MANUAL_REPLACE[kana].items():
+def _stroke_ok(stroke: list[list[float]]) -> bool:
+    return stroke_in_viewbox(stroke)
+
+
+def apply_manual_fixes(
+    kana: str,
+    strokes: list[list[list[float]]],
+    *,
+    replace: dict,
+    order: dict,
+    keep: dict,
+) -> list[list[list[float]]]:
+    if kana in order:
+        ord_list = order[kana]
+        if all(0 <= i < len(strokes) for i in ord_list):
+            strokes = [strokes[i] for i in ord_list]
+    if kana in replace:
+        for idx, pts in replace[kana].items():
             if 0 <= idx < len(strokes):
                 strokes[idx] = [list(p) for p in pts]
+    if kana in keep:
+        strokes = [strokes[i] for i in keep[kana] if i < len(strokes)]
     return strokes
 
 
-def clean_strokes(kana: str, raw: list[list[list[float]]]) -> list[list[list[float]]]:
-    strokes = [s for s in raw if s and s[0][0] >= 0 and in_viewbox(s)]
+def clean_strokes(
+    kana: str,
+    raw: list[list[list[float]]],
+    *,
+    script: str,
+) -> list[list[list[float]]]:
+    strokes = [s for s in raw if s and _stroke_ok(s)]
     strokes = dedup_strokes(strokes)
     strokes = drop_mirror_variant_strokes(strokes)
-    if kana in MANUAL_KEEP:
-        keep = MANUAL_KEEP[kana]
-        strokes = [strokes[i] for i in keep if i < len(strokes)]
-    strokes = apply_manual_fixes(kana, strokes)
+    if script == "hira":
+        strokes = apply_manual_fixes(
+            kana, strokes, replace=HIRA_MANUAL_REPLACE, order=HIRA_MANUAL_ORDER, keep=HIRA_MANUAL_KEEP
+        )
+    else:
+        strokes = apply_manual_fixes(
+            kana, strokes, replace=KATA_MANUAL_REPLACE, order=KATA_MANUAL_ORDER, keep=KATA_MANUAL_KEEP
+        )
     strokes = [canonicalize_stroke(s) for s in strokes]
     return strokes
 
@@ -263,13 +260,12 @@ def to_katakana(hiragana: str) -> str:
     )
 
 
-def strokes_from_svg(char: str, manual_key: str | None) -> list[list[list[float]]] | None:
+def strokes_from_svg(char: str, *, script: str) -> list[list[list[float]]] | None:
     svg_path = SVG_DIR / f"{ord(char)}.svg"
     if not svg_path.is_file():
         return None
     raw = extract_medians(svg_path.read_text(encoding="utf-8"))
-    key = manual_key if manual_key is not None else char
-    strokes = clean_strokes(key, raw)
+    strokes = clean_strokes(char, raw, script=script)
     return strokes if strokes else None
 
 
@@ -283,19 +279,19 @@ def main() -> None:
     mismatches: list[str] = []
 
     for kana in SEION_KANA:
-        strokes = strokes_from_svg(kana, kana)
+        strokes = strokes_from_svg(kana, script="hira")
         if not strokes:
             missing.append(kana)
             continue
         exp = STD_STROKES.get(kana)
         if exp is not None and len(strokes) != exp:
-            mismatches.append(f"{kana}: got {len(strokes)} expect {exp}")
+            mismatches.append(f"hira {kana}: got {len(strokes)} expect {exp}")
         guide[kana] = {"vb": [0, 0, VB, VB], "strokes": strokes}
 
         kata = to_katakana(kana)
         if kata in guide:
             continue
-        kata_strokes = strokes_from_svg(kata, None)
+        kata_strokes = strokes_from_svg(kata, script="kata")
         if not kata_strokes:
             kata_missing.append(kata)
             continue
@@ -307,7 +303,8 @@ def main() -> None:
  * 清音笔顺中线 · 源自 animCJK svgsJaKana（LGPL-3+）
  * https://github.com/parsimonhi/animCJK
  * 生成：python scripts/build-kana-stroke-guide.py
- * 清洗：viewBox 内 · 去重 · 教材笔顺表校对（平假名+片假名各 46）
+ * 清洗：平假名/片假名分轨 · 去重 · 教材笔顺表校对（各 46）
+ * 对账：python scripts/audit-kana-strokes-batch.py
  */
 const KANA_STROKE_GUIDE = """
     footer = ";\n"
