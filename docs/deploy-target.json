@@ -1,6 +1,6 @@
 {
   "schema": "deploy-target-v1",
-  "active": "github",
+  "active": "gitee",
   "wechatPrimary": "gitee",
   "channels": {
     "github": {
@@ -10,9 +10,9 @@
     },
     "gitee": {
       "label": "Gitee Pages（国内过渡 A）",
-      "giteeUser": "REPLACE_GITEE_USER",
-      "repo": "XiaoWangXueRiyu",
-      "publicOrigin": "https://REPLACE_GITEE_USER.gitee.io/XiaoWangXueRiyu",
+      "giteeUser": "saivenwang-byte",
+      "repo": "xiao-wang-xue-riyu-v2",
+      "publicOrigin": "https://saivenwang-byte.gitee.io/xiao-wang-xue-riyu-v2",
       "ttsOrigin": "",
       "pagesBranch": "main"
     },

@@ -184,7 +184,7 @@ def main() -> None:
     print("[OK] 已写入 public-url.config.js / share-wechat.js / h5-url.js")
     print("[OK] 已同步 tts-cache/sw-manifest.json")
     if channel in ("gitee", "cos"):
-        print("[NEXT] 上传整站静态资源后，微信 4G 验收首课 🔊")
+        print("[NEXT] 上传整站静态资源后，微信 4G 验收首课语音")
 
 
 if __name__ == "__main__":

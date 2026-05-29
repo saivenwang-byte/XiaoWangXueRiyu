@@ -1,6 +1,6 @@
 {
   "cacheVer": "384",
-  "ttsBase": "https://cdn.jsdelivr.net/gh/saivenwang-byte/XiaoWangXueRiyu-v2@main/tts-cache/",
+  "ttsBase": "https://saivenwang-byte.gitee.io/xiao-wang-xue-riyu-v2/tts-cache/",
   "batchSize": 40,
   "note": "由 scripts/sync-tts-sw-manifest.py 维护；与 js/public-url.config.js 一致"
 }
