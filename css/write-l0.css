@@ -460,16 +460,31 @@
 
 .write-l0-trace-char {
   position: absolute;
-  inset: 0;
+  inset: 2%;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(7rem, 52vw, 11rem);
   font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
-  color: rgba(55, 71, 79, 0.14);
   pointer-events: none;
   user-select: none;
   line-height: 1;
+  letter-spacing: 0;
+}
+
+/* 平假名：圆润淡影 · 与清音表大字同源 */
+.write-l0-mizige.is-hiragana .write-l0-trace-char {
+  font-size: clamp(6.8rem, 50vw, 10.5rem);
+  font-weight: 400;
+  color: rgba(55, 71, 79, 0.16);
+}
+
+/* 片假名：略瘦、略深 · 折角感由笔顺 tension 承担 */
+.write-l0-mizige.is-katakana .write-l0-trace-char {
+  font-size: clamp(6.4rem, 48vw, 10rem);
+  font-weight: 500;
+  color: rgba(38, 50, 56, 0.18);
+  letter-spacing: -0.02em;
 }
 
 .write-l0-trace-char.is-hidden {
@@ -483,12 +498,17 @@
   height: 92%;
   pointer-events: none;
   z-index: 2;
-  /* 禁止滤镜叠影 */
   filter: none;
 }
 
-.write-l0-stroke-svg .write-stroke-path {
+.write-l0-mizige.is-hiragana .write-l0-stroke-svg .write-stroke-path {
   vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.write-l0-mizige.is-katakana .write-l0-stroke-svg .write-stroke-path {
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
 }
 
 .write-l0-stroke-svg .write-stroke-arrow {

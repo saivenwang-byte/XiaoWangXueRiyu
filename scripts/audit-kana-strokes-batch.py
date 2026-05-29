@@ -115,11 +115,12 @@ def geom_flags(char: str, strokes: list) -> list[str]:
             flags.append("疑为工字形误笔（应弧笔起笔）")
         if is_horiz(strokes[1]) and is_vert(strokes[0]) and abs(xmean(strokes[0]) - xmean(strokes[1])) < 60:
             flags.append("疑为工字形误笔")
+    pt_cap = 14 if ord(char) < 0x30A0 else 11
     for i, s in enumerate(strokes):
         if any(not in_vb(p) for p in s):
             flags.append(f"笔{i+1}越界")
-        if len(s) > 5:
-            flags.append(f"笔{i+1}折点>{5}")
+        if len(s) > pt_cap:
+            flags.append(f"笔{i+1}折点>{pt_cap}")
     return flags
 
 

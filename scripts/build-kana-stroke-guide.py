@@ -61,8 +61,9 @@ KATA_MANUAL_ORDER: dict[str, list[int]] = {}
 KATA_MANUAL_KEEP: dict[str, list[int]] = {}
 
 CENTER = VB / 2
-RDP_EPS = 95
-MAX_STROKE_PTS = 5
+# 平假名：保留更多弧点（屏上 SVG 再平滑）；片假名：略少点、折角稍利
+RDP_EPS = {"hira": 38, "kata": 54}
+MAX_STROKE_PTS = {"hira": 14, "kata": 11}
 
 
 def parse_path_d(d: str) -> list[list[float]]:
@@ -194,15 +195,17 @@ def _rdp(pts: list[list[float]], eps: float) -> list[list[float]]:
     return left[:-1] + right
 
 
-def canonicalize_stroke(pts: list[list[float]]) -> list[list[float]]:
-    """标日静态笔顺：少折点、直线+一弯，避免 animCJK 动画中线乱折。"""
+def canonicalize_stroke(pts: list[list[float]], *, script: str) -> list[list[float]]:
+    """标日笔顺中线：去噪但保留弧线点，供 SVG 曲线描边（非折线）。"""
     if len(pts) < 2:
         return [list(p) for p in pts]
-    simp = _rdp([list(p) for p in pts], RDP_EPS)
-    if len(simp) > MAX_STROKE_PTS:
+    eps = RDP_EPS.get(script, RDP_EPS["hira"])
+    cap = MAX_STROKE_PTS.get(script, MAX_STROKE_PTS["hira"])
+    simp = _rdp([list(p) for p in pts], eps)
+    if len(simp) > cap:
         keep = [0]
-        for i in range(1, MAX_STROKE_PTS - 1):
-            keep.append(int(i * (len(simp) - 1) / (MAX_STROKE_PTS - 1)))
+        for i in range(1, cap - 1):
+            keep.append(int(i * (len(simp) - 1) / (cap - 1)))
         keep.append(len(simp) - 1)
         simp = [simp[i] for i in sorted(set(keep))]
     return simp
@@ -250,7 +253,7 @@ def clean_strokes(
         strokes = apply_manual_fixes(
             kana, strokes, replace=KATA_MANUAL_REPLACE, order=KATA_MANUAL_ORDER, keep=KATA_MANUAL_KEEP
         )
-    strokes = [canonicalize_stroke(s) for s in strokes]
+    strokes = [canonicalize_stroke(s, script=script) for s in strokes]
     return strokes
 
 

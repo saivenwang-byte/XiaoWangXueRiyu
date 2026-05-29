@@ -338,10 +338,11 @@ const WriteKanaL0 = (function () {
           ${speakBtnHtml(entry.kana)}
         </div>
         ${readNote ? `<p class="write-l0-biaori-note zh-annotation">${escapeHtml(readNote)}</p>` : ""}
-        <p class="write-l0-hint write-l0-hint--sheet zh-annotation">田字格 · 分色笔顺 · 跟数字与箭头在格内摹写</p>
+        <p class="write-l0-hint write-l0-hint--sheet zh-annotation">淡灰字形为清音表字体 · 彩色弧线为笔顺 · 跟数字箭头摹写</p>
         <div class="write-l0-mizige-wrap">
           <div class="write-l0-mizige" id="write-l0-mizige">
             <div class="write-l0-mizige-gridlines" aria-hidden="true"></div>
+            <div class="write-l0-trace-char" aria-hidden="true"></div>
             <canvas class="write-l0-canvas" id="write-l0-canvas" aria-label="书写区域"></canvas>
           </div>
         </div>
@@ -357,22 +358,26 @@ const WriteKanaL0 = (function () {
     window.addEventListener("resize", resizeCanvas);
 
     const mizige = document.getElementById("write-l0-mizige");
+    const wSheet = ensureWriteState(stateRef);
     if (typeof WriteKanaStrokeUI !== "undefined" && mizige) {
       const guideChar = strokeGuideChar(entry);
+      const displayChar = wSheet.script === "katakana" ? toKatakana(entry.kana) : entry.kana;
       if (!WriteKanaStrokeUI.hasGuide(guideChar)) {
         const hint = hostEl.querySelector(".write-l0-hint");
         if (hint) {
           hint.textContent = "在田字格内书写 · 该字笔顺数据准备中";
         }
       } else {
-        WriteKanaStrokeUI.mount(mizige, guideChar);
+        WriteKanaStrokeUI.mount(mizige, guideChar, {
+          script: wSheet.script,
+          displayChar,
+        });
         const hint = hostEl.querySelector(".write-l0-hint--sheet");
         if (hint) {
-          const w = ensureWriteState(stateRef);
           hint.textContent =
-            w.script === "katakana"
-              ? "田字格 · 片假名笔顺（与表内大字一致）· 跟数字与箭头摹写"
-              : "田字格 · 平假名笔顺（标日）· 跟数字与箭头摹写";
+            wSheet.script === "katakana"
+              ? "片假名：淡灰片假名底稿 + 弧线笔顺（与表内大字一致）"
+              : "平假名：淡灰平假名底稿 + 弧线笔顺（与清音表一致）";
         }
       }
     }
