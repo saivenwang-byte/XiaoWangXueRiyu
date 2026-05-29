@@ -1,10 +1,348 @@
-/* L0 五十音书写 · 田字格（四分方）+ Canvas（独立进度，不影响课内海星） */
+/* L0 五十音书写 · v2 瓦片棋盘 + 田字格 Canvas */
 
 .write-l0-root {
-  padding: 0 12px 16px;
+  padding: 0 12px 12px;
   max-width: 480px;
   margin: 0 auto;
 }
+
+/* ── v2 清音选字表 ── */
+.write-l0-root.is-v2-grid {
+  padding-bottom: 8px;
+}
+
+.write-l0-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.write-l0-zone-a-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.write-l0-zone-a-title {
+  margin: 0;
+  flex: 1;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.write-l0-zone-a-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.write-l0-help-btn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--hy-border-soft, #e8e0d0);
+  border-radius: 50%;
+  background: var(--hy-surface-white, #fff);
+  color: var(--hy-brand-navy-muted, #4a6fa5);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.write-l0-progress-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(30, 58, 95, 0.1);
+  overflow: hidden;
+}
+
+.write-l0-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hy-brand-coral-dark, #e57373);
+  transition: width 0.2s ease;
+}
+
+.write-l0-zone-b {
+  display: flex;
+  justify-content: center;
+}
+
+.write-l0-segment {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(30, 58, 95, 0.06);
+  border: 1px solid var(--hy-border-soft, #e8e0d0);
+}
+
+.write-l0-segment button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 4.75rem;
+  padding: 5px 12px 4px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--hy-zh-muted, #90a4ae);
+}
+
+.write-l0-segment-jp {
+  font-size: 0.8125rem;
+  line-height: 1.15;
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+
+.write-l0-segment-zh {
+  font-size: 0.58rem;
+  line-height: 1.1;
+  color: var(--hy-zh-muted, #90a4ae);
+}
+
+.write-l0-segment button.is-on {
+  background: var(--hy-surface-white, #fff);
+  box-shadow: 0 1px 4px rgba(30, 58, 95, 0.1);
+}
+
+.write-l0-segment button.is-on .write-l0-segment-jp {
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-weight: 600;
+}
+
+.write-l0-segment button.is-on .write-l0-segment-zh {
+  color: var(--hy-text-muted, #6d4c41);
+}
+
+.write-l0-zone-c {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.write-l0-tile-board {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.write-l0-tile-dan-row,
+.write-l0-tile-row {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 5px;
+  align-items: stretch;
+}
+
+.write-l0-tile-dan-row {
+  margin-bottom: 2px;
+}
+
+.write-l0-tile-dan-row {
+  grid-template-columns: 26px repeat(5, 1fr);
+}
+
+.write-l0-tile-corner {
+  display: block;
+}
+
+.write-l0-tile-dan {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--hy-zh-muted, #90a4ae);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+  padding-bottom: 2px;
+}
+
+.write-l0-tile-row-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+  border-right: 2px solid rgba(30, 58, 95, 0.2);
+}
+
+.write-l0-tile-row-cells {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.write-l0-tile,
+.write-l0-tile-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  padding: 4px 2px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.write-l0-tile {
+  width: 100%;
+  border: 1px solid var(--hy-border-soft, #e8e0d0);
+  background: var(--hy-surface-white, #fff);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.write-l0-tile:active {
+  transform: scale(0.98);
+  border-color: var(--hy-brand-coral-dark, #e57373);
+  box-shadow: 0 2px 8px rgba(229, 115, 115, 0.2);
+}
+
+.write-l0-tile.is-done {
+  border-color: rgba(90, 143, 98, 0.45);
+}
+
+.write-l0-tile.is-done::after {
+  content: "✓";
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(90, 143, 98, 0.15);
+  font-size: 0.5625rem;
+  line-height: 14px;
+  text-align: center;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.write-l0-tile-kana {
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+
+.write-l0-tile-roma {
+  margin-top: 2px;
+  font-size: 0.62rem;
+  line-height: 1.1;
+  color: var(--hy-zh-muted, #90a4ae);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.write-l0-tile-hira {
+  margin-top: 1px;
+  font-size: 0.55rem;
+  line-height: 1.1;
+  color: var(--hy-zh-muted, #90a4ae);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+
+.write-l0-tile-slot.is-empty {
+  visibility: hidden;
+  pointer-events: none;
+  min-height: 3.5rem;
+}
+
+/* ? 底部抽屉 */
+.write-l0-drawer[hidden] {
+  display: none;
+}
+
+.write-l0-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.write-l0-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 58, 95, 0.35);
+}
+
+.write-l0-drawer-panel {
+  position: relative;
+  margin: 0 12px calc(var(--nav-h, 56px) + 8px);
+  padding: 16px 16px 14px;
+  border-radius: 16px 16px 12px 12px;
+  background: var(--hy-surface-white, #fff);
+  box-shadow: 0 -4px 24px rgba(30, 58, 95, 0.15);
+  max-width: 456px;
+  width: calc(100% - 24px);
+  align-self: center;
+}
+
+.write-l0-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.write-l0-drawer-head h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+}
+
+.write-l0-drawer-close {
+  border: none;
+  background: none;
+  font-size: 1.125rem;
+  color: var(--hy-zh-muted, #90a4ae);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.write-l0-drawer-steps {
+  margin: 0 0 14px;
+  padding-left: 1.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--hy-text-primary, #3e2723);
+}
+
+.write-l0-drawer-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.write-l0-drawer-actions .btn {
+  min-width: 88px;
+}
+
+body.write-l0-drawer-open {
+  overflow: hidden;
+}
+
+/* ── 遗留 v1（单字页等仍引用） ── */
 
 .write-l0-hero {
   margin: 8px 0 12px;
@@ -168,8 +506,8 @@
 
 .write-l0-biaori-note {
   margin: -4px 0 8px;
-  font-size: 0.75rem;
-  color: #1565c0;
+  font-size: 0.68rem;
+  color: var(--hy-zh-muted, #90a4ae);
   text-align: center;
 }
 
@@ -353,7 +691,289 @@
   line-height: 0;
 }
 
-/* ── 单字书写页 ── */
+/* ── v2 单字书写页 ── */
+.write-l0-root.is-v2-sheet {
+  padding-bottom: 4px;
+}
+
+.write-l0-sheet--v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: calc(100dvh - var(--hy-top-h, 48px) - var(--nav-h, 56px) - 24px);
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 0;
+}
+
+.write-l0-sheet--v2 .write-l0-back {
+  font-size: 1.125rem;
+  padding: 4px 6px;
+  min-width: 32px;
+}
+
+.write-l0-sheet-heading {
+  flex: 1;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px 8px;
+  min-width: 0;
+  text-align: center;
+}
+
+.write-l0-sheet-kana-main {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-roma {
+  font-size: 0.75rem;
+  color: var(--hy-zh-muted, #90a4ae);
+  font-variant-numeric: tabular-nums;
+}
+
+.write-l0-sheet-pair-inline {
+  font-size: 0.68rem;
+  color: var(--hy-zh-muted, #90a4ae);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-meta {
+  font-size: 0.68rem;
+  color: var(--hy-zh-muted, #90a4ae);
+}
+
+.write-l0-sheet--v2 .write-l0-biaori-note {
+  margin: -4px 0 0;
+}
+
+.write-l0-sheet-stage {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+  min-height: 0;
+}
+
+.write-l0-stage-card {
+  position: relative;
+  width: min(84vw, 340px);
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--hy-surface-white, #fff);
+  box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+  box-sizing: border-box;
+}
+
+.write-l0-kata-badge {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 4;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.58rem;
+  color: var(--hy-brand-navy-muted, #4a6fa5);
+  background: rgba(30, 58, 95, 0.06);
+  border: 1px solid var(--hy-border-soft, #e8e0d0);
+  pointer-events: none;
+}
+
+.write-l0-sheet--v2 .write-l0-mizige-wrap {
+  flex: none;
+  padding: 0;
+  width: 100%;
+}
+
+.write-l0-sheet--v2 .write-l0-mizige.has-nazorigaki {
+  aspect-ratio: 1;
+  width: min(92vw, 360px);
+  max-width: 100%;
+}
+
+.write-l0-sheet--v2 .write-l0-mizige {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 1;
+  border: 1.5px solid #d4a5a5;
+  border-radius: 10px;
+  background: #fffef9;
+  box-shadow: inset 0 0 0 1px rgba(212, 165, 165, 0.25);
+  --write-ghost-fill-hira: rgba(55, 71, 79, 0.14);
+  --write-ghost-fill-kata: rgba(38, 50, 56, 0.16);
+}
+
+.write-l0-sheet--v2 .write-l0-mizige-gridlines {
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), rgba(232, 180, 180, 0.3) calc(50% - 0.5px), rgba(232, 180, 180, 0.3) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), rgba(232, 180, 180, 0.3) calc(50% - 0.5px), rgba(232, 180, 180, 0.3) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+}
+
+.write-l0-mizige.has-nazorigaki {
+  border-color: transparent;
+  background: #fff;
+  box-shadow: none;
+  aspect-ratio: 1;
+  width: min(92vw, 360px);
+  max-width: 100%;
+}
+
+.write-l0-mizige.has-nazorigaki .write-l0-mizige-gridlines {
+  opacity: 0;
+}
+
+.write-l0-nazorigaki {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.write-l0-nazo-knowledge {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(30, 58, 95, 0.04);
+  border: 1px solid var(--hy-border-soft, #e8e0d0);
+}
+
+.write-l0-nazo-examples,
+.write-l0-nazo-techniques,
+.write-l0-nazo-row {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.write-l0-nazo-examples:last-child,
+.write-l0-nazo-techniques:last-child,
+.write-l0-nazo-row:last-child {
+  margin-bottom: 0;
+}
+
+.write-l0-nazo-word {
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: 600;
+  color: var(--hy-brand-navy, #1e3a5f);
+}
+
+.write-l0-nazo-tech {
+  font-weight: 600;
+  color: #c62828;
+}
+
+.write-l0-nazo-peer {
+  display: inline-block;
+  margin: 0 2px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--hy-brand-navy-muted, #4a6fa5);
+}
+
+.write-l0-nazo-peer.is-current {
+  background: rgba(229, 57, 53, 0.12);
+  color: #c62828;
+  font-weight: 700;
+}
+
+.write-l0-nazorigaki.is-hidden {
+  visibility: hidden;
+}
+
+.write-l0-stroke-bar.is-nazorigaki .write-l0-view-toggle,
+.write-l0-stroke-bar.is-nazorigaki .write-l0-stroke-nav {
+  display: none;
+}
+
+.write-l0-control-deck {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.write-l0-sheet--v2 .write-l0-stroke-bar {
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+}
+
+.write-l0-sheet--v2 .write-l0-stroke-toolbar {
+  justify-content: center;
+  gap: 6px;
+}
+
+.write-l0-sheet--v2 .write-l0-stroke-step {
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-size: 0.72rem;
+}
+
+.write-l0-sheet--v2 .write-l0-stroke-toggle {
+  font-size: 0.75rem;
+  color: var(--hy-brand-navy, #1e3a5f);
+}
+
+.write-l0-sheet--v2 .write-l0-view-toggle {
+  border-color: var(--hy-border-soft, #e8e0d0);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.write-l0-sheet--v2 .write-l0-view-toggle button.is-on {
+  background: rgba(30, 58, 95, 0.08);
+  color: var(--hy-brand-navy, #1e3a5f);
+  font-weight: 600;
+}
+
+.write-l0-sheet--v2 .write-l0-stroke-legend {
+  font-size: 0.68rem;
+}
+
+.write-l0-sheet-fallback-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--hy-zh-muted, #90a4ae);
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-actions {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  padding: 0 0 8px;
+  margin-top: auto;
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-actions .btn.ghost {
+  flex: 0 0 auto;
+  min-width: 96px;
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  color: var(--hy-brand-navy-muted, #4a6fa5);
+  border-color: var(--hy-border-soft, #e8e0d0);
+}
+
+.write-l0-sheet--v2 .write-l0-sheet-actions .btn.primary {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+}
+
+/* ── 单字书写页（遗留） ── */
 .write-l0-sheet {
   display: flex;
   flex-direction: column;
@@ -372,7 +992,7 @@
   border: none;
   background: none;
   font-size: 0.875rem;
-  color: var(--mvp-primary-dark, #e65100);
+  color: var(--hy-brand-navy-muted, #4a6fa5);
   padding: 6px 4px;
   cursor: pointer;
 }
@@ -527,6 +1147,10 @@
 
 .write-l0-stroke-svg .write-stroke-arrow {
   opacity: 0.92;
+}
+
+.write-l0-stroke-svg .write-stroke-jump {
+  pointer-events: none;
 }
 
 .write-l0-stroke-svg .write-stroke-num {

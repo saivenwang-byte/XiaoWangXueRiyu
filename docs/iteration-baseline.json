@@ -168,7 +168,7 @@
 
     "product": "1.0.2",
 
-    "cache": "372",
+    "cache": "382",
 
     "cache_files": [
 
@@ -186,9 +186,9 @@
 
     ],
 
-    "local": "http://localhost:8765/index.html?v=372",
+    "local": "http://localhost:8765/index.html?v=382",
 
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=372",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=378",
 
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
 
