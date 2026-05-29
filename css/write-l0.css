@@ -1,9 +1,11 @@
 /* L0 五十音书写 · v2 瓦片棋盘 + 田字格 Canvas */
 
 .write-l0-root {
-  padding: 0 12px 12px;
-  max-width: 480px;
-  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 10px 12px;
 }
 
 /* ── v2 清音选字表 ── */
@@ -16,6 +18,8 @@
   flex-direction: column;
   gap: 10px;
   min-height: 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .write-l0-zone-a-head {
@@ -72,9 +76,16 @@
   transition: width 0.2s ease;
 }
 
+.write-l0-zone-a {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 2px;
+}
+
 .write-l0-zone-b {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .write-l0-segment {
@@ -128,6 +139,8 @@
 .write-l0-zone-c {
   flex: 1;
   min-height: 0;
+  width: 100%;
+  min-width: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
@@ -137,6 +150,8 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  width: 100%;
+  min-width: 0;
 }
 
 .write-l0-tile-dan-row,
@@ -145,6 +160,8 @@
   grid-template-columns: 26px 1fr;
   gap: 5px;
   align-items: stretch;
+  width: 100%;
+  min-width: 0;
 }
 
 .write-l0-tile-dan-row {
@@ -152,7 +169,7 @@
 }
 
 .write-l0-tile-dan-row {
-  grid-template-columns: 26px repeat(5, 1fr);
+  grid-template-columns: 26px repeat(5, minmax(0, 1fr));
 }
 
 .write-l0-tile-corner {
@@ -182,8 +199,9 @@
 
 .write-l0-tile-row-cells {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 5px;
+  min-width: 0;
 }
 
 .write-l0-tile,
@@ -263,6 +281,39 @@
   visibility: hidden;
   pointer-events: none;
   min-height: 3.5rem;
+}
+
+/* 390 真机 · Zone C 棋盘铺满可用屏宽（书写 v2 · 平面轻量 UI） */
+@media (max-width: 420px) {
+  .write-l0-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .write-l0-tile-dan-row,
+  .write-l0-tile-row {
+    gap: 4px;
+    grid-template-columns: 22px 1fr;
+  }
+
+  .write-l0-tile-dan-row {
+    grid-template-columns: 22px repeat(5, minmax(0, 1fr));
+  }
+
+  .write-l0-tile-row-cells {
+    gap: 4px;
+  }
+
+  .write-l0-tile,
+  .write-l0-tile-slot {
+    min-height: 3.35rem;
+    border-radius: 8px;
+  }
+
+  .write-l0-sheet--v2 .write-l0-stage-card {
+    width: 100%;
+    max-width: none;
+  }
 }
 
 /* ? 底部抽屉 */
