@@ -1,11 +1,13 @@
 /**
- * 五十音描红笔顺 · P0.5 静态一览（分色 + 起点数字·小箭头 + 笔间虚线）
- * 参考：happylilac カラー書き順 / 粉色笔顺标注表 · 数据 KANA_STROKE_GUIDE（animCJK · LGPL）
+ * 五十音描红笔顺 · P0.5 一览分色（参考五十音笔顺表：每笔一色 · 数字+小箭头 · 无叠影）
+ * 数据 KANA_STROKE_GUIDE（animCJK · LGPL）
  */
 const WriteKanaStrokeUI = (function () {
-  const STROKE_COLORS = ["#E53935", "#1E88E5", "#43A047", "#8E24AA", "#FB8C00"];
-  const FLY_COLOR = "rgba(233, 30, 99, 0.55)";
-  const ARROW_LEN = { normal: 52, emphasis: 68 };
+  /** 与教材笔顺表一致：①红 ②绿 ③蓝 ④紫 */
+  const STROKE_COLORS = ["#E53935", "#43A047", "#1E88E5", "#8E24AA", "#7B1FA2"];
+  const ARROW_STROKE = "#212121";
+  const ARROW_LEN = { normal: 32, focus: 40 };
+  const PATH_W = { overview: 52, focus: 64, dim: 40 };
 
   let wrapEl = null;
   let svgEl = null;
@@ -33,53 +35,47 @@ const WriteKanaStrokeUI = (function () {
     return d;
   }
 
-  function lastPt(pts) {
-    return pts[pts.length - 1];
-  }
-
   function svgDefs() {
-    return `<defs>${STROKE_COLORS.map(
+    const colorMarkers = STROKE_COLORS.map(
       (c, i) =>
-        `<marker id="write-arr-${i}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">` +
-        `<path d="M0,0 L10,5 L0,10 Z" fill="${c}"/></marker>`
-    ).join("")}</defs>`;
+        `<marker id="write-arr-${i}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">` +
+        `<path d="M0,0 L10,5 L0,10 Z" fill="${ARROW_STROKE}"/></marker>`
+    ).join("");
+    return `<defs>${colorMarkers}
+      <marker id="write-arr-dot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="${ARROW_STROKE}"/>
+      </marker></defs>`;
   }
 
-  function strokePath(pts, color, opacity, width) {
+  /** 单笔路径 · 单层实线（禁止粗描边+内线叠影） */
+  function strokePath(pts, color, width, opacity) {
     const d = pointsToD(pts);
-    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>`;
+    return `<path class="write-stroke-path" d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>`;
   }
 
-  /** 笔间抬笔移笔 · 虚线 */
-  function flyLine(fromPts, toPts) {
-    const a = lastPt(fromPts);
-    const b = toPts[0];
-    return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${FLY_COLOR}" stroke-width="14" stroke-dasharray="18 22" stroke-linecap="round" opacity="0.75"/>`;
-  }
-
-  /** 起点：笔序数字 + 起笔处短箭头（无空心圆、无笔划内长线） */
+  /** 起点圆点 + 同色数字 + 黑色小箭头（不沿整笔长线） */
   function startMarker(pts, num, color, emphasis) {
     if (!pts.length) return "";
     const [sx, sy] = pts[0];
-    const fs = emphasis ? 46 : 36;
-    const nx = sx - fs * 0.95;
-    const ny = sy - fs * 1.05;
+    const fs = emphasis ? 38 : 30;
+    /* 数字贴近起笔点（对齐五十音笔顺表） */
+    const nx = sx + 8;
+    const ny = sy - 10;
     const fw = num === 1 ? 800 : 700;
-    const idx = STROKE_COLORS.indexOf(color);
-    const marker = idx >= 0 ? `url(#write-arr-${idx})` : "";
-    const arrowW = emphasis ? 18 : 14;
+    const dotR = emphasis ? 7 : 5;
     let arrowPart = "";
     if (pts.length >= 2) {
       const dx = pts[1][0] - sx;
       const dy = pts[1][1] - sy;
       const len = Math.hypot(dx, dy) || 1;
-      const al = emphasis ? ARROW_LEN.emphasis : ARROW_LEN.normal;
+      const al = emphasis ? ARROW_LEN.focus : ARROW_LEN.normal;
       const ex = sx + (dx / len) * al;
       const ey = sy + (dy / len) * al;
-      arrowPart = `<line x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${color}" stroke-width="${arrowW}" stroke-linecap="round" marker-end="${marker}" opacity="0.95"/>`;
+      arrowPart = `<line class="write-stroke-arrow" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${ARROW_STROKE}" stroke-width="12" stroke-linecap="round" marker-end="url(#write-arr-dot)"/>`;
     }
     return (
-      `<text x="${nx}" y="${ny + fs * 0.35}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" class="write-stroke-num">${num}</text>` +
+      `<circle class="write-stroke-dot" cx="${sx}" cy="${sy}" r="${dotR}" fill="#fff" stroke="${color}" stroke-width="4"/>` +
+      `<text class="write-stroke-num" x="${nx}" y="${ny + fs * 0.32}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" stroke="#fff" stroke-width="6" paint-order="stroke fill">${num}</text>` +
       arrowPart
     );
   }
@@ -110,11 +106,14 @@ const WriteKanaStrokeUI = (function () {
     return i === stepIndex;
   }
 
-  function strokeOpacity(i) {
-    if (viewMode === "overview") return 0.92;
-    if (i < stepIndex) return 0.35;
-    if (i === stepIndex) return 1;
-    return 0;
+  function strokeStyle(i) {
+    const emph = strokeEmphasis(i);
+    if (viewMode === "overview") {
+      return { width: PATH_W.overview, opacity: 1 };
+    }
+    if (i < stepIndex) return { width: PATH_W.dim, opacity: 0.28 };
+    if (i === stepIndex) return { width: PATH_W.focus, opacity: 1 };
+    return { width: PATH_W.dim, opacity: 0 };
   }
 
   function renderSvg() {
@@ -127,16 +126,9 @@ const WriteKanaStrokeUI = (function () {
       const pts = guide.strokes[i];
       const color = strokeColor(i);
       const emph = strokeEmphasis(i);
-      const op = strokeOpacity(i);
-      const w = emph ? 96 : 72;
-      parts.push(strokePath(pts, color, op, w));
+      const { width, opacity } = strokeStyle(i);
+      parts.push(strokePath(pts, color, width, opacity));
       parts.push(startMarker(pts, i + 1, color, emph));
-      if (viewMode === "overview" && i < n - 1) {
-        parts.push(flyLine(pts, guide.strokes[i + 1]));
-      }
-      if (viewMode === "focus" && i === stepIndex && i < n - 1) {
-        parts.push(flyLine(pts, guide.strokes[i + 1]));
-      }
     }
 
     svgEl.innerHTML = parts.join("");
@@ -149,7 +141,7 @@ const WriteKanaStrokeUI = (function () {
     const total = guide.strokes.length;
     if (stepEl) {
       if (viewMode === "overview") {
-        stepEl.textContent = total ? `共 ${total} 笔 · 按数字顺序写` : "";
+        stepEl.textContent = total ? `共 ${total} 笔 · 按颜色 1→${total} 顺序写` : "";
       } else {
         stepEl.textContent = total ? `专注 · 第 ${stepIndex + 1} / ${total} 笔` : "";
       }
@@ -159,7 +151,7 @@ const WriteKanaStrokeUI = (function () {
       const dir = pts ? deriveStrokeTip(pts) : "";
       tipEl.textContent =
         viewMode === "overview"
-          ? "先看全笔颜色与箭头，再在格内摹写"
+          ? "每笔一色 · 看数字与小箭头起笔，再在格内摹写"
           : dir
             ? `第 ${stepIndex + 1} 笔：起笔后 ${dir}`
             : "";
@@ -227,10 +219,11 @@ const WriteKanaStrokeUI = (function () {
         <button type="button" class="btn ghost btn-sm" id="write-stroke-next" title="下一笔">›</button>
       </div>
       <p class="write-l0-stroke-legend zh-annotation">
-        <span class="write-l0-swatch" style="background:#E53935"></span>①
-        <span class="write-l0-swatch" style="background:#1E88E5"></span>②
-        <span class="write-l0-swatch" style="background:#43A047"></span>③ …
-        数字=笔序 · 小箭头=起笔方向 · 虚线=抬笔移笔
+        <span class="write-l0-swatch" style="background:#E53935"></span>1
+        <span class="write-l0-swatch" style="background:#43A047"></span>2
+        <span class="write-l0-swatch" style="background:#1E88E5"></span>3
+        <span class="write-l0-swatch" style="background:#8E24AA"></span>4 …
+        每笔一色 · 数字=笔序 · 黑箭头=起笔方向
       </p>
       <p class="write-l0-stroke-tip zh-annotation" aria-live="polite"></p>`;
 

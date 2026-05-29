@@ -276,6 +276,21 @@
   height: 92%;
   pointer-events: none;
   z-index: 2;
+  /* 禁止滤镜叠影 */
+  filter: none;
+}
+
+.write-l0-stroke-svg .write-stroke-path {
+  vector-effect: non-scaling-stroke;
+}
+
+.write-l0-stroke-svg .write-stroke-arrow {
+  opacity: 0.92;
+}
+
+.write-l0-stroke-svg .write-stroke-num {
+  font-family: system-ui, "Segoe UI", "PingFang SC", sans-serif;
+  pointer-events: none;
 }
 
 .write-l0-stroke-svg.is-hidden {

@@ -17,7 +17,7 @@
 ───────────────────────────────────────────────────────
 
   学员链接仍是：
-  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=338
+  https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=340
 
   你要「更新内容」上传到 GitHub，需要笔记本能访问 GitHub，任选：
 
