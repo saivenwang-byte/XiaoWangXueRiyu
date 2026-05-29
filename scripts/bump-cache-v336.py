@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VER = "341"
+VER = "344"
 
 
 def bump_text(path: Path) -> None:

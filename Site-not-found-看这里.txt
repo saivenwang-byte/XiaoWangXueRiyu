@@ -12,7 +12,7 @@
   立刻能用的链接（已测可打开）
 ══════════════════════════════════════
 
-https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=340
+https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=344
 
 用手机 4G 打开。可以先用这条发微信。
 
@@ -28,7 +28,7 @@ https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=340
   3. 站点地址在顶部，形如：
      https://xxxx-xxxxx.netlify.app
      复制这个地址，在浏览器打开：
-     https://xxxx-xxxxx.netlify.app/index.html?v=340
+     https://xxxx-xxxxx.netlify.app/index.html?v=344
      能打开 = 发布成功了，只是名字不是 qingjing-biaori
 
   4. 要改成 qingjing-biaori：

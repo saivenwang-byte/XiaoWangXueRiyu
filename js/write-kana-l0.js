@@ -4,14 +4,19 @@
  */
 const WriteKanaL0 = (function () {
   const STROKE_COLOR = "#37474F";
-  const STROKE_WIDTH = 3.2;
+  const STROKE_WIDTH = 2.6;
+
+  /** 片假名表 · 行段中文补充（与注音教材一致） */
+  const ROW_ZH = {
+    "あ行": "阿行", "か行": "卡行", "さ行": "撒行", "た行": "他行", "な行": "那行",
+    "は行": "哈行", "ま行": "妈行", "や行": "呀行", "ら行": "啦行", "わ行": "哇行", "ん": "嗯",
+  };
 
   let hostEl = null;
   let stateRef = null;
   let persistFn = null;
   let screen = "grid";
   let currentEntry = null;
-  let traceOn = true;
   let drawing = false;
   let canvasCtx = null;
   let canvasEl = null;
@@ -101,9 +106,15 @@ const WriteKanaL0 = (function () {
       const entry = { kana: c.kana, row: "", romaji: c.romaji || "" };
       const doneCls = isDone(entry) ? " is-done" : "";
       const show = w.script === "katakana" ? toKatakana(c.kana) : c.kana;
+      const zhBlock =
+        w.script === "katakana"
+          ? `<span class="write-l0-cell-hira">${escapeHtml(c.kana)}</span>` +
+            (c.hint ? `<span class="write-l0-cell-zh">${escapeHtml(c.hint)}</span>` : "")
+          : "";
       return `<button type="button" class="write-l0-cell${doneCls}" data-kana="${escapeHtml(c.kana)}" aria-label="书写 ${escapeHtml(show)}">
         <span class="write-l0-cell-kana">${escapeHtml(show)}</span>
         <span class="write-l0-cell-roma">${escapeHtml(c.romaji || "")}</span>
+        ${zhBlock}
       </button>`;
     }
 
@@ -117,10 +128,15 @@ const WriteKanaL0 = (function () {
       body = INTRO_GOJUON_SEION.map((row) => {
         if (row.row === "ん") {
           const c = row.cells[0];
-          return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td><td colspan="5">${cellInner(c)}</td></tr>`;
+          const rowLabel =
+            w.script === "katakana" && ROW_ZH[row.row] ? `${row.row} ${ROW_ZH[row.row]}` : row.row;
+          const empties = [null, null, null, null].map((x) => cellHtml(x)).join("");
+          return `<tr><td class="write-l0-row-label">${escapeHtml(rowLabel)}</td>${cellHtml(c)}${empties}</tr>`;
         }
+        const rowLabel =
+          w.script === "katakana" && ROW_ZH[row.row] ? `${row.row} ${ROW_ZH[row.row]}` : row.row;
         const cells = row.cells.map((c) => cellHtml(c)).join("");
-        return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
+        return `<tr><td class="write-l0-row-label">${escapeHtml(rowLabel)}</td>${cells}</tr>`;
       }).join("");
     }
 
@@ -135,23 +151,29 @@ const WriteKanaL0 = (function () {
         <p class="write-l0-sub zh-annotation">认在「注音」· 写在「书写」· 进度不计课内海星</p>
         <span class="write-l0-progress" aria-live="polite">已练 ${done} / ${total}</span>
       </div>
-      <details class="write-l0-learn-path" open>
-        <summary class="write-l0-learn-summary">初学者怎么写（4 步）</summary>
-        <ol class="write-l0-learn-steps zh-annotation">
-          <li><strong>认</strong>：底栏「注音」听清读音与行段</li>
-          <li><strong>看</strong>：点假名 → 一览笔顺（分色·数字·箭头）</li>
-          <li><strong>写</strong>：米字格内跟写，可开描红底字</li>
-          <li><strong>完成</strong>：点完成打勾，随时可重练</li>
-        </ol>
-        <p class="write-l0-learn-link zh-annotation">
-          还不会读？先 <a href="${escapeHtml(introHref)}">去注音</a> 再回来写。
-        </p>
+      <details class="write-l0-learn-path">
+        <summary class="write-l0-learn-summary">
+          <span class="write-l0-learn-chevron" aria-hidden="true"></span>
+          <span class="write-l0-learn-summary-text">初学者怎么写（4 步）</span>
+        </summary>
+        <div class="write-l0-learn-body">
+          <ol class="write-l0-learn-steps zh-annotation">
+            <li><strong>认</strong>：底栏「注音」听清读音与行段</li>
+            <li><strong>看</strong>：点假名 → 一览笔顺（分色·数字·箭头）</li>
+            <li><strong>写</strong>：米字格内跟分色笔顺摹写</li>
+            <li><strong>完成</strong>：点完成打勾，随时可重练</li>
+          </ol>
+          <p class="write-l0-learn-link zh-annotation">
+            还不会读？先 <a href="${escapeHtml(introHref)}">去注音</a> 再回来写。
+          </p>
+        </div>
       </details>
       <div class="write-l0-toolbar">
         <div class="write-l0-script-toggle" role="group" aria-label="假名种类">
           <button type="button" data-script="hiragana" class="${w.script === "hiragana" ? "is-on" : ""}">ひらがな</button>
           <button type="button" data-script="katakana" class="${w.script === "katakana" ? "is-on" : ""}">カタカナ</button>
         </div>
+        ${w.script === "katakana" ? '<span class="write-l0-zh-note zh-annotation">补充中文</span>' : ""}
       </div>
       <div class="write-l0-grid-wrap">
         <table class="write-l0-table" aria-label="清音书写表">
@@ -240,7 +262,6 @@ const WriteKanaL0 = (function () {
   function openSheet(entry) {
     screen = "sheet";
     currentEntry = entry;
-    traceOn = true;
     const show = displayChar(entry);
     const rowLabel = entry.row || "清音";
 
@@ -254,15 +275,10 @@ const WriteKanaL0 = (function () {
           </h2>
           ${speakBtnHtml(entry.kana)}
         </div>
-        <div class="write-l0-mode-row" role="group" aria-label="书写模式">
-          <button type="button" class="write-l0-mode-trace is-on" data-mode="trace">描红</button>
-          <button type="button" class="write-l0-mode-free" data-mode="free">自由写</button>
-        </div>
-        <p class="write-l0-hint">米字格 · 分色笔顺（一览/专注）· 跟数字与箭头写 · 可关底字</p>
+        <p class="write-l0-hint">米字格 · 分色笔顺（一览/专注）· 跟数字与箭头在格内摹写</p>
         <div class="write-l0-mizige-wrap">
           <div class="write-l0-mizige" id="write-l0-mizige">
             <div class="write-l0-mizige-gridlines" aria-hidden="true"></div>
-            <div class="write-l0-trace-char" id="write-l0-trace">${escapeHtml(show)}</div>
             <canvas class="write-l0-canvas" id="write-l0-canvas" aria-label="书写区域"></canvas>
           </div>
         </div>
@@ -289,25 +305,6 @@ const WriteKanaL0 = (function () {
         WriteKanaStrokeUI.mount(mizige, entry.kana);
       }
     }
-
-    const traceEl = document.getElementById("write-l0-trace");
-    const modeTrace = hostEl.querySelector(".write-l0-mode-trace");
-    const modeFree = hostEl.querySelector(".write-l0-mode-free");
-
-    function syncTrace() {
-      traceEl.classList.toggle("is-hidden", !traceOn);
-      modeTrace.classList.toggle("is-on", traceOn);
-      modeFree.classList.toggle("is-on", !traceOn);
-    }
-
-    modeTrace.addEventListener("click", () => {
-      traceOn = true;
-      syncTrace();
-    });
-    modeFree.addEventListener("click", () => {
-      traceOn = false;
-      syncTrace();
-    });
 
     function leaveSheet() {
       if (typeof WriteKanaStrokeUI !== "undefined") WriteKanaStrokeUI.destroy();
