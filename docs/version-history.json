@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "346",
-    "date": "2026-05-29",
-    "note": "书写笔顺：红绿蓝紫分色·数字黑箭头·无叠影",
+    "cache": "348",
+    "date": "2026-05-25",
+    "note": "书写片假名顶栏平假名对照·去行标中文列",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
@@ -28,6 +28,14 @@
     "local": "http://localhost:8765/index.html?v=46"
   },
   "releases": [
+    {
+      "product": "1.0.2",
+      "cache": "348",
+      "date": "2026-05-25",
+      "note": "书写片假名顶栏ひら对照·清音表去阿行中文列",
+      "local": "http://localhost:8765/index.html?v=348",
+      "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=348"
+    },
     {
       "product": "1.0.2",
       "cache": "333",

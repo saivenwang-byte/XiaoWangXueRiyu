@@ -168,7 +168,7 @@
 
     "product": "1.0.2",
 
-    "cache": "346",
+    "cache": "348",
 
     "cache_files": [
 
@@ -186,9 +186,9 @@
 
     ],
 
-    "local": "http://localhost:8765/index.html?v=346",
+    "local": "http://localhost:8765/index.html?v=348",
 
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=346",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=348",
 
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
 
@@ -1194,7 +1194,7 @@
 
       ],
 
-      "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=346",
+      "acceptance": "単語/会話/文法/作業/拡張提示交互一致；单词序号与文法关 26px 对齐；?v=348",
 
       "user_confirmed": "2026-05-25"
 
@@ -1238,7 +1238,7 @@
 
       ],
 
-      "acceptance": "底栏笔记；单开手风琴；关联弹窗不跳课；笔记失焦保存+橙点；?v=346",
+      "acceptance": "底栏笔记；单开手风琴；关联弹窗不跳课；笔记失焦保存+橙点；?v=348",
 
       "user_confirmed": "2026-05-25"
 
@@ -1274,7 +1274,7 @@
 
       ],
 
-      "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=346",
+      "acceptance": "顶栏说明+单元易错；易错红上蓝下；关联倒三角可点开；?v=348",
 
       "user_confirmed": "2026-05-25"
 
@@ -1314,7 +1314,7 @@
 
       ],
 
-      "acceptance": "课1–4 五关与课1 MVP 同壳；会話 A/B/C+提示；pre-ship OK；?v=346",
+      "acceptance": "课1–4 五关与课1 MVP 同壳；会話 A/B/C+提示；pre-ship OK；?v=348",
 
       "user_confirmed": "2026-05-25"
 

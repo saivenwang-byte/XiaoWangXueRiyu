@@ -6,10 +6,19 @@ const WriteKanaL0 = (function () {
   const STROKE_COLOR = "#37474F";
   const STROKE_WIDTH = 2.6;
 
-  /** 片假名表 · 行段中文补充（与注音教材一致） */
-  const ROW_ZH = {
-    "あ行": "阿行", "か行": "卡行", "さ行": "撒行", "た行": "他行", "な行": "那行",
-    "は行": "哈行", "ま行": "妈行", "や行": "呀行", "ら行": "啦行", "わ行": "哇行", "ん": "嗯",
+  /** 假名种类切换 · 上行日文 / 下行中文（与注音 INTRO 一致） */
+  const SCRIPT_LABELS = {
+    hiragana: { jp: "ひらがな", zh: "平假名" },
+    katakana: { jp: "カタカナ", zh: "片假名" },
+  };
+
+  /** 标日特殊读音标注（单字页副标题） */
+  const BIAORI_READING_NOTE = {
+    を: "读 o · 写作を",
+    し: "读 shi",
+    ち: "读 chi",
+    つ: "读 tsu",
+    ふ: "读 fu",
   };
 
   let hostEl = null;
@@ -106,15 +115,14 @@ const WriteKanaL0 = (function () {
       const entry = { kana: c.kana, row: "", romaji: c.romaji || "" };
       const doneCls = isDone(entry) ? " is-done" : "";
       const show = w.script === "katakana" ? toKatakana(c.kana) : c.kana;
-      const zhBlock =
+      const pairBlock =
         w.script === "katakana"
-          ? `<span class="write-l0-cell-hira">${escapeHtml(c.kana)}</span>` +
-            (c.hint ? `<span class="write-l0-cell-zh">${escapeHtml(c.hint)}</span>` : "")
+          ? `<span class="write-l0-cell-hira">${escapeHtml(c.kana)}</span>`
           : "";
-      return `<button type="button" class="write-l0-cell${doneCls}" data-kana="${escapeHtml(c.kana)}" aria-label="书写 ${escapeHtml(show)}">
+      return `<button type="button" class="write-l0-cell${doneCls}" data-kana="${escapeHtml(c.kana)}" aria-label="书写 ${escapeHtml(show)}${w.script === "katakana" ? " 平假名 " + c.kana : ""}">
         <span class="write-l0-cell-kana">${escapeHtml(show)}</span>
         <span class="write-l0-cell-roma">${escapeHtml(c.romaji || "")}</span>
-        ${zhBlock}
+        ${pairBlock}
       </button>`;
     }
 
@@ -128,15 +136,11 @@ const WriteKanaL0 = (function () {
       body = INTRO_GOJUON_SEION.map((row) => {
         if (row.row === "ん") {
           const c = row.cells[0];
-          const rowLabel =
-            w.script === "katakana" && ROW_ZH[row.row] ? `${row.row} ${ROW_ZH[row.row]}` : row.row;
           const empties = [null, null, null, null].map((x) => cellHtml(x)).join("");
-          return `<tr><td class="write-l0-row-label">${escapeHtml(rowLabel)}</td>${cellHtml(c)}${empties}</tr>`;
+          return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cellHtml(c)}${empties}</tr>`;
         }
-        const rowLabel =
-          w.script === "katakana" && ROW_ZH[row.row] ? `${row.row} ${ROW_ZH[row.row]}` : row.row;
         const cells = row.cells.map((c) => cellHtml(c)).join("");
-        return `<tr><td class="write-l0-row-label">${escapeHtml(rowLabel)}</td>${cells}</tr>`;
+        return `<tr><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
       }).join("");
     }
 
@@ -170,10 +174,15 @@ const WriteKanaL0 = (function () {
       </details>
       <div class="write-l0-toolbar">
         <div class="write-l0-script-toggle" role="group" aria-label="假名种类">
-          <button type="button" data-script="hiragana" class="${w.script === "hiragana" ? "is-on" : ""}">ひらがな</button>
-          <button type="button" data-script="katakana" class="${w.script === "katakana" ? "is-on" : ""}">カタカナ</button>
+          <button type="button" data-script="hiragana" class="${w.script === "hiragana" ? "is-on" : ""}">
+            <span class="write-l0-script-jp">${SCRIPT_LABELS.hiragana.jp}</span>
+            <span class="write-l0-script-zh zh-annotation">${SCRIPT_LABELS.hiragana.zh}</span>
+          </button>
+          <button type="button" data-script="katakana" class="${w.script === "katakana" ? "is-on" : ""}">
+            <span class="write-l0-script-jp">${SCRIPT_LABELS.katakana.jp}</span>
+            <span class="write-l0-script-zh zh-annotation">${SCRIPT_LABELS.katakana.zh}</span>
+          </button>
         </div>
-        ${w.script === "katakana" ? '<span class="write-l0-zh-note zh-annotation">补充中文</span>' : ""}
       </div>
       <div class="write-l0-grid-wrap">
         <table class="write-l0-table" aria-label="清音书写表">
@@ -259,24 +268,43 @@ const WriteKanaL0 = (function () {
     canvasEl.addEventListener("pointerleave", end);
   }
 
+  /** 单字顶栏：片假名模式显示 カタ + ひら 对照（笔顺数据为平假名） */
+  function sheetTitleHtml(entry) {
+    const w = ensureWriteState(stateRef);
+    const hira = entry.kana;
+    const row = entry.row || "清音";
+    if (w.script === "katakana") {
+      const kata = toKatakana(hira);
+      return (
+        `<span class="jp write-l0-sheet-kana">${escapeHtml(kata)}</span>` +
+        `<span class="write-l0-sheet-pair jp" title="平假名">${escapeHtml(hira)}</span>` +
+        `<span class="write-l0-sheet-meta"> · ${escapeHtml(row)}</span>` +
+        `<span class="write-l0-sheet-stroke-note zh-annotation">笔顺按平假名（标日）</span>`
+      );
+    }
+    return (
+      `<span class="jp write-l0-sheet-kana">${escapeHtml(hira)}</span>` +
+      `<span class="write-l0-sheet-meta"> · ${escapeHtml(row)}</span>`
+    );
+  }
+
   function openSheet(entry) {
     if (typeof WriteKanaStrokeUI !== "undefined") WriteKanaStrokeUI.destroy();
     screen = "sheet";
     currentEntry = entry;
-    const show = displayChar(entry);
-    const rowLabel = entry.row || "清音";
+    const readNote = BIAORI_READING_NOTE[entry.kana] || "";
 
     hostEl.innerHTML = `
       <div class="write-l0-sheet">
         <div class="write-l0-sheet-head">
           <button type="button" class="write-l0-back" id="write-l0-back">← 清音表</button>
           <h2 class="write-l0-sheet-title">
-            <span class="jp">${escapeHtml(show)}</span>
-            <span class="write-l0-sheet-meta"> · ${escapeHtml(rowLabel)}</span>
+            ${sheetTitleHtml(entry)}
           </h2>
           ${speakBtnHtml(entry.kana)}
         </div>
-        <p class="write-l0-hint">米字格 · 分色笔顺（一览/专注）· 跟数字与箭头在格内摹写</p>
+        ${readNote ? `<p class="write-l0-biaori-note zh-annotation">${escapeHtml(readNote)}</p>` : ""}
+        <p class="write-l0-hint write-l0-hint--sheet">米字格 · 按标日笔顺分色摹写（一览默认）</p>
         <div class="write-l0-mizige-wrap">
           <div class="write-l0-mizige" id="write-l0-mizige">
             <div class="write-l0-mizige-gridlines" aria-hidden="true"></div>

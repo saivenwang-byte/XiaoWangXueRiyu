@@ -1,6 +1,6 @@
 /**
- * 五十音描红笔顺 · P0.5 一览分色（参考五十音笔顺表：每笔一色 · 数字+小箭头 · 无叠影）
- * 数据 KANA_STROKE_GUIDE（animCJK · LGPL）
+ * 五十音书写笔顺 · 标日教辅静态表对齐（一览分色 · 数字+小箭头）
+ * 数据 KANA_STROKE_GUIDE（animCJK 清洗 · LGPL）
  */
 const WriteKanaStrokeUI = (function () {
   /** 与教材笔顺表一致：①红 ②绿 ③蓝 ④紫 */
@@ -47,13 +47,11 @@ const WriteKanaStrokeUI = (function () {
       </marker></defs>`;
   }
 
-  /** 单笔路径 · 单层实线（禁止粗描边+内线叠影） */
   function strokePath(pts, color, width, opacity) {
     const d = pointsToD(pts);
     return `<path class="write-stroke-path" d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>`;
   }
 
-  /** 起点：同色数字 + 黑色小箭头（无圆点、无叠影） */
   function startMarker(pts, num, color, emphasis) {
     if (!pts.length) return "";
     const [sx, sy] = pts[0];
@@ -134,31 +132,23 @@ const WriteKanaStrokeUI = (function () {
   function updateLabels() {
     if (!wrapEl || !guide) return;
     const stepEl = wrapEl.querySelector(".write-l0-stroke-step");
-    const tipEl = wrapEl.querySelector(".write-l0-stroke-tip");
     const total = guide.strokes.length;
     if (stepEl) {
       if (viewMode === "overview") {
-        stepEl.textContent = total ? `共 ${total} 笔 · 按颜色 1→${total} 顺序写` : "";
+        stepEl.textContent = total ? `共 ${total} 笔` : "";
       } else {
-        stepEl.textContent = total ? `专注 · 第 ${stepIndex + 1} / ${total} 笔` : "";
+        const pts = guide.strokes[stepIndex];
+        const dir = pts ? deriveStrokeTip(pts) : "";
+        stepEl.textContent = total
+          ? `第 ${stepIndex + 1}/${total} 笔${dir ? " · " + dir : ""}`
+          : "";
       }
-    }
-    if (tipEl && guideOn) {
-      const pts = guide.strokes[viewMode === "focus" ? stepIndex : 0];
-      const dir = pts ? deriveStrokeTip(pts) : "";
-      tipEl.textContent =
-        viewMode === "overview"
-          ? "每笔一色 · 看数字与小箭头起笔，再在格内摹写"
-          : dir
-            ? `第 ${stepIndex + 1} 笔：起笔后 ${dir}`
-            : "";
-    } else if (tipEl) {
-      tipEl.textContent = "";
     }
     wrapEl.querySelectorAll(".write-l0-view-toggle button").forEach((btn) => {
       const m = btn.getAttribute("data-mode");
       btn.classList.toggle("is-on", m === viewMode);
     });
+    syncFocusNavVisibility();
   }
 
   function setStep(i) {
@@ -178,8 +168,11 @@ const WriteKanaStrokeUI = (function () {
 
   function syncFocusNavVisibility() {
     if (!wrapEl) return;
-    const nav = wrapEl.querySelector(".write-l0-stroke-nav--focus-only");
+    const nav = wrapEl.querySelector(".write-l0-stroke-nav");
+    const stepEl = wrapEl.querySelector(".write-l0-stroke-step");
     if (nav) nav.classList.toggle("is-visible", viewMode === "focus");
+    if (stepEl) stepEl.classList.toggle("is-focus", viewMode === "focus");
+    wrapEl.classList.toggle("is-focus-mode", viewMode === "focus");
   }
 
   function setGuideEnabled(on) {
@@ -202,27 +195,28 @@ const WriteKanaStrokeUI = (function () {
     wrapEl = document.createElement("div");
     wrapEl.className = "write-l0-stroke-bar";
     wrapEl.innerHTML = `
-      <label class="write-l0-stroke-toggle">
-        <input type="checkbox" id="write-stroke-guide-cb" checked />
-        <span>笔顺提示</span>
-      </label>
-      <div class="write-l0-view-toggle" role="group" aria-label="查看模式">
-        <button type="button" class="btn ghost btn-sm is-on" data-mode="overview">一览</button>
-        <button type="button" class="btn ghost btn-sm" data-mode="focus">专注</button>
-      </div>
-      <span class="write-l0-stroke-step" aria-live="polite"></span>
-      <div class="write-l0-stroke-nav write-l0-stroke-nav--focus-only">
-        <button type="button" class="btn ghost btn-sm" id="write-stroke-prev" title="上一笔">‹</button>
-        <button type="button" class="btn ghost btn-sm" id="write-stroke-next" title="下一笔">›</button>
+      <div class="write-l0-stroke-toolbar">
+        <label class="write-l0-stroke-toggle">
+          <input type="checkbox" id="write-stroke-guide-cb" checked />
+          <span>笔顺</span>
+        </label>
+        <div class="write-l0-view-toggle" role="group" aria-label="查看模式">
+          <button type="button" class="btn ghost btn-sm is-on" data-mode="overview">一览</button>
+          <button type="button" class="btn ghost btn-sm" data-mode="focus">专注</button>
+        </div>
+        <span class="write-l0-stroke-step" aria-live="polite"></span>
+        <div class="write-l0-stroke-nav">
+          <button type="button" class="btn ghost btn-sm" id="write-stroke-prev" title="上一笔">‹</button>
+          <button type="button" class="btn ghost btn-sm" id="write-stroke-next" title="下一笔">›</button>
+        </div>
       </div>
       <p class="write-l0-stroke-legend zh-annotation">
         <span class="write-l0-swatch" style="background:#E53935"></span>1
         <span class="write-l0-swatch" style="background:#43A047"></span>2
         <span class="write-l0-swatch" style="background:#1E88E5"></span>3
-        <span class="write-l0-swatch" style="background:#8E24AA"></span>4 …
-        每笔一色 · 数字=笔序 · 黑箭头=起笔方向
-      </p>
-      <p class="write-l0-stroke-tip zh-annotation" aria-live="polite"></p>`;
+        <span class="write-l0-swatch" style="background:#8E24AA"></span>4
+        每笔一色 · 数字=笔序 · 黑箭头=起笔（标日笔顺表）
+      </p>`;
 
     svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgEl.setAttribute("class", "write-l0-stroke-svg");
@@ -233,7 +227,7 @@ const WriteKanaStrokeUI = (function () {
     mizigeEl.insertBefore(svgEl, canvas);
 
     const sheet = mizigeEl.closest(".write-l0-sheet");
-    const hint = sheet && sheet.querySelector(".write-l0-hint");
+    const hint = sheet && sheet.querySelector(".write-l0-hint--sheet");
     if (hint && hint.parentNode) {
       hint.parentNode.insertBefore(wrapEl, hint.nextSibling);
     }
