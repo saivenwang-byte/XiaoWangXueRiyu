@@ -36,12 +36,34 @@ STD_STROKES = {
 }
 
 # ── 平假名专用手工表（勿用于片假名）────────────────────────────
+# 标日笔顺：与 animCJK 有出入时以教材为准（よ 左上横 · か 三笔等）
 HIRA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
-    "よ": {0: [[280, 355], [500, 335]]},
+    "よ": {
+        # 第1笔：沿 outline d1 横画中线（animCJK 原中线 568,358→787,324 与灰底贴合）
+        0: [[548, 352], [670, 338], [778, 328]],
+        # 第2笔：竖弯钩 · 环部加点保弧线（标日 2 笔）
+        1: [
+            [484, 114],
+            [522, 158],
+            [508, 420],
+            [498, 680],
+            [468, 830],
+            [388, 868],
+            [278, 828],
+            [248, 748],
+            [318, 688],
+            [400, 708],
+            [785, 913],
+        ],
+    },
     "か": {
         0: [[270, 410], [610, 410], [390, 560]],
         1: [[390, 200], [390, 760]],
         2: [[580, 500], [680, 590]],
+    },
+    "ふ": {
+        0: [[440, 147], [558, 213], [573, 259], [451, 306]],
+        2: [[106, 684], [158, 768], [195, 825]],
     },
 }
 
@@ -51,19 +73,56 @@ HIRA_MANUAL_ORDER: dict[str, list[int]] = {
 
 HIRA_MANUAL_KEEP: dict[str, list[int]] = {
     "の": [0],
+    "よ": [0, 1],
 }
 
 # ── 片假名专用（与平假名分开对账；默认仅 canonicalize animCJK 片假名 SVG）──
+# 标日修正：在 canonicalize 之后写入，避免 RDP 截断（マ 第1笔等）
+KATA_POST_REPLACE: dict[str, dict[int, list[list[float]]]] = {
+    "オ": {
+        1: [[538, 116], [552, 380], [546, 650], [542, 880]],
+    },
+    "ホ": {
+        1: [[465, 114], [528, 176], [522, 680], [512, 835]],
+    },
+    "マ": {
+        0: [[126, 320], [208, 341], [773, 226], [849, 286], [515, 587]],
+        1: [[331, 476], [438, 582], [578, 816]],
+    },
+    # 片假名 1 笔对角；勿用平假名ふ路径（animCJK 末段带才字钩须截）
+    "フ": {
+        0: [[170, 290], [320, 260], [560, 340], [720, 520], [800, 720]],
+    },
+}
+
+# 整字替换（animCJK 镜像合并会误伤 ヨ 等）
+KATA_MANUAL_FULL: dict[str, list[list[list[float]]]] = {
+    "ヨ": [
+        [[270, 350], [780, 320]],
+        [[506, 101], [560, 180], [566, 520], [560, 900]],
+        [[150, 580], [880, 545]],
+        [[190, 790], [830, 770]],
+    ],
+}
+
 KATA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {}
 
 KATA_MANUAL_ORDER: dict[str, list[int]] = {}
 
 KATA_MANUAL_KEEP: dict[str, list[int]] = {}
 
+KATA_SKIP_MIRROR: set[str] = {"ヨ"}
+
 CENTER = VB / 2
-# 平假名：保留更多弧点（屏上 SVG 再平滑）；片假名：略少点、折角稍利
-RDP_EPS = {"hira": 38, "kata": 54}
-MAX_STROKE_PTS = {"hira": 14, "kata": 11}
+# 平假名：多保留弧点；片假名：略利但仍保留转角
+RDP_EPS = {"hira": 18, "kata": 34}
+MAX_STROKE_PTS = {"hira": 22, "kata": 16}
+CORNER_DEG = {"hira": 142, "kata": 136}
+MERGE_TOL = 10
+# 标日：撇/捺末端不回踩（animCJK 发夹尾须截）
+HAIRPIN_TAIL_DEG = 108
+STUB_LEN = 88
+STUB_BEND_DEG = 158
 
 
 def parse_path_d(d: str) -> list[list[float]]:
@@ -86,6 +145,24 @@ def extract_medians(svg_text: str) -> list[list[list[float]]]:
         if len(pts) >= 2:
             strokes.append(pts)
     return strokes
+
+
+def extract_outlines(svg_text: str) -> list[str]:
+    """animCJK 字形轮廓 path（与笔顺中线同 viewBox，作田字格淡灰底图）。"""
+    out: list[str] = []
+    for m in re.finditer(r'<path id="z\d+d[^"]+" d="([^"]+)"', svg_text):
+        d = m.group(1).strip()
+        if d:
+            out.append(d)
+    return out
+
+
+def outlines_for_char(char: str, svg_text: str) -> list[str]:
+    """片假名 ヨ 等：去掉 animCJK 顶角装饰，只留主轮廓。"""
+    paths = extract_outlines(svg_text)
+    if char == "ヨ" and len(paths) >= 4:
+        return paths[:4]
+    return paths
 
 
 def point_in_viewbox(p: list[float]) -> bool:
@@ -195,19 +272,102 @@ def _rdp(pts: list[list[float]], eps: float) -> list[list[float]]:
     return left[:-1] + right
 
 
+def _dist(a: list[float], b: list[float]) -> float:
+    return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+
+
+def _turn_angle_deg(p0: list[float], p1: list[float], p2: list[float]) -> float:
+    import math
+
+    v1x, v1y = p0[0] - p1[0], p0[1] - p1[1]
+    v2x, v2y = p2[0] - p1[0], p2[1] - p1[1]
+    m1 = math.hypot(v1x, v1y) or 1.0
+    m2 = math.hypot(v2x, v2y) or 1.0
+    cos = max(-1.0, min(1.0, (v1x * v2x + v1y * v2y) / (m1 * m2)))
+    return math.degrees(math.acos(cos))
+
+
+def _mandatory_keep_indices(pts: list[list[float]], *, script: str) -> set[int]:
+    """锐角 / 环路转折点强制保留，避免 RDP 抹平を・み・ま 等弯折。"""
+    keep = {0, len(pts) - 1}
+    thresh = CORNER_DEG.get(script, CORNER_DEG["hira"])
+    for i in range(1, len(pts) - 1):
+        if _turn_angle_deg(pts[i - 1], pts[i], pts[i + 1]) < thresh:
+            keep.add(i)
+    return keep
+
+
+def _merge_mandatory(simp: list[list[float]], orig: list[list[float]], mandatory: set[int]) -> list[list[float]]:
+    out = [list(p) for p in simp]
+    for idx in sorted(mandatory):
+        p = orig[idx]
+        if any(_dist(p, q) < MERGE_TOL for q in out):
+            continue
+        best_j, best_d = 0, 1e9
+        for j in range(len(out) - 1):
+            d = _perp_dist(p, out[j], out[j + 1])
+            if d < best_d:
+                best_d, best_j = d, j
+        out.insert(best_j + 1, list(p))
+    return out
+
+
+def _thin_to_cap(pts: list[list[float]], cap: int, mandatory: set[int]) -> list[list[float]]:
+    if len(pts) <= cap:
+        return pts
+    orig = [list(p) for p in pts]
+    protected: set[int] = {0, len(orig) - 1}
+    for i, p in enumerate(orig):
+        for idx in mandatory:
+            if _dist(p, orig[idx]) < MERGE_TOL:
+                protected.add(i)
+                break
+    removable = [i for i in range(1, len(orig) - 1) if i not in protected]
+    while len(orig) > cap and removable:
+        mid = removable[len(removable) // 2]
+        orig.pop(mid)
+        removable = [i for i in range(1, len(orig) - 1) if i not in protected]
+        protected = set()
+        for i, p in enumerate(orig):
+            for idx in mandatory:
+                if _dist(p, orig[min(idx, len(orig) - 1)]) < MERGE_TOL:
+                    protected.add(i)
+        protected.add(0)
+        protected.add(len(orig) - 1)
+    return orig
+
+
+def trim_stroke_tails(pts: list[list[float]]) -> list[list[float]]:
+    """标日书写：撇笔不回踩、钩笔不连通下一笔（截 animCJK 发夹尾）。"""
+    if len(pts) < 3:
+        return [list(p) for p in pts]
+    out = [list(p) for p in pts]
+    while len(out) >= 3:
+        ang = _turn_angle_deg(out[-3], out[-2], out[-1])
+        if ang < HAIRPIN_TAIL_DEG:
+            out.pop()
+        else:
+            break
+    while len(out) >= 3 and _dist(out[-2], out[-1]) < STUB_LEN:
+        ang = _turn_angle_deg(out[-3], out[-2], out[-1])
+        if ang < STUB_BEND_DEG:
+            out.pop()
+        else:
+            break
+    return out
+
+
 def canonicalize_stroke(pts: list[list[float]], *, script: str) -> list[list[float]]:
-    """标日笔顺中线：去噪但保留弧线点，供 SVG 曲线描边（非折线）。"""
+    """标日笔顺中线：去噪但保留弧线/转角点，供 SVG 分段平滑（非折线）。"""
     if len(pts) < 2:
         return [list(p) for p in pts]
     eps = RDP_EPS.get(script, RDP_EPS["hira"])
     cap = MAX_STROKE_PTS.get(script, MAX_STROKE_PTS["hira"])
-    simp = _rdp([list(p) for p in pts], eps)
-    if len(simp) > cap:
-        keep = [0]
-        for i in range(1, cap - 1):
-            keep.append(int(i * (len(simp) - 1) / (cap - 1)))
-        keep.append(len(simp) - 1)
-        simp = [simp[i] for i in sorted(set(keep))]
+    orig = [list(p) for p in pts]
+    mandatory = _mandatory_keep_indices(orig, script=script)
+    simp = _rdp(orig, eps)
+    simp = _merge_mandatory(simp, orig, mandatory)
+    simp = _thin_to_cap(simp, cap, mandatory)
     return simp
 
 
@@ -244,7 +404,8 @@ def clean_strokes(
 ) -> list[list[list[float]]]:
     strokes = [s for s in raw if s and _stroke_ok(s)]
     strokes = dedup_strokes(strokes)
-    strokes = drop_mirror_variant_strokes(strokes)
+    if not (script == "kata" and kana in KATA_MANUAL_FULL):
+        strokes = drop_mirror_variant_strokes(strokes)
     if script == "hira":
         strokes = apply_manual_fixes(
             kana, strokes, replace=HIRA_MANUAL_REPLACE, order=HIRA_MANUAL_ORDER, keep=HIRA_MANUAL_KEEP
@@ -253,7 +414,15 @@ def clean_strokes(
         strokes = apply_manual_fixes(
             kana, strokes, replace=KATA_MANUAL_REPLACE, order=KATA_MANUAL_ORDER, keep=KATA_MANUAL_KEEP
         )
+    strokes = [trim_stroke_tails(s) for s in strokes]
     strokes = [canonicalize_stroke(s, script=script) for s in strokes]
+    if script == "kata":
+        if kana in KATA_MANUAL_FULL:
+            strokes = [[list(p) for p in s] for s in KATA_MANUAL_FULL[kana]]
+        elif kana in KATA_POST_REPLACE:
+            for idx, pts in KATA_POST_REPLACE[kana].items():
+                if 0 <= idx < len(strokes):
+                    strokes[idx] = [list(p) for p in pts]
     return strokes
 
 
@@ -263,13 +432,17 @@ def to_katakana(hiragana: str) -> str:
     )
 
 
-def strokes_from_svg(char: str, *, script: str) -> list[list[list[float]]] | None:
+def strokes_from_svg(char: str, *, script: str) -> tuple[list[list[list[float]]], list[str]] | None:
     svg_path = SVG_DIR / f"{ord(char)}.svg"
     if not svg_path.is_file():
         return None
-    raw = extract_medians(svg_path.read_text(encoding="utf-8"))
+    text = svg_path.read_text(encoding="utf-8")
+    raw = extract_medians(text)
     strokes = clean_strokes(char, raw, script=script)
-    return strokes if strokes else None
+    if not strokes:
+        return None
+    outlines = outlines_for_char(char, text)
+    return strokes, outlines
 
 
 def main() -> None:
@@ -282,25 +455,33 @@ def main() -> None:
     mismatches: list[str] = []
 
     for kana in SEION_KANA:
-        strokes = strokes_from_svg(kana, script="hira")
-        if not strokes:
+        parsed = strokes_from_svg(kana, script="hira")
+        if not parsed:
             missing.append(kana)
             continue
+        strokes, outlines = parsed
         exp = STD_STROKES.get(kana)
         if exp is not None and len(strokes) != exp:
             mismatches.append(f"hira {kana}: got {len(strokes)} expect {exp}")
-        guide[kana] = {"vb": [0, 0, VB, VB], "strokes": strokes}
+        entry: dict = {"vb": [0, 0, VB, VB], "strokes": strokes}
+        if outlines:
+            entry["outline"] = outlines
+        guide[kana] = entry
 
         kata = to_katakana(kana)
         if kata in guide:
             continue
-        kata_strokes = strokes_from_svg(kata, script="kata")
-        if not kata_strokes:
+        kata_parsed = strokes_from_svg(kata, script="kata")
+        if not kata_parsed:
             kata_missing.append(kata)
             continue
+        kata_strokes, kata_outlines = kata_parsed
         if exp is not None and len(kata_strokes) != exp:
             print(f"[WARN] {kata}: got {len(kata_strokes)} expect {exp} (片假名，不阻断)")
-        guide[kata] = {"vb": [0, 0, VB, VB], "strokes": kata_strokes}
+        kata_entry: dict = {"vb": [0, 0, VB, VB], "strokes": kata_strokes}
+        if kata_outlines:
+            kata_entry["outline"] = kata_outlines
+        guide[kata] = kata_entry
 
     header = """/**
  * 清音笔顺中线 · 源自 animCJK svgsJaKana（LGPL-3+）

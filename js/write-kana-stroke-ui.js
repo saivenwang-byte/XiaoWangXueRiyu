@@ -7,15 +7,17 @@ const WriteKanaStrokeUI = (function () {
   const ARROW_STROKE = "#212121";
   const ARROW_LEN = { normal: 18, focus: 22 };
 
-  /** 平假名：柔弧；片假名：略利但仍曲线 */
+  /** 平假名：柔弧；片假名：略利；仅真锐角拆段（环路保持弧线） */
   const STYLE = {
     hiragana: {
-      tension: 0.42,
+      tension: 0.32,
+      cornerDeg: 118,
       pathW: { overview: 10, focus: 13, dim: 7.5 },
       lineJoin: "round",
     },
     katakana: {
-      tension: 0.26,
+      tension: 0.24,
+      cornerDeg: 112,
       pathW: { overview: 9.5, focus: 12, dim: 7 },
       lineJoin: "round",
     },
@@ -43,13 +45,42 @@ const WriteKanaStrokeUI = (function () {
     return STROKE_COLORS[i % STROKE_COLORS.length];
   }
 
-  /** Catmull-Rom → 三次贝塞尔，避免「折线笔顺」观感 */
-  function pointsToSmoothD(pts, tension) {
+  function interiorAngleDeg(p0, p1, p2) {
+    const v1x = p0[0] - p1[0];
+    const v1y = p0[1] - p1[1];
+    const v2x = p2[0] - p1[0];
+    const v2y = p2[1] - p1[1];
+    const m1 = Math.hypot(v1x, v1y) || 1;
+    const m2 = Math.hypot(v2x, v2y) || 1;
+    const cos = Math.max(-1, Math.min(1, (v1x * v2x + v1y * v2y) / (m1 * m2)));
+    return (Math.acos(cos) * 180) / Math.PI;
+  }
+
+  /** 锐角处拆段：折角走直线，缓弯走贝塞尔 */
+  function splitRunsAtCorners(pts) {
+    const pack = stylePack();
+    if (!pts || pts.length < 3) return [pts || []];
+    const runs = [];
+    let run = [pts[0]];
+    for (let i = 1; i < pts.length - 1; i++) {
+      run.push(pts[i]);
+      const ang = interiorAngleDeg(pts[i - 1], pts[i], pts[i + 1]);
+      if (ang < pack.cornerDeg) {
+        runs.push(run);
+        run = [pts[i]];
+      }
+    }
+    run.push(pts[pts.length - 1]);
+    runs.push(run);
+    return runs.filter((r) => r.length >= 2);
+  }
+
+  function smoothRun(pts, tension) {
     if (!pts || pts.length < 2) return "";
     if (pts.length === 2) {
-      return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]}`;
+      return `L ${pts[1][0]} ${pts[1][1]}`;
     }
-    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    let seg = "";
     for (let i = 0; i < pts.length - 1; i++) {
       const p0 = pts[Math.max(0, i - 1)];
       const p1 = pts[i];
@@ -59,7 +90,21 @@ const WriteKanaStrokeUI = (function () {
       const c1y = p1[1] + (p2[1] - p0[1]) * tension;
       const c2x = p2[0] - (p3[0] - p1[0]) * tension;
       const c2y = p2[1] - (p3[1] - p1[1]) * tension;
-      d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2[0]} ${p2[1]}`;
+      seg += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2[0]} ${p2[1]}`;
+    }
+    return seg;
+  }
+
+  /** 分段 Catmull-Rom → 三次贝塞尔，锐角不跨段平滑 */
+  function pointsToSmoothD(pts, tension) {
+    if (!pts || pts.length < 2) return "";
+    if (pts.length === 2) {
+      return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]}`;
+    }
+    const runs = splitRunsAtCorners(pts);
+    let d = `M ${runs[0][0][0]} ${runs[0][0][1]}`;
+    for (const run of runs) {
+      d += smoothRun(run, tension);
     }
     return d;
   }
@@ -145,9 +190,41 @@ const WriteKanaStrokeUI = (function () {
     return { width: pw.dim, opacity: 0 };
   }
 
+  function ghostFill() {
+    return scriptMode === "katakana" ? "var(--write-ghost-fill-kata)" : "var(--write-ghost-fill-hira)";
+  }
+
+  function renderGhostFromStrokes() {
+    const pack = stylePack();
+    const strokeW = scriptMode === "katakana" ? 92 : 0;
+    if (!strokeW) return "";
+    const fill = ghostFill();
+    const parts = guide.strokes.map((pts) => {
+      const d = pointsToSmoothD(pts, pack.tension * 0.85);
+      return (
+        `<path class="write-stroke-ghost-path write-stroke-ghost-path--trace" d="${d}" ` +
+        `fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linecap="round" ` +
+        `stroke-linejoin="round" opacity="0.38"/>`
+      );
+    });
+    return `<g class="write-stroke-ghost write-stroke-ghost--strokes">${parts.join("")}</g>`;
+  }
+
+  function renderGhost() {
+    if (scriptMode === "katakana") {
+      return renderGhostFromStrokes();
+    }
+    if (!guide || !guide.outline || !guide.outline.length) return "";
+    const fill = ghostFill();
+    const paths = guide.outline
+      .map((d) => `<path class="write-stroke-ghost-path" d="${d}" fill="${fill}" stroke="none"/>`)
+      .join("");
+    return `<g class="write-stroke-ghost">${paths}</g>`;
+  }
+
   function renderSvg() {
     if (!svgEl || !guide) return;
-    const parts = [svgDefs()];
+    const parts = [svgDefs(), renderGhost()];
     const n = guide.strokes.length;
 
     for (let i = 0; i < n; i++) {
@@ -228,7 +305,6 @@ const WriteKanaStrokeUI = (function () {
     if (!guide || !mizigeEl) return false;
 
     scriptMode = opts && opts.script === "katakana" ? "katakana" : "hiragana";
-    const display = (opts && opts.displayChar) || kana;
 
     stepIndex = 0;
     guideOn = true;
@@ -239,15 +315,10 @@ const WriteKanaStrokeUI = (function () {
     mizigeEl.classList.add(scriptMode === "katakana" ? "is-katakana" : "is-hiragana");
 
     ghostEl = mizigeEl.querySelector(".write-l0-trace-char");
-    if (!ghostEl) {
-      ghostEl = document.createElement("div");
-      ghostEl.className = "write-l0-trace-char";
-      ghostEl.setAttribute("aria-hidden", "true");
-      const canvas = mizigeEl.querySelector(".write-l0-canvas");
-      mizigeEl.insertBefore(ghostEl, canvas);
+    if (ghostEl) {
+      ghostEl.textContent = "";
+      ghostEl.classList.add("is-hidden");
     }
-    ghostEl.textContent = display;
-    ghostEl.classList.remove("is-hidden");
 
     svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgEl.setAttribute("class", "write-l0-stroke-svg");

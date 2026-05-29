@@ -97,8 +97,12 @@ def is_vert(s, ratio=1.35):
 def geom_flags(char: str, strokes: list) -> list[str]:
     flags: list[str] = []
     if char == "よ" and len(strokes) >= 2:
-        if not is_horiz(strokes[0]) or xmean(strokes[0]) > CX + 60:
-            flags.append("第1笔应左上短横")
+        s0 = strokes[0]
+        if not is_horiz(s0):
+            flags.append("第1笔应沿灰底横条（横画）")
+        ym = ymean(s0)
+        if ym < 260 or ym > 400:
+            flags.append("第1笔应贴合灰底横条区")
     if char == "や" and len(strokes) >= 3:
         if is_horiz(strokes[0]) and ymean(strokes[0]) > 480:
             flags.append("第1笔不应为下横")
@@ -115,7 +119,16 @@ def geom_flags(char: str, strokes: list) -> list[str]:
             flags.append("疑为工字形误笔（应弧笔起笔）")
         if is_horiz(strokes[1]) and is_vert(strokes[0]) and abs(xmean(strokes[0]) - xmean(strokes[1])) < 60:
             flags.append("疑为工字形误笔")
-    pt_cap = 14 if ord(char) < 0x30A0 else 11
+    if char == "ヨ" and len(strokes) >= 4:
+        if not is_horiz(strokes[0]):
+            flags.append("第1笔应为上横")
+        if not (is_vert(strokes[1]) or span(strokes[1])[1] > 400):
+            flags.append("第2笔应为右侧长竖")
+        if not is_horiz(strokes[2]):
+            flags.append("第3笔应为中横")
+        if not is_horiz(strokes[3]):
+            flags.append("第4笔应为下横")
+    pt_cap = 20 if ord(char) < 0x30A0 else 14
     for i, s in enumerate(strokes):
         if any(not in_vb(p) for p in s):
             flags.append(f"笔{i+1}越界")

@@ -12,20 +12,23 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="css/design-tokens.css?v=353" />
-  <link rel="stylesheet" href="css/app.css?v=353" />
-  <link rel="stylesheet" href="css/mvp.css?v=353" />
-  <link rel="stylesheet" href="css/hyo-top-bar.css?v=353" />
-  <link rel="stylesheet" href="css/vi-typography-sweep.css?v=353" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=372" />
+  <link rel="stylesheet" href="css/app.css?v=372" />
+  <link rel="stylesheet" href="css/mvp.css?v=372" />
+  <link rel="stylesheet" href="css/hyo-top-bar.css?v=372" />
+  <link rel="stylesheet" href="css/vi-typography-sweep.css?v=372" />
 </head>
 <body class="mvp-app intro-body">
   <script>
     if (window.self !== window.top) document.documentElement.classList.add("hyouga-embed-preview");
   </script>
-  <header class="top-bar hyo-top-bar hyo-top-bar--intro">
-    <a href="index.html?v=353&nosplash=1" class="hyo-top-bar__back" id="intro-back-link">← <span class="hyo-top-bar__back-ja jp">標日 あと学習</span></a>
-    <h1>00 入門</h1>
-    <a href="index.html?v=353&nosplash=1" class="hyo-top-bar__pill" id="intro-home-link">课文首页</a>
+  <header class="top-bar hyo-top-bar" data-hyo-view="intro">
+    <h1 id="intro-page-title">00 入門</h1>
+    <div class="top-actions hyo-top-bar__actions">
+      <a href="index.html?v=372&nosplash=1" class="icon-btn icon-btn--svg icon-btn--home" id="intro-home-link" aria-label="回到课文首页"></a>
+      <button type="button" class="icon-btn icon-btn--svg icon-btn--share" id="btn-share-wechat" aria-label="转发学习链接"></button>
+      <a href="share.html" class="icon-btn icon-btn--svg" id="btn-share-page" aria-label="分享页（二维码）"></a>
+    </div>
   </header>
   <main class="intro-page">
     <div class="mvp-hero intro-hero intro-hero--minimal">
@@ -35,30 +38,39 @@
     </div>
     <div id="intro-root" class="intro-root"></div>
   </main>
-  <script src="js/share-wechat.js?v=353"></script>
+  <script src="js/share-wechat.js?v=372"></script>
+  <script src="js/nav-icons.js?v=372"></script>
   <script>
     (function () {
-      var v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "353";
+      var v = typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER ? ShareWechat.CACHE_VER : "372";
       var homeQs = "index.html?v=" + encodeURIComponent(v) + "&nosplash=1";
-      var back = document.getElementById("intro-back-link");
       var home = document.getElementById("intro-home-link");
-      if (back) back.href = homeQs;
       if (home) home.href = homeQs;
-      if (back && window.self !== window.top) {
-        back.addEventListener("click", function (e) {
+      if (home && window.self !== window.top) {
+        home.addEventListener("click", function (e) {
           e.preventDefault();
           window.top.location.href = homeQs + "&testcard=1&developer=1&embed=1";
         });
       }
+      if (typeof NavIcons !== "undefined") {
+        if (home) home.innerHTML = NavIcons.html("home");
+        var copyBtn = document.getElementById("btn-share-wechat");
+        var pageBtn = document.getElementById("btn-share-page");
+        if (copyBtn) copyBtn.innerHTML = NavIcons.html("share");
+        if (pageBtn) pageBtn.innerHTML = NavIcons.html("qrcode");
+      }
+      if (typeof ShareWechat !== "undefined") {
+        ShareWechat.mountButton(document.getElementById("btn-share-wechat"));
+      }
     })();
   </script>
-  <script src="js/speech-engine.js?v=353"></script>
-  <script src="js/speak-ui.js?v=353"></script>
-  <script src="js/shadow-speak.js?v=353"></script>
-  <script src="js/sensei-tip-card.js?v=353"></script>
-  <script src="js/data/intro-content.js?v=353"></script>
-  <script src="js/data/intro-kana-tips.js?v=353"></script>
-  <script src="js/intro-kana-tip.js?v=353"></script>
-  <script src="js/intro-guide.js?v=353"></script>
+  <script src="js/speech-engine.js?v=372"></script>
+  <script src="js/speak-ui.js?v=372"></script>
+  <script src="js/shadow-speak.js?v=372"></script>
+  <script src="js/sensei-tip-card.js?v=372"></script>
+  <script src="js/data/intro-content.js?v=372"></script>
+  <script src="js/data/intro-kana-tips.js?v=372"></script>
+  <script src="js/intro-kana-tip.js?v=372"></script>
+  <script src="js/intro-guide.js?v=372"></script>
 </body>
 </html>

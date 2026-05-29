@@ -338,7 +338,7 @@ const WriteKanaL0 = (function () {
           ${speakBtnHtml(entry.kana)}
         </div>
         ${readNote ? `<p class="write-l0-biaori-note zh-annotation">${escapeHtml(readNote)}</p>` : ""}
-        <p class="write-l0-hint write-l0-hint--sheet zh-annotation">淡灰字形为清音表字体 · 彩色弧线为笔顺 · 跟数字箭头摹写</p>
+        <p class="write-l0-hint write-l0-hint--sheet zh-annotation">淡灰底图与彩色笔顺同源（animCJK）· 跟数字箭头摹写</p>
         <div class="write-l0-mizige-wrap">
           <div class="write-l0-mizige" id="write-l0-mizige">
             <div class="write-l0-mizige-gridlines" aria-hidden="true"></div>

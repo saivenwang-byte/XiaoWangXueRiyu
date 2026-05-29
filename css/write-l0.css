@@ -442,6 +442,8 @@
   border-radius: 4px;
   background: #fffef8;
   box-shadow: inset 0 0 0 1px rgba(197, 184, 168, 0.35);
+  --write-ghost-fill-hira: rgba(55, 71, 79, 0.16);
+  --write-ghost-fill-kata: rgba(38, 50, 56, 0.18);
 }
 
 .write-l0-mizige-gridlines {
@@ -493,12 +495,24 @@
 
 .write-l0-stroke-svg {
   position: absolute;
-  inset: 4%;
-  width: 92%;
-  height: 92%;
+  inset: 5%;
+  width: 90%;
+  height: 90%;
   pointer-events: none;
   z-index: 2;
   filter: none;
+}
+
+.write-l0-stroke-svg .write-stroke-ghost-path {
+  vector-effect: non-scaling-stroke;
+}
+
+.write-l0-mizige.is-hiragana .write-l0-stroke-svg .write-stroke-ghost-path {
+  fill: var(--write-ghost-fill-hira);
+}
+
+.write-l0-mizige.is-katakana .write-l0-stroke-svg .write-stroke-ghost-path {
+  fill: var(--write-ghost-fill-kata);
 }
 
 .write-l0-mizige.is-hiragana .write-l0-stroke-svg .write-stroke-path {

@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "353",
+    "cache": "372",
     "date": "2026-05-25",
-    "note": "四栏顶栏统一（米黄+海军蓝+L0模块图标）；书写表排版；intro 顶栏对齐主站",
+    "note": "五十音标日全量对账（ヨ/オ/ホ/マ/フ 片假名校正）；小程序 h5-url v372",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
