@@ -4,7 +4,7 @@
  */
 const HyoTopBar = (function () {
   const VIEW_META = {
-    home: { title: "標日 あと学習" },
+    home: { title: (window.HYOUGA_PRODUCT && window.HYOUGA_PRODUCT.name) || "日语初级课后练习" },
     lesson: { title: "学習中" },
     review: { title: "復習" },
     write: { title: "书写" },

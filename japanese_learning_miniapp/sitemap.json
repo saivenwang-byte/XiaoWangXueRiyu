@@ -1,4 +1,4 @@
 {
-  "desc": "标日课后巩固",
+  "desc": "日语初级课后练习",
   "rules": [{ "action": "allow", "page": "*" }]
 }

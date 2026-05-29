@@ -1,5 +1,5 @@
 {
-  "description": "标日课后巩固 · 打开即学（内嵌正式 H5）",
+  "description": "日语初级课后练习 · 打开即学（内嵌 H5 · 非出版社官方产品）",
   "packOptions": {
     "ignore": [
       { "type": "folder", "value": "js" },

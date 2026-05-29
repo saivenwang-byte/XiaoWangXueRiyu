@@ -1,6 +1,6 @@
 # 第1–24课 · 标日 PRD 单词对账（批次 E）
 
-> 生成：`python scripts/audit-lessons-biaori-prd.py` · 日期 2026-05-29
+> 生成：`python scripts/audit-lessons-biaori-prd.py` · 日期 2026-05-30
 > 范围：lessonId 1–24 · PRD 真源 `【产品PRD】/新增补课文内容/**`
 > 数据真源：`js/data/lessons-data.js`
 

@@ -50,8 +50,8 @@ def dedupe_section_lines(lines: list) -> list:
     for ln in lines:
         if not isinstance(ln, str) or not ln.strip():
             continue
-        if "【标日课文】" in ln or "【题源】" in ln:
-            if seen_anchor and ("【标日课文】" in ln or ln.startswith("【题源】")):
+        if "【本课课文】" in ln or "【题源】" in ln:
+            if seen_anchor and ("【本课课文】" in ln or ln.startswith("【题源】")):
                 continue
             seen_anchor = True
         out.append(ln)

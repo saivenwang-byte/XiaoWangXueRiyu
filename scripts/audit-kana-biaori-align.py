@@ -121,7 +121,7 @@ def main() -> None:
         "> 笔顺真源：`scripts/build-kana-stroke-guide.py` + animCJK 清洗",
         "> 字表真源：`js/data/intro-content.js` · `INTRO_GOJUON_SEION`（与标日初级上五十音图一致）",
         "",
-        "## 1. 字表与读音（标日课文）",
+        "## 1. 字表与读音（本课课文）",
         "",
         "| 项 | 结果 |",
         "|----|------|",

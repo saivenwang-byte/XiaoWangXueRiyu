@@ -4,7 +4,7 @@ chcp 65001 >nul
 
 cd /d "%~dp0"
 
-title 标日闯关 - 本地预览
+title 日语初级课后练习 - 本地预览
 
 
 

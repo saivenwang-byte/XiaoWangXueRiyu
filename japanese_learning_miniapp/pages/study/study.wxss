@@ -63,6 +63,14 @@ page {
   border-radius: 12rpx;
 }
 
+.study-fallback-legal {
+  margin-top: 28rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #90a4ae;
+  max-width: 100%;
+}
+
 .study-reload-fab {
   position: fixed;
   right: 24rpx;

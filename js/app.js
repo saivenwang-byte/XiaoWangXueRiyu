@@ -7,7 +7,7 @@
   let lessonReturnView = null;
 
   const titles = {
-    home: "標日 あと学習",
+    home: "日语初级课后练习",
     lesson: "学習中",
     review: "復習",
     write: "书写",

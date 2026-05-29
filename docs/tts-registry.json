@@ -2,9 +2,9 @@
   "schema": "tts-registry-v1",
   "algorithm": "ttsCacheKey (same as speech-engine.js)",
   "requiredCount": 2685,
-  "mp3FileCount": 4679,
+  "mp3FileCount": 4680,
   "missingCount": 0,
-  "orphanCount": 1994,
+  "orphanCount": 1995,
   "missingKeys": [],
   "orphanKeys": [
     "1014a6",
@@ -20191,11 +20191,11 @@
     },
     {
       "seq": 1806,
-      "key": "be30ad95",
-      "line": "对应标日入门单元 · 先地图、再分块、再开口 · 不锁正课",
-      "mp3": "tts-cache/be30ad95.mp3",
+      "key": "c61ea55c",
+      "line": "对应教材入门单元 · 先地图、再分块、再开口 · 不锁正课",
+      "mp3": "tts-cache/c61ea55c.mp3",
       "hasMp3": true,
-      "size": 33696,
+      "size": 35136,
       "sources": [
         "js/data/intro-content.js:string"
       ]

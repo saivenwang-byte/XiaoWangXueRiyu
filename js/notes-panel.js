@@ -270,7 +270,7 @@ const NotesPanel = (() => {
         return `<li><span class="notes-tb-link notes-tb-link--text">${label}</span></li>`;
       })
       .join("");
-    return `<ul class="notes-tb-links zh-annotation" aria-label="标日对照与关联">${items}</ul>`;
+    return `<ul class="notes-tb-links zh-annotation" aria-label="教材对照与关联">${items}</ul>`;
   }
 
   function textbookDimHtml(L, lessonId) {

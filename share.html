@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta property="og:title" content="标日课后巩固 · 分享给好友" />
-  <meta property="og:description" content="第14/16/18课三关巩固，微信点开即用，可继续转发" />
-  <title>分享 · 标日课后巩固</title>
-  <link rel="stylesheet" href="css/app.css?v=351" />
-  <link rel="stylesheet" href="css/mvp.css?v=351" />
+  <meta property="og:title" content="日语初级课后练习 · 分享给好友" />
+  <meta property="og:description" content="初级上24课四关课后练习。非出版社官方产品，课后辅助。" />
+  <title>分享 · 日语初级课后练习</title>
+  <link rel="stylesheet" href="css/app.css?v=394" />
+  <link rel="stylesheet" href="css/mvp.css?v=394" />
   <style>
     .share-page { padding: 24px 20px; text-align: center; max-width: 420px; margin: 0 auto; }
     .share-page h1 { font-size: 22px; color: #e57373; margin-bottom: 8px; }
@@ -50,8 +50,9 @@
 </head>
 <body class="mvp-app">
   <div class="share-page">
-    <h1>标日课后巩固</h1>
-    <p class="hint">第 14 / 16 / 18 课 · 一课三关 · 链接转发</p>
+    <h1>日语初级课后练习</h1>
+    <p class="hint">初级上 24 课 · 四关练习 · 链接转发</p>
+    <p class="hint" style="font-size:12px;color:#78909c;margin-top:4px">非人民教育出版社官方产品，与《标准日本语》为课后辅助关系</p>
     <p id="status-badge" class="status-badge">检测中…</p>
 
     <div class="link-box" id="share-url">正在获取地址…</div>
@@ -69,13 +70,22 @@
     </ol>
 
     <div class="wechat-tip" id="wechat-tip"></div>
+
+    <p style="margin-top:20px;font-size:12px;color:#78909c;line-height:1.7">
+      非官方教材 App ·
+      <a href="privacy.html" style="color:#78909c">隐私政策</a>
+      ·
+      <a href="legal.html" style="color:#78909c">版权说明</a>
+    </p>
   </div>
-  <script src="js/public-url.config.js?v=351"></script>
-  <script src="js/share-wechat.js?v=351"></script>
+  <script src="js/public-url.config.js?v=394"></script>
+  <script src="js/product-brand.js?v=394"></script>
+  <script src="js/share-wechat.js?v=394"></script>
   <script>
     const learnUrl = ShareWechat.learnUrl();
     const publicOk = ShareWechat.isPublicHttps();
     const hasOrigin = !!ShareWechat.configuredOrigin();
+    const brand = window.HYOUGA_PRODUCT || {};
 
     document.getElementById("share-url").textContent = learnUrl;
     document.getElementById("btn-enter").href = learnUrl;
@@ -91,11 +101,12 @@
 
     document.getElementById("wechat-tip").innerHTML =
       "<strong>现阶段</strong>：只发链接，不必小程序。<br>" +
-      "<strong>公司成立后</strong>：可升级为微信小程序 + 收费。<br>" +
+      "<strong>公司成立后</strong>：可升级为微信小程序。<br>" +
       "作者更新：改文件夹 → push GitHub → 约 1～2 分钟后链接自动更新。";
 
     const wxText =
-      "【标日课后巩固】第14/16/18课，语法→会話→测试。点开就学，可转发给同学：\n" + learnUrl;
+      "【" + (brand.name || "日语初级课后练习") + "】" +
+      (brand.shareBody || "课后四关练习。") + "\n" + learnUrl;
 
     async function copyText(text) {
       try {

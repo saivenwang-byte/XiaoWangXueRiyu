@@ -52,25 +52,33 @@ const HomeSplash = (function () {
     </div>`;
   }
 
-  /** 橘框(CSS)+海军蓝底+白 emblem PNG · scripts/build-shell-app-icon.py */
-  const LOGO_EMBLEM = "assets/brand/intepoint-logo-icon.png";
+  /** 开机叠层：橘框 + 海军蓝底 + 居中白 emblem（源 logo/logo.png） */
+  const LOGO_EMBLEM = "assets/brand/intepoint-logo-emblem.png";
+
+  function product() {
+    return window.HYOUGA_PRODUCT || {};
+  }
 
   function uiChromeHtml() {
     const v = cacheVer();
+    const p = product();
     const emblemSrc = v ? `${LOGO_EMBLEM}?v=${v}` : LOGO_EMBLEM;
+    const title = p.name || "日语初级课后练习";
+    const disclaimer = p.disclaimer || "";
     return `
       <div class="splash-ui">
         <header class="splash-brand">
           <div class="splash-logo" aria-hidden="true">
             <div class="splash-logo-frame">
               <div class="splash-logo-inner">
-                <img src="${escapeHtml(emblemSrc)}" alt="" width="40" height="40" decoding="async" />
+                <img class="splash-logo-emblem" src="${escapeHtml(emblemSrc)}" alt="" width="33" height="33" decoding="async" />
               </div>
             </div>
           </div>
-          <h1 class="splash-title">标日 あと学習</h1>
+          <h1 class="splash-title">${escapeHtml(title)}</h1>
           <p class="splash-path jp">学習の道</p>
           <p class="splash-sub jp">新幹線 24 駅</p>
+          ${disclaimer ? `<p class="splash-disclaimer zh-annotation">${escapeHtml(disclaimer)}</p>` : ""}
         </header>
         <div class="splash-map-stage" aria-hidden="true"></div>
         <footer class="splash-cta">

@@ -4,7 +4,7 @@
 第13–24课 · 从 PRD【作业】同步 homeworkSections 正文（P0 深化）
 
 - 同步段 1–6、8–9；段 7 保留 lessons-data 内「総合」块（与小测 Q12 一致）
-- 每段加【标日课文】锚点（与 align-homework 一致）
+- 每段加【本课课文】锚点（与 align-homework 一致）
 """
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ def parse_prd_homework(body: str) -> dict[int, list[str]]:
 
 def hw_header(lid: int) -> str:
     focus = BIAORI_ANCHOR[lid]["grammar_focus"]
-    return f"【标日课文】第{lid}课 · 语法：{focus}"
+    return f"【本课课文】第{lid}课 · 语法：{focus}"
 
 
 def build_sections(lid: int, prd_secs: dict[int, list[str]], existing: list) -> list[dict]:
@@ -100,7 +100,7 @@ def build_sections(lid: int, prd_secs: dict[int, list[str]], existing: list) -> 
                 lines = list(sec7.get("lines") or [])
                 if lines and hw_header(lid) not in lines[0]:
                     lines = [hw_header(lid)] + [
-                        ln for ln in lines if not ln.startswith("【标日课文】") and not ln.startswith("【题源】")
+                        ln for ln in lines if not ln.startswith("【本课课文】") and not ln.startswith("【题源】")
                     ]
                 sec7 = {**sec7, "lines": lines}
                 result.append(sec7)

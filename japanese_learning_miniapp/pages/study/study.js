@@ -111,14 +111,14 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: "标日 あと学習",
+      title: "日语初级课后练习",
       path: "/pages/study/study",
     };
   },
 
   onShareTimeline() {
     return {
-      title: "标日 あと学習",
+      title: "日语初级课后练习",
       query: CACHE_VER ? `v=${CACHE_VER}` : "",
     };
   },

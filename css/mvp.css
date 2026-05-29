@@ -6993,6 +6993,15 @@ body.mvp-app.is-splash-open #main-content {
   color: #90a4ae;
 }
 
+.splash-screen--complete .splash-disclaimer {
+  margin: 8px 12px 0;
+  max-width: 320px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #90a4ae;
+  text-align: center;
+}
+
 .splash-screen--complete .splash-btn-start,
 .home-splash-overlay .splash-screen--complete .btn.primary.splash-btn-start {
   box-sizing: border-box;
@@ -7148,18 +7157,22 @@ body.mvp-app.is-splash-open #main-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 auto 2px;
 }
 
-/* 橘色外框 · 内层海军蓝 · emblem PNG 透明隙透出蓝底 */
+/* 橘色外框泡泡 · 图3 定稿 */
 .splash-logo-frame {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px;
   border-radius: 14px;
-  background: #ef6e58;
+  background: var(--hy-brand-coral, #ef6e58);
   box-shadow: 0 4px 14px rgba(239, 110, 88, 0.35);
+  overflow: hidden;
 }
 
+/* 海军蓝内框泡泡 · emblem 水平垂直居中 */
 .splash-logo-inner {
   display: flex;
   align-items: center;
@@ -7167,14 +7180,28 @@ body.mvp-app.is-splash-open #main-content {
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  background: #103459;
+  background: var(--hy-brand-navy, #103459);
+  overflow: hidden;
 }
 
-.splash-logo-inner img {
-  width: 34px;
-  height: 34px;
+/* 白 emblem · 居中缩至原展示尺寸 75%（44→33px） */
+.splash-logo-emblem {
+  display: block;
+  width: 33px;
+  height: 33px;
   object-fit: contain;
-  object-position: center;
+  object-position: center center;
+}
+
+/* 整图壳备用（小程序 icon 等，开机页不用） */
+.splash-logo-app {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  border-radius: 14px;
+  object-fit: contain;
+  box-shadow: 0 4px 14px rgba(239, 110, 88, 0.35);
 }
 
 .splash-title {

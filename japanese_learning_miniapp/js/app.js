@@ -4,7 +4,7 @@
   let activeGate = 1;
 
   const titles = {
-    home: "标日课后巩固",
+    home: "日语初级课后练习",
     lesson: "一课三关",
     review: "复习",
     me: "我的",
@@ -33,7 +33,7 @@
     });
     document.querySelector(".bottom-nav").style.display =
       ["home", "review", "me"].includes(name) ? "flex" : "none";
-    document.getElementById("page-title").textContent = titles[name] || "标日课后巩固";
+    document.getElementById("page-title").textContent = titles[name] || "日语初级课后练习";
 
     if (name === "home") renderHome();
     if (name === "lesson") renderLessonFlow();

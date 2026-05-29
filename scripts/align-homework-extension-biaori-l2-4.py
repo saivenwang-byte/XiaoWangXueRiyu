@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-第2–4课 · 作業/拡張 标日课文锚点（不动课1）
+第2–4课 · 作業/拡張 本课课文锚点（不动课1）
 
-- 作業各段前加【标日课文】锚点
+- 作業各段前加【本课课文】锚点
 - reviewExtension 总结块补课文原句列表
 """
 from __future__ import annotations
@@ -492,18 +492,18 @@ REVIEW_SUMMARY_PREFIX: dict[int, list[str]] = {
 def anchor_block(lid: int) -> list[str]:
     a = BIAORI_ANCHOR[lid]
     lines = [
-        f"【标日课文】第{lid}课 · 语法：{a['grammar_focus']}",
-        "【标日课文】基本课文：",
+        f"【本课课文】第{lid}课 · 语法：{a['grammar_focus']}",
+        "【本课课文】基本课文：",
     ]
     lines.extend(f"・{s}" for s in a["basic"])
-    lines.append("【标日课文】会話（摘录）：")
+    lines.append("【本课课文】会話（摘录）：")
     lines.extend(f"・{s}" for s in a["dialogue"])
     return lines
 
 
 def _has_hw_anchor(lines: list) -> bool:
     head = " ".join(str(x) for x in (lines or [])[:4])
-    return "【标日课文】" in head or "【题源】" in head
+    return "【本课课文】" in head or "【题源】" in head
 
 
 def _strip_empty_lines(lines: list) -> list:

@@ -56,7 +56,7 @@ const Chat = (() => {
         messages: [
           {
             role: "system",
-            content: `你是日语教师。学生学标日初级上第${lesson.id}课「${lesson.theme}」。
+            content: `你是日语教师。学生学习日语初级上册第${lesson.id}课「${lesson.theme}」。
 课文标题：${lesson.headline || ""}
 ${(lesson.grammar || []).map((g) => g.title).join("、")}
 用简单日语对话，附简短中文。温和纠错。不照搬教材长文。`,

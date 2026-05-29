@@ -6,7 +6,7 @@
 (function () {
   if (typeof LESSONS_MVP === "undefined") {
     console.error(
-      "[标日あと学習] lessons-data.js 未加载或顺序错误：须在 lessons-mvp.js 之前引入。"
+      "[日语初级课后练习] lessons-data.js 未加载或顺序错误：须在 lessons-mvp.js 之前引入。"
     );
   }
 })();

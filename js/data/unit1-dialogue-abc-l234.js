@@ -174,7 +174,7 @@ const L2_DIALOGUE_ABC = {
         rank: 1,
         japanese: "それも 父です。若い 時の 写真です。",
         chinese: "那也是父亲。年轻时的照片。",
-        noteZh: "课文两句：それも＋若い時。标日主线用 A。",
+        noteZh: "课文两句：それも＋若い時。教材主线用 A。",
       },
       {
         label: "B",

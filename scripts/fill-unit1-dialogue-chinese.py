@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""第1单元第2–4课 · 会話 chinese 字段（标日课文对照 · MVP 灰字）"""
+"""第1单元第2–4课 · 会話 chinese 字段（本课课文对照 · MVP 灰字）"""
 from __future__ import annotations
 
 import re

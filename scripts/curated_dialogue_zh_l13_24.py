@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""第13–24课 · 会話 A 轨中文（标日课文口径 · 批 B–D P1）"""
+"""第13–24课 · 会話 A 轨中文（本课课文口径 · 批 B–D P1）"""
 from __future__ import annotations
 
 import json

@@ -85,7 +85,7 @@ def fix_homework_headers(L: dict) -> int:
     for sec in L.get("homeworkSections") or []:
         for i, line in enumerate(sec.get("lines") or []):
             if line.startswith("【题源】"):
-                sec["lines"][i] = line.replace("【题源】", "【标日课文】", 1)
+                sec["lines"][i] = line.replace("【题源】", "【本课课文】", 1)
                 n += 1
     return n
 

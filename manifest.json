@@ -1,7 +1,7 @@
 {
-  "name": "情景日语 · 标日初级上",
-  "short_name": "情景日语",
-  "description": "情景互动学日语：按住说话、点词导读、发音纠正",
+  "name": "日语初级课后练习",
+  "short_name": "日语初级",
+  "description": "日语初级上册课后四关练习。非人民教育出版社官方产品，与《标准日本语》为课后辅助关系。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

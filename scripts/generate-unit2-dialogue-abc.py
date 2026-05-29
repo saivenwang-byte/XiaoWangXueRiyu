@@ -178,7 +178,7 @@ def zh_for_variant(a_jp: str, b_jp: str, a_zh: str, label: str) -> str:
 def note_for_variant(label: str, speaker: str, title: str, a_jp: str, v_jp: str) -> str:
     scene = title.split("（")[0] if title else "会話"
     if label == "A":
-        return f"课文原句（{speaker}）。{scene}场景标准答，与标日课文一致。"
+        return f"课文原句（{speaker}）。{scene}场景标准答，与教材课文一致。"
     if label == "B":
         if v_jp != a_jp:
             return f"B 省略或缩短：对方已接上文、同事间节奏快时用（非错答，可沟通）。"

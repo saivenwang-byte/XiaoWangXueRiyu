@@ -4,7 +4,7 @@
 U3 第9–12课 · 标日真源精修（作业/小测对 PRD）
 
 - 修正选择题 options 拆分、翻译题改 fill、grammarNodeId / explanationZh
-- 作業段【题源】→【标日课文】
+- 作業段【题源】→【本课课文】
 - 真源：【产品PRD】/新增补课文内容/第3单元/*.txt
 """
 from __future__ import annotations
@@ -481,7 +481,7 @@ def fix_homework_headers(L: dict) -> int:
     for sec in L.get("homeworkSections") or []:
         for i, line in enumerate(sec.get("lines") or []):
             if line.startswith("【题源】"):
-                sec["lines"][i] = line.replace("【题源】", "【标日课文】", 1)
+                sec["lines"][i] = line.replace("【题源】", "【本课课文】", 1)
                 n += 1
     return n
 

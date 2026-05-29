@@ -1,6 +1,6 @@
 /**
  * 六单元 · 24 格分镜文案（审阅真源）
- * 精神原型：docs/story-strip-soul-lock.md（单元弧 + 标日 headline 画面 + 课文型泡）
+ * 精神原型：docs/story-strip-soul-lock.md（单元弧 + 教材 headline 画面 + 课文型泡）
  * 配角：风影/背影/剪影 only — 禁止他人正面（仅グルミ可正面）
  * 混合：P1 定稿 — 情绪弧 + visualBeat + 会話泡
  * 预览：storyboard-preview.html

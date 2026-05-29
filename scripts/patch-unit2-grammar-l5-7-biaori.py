@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-第2单元第5–7课 · U2-B 文法例句（标日课文真源）
+第2单元第5–7课 · U2-B 文法例句（本课课文真源）
 
 - 仅改 lessonId 5–7 的 grammarNodes example / exampleZh
 - 不动课1、lesson-1-flow.js

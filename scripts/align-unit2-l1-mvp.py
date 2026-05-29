@@ -12,7 +12,7 @@ DATA = ROOT / "js" / "data" / "lessons-data.js"
 ABC = ROOT / "js" / "data" / "unit2-dialogue-abc-l5-8.js"
 FLOW = ROOT / "js" / "lesson-1-flow.js"
 
-# 会話灰字（标日课文 · 与 opener / A 轨一致）
+# 会話灰字（本课课文 · 与 opener / A 轨一致）
 UNIT2_DIALOGUE_ZH: dict[str, str] = {
     # L5
     "森さん、毎朝何時に起きますか。": "森先生，每天早上几点起床？",

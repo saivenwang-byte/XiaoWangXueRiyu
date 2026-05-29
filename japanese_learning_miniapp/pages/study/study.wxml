@@ -9,6 +9,7 @@
     <text class="study-fallback-hint">{{errorHint}}</text>
     <text class="study-fallback-url" selectable>{{h5UrlDisplay}}</text>
     <button class="study-retry-btn" type="primary" bindtap="onReloadTap">重新加载</button>
+    <text class="study-fallback-legal">非人民教育出版社官方产品 · 课后辅助 · 详见 H5「隐私政策」</text>
   </view>
 
   <web-view

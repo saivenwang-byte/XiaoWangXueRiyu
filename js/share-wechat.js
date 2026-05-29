@@ -1,6 +1,6 @@
 /** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发 */
 const ShareWechat = (() => {
-  const CACHE_VER = "385";
+  const CACHE_VER = "394";
 
   const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
@@ -96,9 +96,10 @@ const ShareWechat = (() => {
       return;
     }
 
-    const title = "标日 あと学習 · 学习の道";
-    const text =
-      "标日初级上·24课四关（单词·会話·文法·测试）。点开链接就能学，可转发给同学。\n" + url;
+    const brand = window.HYOUGA_PRODUCT || {};
+    const title = brand.shareTitle || "日语初级课后练习 · 学习の道";
+    const body = brand.shareBody || "日语初级上·24课四关练习。非出版社官方产品，课后辅助。";
+    const text = body + "\n" + url;
 
     if (navigator.share && !isWeChat()) {
       try {

@@ -156,7 +156,7 @@
     function renderVersionUi() {
       const label = versionLabel();
       document.getElementById("btn-version").textContent = label;
-      document.title = "标日闯关 " + label;
+      document.title = "日语初级课后练习 " + label;
       const foot = document.getElementById("pick-version-foot");
       foot.innerHTML =
         `当前 <b>${label}</b>（累计第 <b>${APP_BUILD}</b> 次更新，${APP_BUILD_DATE}）` +
@@ -1849,7 +1849,7 @@
       document.getElementById("btn-back").style.display = name === "lesson" ? "inline-block" : "none";
       updateFabVisibility();
       if (name === "pick") {
-        document.getElementById("top-title").textContent = "標日学習";
+        document.getElementById("top-title").textContent = "日语初级课后练习";
         state.unitId = null;
         save();
         closeReadAlong(true);
@@ -2987,7 +2987,7 @@
 
     document.getElementById("btn-wx-share").onclick = async () => {
       const url = location.href.split("#")[0];
-      const title = "标日闯关 · 第14/16/18课（知识地图+练习）";
+      const title = "日语初级课后练习（知识地图+练习）";
       if (!url.startsWith("https:")) {
         alert(
           "还不能转发：需要 https 网址。\n\n" +

@@ -1,4 +1,4 @@
-# 第9–12课 · 会話 A 轨中文（标日课文口径 · 批 A P1）
+# 第9–12课 · 会話 A 轨中文（本课课文口径 · 批 A P1）
 # 键：norm 后日文（与 generate / align 一致）
 
 from __future__ import annotations

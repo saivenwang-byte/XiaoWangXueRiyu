@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "385",
-    "date": "2026-05-29",
-    "note": "微信书写页笔顺图加载与移动端布局 v384",
+    "cache": "394",
+    "date": "2026-05-30",
+    "note": "合规去标日·开机Logo叠层·书写假名分色 v394",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",
