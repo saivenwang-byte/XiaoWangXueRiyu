@@ -377,6 +377,21 @@
   cursor: pointer;
 }
 
+.write-l0-sheet-title-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  vertical-align: middle;
+}
+
+.write-l0-sheet-roma {
+  font-size: 0.65rem;
+  color: var(--hy-zh-muted, #90a4ae);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
 .write-l0-sheet-title {
   flex: 1;
   margin: 0;
@@ -390,9 +405,10 @@
 }
 
 .write-l0-sheet-pair {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #546e7a;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(55, 71, 79, 0.55);
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
 }
 
 .write-l0-sheet-stroke-note {

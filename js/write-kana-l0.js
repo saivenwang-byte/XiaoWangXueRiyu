@@ -285,22 +285,39 @@ const WriteKanaL0 = (function () {
     canvasEl.addEventListener("pointerleave", end);
   }
 
-  /** 单字顶栏：片假名模式显示 カタ + ひら 对照（笔顺数据为平假名） */
+  /** 笔顺键：片假名模式用片假名中线（与表内大字一致） */
+  function strokeGuideChar(entry) {
+    const w = ensureWriteState(stateRef);
+    const hira = entry.kana;
+    if (w.script === "katakana") {
+      const kata = toKatakana(hira);
+      if (typeof WriteKanaStrokeUI !== "undefined" && WriteKanaStrokeUI.hasGuide(kata)) return kata;
+    }
+    return hira;
+  }
+
+  /** 单字顶栏 · 与清音表格子同一层次：大字 / 罗马字 / 对照假名 */
   function sheetTitleHtml(entry) {
     const w = ensureWriteState(stateRef);
     const hira = entry.kana;
     const rowMeta = entry.row === "ん" ? "ん" : entry.row || "清音";
+    const roma = entry.romaji ? `<span class="write-l0-sheet-roma">${escapeHtml(entry.romaji)}</span>` : "";
     if (w.script === "katakana") {
       const kata = toKatakana(hira);
       return (
+        `<span class="write-l0-sheet-title-stack">` +
         `<span class="jp write-l0-sheet-kana">${escapeHtml(kata)}</span>` +
-        `<span class="write-l0-sheet-pair jp" title="平假名">${escapeHtml(hira)}</span>` +
-        `<span class="write-l0-sheet-meta"> · ${escapeHtml(rowMeta)}</span>` +
-        `<span class="write-l0-sheet-stroke-note zh-annotation">笔顺按平假名（标日）</span>`
+        roma +
+        `<span class="write-l0-sheet-pair jp" title="平假名对照">${escapeHtml(hira)}</span>` +
+        `</span>` +
+        `<span class="write-l0-sheet-meta"> · ${escapeHtml(rowMeta)}</span>`
       );
     }
     return (
+      `<span class="write-l0-sheet-title-stack">` +
       `<span class="jp write-l0-sheet-kana">${escapeHtml(hira)}</span>` +
+      roma +
+      `</span>` +
       `<span class="write-l0-sheet-meta"> · ${escapeHtml(rowMeta)}</span>`
     );
   }
@@ -341,13 +358,18 @@ const WriteKanaL0 = (function () {
 
     const mizige = document.getElementById("write-l0-mizige");
     if (typeof WriteKanaStrokeUI !== "undefined" && mizige) {
-      if (!WriteKanaStrokeUI.hasGuide(entry.kana)) {
+      const guideChar = strokeGuideChar(entry);
+      if (!WriteKanaStrokeUI.hasGuide(guideChar)) {
         const hint = hostEl.querySelector(".write-l0-hint");
         if (hint) {
           hint.textContent = "在田字格内书写 · 该字笔顺数据准备中";
         }
       } else {
-        WriteKanaStrokeUI.mount(mizige, entry.kana);
+        WriteKanaStrokeUI.mount(mizige, guideChar);
+        const hint = hostEl.querySelector(".write-l0-hint--sheet");
+        if (hint && ensureWriteState(stateRef).script === "katakana") {
+          hint.textContent = "田字格 · 片假名笔顺（与表内大字一致）· 跟数字与箭头摹写";
+        }
       }
     }
 

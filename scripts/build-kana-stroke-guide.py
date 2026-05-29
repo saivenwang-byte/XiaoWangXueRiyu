@@ -176,23 +176,33 @@ def clean_strokes(kana: str, raw: list[list[list[float]]]) -> list[list[list[flo
     return strokes
 
 
+def to_katakana(hiragana: str) -> str:
+    return "".join(
+        chr(ord(ch) + 0x60) if 0x3041 <= ord(ch) <= 0x3096 else ch for ch in hiragana
+    )
+
+
+def strokes_from_svg(char: str, manual_key: str | None) -> list[list[list[float]]] | None:
+    svg_path = SVG_DIR / f"{ord(char)}.svg"
+    if not svg_path.is_file():
+        return None
+    raw = extract_medians(svg_path.read_text(encoding="utf-8"))
+    key = manual_key if manual_key is not None else char
+    strokes = clean_strokes(key, raw)
+    return strokes if strokes else None
+
+
 def main() -> None:
     if not SVG_DIR.is_dir():
         raise SystemExit(f"缺少 {SVG_DIR}，请先 sparse-checkout animCJK svgsJaKana")
 
     guide: dict[str, dict] = {}
     missing: list[str] = []
+    kata_missing: list[str] = []
     mismatches: list[str] = []
 
     for kana in SEION_KANA:
-        dec = ord(kana)
-        svg_path = SVG_DIR / f"{dec}.svg"
-        if not svg_path.is_file():
-            missing.append(kana)
-            continue
-        text = svg_path.read_text(encoding="utf-8")
-        raw = extract_medians(text)
-        strokes = clean_strokes(kana, raw)
+        strokes = strokes_from_svg(kana, kana)
         if not strokes:
             missing.append(kana)
             continue
@@ -201,19 +211,32 @@ def main() -> None:
             mismatches.append(f"{kana}: got {len(strokes)} expect {exp}")
         guide[kana] = {"vb": [0, 0, VB, VB], "strokes": strokes}
 
+        kata = to_katakana(kana)
+        if kata in guide:
+            continue
+        kata_strokes = strokes_from_svg(kata, None)
+        if not kata_strokes:
+            kata_missing.append(kata)
+            continue
+        if exp is not None and len(kata_strokes) != exp:
+            print(f"[WARN] {kata}: got {len(kata_strokes)} expect {exp} (片假名，不阻断)")
+        guide[kata] = {"vb": [0, 0, VB, VB], "strokes": kata_strokes}
+
     header = """/**
  * 清音笔顺中线 · 源自 animCJK svgsJaKana（LGPL-3+）
  * https://github.com/parsimonhi/animCJK
  * 生成：python scripts/build-kana-stroke-guide.py
- * 清洗：viewBox 内 · 去重 · 教材笔顺表校对
+ * 清洗：viewBox 内 · 去重 · 教材笔顺表校对（平假名+片假名各 46）
  */
 const KANA_STROKE_GUIDE = """
     footer = ";\n"
     body = json.dumps(guide, ensure_ascii=False, separators=(",", ":"))
     OUT.write_text(header + body + footer, encoding="utf-8", newline="\n")
-    print(f"[OK] {len(guide)} kana -> {OUT}")
+    print(f"[OK] {len(guide)} entries (平+片) -> {OUT}")
     if missing:
-        print(f"[WARN] missing: {', '.join(missing)}")
+        print(f"[WARN] missing hiragana: {', '.join(missing)}")
+    if kata_missing:
+        print(f"[WARN] missing katakana: {', '.join(kata_missing)}")
     if mismatches:
         print("[WARN] stroke count mismatch:")
         for line in mismatches:
