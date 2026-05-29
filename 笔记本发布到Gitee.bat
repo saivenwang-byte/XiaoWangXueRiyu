@@ -4,7 +4,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 title 笔记本发布到 Gitee（国内过渡 A）
 
-set "REPO=XiaoWangXueRiyu"
+set "REPO=xiao-wang-xue-riyu-v2"
 
 echo.
 echo  ==========================================
