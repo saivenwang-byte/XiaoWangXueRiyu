@@ -53,7 +53,45 @@ MANUAL_ORDER: dict[str, list[int]] = {
     "や": [2, 1, 0],
 }
 
+# 标日教辅笔形（viewBox 1024）· animCJK 中线折点过多时整笔替换
+MANUAL_REPLACE.update({
+    "か": {
+        0: [[270, 410], [610, 410], [390, 560]],
+        1: [[390, 200], [390, 760]],
+        2: [[580, 500], [680, 590]],
+    },
+    "き": {
+        0: [[300, 200], [300, 520]],
+        1: [[300, 520], [620, 520]],
+        2: [[480, 520], [480, 780]],
+        3: [[620, 780], [720, 680]],
+    },
+    "け": {
+        0: [[280, 220], [280, 780]],
+        1: [[280, 420], [600, 420]],
+        2: [[600, 420], [600, 780]],
+    },
+    "さ": {
+        0: [[320, 240], [320, 780]],
+        1: [[320, 420], [680, 420]],
+        2: [[680, 420], [520, 780]],
+    },
+    "そ": {
+        0: [[280, 380], [720, 380], [450, 780]],
+    },
+    "ね": {
+        0: [[300, 200], [300, 780]],
+        1: [[300, 620], [680, 480], [720, 720]],
+    },
+    "ぬ": {
+        0: [[300, 220], [300, 780]],
+        1: [[300, 500], [700, 500], [700, 780]],
+    },
+})
+
 CENTER = VB / 2
+RDP_EPS = 95
+MAX_STROKE_PTS = 5
 
 
 def parse_path_d(d: str) -> list[list[float]]:
@@ -153,6 +191,48 @@ def drop_mirror_variant_strokes(strokes: list[list[list[float]]]) -> list[list[l
     return out
 
 
+def _perp_dist(p: list[float], a: list[float], b: list[float]) -> float:
+    ax, ay = a
+    bx, by = b
+    px, py = p
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return ((px - ax) ** 2 + (py - ay) ** 2) ** 0.5
+    t = max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    qx, qy = ax + t * dx, ay + t * dy
+    return ((px - qx) ** 2 + (py - qy) ** 2) ** 0.5
+
+
+def _rdp(pts: list[list[float]], eps: float) -> list[list[float]]:
+    if len(pts) <= 2:
+        return [list(p) for p in pts]
+    a, b = pts[0], pts[-1]
+    idx, dist = 0, -1.0
+    for i in range(1, len(pts) - 1):
+        d = _perp_dist(pts[i], a, b)
+        if d > dist:
+            dist, idx = d, i
+    if dist <= eps:
+        return [list(a), list(b)]
+    left = _rdp(pts[: idx + 1], eps)
+    right = _rdp(pts[idx:], eps)
+    return left[:-1] + right
+
+
+def canonicalize_stroke(pts: list[list[float]]) -> list[list[float]]:
+    """标日静态笔顺：少折点、直线+一弯，避免 animCJK 动画中线乱折。"""
+    if len(pts) < 2:
+        return [list(p) for p in pts]
+    simp = _rdp([list(p) for p in pts], RDP_EPS)
+    if len(simp) > MAX_STROKE_PTS:
+        keep = [0]
+        for i in range(1, MAX_STROKE_PTS - 1):
+            keep.append(int(i * (len(simp) - 1) / (MAX_STROKE_PTS - 1)))
+        keep.append(len(simp) - 1)
+        simp = [simp[i] for i in sorted(set(keep))]
+    return simp
+
+
 def apply_manual_fixes(kana: str, strokes: list[list[list[float]]]) -> list[list[list[float]]]:
     if kana in MANUAL_ORDER:
         order = MANUAL_ORDER[kana]
@@ -173,6 +253,7 @@ def clean_strokes(kana: str, raw: list[list[list[float]]]) -> list[list[list[flo
         keep = MANUAL_KEEP[kana]
         strokes = [strokes[i] for i in keep if i < len(strokes)]
     strokes = apply_manual_fixes(kana, strokes)
+    strokes = [canonicalize_stroke(s) for s in strokes]
     return strokes
 
 

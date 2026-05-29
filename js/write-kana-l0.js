@@ -300,7 +300,7 @@ const WriteKanaL0 = (function () {
   function sheetTitleHtml(entry) {
     const w = ensureWriteState(stateRef);
     const hira = entry.kana;
-    const rowMeta = entry.row === "ん" ? "ん" : entry.row || "清音";
+    const rowMeta = rowDanLabel(entry.row === "ん" ? "ん" : entry.row) || "清音";
     const roma = entry.romaji ? `<span class="write-l0-sheet-roma">${escapeHtml(entry.romaji)}</span>` : "";
     if (w.script === "katakana") {
       const kata = toKatakana(hira);
@@ -367,8 +367,12 @@ const WriteKanaL0 = (function () {
       } else {
         WriteKanaStrokeUI.mount(mizige, guideChar);
         const hint = hostEl.querySelector(".write-l0-hint--sheet");
-        if (hint && ensureWriteState(stateRef).script === "katakana") {
-          hint.textContent = "田字格 · 片假名笔顺（与表内大字一致）· 跟数字与箭头摹写";
+        if (hint) {
+          const w = ensureWriteState(stateRef);
+          hint.textContent =
+            w.script === "katakana"
+              ? "田字格 · 片假名笔顺（与表内大字一致）· 跟数字与箭头摹写"
+              : "田字格 · 平假名笔顺（标日）· 跟数字与箭头摹写";
         }
       }
     }
