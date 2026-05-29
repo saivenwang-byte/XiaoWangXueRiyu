@@ -211,14 +211,52 @@
   pointer-events: none;
 }
 
-.write-l0-table .write-l0-row-label {
+.write-l0-table .write-l0-corner,
+.write-l0-table .write-l0-corner-sub {
   width: 2.5rem;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--hy-zh-muted, #78909c);
   text-align: right;
   padding-right: 4px;
   vertical-align: middle;
+  font-weight: 600;
+}
+
+.write-l0-table .write-l0-corner-sub {
+  font-weight: 400;
+  font-size: 0.58rem;
+  color: #1565c0;
+  padding-top: 0;
+  padding-bottom: 2px;
+}
+
+.write-l0-table .write-l0-dan {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--mvp-text, #37474f);
+  padding-bottom: 2px;
+}
+
+.write-l0-table .write-l0-thead-note {
+  font-size: 0.58rem;
+  font-weight: 400;
+  text-align: center;
+  color: var(--hy-zh-muted, #78909c);
+  padding-top: 0;
+  line-height: 1.25;
+}
+
+.write-l0-table .write-l0-row-label {
+  width: 2.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--mvp-text, #455a64);
+  text-align: right;
+  padding-right: 4px;
+  vertical-align: middle;
   white-space: nowrap;
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
 }
 
 .write-l0-cell {
@@ -263,25 +301,33 @@
 
 .write-l0-cell-kana {
   display: block;
+  width: 100%;
   font-size: 1.125rem;
-  line-height: 1.1;
+  line-height: 1.15;
   font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+  text-align: center;
 }
 
 .write-l0-cell-roma {
   display: block;
+  width: 100%;
   font-size: 0.58rem;
   color: var(--hy-zh-muted, #90a4ae);
-  margin-top: 1px;
-  line-height: 1;
+  margin-top: 2px;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .write-l0-cell-hira {
   display: block;
+  width: 100%;
   font-size: 0.52rem;
   color: rgba(55, 71, 79, 0.55);
-  line-height: 1;
-  margin-top: 1px;
+  line-height: 1.1;
+  margin-top: 2px;
+  text-align: center;
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
 }
 
 .write-l0-cell-zh {

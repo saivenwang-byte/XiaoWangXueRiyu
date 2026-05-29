@@ -57,6 +57,11 @@
     </span>`;
   }
 
+  function rowDanLabel(rowKey) {
+    if (!rowKey || rowKey === "ん") return rowKey || "";
+    return String(rowKey).replace(/行$/u, "");
+  }
+
   function renderPanoramaTable() {
     const danHead = INTRO_GOJUON_DAN.map((d) => `<th class="panorama-dan">${escapeHtml(d)}</th>`).join("");
 
@@ -75,17 +80,17 @@
       if (row.row === "ん") {
         const c = row.cells[0];
         return `<tr>
-          <td class="panorama-row-label">${escapeHtml(row.row)}</td>
+          <td class="panorama-row-label">${escapeHtml(rowDanLabel(row.row))}</td>
           <td colspan="5" class="panorama-n-cell">${cellButton(c)}</td>
         </tr>`;
       }
       const cells = row.cells
         .map((c, i) => {
-          if (!c) return `<td class="panorama-empty"></td>`;
+          if (!c) return `<td class="panorama-empty" aria-hidden="true"></td>`;
           return `<td>${cellButton(c)}</td>`;
         })
         .join("");
-      return `<tr><td class="panorama-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
+      return `<tr><td class="panorama-row-label">${escapeHtml(rowDanLabel(row.row))}</td>${cells}</tr>`;
     }).join("");
 
     return `
@@ -97,7 +102,7 @@
             <tbody>${body}</tbody>
           </table>
         </div>
-        <p class="intro-panorama-legend zh-annotation">淡黄格＝易错音 · 点任意假名看「先生のひとこと」</p>
+        <p class="intro-panorama-legend zh-annotation">清音 46 字 · 空格无现代假名 · 淡黄格＝易错音 · 点格看「先生のひとこと」</p>
       </section>`;
   }
 

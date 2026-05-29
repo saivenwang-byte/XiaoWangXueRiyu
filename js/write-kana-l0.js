@@ -37,6 +37,12 @@ const WriteKanaL0 = (function () {
     return d.innerHTML;
   }
 
+  /** 表侧行名：标日表只标段音 あ・か…，不写「あ行」 */
+  function rowDanLabel(rowKey) {
+    if (!rowKey || rowKey === "ん") return rowKey || "";
+    return String(rowKey).replace(/行$/u, "");
+  }
+
   function ensureWriteState(state) {
     if (!state.write || typeof state.write !== "object") {
       state.write = { kanaDone: {}, script: "hiragana" };
@@ -107,9 +113,13 @@ const WriteKanaL0 = (function () {
     screen = "grid";
     const { done, total } = progressCount();
     const w = ensureWriteState(stateRef);
-    const danHead = (typeof INTRO_GOJUON_DAN !== "undefined" ? INTRO_GOJUON_DAN : ["あ", "い", "う", "え", "お"])
-      .map((d) => `<th class="write-l0-dan">${escapeHtml(d)}</th>`)
-      .join("");
+    const danList = typeof INTRO_GOJUON_DAN !== "undefined" ? INTRO_GOJUON_DAN : ["あ", "い", "う", "え", "お"];
+    const danHead = danList.map((d) => `<th class="write-l0-dan">${escapeHtml(d)}</th>`).join("");
+    const scriptZh = SCRIPT_LABELS[w.script] ? SCRIPT_LABELS[w.script].zh : "平假名";
+    const scriptNote =
+      w.script === "katakana"
+        ? "片假名为主 · 格内小字为平假名对照 · 笔顺按平假名（标日）"
+        : "平假名 · 与标日初级清音表一致";
 
     function cellInner(c) {
       const entry = { kana: c.kana, row: "", romaji: c.romaji || "" };
@@ -138,10 +148,10 @@ const WriteKanaL0 = (function () {
         const rowCls = sparse ? ' class="write-l0-row-sparse"' : "";
         if (row.row === "ん") {
           const c = row.cells[0];
-          return `<tr class="write-l0-row-n"><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cellHtml(c)}<td colspan="4" class="write-l0-empty" aria-hidden="true"></td></tr>`;
+          return `<tr class="write-l0-row-n"><td class="write-l0-row-label">${escapeHtml(rowDanLabel(row.row))}</td>${cellHtml(c)}<td colspan="4" class="write-l0-empty" aria-hidden="true"></td></tr>`;
         }
         const cells = row.cells.map((c) => cellHtml(c)).join("");
-        return `<tr${rowCls}><td class="write-l0-row-label">${escapeHtml(row.row)}</td>${cells}</tr>`;
+        return `<tr${rowCls}><td class="write-l0-row-label">${escapeHtml(rowDanLabel(row.row))}</td>${cells}</tr>`;
       }).join("");
     }
 
@@ -153,7 +163,7 @@ const WriteKanaL0 = (function () {
     hostEl.innerHTML = `
       <div class="write-l0-hero">
         <h2>五十音书写</h2>
-        <p class="write-l0-sub zh-annotation">认在「注音」· 写在「书写」· 进度不计课内海星</p>
+        <p class="write-l0-sub zh-annotation">清音 46 字（标日五十音图）· 认在「注音」· 写在「书写」</p>
         <span class="write-l0-progress" aria-live="polite">已练 ${done} / ${total}</span>
       </div>
       <details class="write-l0-learn-path">
@@ -187,11 +197,17 @@ const WriteKanaL0 = (function () {
       </div>
       <div class="write-l0-grid-wrap">
         <table class="write-l0-table" aria-label="清音书写表">
-          <thead><tr><th class="write-l0-row-label">行</th>${danHead}</tr></thead>
+          <thead>
+            <tr><th class="write-l0-corner" scope="col">段＼行</th>${danHead}</tr>
+            <tr>
+              <th class="write-l0-corner-sub zh-annotation" scope="row">${escapeHtml(scriptZh)}</th>
+              <th colspan="${danList.length}" class="write-l0-thead-note zh-annotation" scope="col">${escapeHtml(scriptNote)}</th>
+            </tr>
+          </thead>
           <tbody>${body}</tbody>
         </table>
       </div>
-      <p class="write-l0-hint">点假名 · 按笔顺颜色跟写 · 写完点「完成」</p>`;
+      <p class="write-l0-hint zh-annotation">点假名 · 按笔顺颜色跟写 · 写完点「完成」· 表中空格为现代日语无此清音</p>`;
 
     hostEl.querySelectorAll(".write-l0-cell[data-kana]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -273,19 +289,19 @@ const WriteKanaL0 = (function () {
   function sheetTitleHtml(entry) {
     const w = ensureWriteState(stateRef);
     const hira = entry.kana;
-    const row = entry.row || "清音";
+    const rowMeta = entry.row === "ん" ? "ん" : entry.row || "清音";
     if (w.script === "katakana") {
       const kata = toKatakana(hira);
       return (
         `<span class="jp write-l0-sheet-kana">${escapeHtml(kata)}</span>` +
         `<span class="write-l0-sheet-pair jp" title="平假名">${escapeHtml(hira)}</span>` +
-        `<span class="write-l0-sheet-meta"> · ${escapeHtml(row)}</span>` +
+        `<span class="write-l0-sheet-meta"> · ${escapeHtml(rowMeta)}</span>` +
         `<span class="write-l0-sheet-stroke-note zh-annotation">笔顺按平假名（标日）</span>`
       );
     }
     return (
       `<span class="jp write-l0-sheet-kana">${escapeHtml(hira)}</span>` +
-      `<span class="write-l0-sheet-meta"> · ${escapeHtml(row)}</span>`
+      `<span class="write-l0-sheet-meta"> · ${escapeHtml(rowMeta)}</span>`
     );
   }
 
