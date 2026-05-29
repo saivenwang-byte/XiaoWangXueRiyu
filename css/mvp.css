@@ -7148,22 +7148,33 @@ body.mvp-app.is-splash-open #main-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
   margin: 0 auto;
 }
 
-.splash-logo-bg {
-  display: none;
+/* 橘色外框 · 内层海军蓝 · emblem PNG 透明隙透出蓝底 */
+.splash-logo-frame {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 14px;
+  background: #ef6e58;
+  box-shadow: 0 4px 14px rgba(239, 110, 88, 0.35);
 }
 
-.splash-logo img {
-  position: relative;
-  z-index: 1;
-  width: 56px;
-  height: 56px;
+.splash-logo-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #103459;
+}
+
+.splash-logo-inner img {
+  width: 34px;
+  height: 34px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(26, 54, 93, 0.2));
+  object-position: center;
 }
 
 .splash-title {

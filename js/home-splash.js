@@ -4,7 +4,7 @@
  * 底图：cover-base.png（地图+蓝虚线+六圆）· 缺图回退 kO3
  */
 const HomeSplash = (function () {
-  const SPLASH_ASSET_VER = "23";
+  const SPLASH_ASSET_VER = "24";
   const SPLASH_COVER_BASE = "assets/splash/cover-base.png";
   const SPLASH_MAP_BODY = "assets/splash/japan-map-ko3.png";
 
@@ -52,18 +52,21 @@ const HomeSplash = (function () {
     </div>`;
   }
 
-  /** 橘框+海军蓝+白 emblem · scripts/build-shell-app-icon.py */
-  const LOGO_ICON = "assets/brand/intepoint-logo-app-shell.png";
+  /** 橘框(CSS)+海军蓝底+白 emblem PNG · scripts/build-shell-app-icon.py */
+  const LOGO_EMBLEM = "assets/brand/intepoint-logo-icon.png";
 
   function uiChromeHtml() {
     const v = cacheVer();
-    const iconSrc = v ? `${LOGO_ICON}?v=${v}` : LOGO_ICON;
+    const emblemSrc = v ? `${LOGO_EMBLEM}?v=${v}` : LOGO_EMBLEM;
     return `
       <div class="splash-ui">
         <header class="splash-brand">
           <div class="splash-logo" aria-hidden="true">
-            <span class="splash-logo-bg"></span>
-            <img src="${escapeHtml(iconSrc)}" alt="INTEPOINT" width="52" height="52" decoding="async" />
+            <div class="splash-logo-frame">
+              <div class="splash-logo-inner">
+                <img src="${escapeHtml(emblemSrc)}" alt="" width="40" height="40" decoding="async" />
+              </div>
+            </div>
           </div>
           <h1 class="splash-title">标日 あと学習</h1>
           <p class="splash-path jp">学習の道</p>

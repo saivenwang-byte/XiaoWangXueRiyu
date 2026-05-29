@@ -31,7 +31,7 @@ OUTS = [
 
 
 def to_white_emblem(img: Image.Image) -> Image.Image:
-    """蓝/灰图形 → 纯白（标日壳：橘框内只留白色 emblem）。"""
+    """蓝/灰 emblem → 纯白 PNG；透明区留给下层海军蓝透出。"""
     img = img.convert("RGBA")
     out = Image.new("RGBA", img.size, (0, 0, 0, 0))
     px_in = img.load()
@@ -39,25 +39,35 @@ def to_white_emblem(img: Image.Image) -> Image.Image:
     for y in range(img.height):
         for x in range(img.width):
             r, g, b, a = px_in[x, y]
-            if a < 16:
+            if a < 12:
                 continue
-            if r > 248 and g > 248 and b > 248:
+            # 近白底 / 透明 checkerboard 亮格
+            if r > 242 and g > 242 and b > 242:
                 continue
             mx = max(r, g, b)
-            if mx < 45:
+            mn = min(r, g, b)
+            if mx < 28:
                 continue
-            sat = mx - min(r, g, b)
-            alpha = min(255, int(a * (0.65 + sat / 400.0 + mx / 600.0)))
+            # 蓝/灰/深字标：统一为白，按原对比保留 alpha
+            ink = max(mx - mn, mx - 128, 40)
+            alpha = min(255, int(a * (0.55 + ink / 180.0)))
             px_out[x, y] = (255, 255, 255, alpha)
     return out
 
 
 def extract_emblem(src: Image.Image) -> Image.Image:
+    """仅上部圆环图形（不含 INTERPOINT 字标）。"""
     w, h = src.size
-    top = src.crop((0, 0, w, int(h * 0.54)))
+    top = src.crop((0, 0, w, int(h * 0.52)))
     bbox = top.getbbox()
     if bbox:
-        top = top.crop(bbox)
+        pad = max(2, int(min(top.size) * 0.04))
+        l, t, r, b = bbox
+        l = max(0, l - pad)
+        t = max(0, t - pad)
+        r = min(top.width, r + pad)
+        b = min(top.height, b + pad)
+        top = top.crop((l, t, r, b))
     return to_white_emblem(top)
 
 
