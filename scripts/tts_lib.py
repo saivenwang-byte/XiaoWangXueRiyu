@@ -16,10 +16,14 @@ MANIFEST_PATH = ROOT / "docs" / "tts-registry.json"
 
 # 与 index.html 实际加载一致（MVP 主站）
 MVP_SCAN_FILES = [
+    ROOT / "js" / "data" / "lessons-data.js",
     ROOT / "js" / "data" / "lessons-mvp.js",
     ROOT / "js" / "data" / "lessons-mvp-depth.js",
     ROOT / "js" / "data" / "lesson-vocab-biaori.js",
     ROOT / "js" / "data" / "mini-cards.js",
+    ROOT / "js" / "data" / "intro-kana-tips.js",
+    ROOT / "js" / "data" / "intro-content.js",
+    ROOT / "js" / "data" / "l1-knowledge-tips.js",
 ]
 
 # 选修 / 旧包（不纳入发布前必检，可 --full 扫描）
@@ -32,10 +36,12 @@ OPTIONAL_SCAN_FILES = [
 SCAN_FILES = MVP_SCAN_FILES
 
 # 与 build-tts-cache.py 一致，并扩展 questionTts / meaningJa / line / bad / good
+_JP_FIELD = (
+    r"lessonTitle|title|example|explain|explanation|japanese|question|questionTts|"
+    r"pattern|timeline|mistake|jp|kana|meaningJa|line|bad|good|text|answer"
+)
 STRING_KEYS = re.compile(
-    r"(?:lessonTitle|title|example|explain|explanation|japanese|question|questionTts|"
-    r"pattern|timeline|mistake|jp|kana|meaningJa|line|bad|good|text)"
-    r'\s*:\s*"((?:\\.|[^"\\])*)"',
+    rf'(?:"(?:{_JP_FIELD})"|(?:{_JP_FIELD}))\s*:\s*"((?:\\.|[^"\\])*)"',
     re.MULTILINE,
 )
 
@@ -46,7 +52,9 @@ CHINESE_MARKERS = re.compile(
     r"这个|那个|什么|怎么|为什么|注意|提示|说明|意思|用法|区别|场景|搭配"
 )
 
-SKIP_FIELDS = frozenset({"explanation", "explain", "explanationZh", "meaningZh", "chinese", "noteZh"})
+SKIP_FIELDS = frozenset({
+    "explanation", "explain", "explanationZh", "meaningZh", "chinese", "noteZh", "zh", "noteJa",
+})
 
 SKIP_PREFIX = re.compile(r"^[\s📖🔗⚠️]+")
 
@@ -207,13 +215,13 @@ def fallback_lines_example(example: str) -> list[str]:
 
 
 def field_name_before(text: str, pos: int) -> str:
-    chunk = text[max(0, pos - 48) : pos]
-    m = re.search(r"(\w+)\s*:\s*$", chunk)
+    chunk = text[max(0, pos - 64) : pos]
+    m = re.search(r'"?(\w+)"?\s*:\s*$', chunk)
     return m.group(1) if m else ""
 
 
 def register(req_map: dict[str, TtsRequirement], line: str, source: str) -> None:
-    if not line or is_chinese_learning_text(line):
+    if not line or is_chinese_learning_text(line) or not looks_japanese(line):
         return
     k = tts_key(line)
     if k not in req_map:

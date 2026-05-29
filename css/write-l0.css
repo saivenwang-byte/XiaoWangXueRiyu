@@ -700,7 +700,18 @@ body.write-l0-drawer-open {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: calc(100dvh - var(--hy-top-h, 48px) - var(--nav-h, 56px) - 24px);
+  min-height: 0;
+}
+
+@media (max-width: 520px) {
+  .write-l0-sheet--v2 .write-l0-sheet-stage {
+    flex: 0 0 auto;
+  }
+
+  .write-l0-sheet--v2 .write-l0-stage-card {
+    width: min(92vw, 360px);
+    padding: 10px;
+  }
 }
 
 .write-l0-sheet--v2 .write-l0-sheet-head {
@@ -797,8 +808,10 @@ body.write-l0-drawer-open {
 
 .write-l0-sheet--v2 .write-l0-mizige.has-nazorigaki {
   aspect-ratio: 1;
-  width: min(92vw, 360px);
+  width: 100%;
   max-width: 100%;
+  min-height: min(78vw, 300px);
+  height: auto;
 }
 
 .write-l0-sheet--v2 .write-l0-mizige {
@@ -824,8 +837,25 @@ body.write-l0-drawer-open {
   background: #fff;
   box-shadow: none;
   aspect-ratio: 1;
-  width: min(92vw, 360px);
+  width: 100%;
   max-width: 100%;
+  min-height: min(78vw, 300px);
+  height: auto;
+}
+
+.write-l0-mizige.is-nazo-load-fail::after {
+  content: "笔顺图加载中…请刷新或检查网络";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--hy-zh-muted, #78909c);
+  pointer-events: none;
 }
 
 .write-l0-mizige.has-nazorigaki .write-l0-mizige-gridlines {

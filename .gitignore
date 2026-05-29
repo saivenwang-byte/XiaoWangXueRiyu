@@ -8,6 +8,7 @@ _depth_out.txt
 _func_balance.txt
 .env
 .env.*
+docs/deploy-secrets.local.json
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**

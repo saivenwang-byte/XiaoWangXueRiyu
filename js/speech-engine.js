@@ -37,17 +37,24 @@ const SpeechEngine = (() => {
     return "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
   }
 
-  /** jsDelivr → 页面同源 → GitHub Pages（首点失败 / 打不开时依次试） */
+  /** 页面同源（GitHub Pages 最新）→ jsDelivr CDN → 公网根（首点失败时依次试） */
   function ttsMp3UrlCandidates(line) {
     const file = `${ttsCacheKey(line)}.mp3`;
     const urls = [];
-    const custom = (typeof window !== "undefined" && window.HYOUGA_TTS_ORIGIN || "")
-      .trim()
-      .replace(/\/$/, "");
-    if (custom && /^https:\/\//i.test(custom)) urls.push(`${custom}/tts-cache/${file}`);
+    const onGithubPages =
+      typeof location !== "undefined" &&
+      /github\.io$/i.test(location.hostname || "");
     if (typeof location !== "undefined" && /^https?:/i.test(location.protocol || "")) {
       const path = location.pathname.replace(/[^/]*$/, "");
       urls.push(`${location.origin}${path}tts-cache/${file}`);
+    }
+    const custom = (typeof window !== "undefined" && window.HYOUGA_TTS_ORIGIN || "")
+      .trim()
+      .replace(/\/$/, "");
+    if (custom && /^https:\/\//i.test(custom)) {
+      if (!onGithubPages || custom.replace(/\/$/, "") !== (location.origin + location.pathname.replace(/[^/]*$/, "")).replace(/\/$/, "")) {
+        urls.push(`${custom}/tts-cache/${file}`);
+      }
     }
     urls.push(`${ttsPublicOrigin()}/tts-cache/${file}`);
     return [...new Set(urls)];

@@ -36,31 +36,67 @@ STD_STROKES = {
 }
 
 # ── 平假名专用手工表（勿用于片假名）────────────────────────────
-# 标日笔顺：与 animCJK 有出入时以教材为准（よ 左上横 · か 三笔等）
-HIRA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
-    "よ": {
-        # 第1笔：沿 outline d1 横画中线（animCJK 原中线 568,358→787,324 与灰底贴合）
-        0: [[548, 352], [670, 338], [778, 328]],
-        # 第2笔：竖弯钩 · 环部加点保弧线（标日 2 笔）
-        1: [
-            [484, 114],
-            [522, 158],
-            [508, 420],
-            [498, 680],
-            [468, 830],
-            [388, 868],
-            [278, 828],
-            [248, 748],
-            [318, 688],
-            [400, 708],
-            [785, 913],
+# 环路/撇笔：不截发夹尾（标日环底须闭合）
+HIRA_NO_TRIM: set[str] = {
+    "な", "よ", "い", "お", "か", "き", "け", "さ", "ね", "ぬ", "む", "め", "る", "を", "あ",
+}
+
+# 整字替换（教科书体弧线 · 灰底与笔顺同源）
+HIRA_MANUAL_FULL: dict[str, list[list[list[float]]]] = {
+    "い": [
+        [[95, 249], [130, 268], [175, 360], [235, 520], [300, 680], [355, 760], [320, 820], [250, 835], [195, 800], [210, 720], [272, 704]],
+        [[678, 273], [745, 315], [815, 405], [850, 510], [867, 639]],
+    ],
+    "お": [
+        [[112, 323], [200, 360], [350, 358], [535, 309]],
+        [
+            [300, 120], [340, 200], [320, 380], [270, 520], [220, 660], [200, 760], [230, 840],
+            [320, 880], [450, 870], [580, 780], [660, 640], [680, 480], [620, 380], [480, 420],
+            [360, 520], [300, 640], [320, 760], [420, 850], [560, 880], [700, 820],
         ],
-    },
-    "か": {
-        0: [[270, 410], [610, 410], [390, 560]],
-        1: [[390, 200], [390, 760]],
-        2: [[580, 500], [680, 590]],
-    },
+        [[710, 189], [794, 229], [868, 350]],
+    ],
+    "か": [
+        [[280, 400], [450, 385], [610, 420], [590, 500], [450, 540], [350, 520]],
+        [[400, 150], [395, 400], [390, 620], [400, 760]],
+        [[560, 500], [640, 560], [700, 610]],
+    ],
+    "き": [
+        [[294, 332], [400, 340], [550, 310], [677, 253]],
+        [[376, 512], [500, 518], [650, 460], [777, 426]],
+        [[367, 135], [420, 145], [520, 300], [620, 450], [688, 580], [688, 620]],
+        [[300, 734], [285, 790], [310, 860], [450, 900], [630, 905], [720, 860]],
+    ],
+    "け": [
+        [[217, 156], [245, 200], [200, 500], [185, 650], [180, 714], [210, 800], [219, 842]],
+        [[417, 399], [550, 378], [720, 365], [865, 357]],
+        [[636, 119], [680, 160], [700, 350], [690, 550], [659, 720], [600, 850], [565, 915]],
+    ],
+    "さ": [
+        [[274, 415], [450, 380], [600, 340], [751, 300]],
+        [[377, 124], [430, 130], [500, 250], [580, 380], [660, 500], [738, 574]],
+        [[320, 714], [305, 760], [330, 820], [420, 880], [550, 905], [680, 900], [690, 913]],
+    ],
+    "な": [
+        [[140, 306], [210, 315], [350, 295], [500, 280], [574, 270]],
+        [[382, 111], [400, 180], [350, 400], [280, 550], [234, 622]],
+        [[762, 322], [820, 380], [882, 443]],
+        [
+            [632, 464], [590, 520], [575, 650], [560, 780], [500, 880], [420, 910],
+            [360, 870], [340, 780], [380, 650], [480, 550], [580, 480], [632, 464],
+        ],
+    ],
+    "よ": [
+        [[548, 352], [660, 338], [778, 328]],
+        [
+            [484, 114], [522, 158], [510, 350], [500, 550], [480, 720], [420, 820],
+            [320, 860], [250, 800], [255, 720], [310, 670], [420, 690], [560, 760],
+            [700, 850], [785, 913],
+        ],
+    ],
+}
+
+HIRA_MANUAL_REPLACE: dict[str, dict[int, list[list[float]]]] = {
     "ふ": {
         0: [[440, 147], [558, 213], [573, 259], [451, 306]],
         2: [[106, 684], [158, 768], [195, 825]],
@@ -73,7 +109,6 @@ HIRA_MANUAL_ORDER: dict[str, list[int]] = {
 
 HIRA_MANUAL_KEEP: dict[str, list[int]] = {
     "の": [0],
-    "よ": [0, 1],
 }
 
 # ── 片假名专用（与平假名分开对账；默认仅 canonicalize animCJK 片假名 SVG）──
@@ -115,8 +150,8 @@ KATA_SKIP_MIRROR: set[str] = {"ヨ"}
 
 CENTER = VB / 2
 # 平假名：多保留弧点；片假名：略利但仍保留转角
-RDP_EPS = {"hira": 18, "kata": 34}
-MAX_STROKE_PTS = {"hira": 22, "kata": 16}
+RDP_EPS = {"hira": 14, "kata": 34}
+MAX_STROKE_PTS = {"hira": 32, "kata": 16}
 CORNER_DEG = {"hira": 142, "kata": 136}
 MERGE_TOL = 10
 # 标日：撇/捺末端不回踩（animCJK 发夹尾须截）
@@ -337,8 +372,10 @@ def _thin_to_cap(pts: list[list[float]], cap: int, mandatory: set[int]) -> list[
     return orig
 
 
-def trim_stroke_tails(pts: list[list[float]]) -> list[list[float]]:
-    """标日书写：撇笔不回踩、钩笔不连通下一笔（截 animCJK 发夹尾）。"""
+def trim_stroke_tails(pts: list[list[float]], *, kana: str = "") -> list[list[float]]:
+    """标日书写：撇笔不回踩、钩笔不连通下一笔（截 animCJK 发夹尾）。环路字不截。"""
+    if kana in HIRA_NO_TRIM:
+        return [list(p) for p in pts]
     if len(pts) < 3:
         return [list(p) for p in pts]
     out = [list(p) for p in pts]
@@ -404,7 +441,9 @@ def clean_strokes(
 ) -> list[list[list[float]]]:
     strokes = [s for s in raw if s and _stroke_ok(s)]
     strokes = dedup_strokes(strokes)
-    if not (script == "kata" and kana in KATA_MANUAL_FULL):
+    if not (script == "kata" and kana in KATA_MANUAL_FULL) and not (
+        script == "hira" and kana in HIRA_MANUAL_FULL
+    ):
         strokes = drop_mirror_variant_strokes(strokes)
     if script == "hira":
         strokes = apply_manual_fixes(
@@ -414,9 +453,12 @@ def clean_strokes(
         strokes = apply_manual_fixes(
             kana, strokes, replace=KATA_MANUAL_REPLACE, order=KATA_MANUAL_ORDER, keep=KATA_MANUAL_KEEP
         )
-    strokes = [trim_stroke_tails(s) for s in strokes]
+    strokes = [trim_stroke_tails(s, kana=kana if script == "hira" else "") for s in strokes]
     strokes = [canonicalize_stroke(s, script=script) for s in strokes]
-    if script == "kata":
+    if script == "hira":
+        if kana in HIRA_MANUAL_FULL:
+            strokes = [[list(p) for p in s] for s in HIRA_MANUAL_FULL[kana]]
+    elif script == "kata":
         if kana in KATA_MANUAL_FULL:
             strokes = [[list(p) for p in s] for s in KATA_MANUAL_FULL[kana]]
         elif kana in KATA_POST_REPLACE:
@@ -448,6 +490,21 @@ def strokes_from_svg(char: str, *, script: str) -> tuple[list[list[list[float]]]
 def main() -> None:
     if not SVG_DIR.is_dir():
         raise SystemExit(f"缺少 {SVG_DIR}，请先 sparse-checkout animCJK svgsJaKana")
+
+    # 书写板块 JSON 真源（增补内容 · 相对坐标）覆盖同字手工表
+    json_path = ROOT / "书写板块" / "data" / "kana-hiragana.json"
+    if json_path.is_file():
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+        for ch in data.get("characters") or []:
+            kana = ch.get("kana")
+            if not kana:
+                continue
+            strokes = ch.get("strokes") or []
+            ordered = sorted(strokes, key=lambda s: s.get("order", 0))
+            HIRA_MANUAL_FULL[kana] = [
+                [[round(p["x"] * VB), round(p["y"] * VB)] for p in (st.get("path") or [])]
+                for st in ordered
+            ]
 
     guide: dict[str, dict] = {}
     missing: list[str] = []

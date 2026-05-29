@@ -313,9 +313,8 @@ const WriteKanaL0 = (function () {
   function strokeGuideChar(entry) {
     const w = ensureWriteState(stateRef);
     const hira = entry.kana;
-    if (w.script === "katakana") {
-      const kata = toKatakana(hira);
-      if (typeof WriteKanaStrokeUI !== "undefined" && WriteKanaStrokeUI.hasGuide(kata)) return kata;
+    if (typeof WriteKanaStrokeUI !== "undefined" && WriteKanaStrokeUI.hasGuide(hira, hira, w.script)) {
+      return w.script === "katakana" ? toKatakana(hira) : hira;
     }
     return hira;
   }
@@ -420,6 +419,7 @@ const WriteKanaL0 = (function () {
     bindCanvas();
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("write-nazo-layout", resizeCanvas);
 
     const mizige = document.getElementById("write-l0-mizige");
     if (typeof WriteKanaStrokeUI !== "undefined" && mizige) {
@@ -441,6 +441,7 @@ const WriteKanaL0 = (function () {
     function leaveSheet() {
       if (typeof WriteKanaStrokeUI !== "undefined") WriteKanaStrokeUI.destroy();
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("write-nazo-layout", resizeCanvas);
       hostEl.classList.remove("is-v2-sheet");
     }
 

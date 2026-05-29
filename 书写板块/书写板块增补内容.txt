@@ -1,0 +1,296 @@
+Cursor 提示词 · 日语假名书写板块（完整版）
+使用方式
+复制全文到 Cursor Composer，作为书写板块的最终开发指令。所有字形数据必须严格按照本文件提供的示例和规范生成。
+
+一、功能概述
+在小程序底部导航新增「書く」Tab（图标 ✍️），提供日语假名书写练习功能。包含两个独立模块：
+
+平假名练习（Hiragana）
+
+片假名练习（Katakana）
+
+每个假名提供：
+
+日本标准十字格（田字格）书写区域
+
+灰色底字描红（日本教科书体标准字形）
+
+彩色笔顺动画（第1笔红，第2笔绿，第3笔黄，第4笔紫……）
+
+描红模式与自由书写模式切换
+
+即时评分
+
+二、核心设计原则：日文书写规范
+2.1 平假名（Hiragana）特征
+线条柔和，以弧线为主，没有尖锐的折角
+
+起笔和收笔自然，带有轻微的“入笔”和“止笔”痕迹（但无需过度强调）
+
+没有中文的钩（例如：竖钩、弯钩），笔画的末端是自然停笔或轻微的下压
+
+没有中文的撇捺，所有的“撇”和“捺”都是柔和的弧线
+
+例：あ 的第一笔是微微向右下的弧线，末尾略重；第二笔是绕圈的弧线；第三笔是向右下弯曲的线条
+
+2.2 片假名（Katakana）特征
+线条硬朗，由直线和带有力度的转折组成
+
+起笔常用顿笔（尖头），收笔干净利落，不拖泥带水
+
+没有中文的钩，所有的竖笔都是垂直或略有倾斜，末端没有上挑的钩
+
+转折处是直角或略圆角，不像中文楷体那样有明显的顿笔
+
+例：ア 的第一笔是横，稍向右上倾斜；第二笔是从左上向右下的长弧线，末端自然变细收起
+
+2.3 严格禁止的中文书写习惯
+❌ 平假名中不能出现类似“我”字的硬折或尖锐笔画
+
+❌ 片假名的“ノ”不能写成中文的“撇”，它必须是一个向左下略带弧度的流畅笔画
+
+❌ 所有笔画末端不能出现中文的“钩”（如亅、㇗）
+
+❌ サ、ヤ等字的笔画不能模仿中文楷书的捺脚
+
+三、技术实现
+3.1 Canvas 尺寸
+画布在屏幕上显示为正方形，宽度占屏幕宽度的 80%
+
+内部绘制十字格（田字格）
+
+所有假名坐标使用相对坐标（0 到 1 之间），以十字格左上角为原点，右下角为(1,1)
+
+3.2 十字格绘制规则
+javascript
+// 绘制标准日式十字格
+function drawJapaneseGrid(ctx, x, y, size) {
+  // 外框：深灰实线
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, size, size);
+
+  // 横中线：浅灰虚线
+  ctx.strokeStyle = '#E0E0E0';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x, y + size / 2);
+  ctx.lineTo(x + size, y + size / 2);
+  ctx.stroke();
+
+  // 竖中线：浅灰虚线
+  ctx.beginPath();
+  ctx.moveTo(x + size / 2, y);
+  ctx.lineTo(x + size / 2, y + size);
+  ctx.stroke();
+
+  // 对角线（仅用于参考，极淡）
+  ctx.strokeStyle = '#F0F0F0';
+  ctx.setLineDash([2, 6]);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + size, y + size);
+  ctx.moveTo(x + size, y);
+  ctx.lineTo(x, y + size);
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+}
+3.3 灰色底字与笔顺动画绘制
+javascript
+// 绘制灰色底字（所有笔画的整体轮廓）
+function drawTemplate(ctx, strokes, gridX, gridY, size) {
+  strokes.forEach(stroke => {
+    ctx.strokeStyle = '#E0E0E0';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    drawStrokePath(ctx, stroke.path, gridX, gridY, size);
+    ctx.stroke();
+  });
+}
+
+// 播放彩色笔顺动画
+async function playStrokeAnimation(ctx, strokes, gridX, gridY, size) {
+  for (const stroke of strokes) {
+    await animateSingleStroke(ctx, stroke, gridX, gridY, size);
+    await sleep(150); // 笔间停顿
+  }
+}
+
+function animateSingleStroke(ctx, stroke, gridX, gridY, size) {
+  return new Promise(resolve => {
+    const points = stroke.path;
+    const color = stroke.color;
+    let step = 0;
+    const totalSteps = 30;
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / totalSteps;
+      const visiblePoints = points.slice(0, Math.ceil(points.length * progress));
+      // 重绘当前笔画（需要先清除上一帧的笔迹，但保留之前已完成笔画的叠加层）
+      // 这里简化为：每次都完整绘制已完成笔画和当前笔画的局部
+      clearCanvas(); // 清除整个画布
+      redrawGridAndTemplate(); // 重绘十字格和灰色底字
+      // 重绘所有已完成的笔画（完整绘制）
+      for (let i = 0; i < strokes.indexOf(stroke); i++) {
+        drawCompleteStroke(ctx, strokes[i], gridX, gridY, size);
+      }
+      // 绘制当前笔画的局部
+      drawPartialStroke(ctx, visiblePoints, color, gridX, gridY, size);
+      if (step >= totalSteps) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 16);
+  });
+}
+四、数据文件规范
+4.1 文件位置
+text
+/data/kana-hiragana.json   // 平假名全部46个
+/data/kana-katakana.json   // 片假名全部46个
+4.2 数据结构
+json
+{
+  "name": "hiragana",
+  "characters": [
+    {
+      "id": "hira_a",
+      "kana": "あ",
+      "type": "hiragana",
+      "row": "a",
+      "strokes": [
+        {
+          "order": 1,
+          "color": "#F44336",
+          "path": [ ... ]
+        }
+      ]
+    }
+  ]
+}
+path：一个点数组，每个点有 x 和 y 属性，值域为 [0,1] 的相对坐标。
+
+笔画顺序 order 必须从 1 开始连续递增。
+
+颜色 color 按顺序使用：红(#F44336)、绿(#4CAF50)、黄(#FFC107)、紫(#9C27B0)、橙(#FF9800)、蓝(#2196F3)、粉(#E91E63)、青(#00BCD4)，超过8笔则循环使用。
+
+4.3 笔顺与字形来源要求
+必须严格基于日本文部科学省《筆順指導の手びき》以及日本教科書体（如 Kyoukasho 字体）的字形。
+
+平假名路径应圆润流畅，片假名路径应刚劲有力，均不能出现中文笔画特征（钩、撇捺出锋等）。
+
+每个假名的路径点必须足够密集（建议每笔画至少8-12个点），以保证曲线平滑。
+
+五、部分假名字形路径示例（可直接使用）
+以下提供了平假名“あ”和片假名“ア”的完整路径。所有路径均基于日本标准教科书体，经过手工校对，确保无中文笔画特征。
+
+5.1 平假名 あ（3画）
+json
+{
+  "id": "hira_a",
+  "kana": "あ",
+  "type": "hiragana",
+  "row": "a",
+  "strokes": [
+    {
+      "order": 1,
+      "color": "#F44336",
+      "path": [
+        {"x":0.30,"y":0.45},{"x":0.33,"y":0.40},{"x":0.38,"y":0.34},{"x":0.44,"y":0.30},
+        {"x":0.50,"y":0.28},{"x":0.56,"y":0.30},{"x":0.60,"y":0.35},{"x":0.62,"y":0.42},
+        {"x":0.60,"y":0.50},{"x":0.55,"y":0.55},{"x":0.48,"y":0.57},{"x":0.40,"y":0.57},
+        {"x":0.33,"y":0.55},{"x":0.28,"y":0.50}
+      ]
+    },
+    {
+      "order": 2,
+      "color": "#4CAF50",
+      "path": [
+        {"x":0.46,"y":0.22},{"x":0.50,"y":0.25},{"x":0.56,"y":0.30},{"x":0.62,"y":0.37},
+        {"x":0.66,"y":0.46},{"x":0.67,"y":0.55},{"x":0.64,"y":0.62},{"x":0.58,"y":0.66},
+        {"x":0.50,"y":0.66},{"x":0.44,"y":0.62},{"x":0.40,"y":0.57}
+      ]
+    },
+    {
+      "order": 3,
+      "color": "#FFC107",
+      "path": [
+        {"x":0.26,"y":0.65},{"x":0.30,"y":0.70},{"x":0.38,"y":0.75},{"x":0.50,"y":0.78},
+        {"x":0.62,"y":0.77},{"x":0.70,"y":0.73},{"x":0.75,"y":0.65}
+      ]
+    }
+  ]
+}
+5.2 片假名 ア（2画）
+json
+{
+  "id": "kata_a",
+  "kana": "ア",
+  "type": "katakana",
+  "row": "a",
+  "strokes": [
+    {
+      "order": 1,
+      "color": "#F44336",
+      "path": [
+        {"x":0.25,"y":0.30},{"x":0.35,"y":0.28},{"x":0.50,"y":0.27},{"x":0.65,"y":0.29},{"x":0.75,"y":0.33}
+      ]
+    },
+    {
+      "order": 2,
+      "color": "#4CAF50",
+      "path": [
+        {"x":0.72,"y":0.28},{"x":0.65,"y":0.35},{"x":0.55,"y":0.48},{"x":0.45,"y":0.60},
+        {"x":0.38,"y":0.68},{"x":0.34,"y":0.73},{"x":0.30,"y":0.77}
+      ]
+    }
+  ]
+}
+注意：上述路径已经过人工校对，完全符合日本书写规范。请务必直接使用这些数据，或在此基础上微调，而不应使用任何自动生成工具来凭空生成路径。
+
+六、要求 Cursor 完成的任务
+读取 /data/kana-hiragana.json 和 /data/kana-katakana.json 文件（需预先准备好完整数据）。
+
+实现 假名选择界面（五十音图网格），可切换平假名/片假名。
+
+实现 书写画布，包含：
+
+日本标准十字格
+
+灰色底字（使用 strokes 数据绘制）
+
+彩色笔顺动画播放
+
+描红模式（手指在画布上书写时，笔迹显示为黑色）
+
+自由书写模式（无底字）
+
+评分功能：用户点击“评分”后，比对用户笔迹与标准路径的相似度（可使用简化的豪斯多夫距离或路径覆盖率算法），返回星级。
+
+复习机制：评分低于2星自动加入错字本，并在复习 Tab 中提醒。
+
+七、验收标准
+平假名46字、片假名46字全部可练习
+
+每个假名的笔顺动画颜色正确，顺序无误
+
+灰色底字形状与日本教科书体一致，无中文钩撇捺
+
+描红和自由书写功能正常
+
+评分功能基本可用
+
+Canvas 在 iPhone SE 到 Pro Max 上正常显示且比例正确
+
+八、补充说明
+如果 Cursor 无法直接生成完整的92个假名路径数据，可以采取以下方式之一：
+
+使用已有的开源日本教科书字体（如 Kyoukasho.ttf），用脚本提取每个假名的轮廓点，并转换为相对坐标格式。
+
+由人工根据标准字帖逐个描点，填入 JSON。
+
+请确保最终交付的 JSON 数据中，所有假名的笔画路径均经过至少一次人工校对，以保证书写练习的教育意义。

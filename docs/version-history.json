@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "382",
-    "date": "2026-05-25",
-    "note": "书写 v2-B v377：单字页舞台卡片+控制甲板+清除笔迹",
+    "cache": "384",
+    "date": "2026-05-29",
+    "note": "微信书写页笔顺图加载与移动端布局 v384",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

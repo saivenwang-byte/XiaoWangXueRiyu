@@ -20,6 +20,14 @@ def read_ver() -> str:
     return "0"
 
 
+def read_public_origin() -> str:
+    if not PUBLIC.is_file():
+        return ""
+    text = PUBLIC.read_text(encoding="utf-8")
+    m = re.search(r'HYOUGA_PUBLIC_ORIGIN\s*=\s*["\'](https://[^"\']+)["\']', text, re.I)
+    return m.group(1).rstrip("/") if m else ""
+
+
 def read_tts_origin() -> str:
     if not PUBLIC.is_file():
         return ""
@@ -29,7 +37,10 @@ def read_tts_origin() -> str:
         text,
         re.I,
     )
-    return (m.group(1).rstrip("/") if m else "") + "/tts-cache/"
+    if m:
+        return m.group(1).rstrip("/") + "/tts-cache/"
+    pub = read_public_origin()
+    return (pub + "/tts-cache/") if pub else ""
 
 
 def main() -> None:

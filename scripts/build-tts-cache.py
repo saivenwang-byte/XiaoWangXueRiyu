@@ -9,6 +9,7 @@
 """
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
 import sys
@@ -22,6 +23,7 @@ from tts_lib import collect_requirements, tts_key, write_registry  # noqa: E402
 OUT_DIRS = [ROOT / "tts-cache", ROOT / "发布包" / "tts-cache"]
 VOICE = "ja-JP-NanamiNeural"
 APP_BUILD = 48
+DEFAULT_WORKERS = 8
 
 
 def collect_phrases() -> set[str]:
@@ -30,11 +32,8 @@ def collect_phrases() -> set[str]:
 
 
 async def generate_one(jp: str, dest: Path) -> bool:
-    try:
-        import edge_tts
-    except ImportError:
-        print("请先运行: pip install edge-tts")
-        sys.exit(1)
+    import edge_tts
+
     communicate = edge_tts.Communicate(jp, VOICE)
     await communicate.save(str(dest))
     return dest.stat().st_size > 200
@@ -50,42 +49,70 @@ def safe_print(msg: str) -> None:
         print(out.encode("ascii", errors="replace").decode("ascii"))
 
 
-async def main() -> None:
+def copy_to_publish(primary: Path, key: str) -> None:
+    for out_dir in OUT_DIRS[1:]:
+        dest = out_dir / f"{key}.mp3"
+        if not dest.exists():
+            dest.write_bytes(primary.read_bytes())
+
+
+async def process_phrase(
+    sem: asyncio.Semaphore,
+    i: int,
+    total: int,
+    jp: str,
+    counters: dict[str, int],
+) -> str:
+    k = tts_key(jp)
+    primary = OUT_DIRS[0] / f"{k}.mp3"
+    if primary.exists() and primary.stat().st_size > 200:
+        copy_to_publish(primary, k)
+        counters["skip"] += 1
+        return k
+    async with sem:
+        try:
+            if await generate_one(jp, primary):
+                copy_to_publish(primary, k)
+                counters["ok"] += 1
+                if counters["ok"] % 25 == 0 or i <= 5:
+                    safe_print(f"[{i}/{total}] OK {k} {jp[:40]}")
+            else:
+                counters["fail"] += 1
+                safe_print(f"[{i}/{total}] FAIL {k}")
+        except Exception as e:
+            counters["fail"] += 1
+            safe_print(f"[{i}/{total}] ERR {k} {e!r}")
+    return k
+
+
+async def main(workers: int) -> None:
+    try:
+        import edge_tts  # noqa: F401
+    except ImportError:
+        print("请先运行: pip install edge-tts")
+        sys.exit(1)
+
     phrases = sorted(collect_phrases())
-    safe_print(f"phrases={len(phrases)} voice={VOICE}")
+    safe_print(f"phrases={len(phrases)} voice={VOICE} workers={workers}")
 
     for out_dir in OUT_DIRS:
         out_dir.mkdir(parents=True, exist_ok=True)
 
+    sem = asyncio.Semaphore(max(1, workers))
+    counters = {"ok": 0, "skip": 0, "fail": 0}
     keys: list[str] = []
-    ok = 0
-    skip = 0
-    fail = 0
-
-    for i, jp in enumerate(phrases, 1):
-        k = tts_key(jp)
-        keys.append(k)
-        primary = OUT_DIRS[0] / f"{k}.mp3"
-        if primary.exists() and primary.stat().st_size > 200:
-            skip += 1
-            for out_dir in OUT_DIRS[1:]:
-                dest = out_dir / f"{k}.mp3"
-                if not dest.exists():
-                    dest.write_bytes(primary.read_bytes())
-            continue
-        try:
-            if await generate_one(jp, primary):
-                ok += 1
-                for out_dir in OUT_DIRS[1:]:
-                    dest = out_dir / f"{k}.mp3"
-                    dest.write_bytes(primary.read_bytes())
-                safe_print(f"[{i}/{len(phrases)}] OK {k} {jp[:40]}")
-            else:
-                fail += 1
-                safe_print(f"[{i}/{len(phrases)}] FAIL {k}")
-        except Exception as e:
-            fail += 1
-            safe_print(f"[{i}/{len(phrases)}] ERR {k} {e!r}")
+    batch_size = 64
+    for start in range(0, len(phrases), batch_size):
+        chunk = phrases[start : start + batch_size]
+        batch_tasks = [
+            process_phrase(sem, start + j + 1, len(phrases), jp, counters)
+            for j, jp in enumerate(chunk)
+        ]
+        keys.extend(await asyncio.gather(*batch_tasks))
+        safe_print(
+            f"... progress {min(start + batch_size, len(phrases))}/{len(phrases)} "
+            f"new={counters['ok']} skip={counters['skip']} fail={counters['fail']}"
+        )
 
     write_registry()
     manifest = {
@@ -100,10 +127,13 @@ async def main() -> None:
         (out_dir / "index.json").write_text(
             json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-    safe_print(f"DONE new={ok} skip={skip} fail={fail}")
+    safe_print(f"DONE new={counters['ok']} skip={counters['skip']} fail={counters['fail']}")
     safe_print(str(OUT_DIRS[0]))
     safe_print("registry: docs/tts-registry.json")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
+    args = parser.parse_args()
+    asyncio.run(main(args.workers))

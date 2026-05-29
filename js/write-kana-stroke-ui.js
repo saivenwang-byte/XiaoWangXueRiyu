@@ -53,6 +53,35 @@ const WriteKanaStrokeUI = (function () {
     return "";
   }
 
+  /** 微信/GitHub Pages 子路径：相对 assets 转绝对 URL + 缓存号 */
+  function resolveAssetSrc(rel) {
+    if (!rel) return "";
+    if (/^https?:\/\//i.test(rel)) return rel;
+    const ver =
+      (typeof ShareWechat !== "undefined" && ShareWechat.CACHE_VER) ||
+      (typeof window !== "undefined" && window.HYOUGA_CACHE_BOOT) ||
+      "";
+    const path = typeof location !== "undefined" ? location.pathname.replace(/[^/]*$/, "") : "/";
+    const url = path + String(rel).replace(/^\//, "");
+    return ver ? `${url}?v=${encodeURIComponent(ver)}` : url;
+  }
+
+  function notifyMizigeLayout() {
+    try {
+      window.dispatchEvent(new CustomEvent("write-nazo-layout"));
+    } catch (_) {}
+  }
+
+  function fallbackSvgFromGuide(kana) {
+    if (typeof KANA_STROKE_GUIDE === "undefined" || !KANA_STROKE_GUIDE[kana]) return false;
+    guide = KANA_STROKE_GUIDE[kana];
+    if (nazoImgEl) nazoImgEl.classList.add("is-hidden");
+    if (svgEl) svgEl.classList.remove("is-hidden");
+    renderSvg();
+    updateLabels();
+    return true;
+  }
+
   function useNazorigaki() {
     return !!nazoSrc;
   }
@@ -370,9 +399,11 @@ const WriteKanaStrokeUI = (function () {
     const hiraKey = (opts && opts.guideHira) || kana;
     nazoSrc = nazorigakiSrc(hiraKey, scriptMode);
     guide =
-      typeof KANA_STROKE_GUIDE !== "undefined" && KANA_STROKE_GUIDE[kana]
-        ? KANA_STROKE_GUIDE[kana]
-        : null;
+      nazoSrc
+        ? null
+        : typeof KANA_STROKE_GUIDE !== "undefined" && KANA_STROKE_GUIDE[kana]
+          ? KANA_STROKE_GUIDE[kana]
+          : null;
     if (!mizigeEl || (!guide && !nazoSrc)) return false;
 
     stepIndex = 0;
@@ -430,10 +461,26 @@ const WriteKanaStrokeUI = (function () {
     if (useNazorigaki()) {
       nazoImgEl = document.createElement("img");
       nazoImgEl.className = "write-l0-nazorigaki";
-      nazoImgEl.src = nazoSrc;
+      nazoImgEl.src = resolveAssetSrc(nazoSrc);
       nazoImgEl.alt = "";
       nazoImgEl.decoding = "async";
       nazoImgEl.setAttribute("aria-hidden", "true");
+      nazoImgEl.addEventListener("load", () => {
+        notifyMizigeLayout();
+      });
+      nazoImgEl.addEventListener("error", () => {
+        if (!nazoImgEl.dataset.retried && nazoSrc) {
+          nazoImgEl.dataset.retried = "1";
+          const path =
+            typeof location !== "undefined" ? location.pathname.replace(/[^/]*$/, "") : "/";
+          nazoImgEl.src = path + String(nazoSrc).replace(/^\//, "");
+          return;
+        }
+        if (!fallbackSvgFromGuide(kana)) {
+          mizigeEl.classList.add("is-nazo-load-fail");
+        }
+        notifyMizigeLayout();
+      });
       mizigeEl.insertBefore(nazoImgEl, canvas);
     }
 

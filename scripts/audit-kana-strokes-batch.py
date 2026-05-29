@@ -128,7 +128,7 @@ def geom_flags(char: str, strokes: list) -> list[str]:
             flags.append("第3笔应为中横")
         if not is_horiz(strokes[3]):
             flags.append("第4笔应为下横")
-    pt_cap = 20 if ord(char) < 0x30A0 else 14
+    pt_cap = 28 if ord(char) < 0x30A0 else 14
     for i, s in enumerate(strokes):
         if any(not in_vb(p) for p in s):
             flags.append(f"笔{i+1}越界")

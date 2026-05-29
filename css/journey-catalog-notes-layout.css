@@ -138,5 +138,9 @@
 
 .write-l0-mizige-wrap {
   flex: 0 0 auto;
-  max-height: min(52dvh, 360px);
+  max-height: none;
+}
+
+.write-l0-sheet--v2 .write-l0-mizige-wrap {
+  max-height: none;
 }
