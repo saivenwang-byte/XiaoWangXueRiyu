@@ -211,11 +211,11 @@ const JourneyHome = (function () {
     return "";
   }
 
-  /** 单元头 · 与笔记 notes-unit-head 同构（配色仍走 CURRICULUM_STAGE_THEMES） */
+  /** 单元头 · 与笔记 notes-unit-head 同构 */
   function renderCatalogUnitHead(state, unit) {
     const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
     const uv = unitVisual(state, unit.id);
-    const style = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
+    const style = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent}"`;
     const stacked =
       typeof curriculumUnitStackedTitleHtml === "function"
         ? curriculumUnitStackedTitleHtml(unit.id)
@@ -226,7 +226,7 @@ const JourneyHome = (function () {
         : unitStatusHtml(state, unit);
     const gift =
       typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : "";
-    return `<div class="notes-unit-head hyouga-unit-head-symbol journey-catalog-unit-head" data-unit-id="${unit.id}" ${style}>
+    return `<div class="notes-unit-head hyouga-unit-head-symbol journey-catalog-unit-head is-unit-${uv}" data-unit-id="${unit.id}" ${style}>
       <span class="notes-unit-head-stripe" aria-hidden="true"></span>
       <div class="hyouga-unit-head-body">${stacked}</div>
       <div class="hyouga-unit-head-end">${unitStars}${gift}</div>
@@ -235,35 +235,34 @@ const JourneyHome = (function () {
 
   function renderExploreCatalogBlocks(state) {
     const units = getCurriculumUnitsForHome();
-    const blocks = units
+    return units
       .slice()
       .sort((a, b) => a.id - b.id)
       .map((unit) => {
         const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
         const uv = unitVisual(state, unit.id);
-        const unitStyle = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
+        const unitStyle = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent}"`;
         const rows = unit.lessons
           .map((L) => {
             const row = renderLessonRow(L, state, unit.id);
             const eggBtn = lessonEggThumbHtml(state, unit.id, L.lessonId);
-            return `<div class="journey-lesson-slot notes-lesson-card journey-lesson-card--catalog" data-lesson-id="${L.lessonId}">
-              <div class="journey-lesson-row-wrap notes-lesson-summary--symbol">${row}${eggBtn}</div>
+            return `<div class="journey-catalog-lesson-row" data-lesson-id="${L.lessonId}" ${unitStyle}>
+              <div class="journey-lesson-row-wrap">${row}${eggBtn}</div>
             </div>`;
           })
           .join("");
         const unitFourGold =
           typeof curriculumUnitFourGold === "function" && curriculumUnitFourGold(state, unit.id);
         return `
-        <section class="journey-catalog-unit-block journey-catalog-unit is-unit-${uv}${unitFourGold ? " has-unit-four-gold" : ""}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${unitStyle} aria-label="${escapeHtml(unitLabelZh(unit.id))}">
+        <div class="journey-catalog-unit-group is-unit-${uv}${unitFourGold ? " has-unit-four-gold" : ""}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${unitStyle}>
           ${renderCatalogUnitHead(state, unit)}
           <div class="journey-catalog-unit-bubble">
             ${renderUnitOverviewHtml(unit)}
-            <div class="notes-lesson-accordion journey-lesson-accordion">${rows}</div>
+            <div class="journey-catalog-lesson-list">${rows}</div>
           </div>
-        </section>`;
+        </div>`;
       })
       .join("");
-    return blocks;
   }
 
   /** @deprecated 仅保留旧调用；新结构用 renderExploreCatalogBlocks + journey-home-scroll */
@@ -406,7 +405,7 @@ const JourneyHome = (function () {
   }
 
   function boardClearCurrentExcept(keep) {
-    document.querySelectorAll(".journey-catalog-unit-block.is-unit-current").forEach((el) => {
+    document.querySelectorAll(".journey-catalog-unit-group.is-unit-current").forEach((el) => {
       if (el !== keep) el.classList.remove("is-unit-current");
     });
   }
@@ -416,9 +415,9 @@ const JourneyHome = (function () {
   }
 
   function openUnitDetails(board, uid) {
-    const el = board.querySelector(`.journey-catalog-unit-block[data-unit="${uid}"]`);
+    const el = board.querySelector(`.journey-catalog-unit-group[data-unit="${uid}"]`);
     if (!el) return;
-    board.querySelectorAll(".journey-catalog-unit-block").forEach((d) => {
+    board.querySelectorAll(".journey-catalog-unit-group").forEach((d) => {
       d.classList.toggle("is-unit-current", d === el);
     });
     scrollUnitBlockIntoView(el);

@@ -53,16 +53,14 @@ const WriteKanaStrokeUI = (function () {
     return `<path class="write-stroke-path" d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>`;
   }
 
-  /** 起点圆点 + 同色数字 + 黑色小箭头（不沿整笔长线） */
+  /** 起点：同色数字 + 黑色小箭头（无圆点、无叠影） */
   function startMarker(pts, num, color, emphasis) {
     if (!pts.length) return "";
     const [sx, sy] = pts[0];
     const fs = emphasis ? 38 : 30;
-    /* 数字贴近起笔点（对齐五十音笔顺表） */
-    const nx = sx + 8;
-    const ny = sy - 10;
+    const nx = sx + 6;
+    const ny = sy - 8;
     const fw = num === 1 ? 800 : 700;
-    const dotR = emphasis ? 7 : 5;
     let arrowPart = "";
     if (pts.length >= 2) {
       const dx = pts[1][0] - sx;
@@ -74,8 +72,7 @@ const WriteKanaStrokeUI = (function () {
       arrowPart = `<line class="write-stroke-arrow" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${ARROW_STROKE}" stroke-width="12" stroke-linecap="round" marker-end="url(#write-arr-dot)"/>`;
     }
     return (
-      `<circle class="write-stroke-dot" cx="${sx}" cy="${sy}" r="${dotR}" fill="#fff" stroke="${color}" stroke-width="4"/>` +
-      `<text class="write-stroke-num" x="${nx}" y="${ny + fs * 0.32}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" stroke="#fff" stroke-width="6" paint-order="stroke fill">${num}</text>` +
+      `<text class="write-stroke-num" x="${nx}" y="${ny + fs * 0.32}" font-size="${fs}" font-weight="${fw}" fill="${color}" text-anchor="middle" stroke="#fff" stroke-width="5" paint-order="stroke fill">${num}</text>` +
       arrowPart
     );
   }
