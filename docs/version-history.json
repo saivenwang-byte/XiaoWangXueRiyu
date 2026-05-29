@@ -2,9 +2,9 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "338",
+    "cache": "339",
     "date": "2026-05-29",
-    "note": "书写 P0.5：默认一览分色；起点仅数字+短箭头",
+    "note": "课文目录笔记同构；share v339；书写区可滚不裁切",
     "git_tag": null,
     "baseline": "docs/iteration-baseline.json",
     "discipline": "docs/Agent文递自归.md",

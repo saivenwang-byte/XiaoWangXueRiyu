@@ -211,57 +211,56 @@ const JourneyHome = (function () {
     return "";
   }
 
+  /** 单元头 · 与笔记 notes-unit-head 同构（配色仍走 CURRICULUM_STAGE_THEMES） */
+  function renderCatalogUnitHead(state, unit) {
+    const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
+    const uv = unitVisual(state, unit.id);
+    const style = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
+    const stacked =
+      typeof curriculumUnitStackedTitleHtml === "function"
+        ? curriculumUnitStackedTitleHtml(unit.id)
+        : `<span class="notes-unit-head-label">${escapeHtml(unitLabelZh(unit.id))}</span>`;
+    const unitStars =
+      typeof curriculumUnitProgressStarsHtml === "function"
+        ? curriculumUnitProgressStarsHtml(state, unit.id)
+        : unitStatusHtml(state, unit);
+    const gift =
+      typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : "";
+    return `<div class="notes-unit-head hyouga-unit-head-symbol journey-catalog-unit-head" data-unit-id="${unit.id}" ${style}>
+      <span class="notes-unit-head-stripe" aria-hidden="true"></span>
+      <div class="hyouga-unit-head-body">${stacked}</div>
+      <div class="hyouga-unit-head-end">${unitStars}${gift}</div>
+    </div>`;
+  }
+
   function renderExploreCatalogBlocks(state) {
     const units = getCurriculumUnitsForHome();
-    const expandedId = getExpandedUnitId(state);
     const blocks = units
       .slice()
       .sort((a, b) => a.id - b.id)
       .map((unit) => {
         const theme = CURRICULUM_STAGE_THEMES[unit.id] || CURRICULUM_STAGE_THEMES[1];
         const uv = unitVisual(state, unit.id);
-        const isOpen = unit.id === expandedId;
+        const unitStyle = `style="--stage-accent:${theme.accent};--notes-unit-bg:${theme.pageBg};--notes-unit-border:${theme.border};--notes-unit-dark:${theme.primaryDark || theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
         const rows = unit.lessons
-          .map((L, i) => {
-            const row = renderLessonRow(L, state, unit.id, i + 1);
+          .map((L) => {
+            const row = renderLessonRow(L, state, unit.id);
             const eggBtn = lessonEggThumbHtml(state, unit.id, L.lessonId);
-            return `<div class="journey-lesson-slot">
-              <div class="journey-lesson-row-wrap">${row}${eggBtn}</div>
+            return `<div class="journey-lesson-slot notes-lesson-card journey-lesson-card--catalog" data-lesson-id="${L.lessonId}">
+              <div class="journey-lesson-row-wrap notes-lesson-summary--symbol">${row}${eggBtn}</div>
             </div>`;
           })
           .join("");
-        const unitLabel = escapeHtml(unit.titleJa || unitLabelZh(unit.id));
-        const unitJp = escapeHtml(unitThemeJaText(unit));
-        const unitZh = escapeHtml(unit.titleZh || "");
-        const style = `style="--stage-accent:${theme.accent};--unit-border:${theme.border};--unit-page-bg:${theme.pageBg};--unit-bg:${theme.bg || theme.pageBg}"`;
-        const openAttr = isOpen ? " open" : "";
-        const currentCls = isOpen ? " is-unit-current" : "";
         const unitFourGold =
           typeof curriculumUnitFourGold === "function" && curriculumUnitFourGold(state, unit.id);
         return `
-        <details class="journey-unit-details journey-catalog-unit is-unit-${uv}${currentCls}${unitFourGold ? " has-unit-four-gold" : ""}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${style}${openAttr}>
-          <summary class="journey-unit-summary">
-            <div class="journey-unit-summary-bar">
-              <span class="journey-unit-chevron" aria-hidden="true"></span>
-              ${
-                typeof curriculumUnitStackedTitleHtml === "function"
-                  ? curriculumUnitStackedTitleHtml(unit.id)
-                  : `<div class="journey-unit-summary-main journey-unit-summary-main--stacked" title="${unitLabel} ${unitJp} ${unitZh}">
-                <span class="journey-stage-unit jp" lang="ja">${unitLabel}</span>
-                <span class="journey-stage-zh zh-annotation">${unitZh || unitJp}</span>
-              </div>`
-              }
-              <div class="journey-unit-summary-end">
-                ${unitStatusHtml(state, unit)}
-                ${typeof StoryReward !== "undefined" ? StoryReward.giftButtonHtml(state, unit.id, uv) : ""}
-              </div>
-            </div>
-          </summary>
-          <div class="journey-unit-body">
+        <section class="journey-catalog-unit-block journey-catalog-unit is-unit-${uv}${unitFourGold ? " has-unit-four-gold" : ""}" data-unit="${unit.id}" data-spectrum="${escapeHtml(theme.spectrum || "")}" ${unitStyle} aria-label="${escapeHtml(unitLabelZh(unit.id))}">
+          ${renderCatalogUnitHead(state, unit)}
+          <div class="journey-catalog-unit-bubble">
             ${renderUnitOverviewHtml(unit)}
-            <div class="journey-lesson-grid">${rows}</div>
+            <div class="notes-lesson-accordion journey-lesson-accordion">${rows}</div>
           </div>
-        </details>`;
+        </section>`;
       })
       .join("");
     return blocks;
@@ -377,40 +376,28 @@ const JourneyHome = (function () {
       </a>`;
   }
 
-  /** 展开单元后：滚动对齐，不改变 DOM 顺序（保持第1→第6单元）；并尽量露出四课 */
-  function scrollOpenedUnitIntoView(det) {
-    if (!det) return;
-    const scroller = det.closest(
-      ".journey-home-scroll, .journey-catalog-scroll--accordion, .journey-catalog-scroll"
-    );
-    const pad = 6;
+  /** 滚动到单元块（笔记式目录 · 单元始终展开） */
+  function scrollUnitBlockIntoView(block) {
+    if (!block) return;
+    const scroller = block.closest(".journey-home-scroll, .journey-catalog-scroll");
+    const pad = 8;
+    block.classList.add("is-unit-current");
+    boardClearCurrentExcept(block);
 
     function align() {
-      const body = det.querySelector(".journey-unit-body");
-      if (body) body.scrollTop = 0;
-
       if (!scroller) {
-        det.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        block.scrollIntoView({ behavior: "smooth", block: "nearest" });
         return;
       }
       const sRect = scroller.getBoundingClientRect();
-      const dRect = det.getBoundingClientRect();
+      const dRect = block.getBoundingClientRect();
       const topDelta = dRect.top - sRect.top - pad;
-      if (topDelta < -2) {
-        scroller.scrollBy({ top: topDelta, behavior: "smooth" });
-      }
+      if (topDelta < -2) scroller.scrollBy({ top: topDelta, behavior: "smooth" });
       requestAnimationFrame(() => {
         const sRect2 = scroller.getBoundingClientRect();
-        const dRect2 = det.getBoundingClientRect();
+        const dRect2 = block.getBoundingClientRect();
         if (dRect2.bottom > sRect2.bottom - pad) {
           scroller.scrollBy({ top: dRect2.bottom - sRect2.bottom + pad, behavior: "smooth" });
-          return;
-        }
-        const lastSlot = det.querySelector(".journey-lesson-grid .journey-lesson-slot:last-child");
-        if (!lastSlot) return;
-        const lRect = lastSlot.getBoundingClientRect();
-        if (lRect.bottom > sRect2.bottom - pad) {
-          scroller.scrollBy({ top: lRect.bottom - sRect2.bottom + pad, behavior: "smooth" });
         }
       });
     }
@@ -418,34 +405,23 @@ const JourneyHome = (function () {
     requestAnimationFrame(() => requestAnimationFrame(align));
   }
 
-  function bindCatalogAccordion(board) {
-    const all = board.querySelectorAll("details.journey-unit-details");
-    all.forEach((det) => {
-      det.addEventListener("toggle", () => {
-        if (!det.open) {
-          det.classList.remove("is-unit-current");
-          return;
-        }
-        all.forEach((other) => {
-          if (other !== det) {
-            other.open = false;
-            other.classList.remove("is-unit-current");
-          }
-        });
-        det.classList.add("is-unit-current");
-        scrollOpenedUnitIntoView(det);
-      });
+  function boardClearCurrentExcept(keep) {
+    document.querySelectorAll(".journey-catalog-unit-block.is-unit-current").forEach((el) => {
+      if (el !== keep) el.classList.remove("is-unit-current");
     });
   }
 
+  function bindCatalogAccordion(board) {
+    /* 笔记式：无 details 折叠，仅保留地图跳转高亮 */
+  }
+
   function openUnitDetails(board, uid) {
-    const el = board.querySelector(`details.journey-unit-details[data-unit="${uid}"]`);
+    const el = board.querySelector(`.journey-catalog-unit-block[data-unit="${uid}"]`);
     if (!el) return;
-    board.querySelectorAll("details.journey-unit-details").forEach((d) => {
-      d.open = d === el;
+    board.querySelectorAll(".journey-catalog-unit-block").forEach((d) => {
       d.classList.toggle("is-unit-current", d === el);
     });
-    scrollOpenedUnitIntoView(el);
+    scrollUnitBlockIntoView(el);
     el.classList.add("is-map-reveal-flash");
     setTimeout(() => el.classList.remove("is-map-reveal-flash"), 1200);
   }
@@ -533,7 +509,7 @@ const JourneyHome = (function () {
           <div class="journey-catalog-lead">${renderPart0Bar(state)}</div>
           <p class="journey-catalog-section jp" lang="ja">课文名称（日语）</p>
         </div>
-        <div class="journey-home-scroll journey-catalog-scroll journey-catalog-scroll--accordion" role="region" aria-label="课文目录">
+        <div class="journey-home-scroll journey-catalog-scroll journey-catalog-scroll--notes" role="region" aria-label="课文目录">
           ${renderExploreCatalogBlocks(state)}
           ${renderExploreCatalogDevHint(state)}
         </div>

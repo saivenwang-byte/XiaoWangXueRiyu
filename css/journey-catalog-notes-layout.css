@@ -1,0 +1,129 @@
+/**
+ * 课文目录 · 笔记同构排版（单元头 + 泡泡内四课 · 主区滑槽）
+ * 须在 notes-ui-system.css 之后加载
+ */
+
+.journey-catalog-scroll--notes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+}
+
+.journey-catalog-unit-block {
+  margin: 0 0 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.journey-catalog-unit-block.is-unit-current .journey-catalog-unit-bubble {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--stage-accent, #e91e63) 35%, transparent);
+}
+
+.journey-catalog-unit-head {
+  margin: var(--space-sm, 8px) var(--space-md, 12px) 2px;
+}
+
+.journey-catalog-unit-bubble {
+  margin: 0 var(--space-md, 12px) 4px;
+  padding: 6px 8px 8px;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--notes-unit-border, var(--unit-border, #e0e0e0));
+  border-left: 4px solid var(--stage-accent, #e91e63);
+  background: color-mix(in srgb, var(--notes-unit-bg, var(--unit-page-bg, #fff)) 88%, #fff);
+  box-sizing: border-box;
+}
+
+.journey-catalog-unit-bubble .journey-unit-overview {
+  margin: 4px 2px 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--stage-accent, #e91e63) 6%, transparent);
+}
+
+.journey-catalog-unit-bubble .journey-lesson-accordion {
+  gap: 4px;
+  padding: 0;
+}
+
+.journey-lesson-card--catalog {
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--notes-unit-border, var(--hy-border-soft, #e0e0e0));
+  border-left-width: 3px;
+  border-left-color: var(--stage-accent, #e91e63);
+  background: var(--hy-surface-white, #fff);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.journey-lesson-card--catalog .journey-lesson-row-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.journey-lesson-card--catalog .lesson-row {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  min-height: 44px;
+  gap: 6px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.journey-lesson-card--catalog .lesson-row-badge {
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+}
+
+.journey-lesson-card--catalog .journey-lesson-egg-btn {
+  flex-shrink: 0;
+  align-self: center;
+  margin-right: 4px;
+}
+
+.journey-catalog-unit-block .journey-lesson-slot:last-child {
+  margin-bottom: 2px;
+  scroll-margin-bottom: 12px;
+}
+
+/* 书写页 · 主区可滚 + 底栏不裁切米字格 */
+#view-write.view.active {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#view-write .write-l0-root {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-bottom: calc(var(--nav-h, 56px) + env(safe-area-inset-bottom, 0px) + 16px);
+}
+
+.write-l0-sheet {
+  min-height: 0;
+  padding-bottom: 8px;
+}
+
+.write-l0-mizige-wrap {
+  flex: 0 0 auto;
+  max-height: min(52dvh, 360px);
+}
