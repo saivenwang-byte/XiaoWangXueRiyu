@@ -260,6 +260,7 @@ const WriteKanaL0 = (function () {
   }
 
   function openSheet(entry) {
+    if (typeof WriteKanaStrokeUI !== "undefined") WriteKanaStrokeUI.destroy();
     screen = "sheet";
     currentEntry = entry;
     const show = displayChar(entry);

@@ -1,6 +1,6 @@
 ﻿/** 微信链接分享 · 公网 HTTPS（GitHub Pages）；人传人转发 */
 const ShareWechat = (() => {
-  const CACHE_VER = "344";
+  const CACHE_VER = "346";
 
   const OFFICIAL_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2";
 
@@ -139,7 +139,8 @@ const ShareWechat = (() => {
     el.id = "wechat-link-banner";
     el.className = "wechat-github-banner";
     el.innerHTML =
-      "<p><strong>链接学习</strong>：可转发给好友继续点开。</p>" +
+      "<p><strong>链接学习</strong>：请转发<strong>完整链接</strong>（含 <code>XiaoWangXueRiyu-v2/index.html</code>）。</p>" +
+      "<p>若只显示 <code>github.io</code> 或白屏：请复制完整链接到 Safari/Chrome 打开。</p>" +
       "<p>跟读录不上音：右上角 <strong>···</strong> → <strong>在浏览器中打开</strong>。</p>";
     container.prepend(el);
   }
