@@ -672,15 +672,47 @@ const NotesPanel = (() => {
     };
   }
 
-  function parseCrossLinks(L) {
+  function parseCrossLinks(L, fromLessonId) {
     const links = [];
+    const seen = new Set();
+
+    function pushLink(targetId, desc) {
+      const tid = Number(targetId);
+      const d = String(desc || "").trim();
+      if (!tid || !d || tid === Number(fromLessonId)) return;
+      const key = `${tid}|${d}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      links.push({ targetId: tid, desc: d });
+    }
+
     const matome = (L?.reviewExtension || []).find((s) => /これまでのまとめ/.test(s.title || ""));
-    if (!matome) return links;
-    (matome.lines || []).forEach((line) => {
-      const t = String(line || "").trim();
-      const m = t.match(/第\s*(\d+)\s*课[：:]\s*(.+)/);
-      if (m) links.push({ targetId: Number(m[1]), desc: m[2].trim() });
-    });
+    if (matome) {
+      (matome.lines || []).forEach((line) => {
+        const t = String(line || "").trim();
+        const m = t.match(/第\s*(\d+)\s*课[：:]\s*(.+)/);
+        if (m) pushLink(m[1], m[2].trim());
+      });
+    }
+
+    const cur = Number(fromLessonId);
+    const g = typeof KNOWLEDGE_GRAPH !== "undefined" ? KNOWLEDGE_GRAPH : null;
+    if (g?.concepts && cur) {
+      Object.values(g.concepts).forEach((concept) => {
+        const refs = concept?.refs || [];
+        if (!refs.some((r) => Number(r.lessonId) === cur)) return;
+        refs.forEach((ref) => {
+          const tid = Number(ref.lessonId);
+          if (!tid || tid === cur) return;
+          const label = (concept.label || "").trim();
+          const refLabel = (ref.label || "").trim();
+          const desc = refLabel ? `${label} ↔ ${refLabel}` : label;
+          pushLink(tid, desc);
+        });
+      });
+    }
+
+    links.sort((a, b) => a.targetId - b.targetId || a.desc.localeCompare(b.desc, "zh"));
     return links;
   }
 
@@ -696,7 +728,7 @@ const NotesPanel = (() => {
   }
 
   function linksDimHtml(L, fromLessonId) {
-    const links = parseCrossLinks(L);
+    const links = parseCrossLinks(L, fromLessonId);
     if (!links.length) return { count: 0, html: "" };
     const inner = `${links.map((lnk) => linkChipHtml(fromLessonId, lnk)).join("")}${linksTapLegendHtml()}${knowledgeLegendHtml()}`;
     return { count: links.length, html: `<div class="notes-link-list">${inner}</div>` };
@@ -881,10 +913,42 @@ const NotesPanel = (() => {
       ${linkModalHtml()}`;
   }
 
+  function graphLinksForLessons(fromId, targetId) {
+    const from = Number(fromId);
+    const to = Number(targetId);
+    const g = typeof KNOWLEDGE_GRAPH !== "undefined" ? KNOWLEDGE_GRAPH : null;
+    if (!g?.concepts || !from || !to) return [];
+    const hits = [];
+    Object.values(g.concepts).forEach((concept) => {
+      const refs = concept?.refs || [];
+      const hasFrom = refs.some((r) => Number(r.lessonId) === from);
+      const hasTo = refs.some((r) => Number(r.lessonId) === to);
+      if (!hasFrom || !hasTo) return;
+      const fromRef = refs.find((r) => Number(r.lessonId) === from);
+      const toRef = refs.find((r) => Number(r.lessonId) === to);
+      hits.push({
+        label: (concept.label || "").trim(),
+        fromLabel: (fromRef?.label || "").trim(),
+        toLabel: (toRef?.label || "").trim(),
+        fromAnchor: fromRef?.anchorId || "",
+        toAnchor: toRef?.anchorId || "",
+      });
+    });
+    return hits;
+  }
+
+  function grammarNodeByAnchor(lessonId, anchorId) {
+    if (!anchorId || !/^l\d+_g\d+$/.test(anchorId)) return null;
+    const L = getLesson(lessonId);
+    return (L?.grammarNodes || []).find((n) => n.id === anchorId) || null;
+  }
+
   function openLinkModal(fromId, targetId, desc) {
     const modal = document.getElementById("notes-link-modal");
     if (!modal) return;
+    const fromL = getLesson(fromId);
     const tgtL = getLesson(targetId);
+    const graphHits = graphLinksForLessons(fromId, targetId);
     const badge = modal.querySelector("#notes-link-card-badge");
     const jp = modal.querySelector("#notes-link-card-jp");
     const zh = modal.querySelector("#notes-link-card-zh");
@@ -894,19 +958,48 @@ const NotesPanel = (() => {
     if (badge) badge.textContent = `L${fromId} ↔ L${targetId}`;
     if (jp) jp.textContent = tgtL?.lessonTitle || `第${targetId}課`;
     if (zh) zh.textContent = tgtL?.themeZh || "";
-    if (descEl) descEl.innerHTML = highlightKnowledgeText(desc || "");
+    const graphDesc = graphHits.length
+      ? graphHits.map((h) => `${h.label}（L${fromId}·${h.fromLabel || "锚点"} ↔ L${targetId}·${h.toLabel || "锚点"}）`).join("；")
+      : "";
+    const fullDesc = [desc, graphDesc].filter(Boolean).join("\n");
+    if (descEl) descEl.innerHTML = highlightKnowledgeText(fullDesc || desc || "");
     if (tagsEl) {
-      const nodes = (tgtL?.grammarNodes || []).slice(0, 6);
-      tagsEl.innerHTML = nodes.length
-        ? nodes
-            .map((n) => `<span class="notes-tag notes-tag--textbook">${escapeHtml(n.titleZh || n.title)}</span>`)
-            .join("")
+      const tagSet = new Set();
+      const tagHtml = [];
+      const pushTag = (text, cls) => {
+        const t = String(text || "").trim();
+        if (!t || tagSet.has(t)) return;
+        tagSet.add(t);
+        tagHtml.push(`<span class="notes-tag notes-tag--${cls}">${escapeHtml(t)}</span>`);
+      };
+      graphHits.forEach((h) => pushTag(h.label, "graph"));
+      graphHits.forEach((h) => {
+        const nFrom = grammarNodeByAnchor(fromId, h.fromAnchor);
+        const nTo = grammarNodeByAnchor(targetId, h.toAnchor);
+        if (nFrom) pushTag(`L${fromId}·${nFrom.titleZh || nFrom.title}`, "textbook");
+        if (nTo) pushTag(`L${targetId}·${nTo.titleZh || nTo.title}`, "textbook");
+      });
+      (tgtL?.grammarNodes || []).slice(0, 4).forEach((n) => {
+        pushTag(n.titleZh || n.title, "textbook");
+      });
+      if (fromL && Number(fromId) !== Number(targetId)) {
+        (fromL.grammarNodes || []).slice(0, 2).forEach((n) => {
+          pushTag(`L${fromId}·${n.titleZh || n.title}`, "textbook");
+        });
+      }
+      tagsEl.innerHTML = tagHtml.length
+        ? tagHtml.join("")
         : `<span class="zh-annotation">（目标课语法点加载后显示）</span>`;
     }
     if (tipEl) {
-      tipEl.innerHTML = desc
-        ? highlightKnowledgeText(`对比记忆：${desc}`)
-        : "先掌握本课句型，再打开目标课对照复习。";
+      const tipParts = [];
+      if (graphHits.length) {
+        tipParts.push(`知识图谱：${graphHits.map((h) => h.label).join("、")}`);
+      }
+      if (desc) tipParts.push(`对比记忆：${desc}`);
+      else if (graphHits.length) tipParts.push("两课通过同一概念串联；先掌握本课句型，再打开目标课对照。");
+      else tipParts.push("先掌握本课句型，再打开目标课对照复习。");
+      tipEl.innerHTML = highlightKnowledgeText(tipParts.join("\n"));
     }
     modal.hidden = false;
     modal.setAttribute("aria-hidden", "false");

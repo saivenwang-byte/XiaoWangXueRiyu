@@ -12707,6 +12707,11 @@ details[open] > .l1-conj-head .l1-conj-chevron::before { transform:rotate(90deg)
   color: var(--c-accent-orange);
 }
 
+.notes-tag--graph {
+  background: #e8f4fd;
+  color: #1565c0;
+}
+
 .notes-tag-body {
   margin: 0;
   font-size: 12px;
