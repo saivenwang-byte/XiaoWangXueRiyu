@@ -3,7 +3,8 @@
  * 数据：UNIT_STRIP_STORYBOARD
  */
 const StoryComicUi = (function () {
-  const MAX_BUBBLES_PER_PANEL = 2;
+  const MAX_BUBBLES_STRIP = 2;
+  const MAX_BUBBLES_ZOOM = 4;
 
   function escapeHtml(s) {
     const d = document.createElement("div");
@@ -24,9 +25,10 @@ const StoryComicUi = (function () {
     return { place: raw, tag: "" };
   }
 
-  function pickBubbles(panel) {
+  function pickBubbles(panel, maxCount) {
+    const cap = maxCount == null ? MAX_BUBBLES_STRIP : maxCount;
     const list = panel?.bubbles || [];
-    return list.slice(0, MAX_BUBBLES_PER_PANEL);
+    return list.slice(0, cap);
   }
 
   function bubbleKind(b) {
@@ -49,12 +51,15 @@ const StoryComicUi = (function () {
     return `<div class="manga-narration jp">${escapeHtml(jp)}</div>`;
   }
 
-  function renderPanelInterior(panel) {
+  function renderPanelInterior(panel, options) {
     if (!panel) return "";
+    const maxBubbles =
+      options && options.maxBubbles != null ? options.maxBubbles : MAX_BUBBLES_STRIP;
     const { place, tag } = sceneParts(panel.sceneCloud);
-    const bubbles = pickBubbles(panel).map(renderMangaBubble).join("");
+    const picked = pickBubbles(panel, maxBubbles);
+    const bubbles = picked.map(renderMangaBubble).join("");
     const narration =
-      panel.captionSmall && pickBubbles(panel).length < MAX_BUBBLES_PER_PANEL
+      panel.captionSmall && picked.length < maxBubbles
         ? renderNarration(panel.captionSmall)
         : "";
 
@@ -70,7 +75,9 @@ const StoryComicUi = (function () {
   }
 
   return {
-    MAX_BUBBLES_PER_PANEL,
+    MAX_BUBBLES_STRIP,
+    MAX_BUBBLES_ZOOM,
+    MAX_BUBBLES_PER_PANEL: MAX_BUBBLES_STRIP,
     getUnitStoryboard,
     sceneParts,
     pickBubbles,

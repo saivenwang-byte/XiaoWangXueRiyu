@@ -18,13 +18,15 @@
 
   "unit1_lessons_1_4_mvp": {
 
-    "status": "locked",
+    "status": "unlocked",
 
     "frozen_at": "2026-05-25",
 
     "locked_at": "2026-05-25",
 
-    "cache": "246",
+    "unlocked_at": "2026-05-30",
+
+    "cache": "403",
 
     "lesson_ids": [
 
@@ -42,9 +44,9 @@
 
     "doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
 
-    "user_confirmed": "2026-05-25",
+    "user_confirmed": "2026-05-30",
 
-    "note": "第1单元第1–4课五关+会話ABC；无用户明示不得改 lesson-1-flow / unit1-dialogue-abc / 课1–4 lessons-data 五关字段"
+    "note": "用户2026-05-30明示解锁：可改 ABC/会話黄卡/知识图；五关壳与 lesson-1-flow 仍慎改"
 
   },
 
@@ -168,7 +170,7 @@
 
     "product": "1.0.2",
 
-    "cache": "401",
+    "cache": "403",
 
     "cache_files": [
 
@@ -186,9 +188,9 @@
 
     ],
 
-    "local": "http://localhost:8765/index.html?v=401",
+    "local": "http://localhost:8765/index.html?v=403",
 
-    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=401",
+    "public": "https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=403",
 
     "mvp_unit1_lessons_1_4_doc": "docs/MVP-UNIT1-LESSONS-1-4-FREEZE.md",
 

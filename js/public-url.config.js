@@ -12,4 +12,4 @@ window.HYOUGA_PUBLIC_ORIGIN = "https://saivenwang-byte.github.io/XiaoWangXueRiyu
 window.HYOUGA_TTS_ORIGIN = "";
 
 /** 与 share-wechat.js CACHE_VER、tts-cache/sw-manifest.json 同步 */
-window.HYOUGA_TTS_CACHE_VER = "401";
+window.HYOUGA_TTS_CACHE_VER = "403";

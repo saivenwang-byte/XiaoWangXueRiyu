@@ -85,7 +85,7 @@ const LessonRecap = (function () {
 
   function pickDialogueLines(lessonId, panel) {
     if (panel?.bubbles?.length) {
-      return panel.bubbles.slice(0, 3).map((b) => ({
+      return panel.bubbles.slice(0, 4).map((b) => ({
         jp: b.jp,
         zh: b.zh || "",
         role: b.role || "",
@@ -94,7 +94,7 @@ const LessonRecap = (function () {
     if (typeof getLessonDialogues === "function") {
       const dlg = getLessonDialogues(lessonId)[0];
       if (dlg?.lines?.length) {
-        return dlg.lines.slice(0, 3).map((ln) => ({
+        return dlg.lines.slice(0, 4).map((ln) => ({
           jp: ln.jp || ln.ja || "",
           zh: ln.zh || "",
           role: ln.role || "",

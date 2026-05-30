@@ -1,7 +1,7 @@
 {
   "schema": "tts-registry-v1",
-  "requiredCount": 4089,
-  "mp3FileCount": 5823,
+  "requiredCount": 4088,
+  "mp3FileCount": 5824,
   "missingCount": 0,
   "keys": [
     "e7991361",
@@ -3070,7 +3070,6 @@
     "ac4722d2",
     "dc9d6770",
     "e4e51b54",
-    "baecc13c",
     "b8faf3e1",
     "c9203",
     "6bc7aef4",
@@ -3329,7 +3328,6 @@
     "c48997d0",
     "cca99232",
     "9f6bd0c5",
-    "d1e7a0e7",
     "32c80ed6",
     "2639fbec",
     "f3819763",
@@ -3812,6 +3810,7 @@
     "78ceb2e1",
     "10f408",
     "40a82f53",
+    "37a02677",
     "4495d4af",
     "4e24f19e",
     "3fc5f68d",

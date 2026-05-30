@@ -2,7 +2,7 @@
   "version": 48,
   "voice": "ja-JP-NanamiNeural",
   "engine": "edge-tts",
-  "count": 4089,
+  "count": 4090,
   "keys": [
     "e7991361",
     "b8988c1",
@@ -3812,6 +3812,7 @@
     "78ceb2e1",
     "10f408",
     "40a82f53",
+    "37a02677",
     "4495d4af",
     "4e24f19e",
     "3fc5f68d",

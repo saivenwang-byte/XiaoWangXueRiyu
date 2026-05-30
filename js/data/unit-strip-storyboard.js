@@ -16,7 +16,7 @@ const UNIT_STRIP_STORYBOARD = [
       {
         lessonId: 1,
         cornerZh: "成田抵日",
-        sceneCloud: "成田空港 · 李さんは中国人です",
+        sceneCloud: "自我介绍 · 出迎え",
         dialogueId: "l1-d1",
         visualBeat:
           "成田到达大厅中央；握红色护照；迷你行李箱；风影站员陪跑；抽象欢迎色块（无字）",
@@ -27,16 +27,16 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "红色护照·橙色四轮箱",
         },
         bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "JC企画の 小野さんですか。" },
-          { role: "小野", side: "left", jp: "はい、小野です。李秀麗さんですか。" },
-          { role: "小野", side: "left", jp: "はい、小野です。李秀麗さんですか。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、李秀麗です。はじめまして。どうぞ よろしく お願いします。" }
+          { role: "小野", side: "left", jp: "はじめまして、小野緑です。" },
+          { role: "李", side: "right", isGurumi: true, jp: "あっ、森さんですか。すみません。" },
+          { role: "森", side: "left", jp: "こちらこそ。" }
         ],
         note: "条带零字；泡里「田中」=风影接机人，不必写实脸",
       },
       {
         lessonId: 2,
         cornerZh: "机场卖店",
-        sceneCloud: "空港売店 · これは本です",
+        sceneCloud: "指示事物 · 家族の写真",
         dialogueId: "l2-d1",
         visualBeat:
           "机场内小卖店；踮脚指风铃；风影站员弯腰；货架扇子招き猫",
@@ -47,16 +47,16 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "玻璃风铃",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、それは 何ですか。", zh: "李小姐，那是什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "これは 私の 家族の 写真です。", zh: "这是我家人的照片。" },
-          { role: "李", side: "right", isGurumi: true, jp: "これは 私の 家族の 写真です。", zh: "这是我家人的照片。" },
-          { role: "小野", side: "left", jp: "この 方は どなたですか。", zh: "这位是谁？" }
+          { role: "小野", side: "left", jp: "お父さんは おいくつですか。", zh: "您父亲多大岁数？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい。この 写真は 二十歳の 時の 父です。", zh: "是的。这张照片是二十岁时的父亲。" },
+          { role: "李", side: "right", isGurumi: true, jp: "ありがとうございます。", zh: "谢谢。" }
         ],
         note: "课文「本」=风铃/和杂货（指示词场景），非教室",
       },
       {
         lessonId: 3,
         cornerZh: "浅草站前",
-        sceneCloud: "浅草駅前 · ここはデパートです",
+        sceneCloud: "场所位置 · ホテルの周辺",
         dialogueId: "l3-d1",
         visualBeat:
           "浅草站前观光地图看板；歪头指图；风影站员指雷门方向；远景红色大灯笼（无字）",
@@ -68,16 +68,16 @@ const UNIT_STRIP_STORYBOARD = [
         },
         captionSmall: "ここはデパートです。（点格说明·指远景百货剪影时可叠）",
         bubbles: [          { role: "小野", side: "left", jp: "李さん、ここは あなたの ホテルですか。", zh: "李小姐，这是您的酒店吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、そうです。", zh: "是的。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、そうです。", zh: "是的。" },
-          { role: "小野", side: "left", jp: "あそこが 公園です。とても きれいですよ。", zh: "那边是公园。很漂亮哦。" }
+          { role: "小野", side: "left", jp: "あれは 駅です。", zh: "那是车站。" },
+          { role: "小野", side: "left", jp: "銀行は あちらの 交差点の 左です。", zh: "银行在那边十字路口的左侧。" },
+          { role: "小野", side: "left", jp: "いいえ。どういたしまして。", zh: "不客气。" }
         ],
         note: "会話=场所询问；条带禁止可读招牌",
       },
       {
         lessonId: 4,
         cornerZh: "酒店房间",
-        sceneCloud: "ホテル · 部屋に机といすがあります",
+        sceneCloud: "存在与数量 · 部屋の様子",
         dialogueId: "l4-d1",
         visualBeat:
           "商务酒店房间；床·机·椅子·电视·衣柜；坐床边环视满意；窗外晴空塔夜景",
@@ -89,9 +89,9 @@ const UNIT_STRIP_STORYBOARD = [
         },
         captionSmall: "表情：ここが今日の部屋（心情，不进条带）",
         bubbles: [          { role: "小野", side: "left", jp: "李さん、部屋は どうですか。", zh: "李小姐，房间怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても きれいです。", zh: "非常漂亮。" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても きれいです。", zh: "非常漂亮。" },
-          { role: "小野", side: "left", jp: "何が ありますか。", zh: "有什么？" }
+          { role: "小野", side: "left", jp: "窓の 隣に 何が ありますか。", zh: "窗户旁边有什么？" },
+          { role: "小野", side: "left", jp: "テレビは どこに ありますか。", zh: "电视在哪儿？" },
+          { role: "小野", side: "left", jp: "いい 部屋ですね。", zh: "房间不错啊。" }
         ],
         note: "朋友=风影门外/手机光；条带无泡无字",
       },
@@ -106,7 +106,7 @@ const UNIT_STRIP_STORYBOARD = [
     panels: [
       {
         lessonId: 5,
-        sceneCloud: "ホテル朝 · 森さんは七時に起きます",
+        sceneCloud: "时间与ます形 · 朝の習慣",
         dialogueId: "l5-biaori",
         headline: "森さんは七時に起きます",
         visualBeat:
@@ -118,15 +118,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "电子钟·Room Service托盘",
         },
         bubbles: [          { role: "小野", side: "left", jp: "森さん、毎朝何時に起きますか。", zh: "森先生，每天早上几点起床？" },
-          { role: "森", side: "left", jp: "６時半に起きます。", zh: "6点半起床。" },
-          { role: "森", side: "left", jp: "６時半に起きます。", zh: "6点半起床。" },
-          { role: "小野", side: "left", jp: "じゃあ、朝ごはんは？", zh: "那么，早饭呢？" }
+          { role: "小野", side: "left", jp: "会社には何時に着きますか。", zh: "几点到公司？" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、森さんも早いですよ。", zh: "不，森先生您也很早啊。" },
+          { role: "小野", side: "left", jp: "みんな、頑張っていますね。", zh: "大家都很努力呢。" }
         ],
         note: "条带零字；钟面仅数字无日文招牌",
       },
       {
         lessonId: 6,
-        sceneCloud: "東京駅 · 吉田さんは来月中国へ行きます",
+        sceneCloud: "移动与方向 · 旅行の計画",
         dialogueId: "l6-biaori",
         headline: "吉田さんは来月中国へ行きます",
         visualBeat:
@@ -138,14 +138,14 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "新干线车票·行李箱",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、来月の休みにどこかへ行きますか。", zh: "小李，下个月休假要去哪儿吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、京都へ行く予定です。", zh: "嗯，打算去京都。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、京都へ行く予定です。", zh: "嗯，打算去京都。" },
-          { role: "小野", side: "left", jp: "いいですね。何で行きますか。", zh: "好啊。坐什么去？" }
+          { role: "小野", side: "left", jp: "一人で行きますか。", zh: "一个人去吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "小野さんもどこかへ行きますか。", zh: "小野你也打算去哪儿吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "じゃあ、また後で。", zh: "那回头再说。" }
         ],
       },
       {
         lessonId: 7,
-        sceneCloud: "大阪喫茶 · 李さんは毎日コーヒーを飲みます",
+        sceneCloud: "对象与频率 · カフェで注文",
         dialogueId: "l7-biaori",
         headline: "李さんは毎日コーヒーを飲みます",
         visualBeat:
@@ -157,15 +157,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "虹吸壶·咖啡杯热气",
         },
         bubbles: [          { role: "店員", side: "left", jp: "いらっしゃいませ。ご注文はお決まりですか。", zh: "欢迎光临。您点好了吗？" },
-          { role: "小野", side: "left", jp: "すみません、ちょっとまだ… 李さん、何にしますか。", zh: "不好意思，还没……小李，你点什么？" },
-          { role: "小野", side: "left", jp: "すみません、ちょっとまだ… 李さん、何にしますか。", zh: "不好意思，还没……小李，你点什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "私はコーヒーにします。小野さんは？", zh: "我点咖啡。小野呢？" }
+          { role: "小野", side: "left", jp: "はい。それと、ケーキもありますか。", zh: "嗯。还有蛋糕吗？" },
+          { role: "A", side: "left", jp: "（数分後）", zh: "（几分钟后）" },
+          { role: "小野", side: "left", jp: "はい、ぜひ。", zh: "好的，一定。" }
         ],
         note: "菜单无字；店员=吧台后剪影",
       },
       {
         lessonId: 8,
-        sceneCloud: "大阪会社 · 李さんは日本語で手紙を書きます",
+        sceneCloud: "手段与授受 · プレゼントを渡す",
         dialogueId: "l8-biaori",
         headline: "李さんは日本語で手紙を書きます",
         visualBeat:
@@ -177,9 +177,9 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "钢笔·信纸·信封抽象线",
         },
         bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "小野さん、これ、プレゼントです。中国のお菓子です。", zh: "小野，这是礼物。中国的点心。" },
-          { role: "小野", side: "left", jp: "まあ、ありがとうございます。開けてもいいですか。", zh: "哎呀，谢谢。可以打开吗？" },
-          { role: "小野", side: "left", jp: "まあ、ありがとうございます。開けてもいいですか。", zh: "哎呀，谢谢。可以打开吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、どうぞ。", zh: "嗯，请。" }
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、どういたしまして。", zh: "不客气。" },
+          { role: "森", side: "left", jp: "どうぞ使ってください。", zh: "请用吧。" },
+          { role: "小野", side: "left", jp: "李さんは日本語が上手ですね。", zh: "小李日语真好啊。" }
         ],
         note: "条带无字；信纸假名仅泡区后置可选",
       },
@@ -194,7 +194,7 @@ const UNIT_STRIP_STORYBOARD = [
     panels: [
       {
         lessonId: 9,
-        sceneCloud: "箱根料理 · 四川料理は辛いです",
+        sceneCloud: "い形容词 · 料理の感想",
         dialogueId: "l9-biaori",
         headline: "四川料理は辛いです",
         visualBeat:
@@ -206,15 +206,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "湯豆腐锅·辣味噌红油",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、この四川料理はどうですか。", zh: "小李，这道四川菜怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても辛いですが、美味しいです。", zh: "非常辣，但很好吃。" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても辛いですが、美味しいです。", zh: "非常辣，但很好吃。" },
-          { role: "小野", side: "left", jp: "そうですか。私はちょっと辛すぎます。", zh: "是吗。我觉得有点太辣了。" }
+          { role: "小野", side: "left", jp: "これも辛いですか。", zh: "这个也辣吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "私は大好きです。でも、あまり辛すぎるのはちょっと…", zh: "我非常喜欢。不过太辣的话有点……" },
+          { role: "李", side: "right", isGurumi: true, jp: "ぜひ作ってください。楽しみにしています。", zh: "一定要做啊，我很期待。" }
         ],
         note: "条带零字；headline「四川」靠辛い味觉与泡",
       },
       {
         lessonId: 10,
-        sceneCloud: "箱根神社 · 京都の紅葉は有名です",
+        sceneCloud: "な形容词 · 観光地の感想",
         dialogueId: "l10-biaori",
         headline: "京都の紅葉は有名です",
         visualBeat:
@@ -226,15 +226,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "絵馬·红叶地面",
         },
         bubbles: [          { role: "森", side: "left", jp: "李さん、京都はどうでしたか。", zh: "小李，京都怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "とてもよかったです。紅葉が本当にきれいでした。", zh: "非常好。红叶真的很漂亮。" },
-          { role: "李", side: "right", isGurumi: true, jp: "とてもよかったです。紅葉が本当にきれいでした。", zh: "非常好。红叶真的很漂亮。" },
-          { role: "森", side: "left", jp: "そうですか。どこへ行きましたか。", zh: "是吗。你去哪儿了？" }
+          { role: "森", side: "left", jp: "金閣寺は？", zh: "金阁寺呢？" },
+          { role: "李", side: "right", isGurumi: true, jp: "京都の料理もおいしかったです。特に湯豆腐が有名だと聞きました。", zh: "京都的菜也很好吃。听说汤豆腐特别有名。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、ぜひ行きたいです。", zh: "好的，一定想去。" }
         ],
         note: "签文大吉无字；headline红叶=秋景有名きれい",
       },
       {
         lessonId: 11,
-        sceneCloud: "温泉旅館 · 小野さんは歌が好きです",
+        sceneCloud: "喜好与擅长 · 趣味の話",
         dialogueId: "l11-biaori",
         headline: "小野さんは歌が好きです",
         visualBeat:
@@ -246,15 +246,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "麦克风·茶点矮桌",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、趣味は何ですか。", zh: "小李，爱好是什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "音楽を聞くことです。特に日本のポップスが好きです。", zh: "听音乐，尤其喜欢日本流行音乐。" },
-          { role: "李", side: "right", isGurumi: true, jp: "音楽を聞くことです。特に日本のポップスが好きです。", zh: "听音乐，尤其喜欢日本流行音乐。" },
-          { role: "小野", side: "left", jp: "そうですか。私は歌を歌うことが好きです。でも、あまり上手じゃありません。", zh: "是吗。我喜欢唱歌，但不太擅长。" }
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、私はピアノが少しできますが、とても下手です。", zh: "不会，我会一点钢琴，但很不行。" },
+          { role: "李", side: "right", isGurumi: true, jp: "小野さんはスポーツはどうですか。", zh: "小野，运动方面怎么样？" },
+          { role: "小野", side: "left", jp: "楽しみにしています。", zh: "我很期待。" }
         ],
         note: "屏幕歌词无字；仅グルミ正脸",
       },
       {
         lessonId: 12,
-        sceneCloud: "土产店 · 李さんは森さんより若いです",
+        sceneCloud: "比较 · どっちがいい？",
         dialogueId: "l12-biaori",
         headline: "李さんは森さんより若いです",
         visualBeat:
@@ -266,9 +266,9 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "两盒土产·购物篮",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、これとこれとどっちがいいですか。", zh: "小李，这个和这个哪个好？" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…値段はどちらも同じぐらいですか。", zh: "嗯……价格两边差不多吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…値段はどちらも同じぐらいですか。", zh: "嗯……价格两边差不多吗？" },
-          { role: "小野", side: "left", jp: "いいえ、左の方がちょっと安いです。右は少し高いです。", zh: "不，左边稍便宜，右边稍贵。" }
+          { role: "小野", side: "left", jp: "私は右の方が好きです。色がきれいですから。", zh: "我更喜欢右边，因为颜色漂亮。" },
+          { role: "李", side: "right", isGurumi: true, jp: "じゃあ、右のにしましょうか。", zh: "那么选右边的吧？" },
+          { role: "李", side: "right", isGurumi: true, jp: "プレゼントですから、もらう人が喜ぶ方が一番ですよね。", zh: "因为是礼物，收到的人高兴最重要吧。" }
         ],
         note: "条带零字；より若い在泡、画面为どっち土产（彩蛋txt）",
       },
@@ -283,7 +283,7 @@ const UNIT_STRIP_STORYBOARD = [
     panels: [
       {
         lessonId: 13,
-        sceneCloud: "名古屋書店 · 机の上に本が三冊あります",
+        sceneCloud: "数量词 · 買い物で数量を言う",
         dialogueId: "l13-biaori",
         headline: "机の上に本が三冊あります",
         visualBeat:
@@ -295,17 +295,17 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "本·购物篮三冊",
         },
         bubbles: [          { role: "店員", side: "left", jp: "いらっしゃいませ。何をお探しですか。", zh: "欢迎光临。您在找什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "ノートを探しています。", zh: "我在找笔记本。" },
-          { role: "李", side: "right", isGurumi: true, jp: "ノートを探しています。", zh: "我在找笔记本。" },
-          { role: "店員", side: "left", jp: "こちらがノートです。いろいろな種類があります。", zh: "这边是笔记本。有很多种。" }
+          { role: "店員", side: "left", jp: "それは一冊２００円です。", zh: "那个一本200日元。" },
+          { role: "李", side: "right", isGurumi: true, jp: "大丈夫です。じゃあ、そのペンを二本ください。", zh: "没问题。那请给我两支那个笔。" },
+          { role: "李", side: "right", isGurumi: true, jp: "袋は結構です。そのまま持って帰ります。", zh: "不用袋子。就这样拿着回去。" }
         ],
         note: "条带零字；书架标签抽象色块无字",
       },
       {
         lessonId: 14,
-        sceneCloud: "名古屋デパート · 昨日買い物をしました",
+        sceneCloud: "て形 · デパートでの買い物",
         dialogueId: "l14-biaori",
-        headline: "昨日デパートへ行って、買い物をしました",
+        headline: "昨日デパートへ行って買い物しました",
         visualBeat:
           "栄百货店内；购物袋+レシート得意笑；新靴新包；窗外テレビ塔オアシス21暮色",
         layers: {
@@ -315,15 +315,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "靴·鞄·购物袋",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、今日はどこへ行きましたか。", zh: "小李，今天去哪儿了？" },
-          { role: "李", side: "right", isGurumi: true, jp: "デパートへ行って、買い物しました。", zh: "去了百货公司，买了东西。" },
-          { role: "李", side: "right", isGurumi: true, jp: "デパートへ行って、買い物しました。", zh: "去了百货公司，买了东西。" },
-          { role: "小野", side: "left", jp: "何を買いましたか。", zh: "买了什么？" }
+          { role: "李", side: "right", isGurumi: true, jp: "デパートのレストランでご飯を食べてから、喫茶店でコーヒーを飲みました。", zh: "在百货公司餐厅吃完饭，又在咖啡店喝了咖啡。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、とても。でも、ちょっと疲れました。", zh: "是的，很好。不过有点累了。" },
+          { role: "小野", side: "left", jp: "そうでもないですよ。リラックスできました。", zh: "也不尽然。我很放松。" }
         ],
         note: "收据/logo无字",
       },
       {
         lessonId: 15,
-        sceneCloud: "会社休憩室 · 小野さんは今新聞を読んでいます",
+        sceneCloud: "进行态 · オフィスで許可を求める",
         dialogueId: "l15-biaori",
         headline: "小野さんは今新聞を読んでいます",
         visualBeat:
@@ -335,15 +335,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "新聞·咖啡杯",
         },
         bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "すみません、小野さん、今、ちょっとお聞きしたいんですが。", zh: "不好意思，小野，我现在想请教一下。" },
-          { role: "小野", side: "left", jp: "はい、何ですか。", zh: "嗯，什么事？" },
-          { role: "小野", side: "left", jp: "はい、何ですか。", zh: "嗯，什么事？" },
-          { role: "李", side: "right", isGurumi: true, jp: "このオフィスで写真を撮ってもいいですか。", zh: "在这个办公室拍照可以吗？" }
+          { role: "李", side: "right", isGurumi: true, jp: "さっきまで電話をしていましたが、今は資料を読んでいます。", zh: "刚才一直在打电话，现在在看资料。" },
+          { role: "李", side: "right", isGurumi: true, jp: "かしこまりました。", zh: "明白了。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい。そのまま動かないでください。…はい、撮りました。ありがとうございました。", zh: "好的。请保持不动。……好了，拍好了。谢谢。" }
         ],
         note: "报纸标题无字；条带零字",
       },
       {
         lessonId: 16,
-        sceneCloud: "名古屋ホテル · 広くて明るいです",
+        sceneCloud: "状态与描写 · ホテルの感想",
         dialogueId: "l16-biaori",
         headline: "ホテルの部屋は広くて明るいです",
         visualBeat:
@@ -355,9 +355,9 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "行李箱·花瓶百合",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、ホテルの部屋はどうですか。", zh: "小李，酒店房间怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても広くて明るいです。窓から庭が見えます。", zh: "很宽敞明亮。从窗户能看到院子。" },
-          { role: "李", side: "right", isGurumi: true, jp: "とても広くて明るいです。窓から庭が見えます。", zh: "很宽敞明亮。从窗户能看到院子。" },
-          { role: "小野", side: "left", jp: "いいですね。私はこの静かで落ち着く雰囲気が好きです。", zh: "不错啊。我喜欢这种安静、让人静下来的气氛。" }
+          { role: "李", side: "right", isGurumi: true, jp: "はい、ついています。でも、リモコンがありません。", zh: "开着。但没有遥控器。" },
+          { role: "フロント", side: "left", jp: "かしこまりました。すぐにお持ちします。", zh: "明白了。马上给您拿来。" },
+          { role: "小野", side: "left", jp: "おやすみなさい。", zh: "晚安。" }
         ],
         note: "条带零字",
       },
@@ -372,7 +372,7 @@ const UNIT_STRIP_STORYBOARD = [
     panels: [
       {
         lessonId: 17,
-        sceneCloud: "仙台商店街 · 新しい洋服がほしいです",
+        sceneCloud: "愿望 · 欲しいものの話",
         dialogueId: "l17-biaori",
         headline: "わたしは新しい洋服がほしいです",
         visualBeat:
@@ -384,15 +384,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "福袋·橱窗冬装",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、今、何かほしいものがありますか。", zh: "小李，现在有什么想要的吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…新しいパソコンがほしいです。今使っているのはちょっと古くて、動作が遅いんです。", zh: "嗯……想要新电脑。现在用的有点旧，运行很慢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…新しいパソコンがほしいです。今使っているのはちょっと古くて、動作が遅いんです。", zh: "嗯……想要新电脑。现在用的有点旧，运行很慢。" },
-          { role: "小野", side: "left", jp: "ああ、わかります。私も最近、スマホを新しくしようかなと思っています。", zh: "啊，我懂。我最近也在想要不要换新手机。" }
+          { role: "小野", side: "left", jp: "うーん、そうですね。今年の夏は北海道へ行きたいです。", zh: "嗯……是那样。今年夏天想去北海道。" },
+          { role: "李", side: "right", isGurumi: true, jp: "ぜひ行きたいです。でも、まずはお金を貯めないと…", zh: "很想去。不过得先攒钱……" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、まだまだです。もっと話せるようになりたいです。", zh: "还远远不够。我想说得更好。" }
         ],
         note: "条带零字；海报灯笼无字",
       },
       {
         lessonId: 18,
-        sceneCloud: "こたつ · 携帯電話は小さくなりました",
+        sceneCloud: "变化 · 生活の変化",
         dialogueId: "l18-biaori",
         headline: "携帯電話はとても小さくなりました",
         visualBeat:
@@ -404,14 +404,14 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "新旧携帯·みかん",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、最近の携帯電話は本当に小さくなりましたね。", zh: "小李，最近的手机真的变小了。" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね。昔のは大きくて重かったですが、今のは軽くて持ちやすいです。", zh: "是啊。以前的又大又重，现在的轻便好拿。" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね。昔のは大きくて重かったですが、今のは軽くて持ちやすいです。", zh: "是啊。以前的又大又重，现在的轻便好拿。" },
-          { role: "森", side: "left", jp: "それに、機能も便利になりました。インターネットもできるし、写真もきれいです。", zh: "而且功能也更方便了。能上网，照片也清晰。" }
+          { role: "森", side: "left", jp: "それなら、あまり長く見ないほうがいいですよ。", zh: "那样的话，最好别盯着看太久。" },
+          { role: "李", side: "right", isGurumi: true, jp: "雨が降るかもしれませんね。傘を持って行ったほうがいいですよ。", zh: "可能会下雨。最好带把伞。" },
+          { role: "森", side: "left", jp: "お互い、気をつけましょう。", zh: "彼此都保重。" }
         ],
       },
       {
         lessonId: 19,
-        sceneCloud: "仙台駅 · 部屋のかぎを忘れないでください",
+        sceneCloud: "禁止与义务 · 注意する・される",
         dialogueId: "l19-biaori",
         headline: "部屋のかぎを忘れないでください",
         visualBeat:
@@ -423,15 +423,15 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "スーツケース·空口袋",
         },
         bubbles: [          { role: "森", side: "left", jp: "李さん、明日から旅行ですね。気をつけて行ってきてください。", zh: "小李，明天开始旅行了吧。路上小心。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、ありがとうございます。", zh: "好的，谢谢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、ありがとうございます。", zh: "好的，谢谢。" },
-          { role: "小野", side: "left", jp: "ところで、ホテルの部屋のかぎは忘れないでくださいね。", zh: "对了，别忘了拿酒店房间钥匙。" }
+          { role: "小野", side: "left", jp: "あと、出かけるときは電気やエアコンを消すのを忘れないでください。", zh: "还有，出门时别忘了关电灯和空调。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、気をつけます。", zh: "好的，我会注意的。" },
+          { role: "森・小野", side: "left", jp: "いってらっしゃい。", zh: "走好。" }
         ],
         note: "站员=暖金色剪影无正脸；标识无字",
       },
       {
         lessonId: 20,
-        sceneCloud: "雪まつり · ピアノを弾くことができます",
+        sceneCloud: "可能 · できること・できないこと",
         dialogueId: "l20-biaori",
         headline: "スミスさんはピアノを弾くことができます",
         visualBeat:
@@ -443,9 +443,9 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "杵·餅·雪洞烛光",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、何か特技はありますか。", zh: "小李，有什么特长吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…中国の料理を作ることができます。特に餃子が得意です。", zh: "嗯……会做中国菜。尤其擅长包饺子。" },
-          { role: "李", side: "right", isGurumi: true, jp: "そうですね…中国の料理を作ることができます。特に餃子が得意です。", zh: "嗯……会做中国菜。尤其擅长包饺子。" },
-          { role: "森", side: "left", jp: "すごいですね。私は料理があまりできません。", zh: "真厉害。我不太会做饭。" }
+          { role: "李", side: "right", isGurumi: true, jp: "じゃあ、英語で話してみましょうか。", zh: "那用英语试试看？" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね。諦めずに続けます。", zh: "是啊。不放弃，继续练。" },
+          { role: "森", side: "left", jp: "私は高校の時に登りました。とても大変でしたが、頂上からの景色は素晴らしかったです。", zh: "我高中时登过。非常累，但从山顶看到的景色很棒。" }
         ],
         note: "headlineピアノ→餅つきできる（可能形）；条带零字",
       },
@@ -460,7 +460,7 @@ const UNIT_STRIP_STORYBOARD = [
     panels: [
       {
         lessonId: 21,
-        sceneCloud: "札幌 · すき焼きを食べたことがあります",
+        sceneCloud: "た形与经历 · 歌舞伎",
         dialogueId: "l21-biaori",
         headline: "わたしはすき焼きを食べたことがあります",
         visualBeat:
@@ -472,17 +472,17 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "烤炉·筷子·饭碗",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、日本の伝統的なものを見たことがありますか。", zh: "小李，看过日本传统的东西吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "いいえ、まだあまりありません。でも、いつか歌舞伎を見たいです。", zh: "还没有，不多。但我想哪天去看看歌舞伎。" },
-          { role: "李", side: "right", isGurumi: true, jp: "いいえ、まだあまりありません。でも、いつか歌舞伎を見たいです。", zh: "还没有，不多。但我想哪天去看看歌舞伎。" },
-          { role: "森", side: "left", jp: "私は見たことがあります。先月、友達と一緒に歌舞伎座へ行きました。", zh: "看过。上个月和朋友一起去了歌舞伎座。" }
+          { role: "小野", side: "left", jp: "私も若いときに見たことがありますが、あまり覚えていません。", zh: "我年轻时也看过，但不太记得了。" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいですね。温泉はどうでしたか。", zh: "不错啊。温泉怎么样？" },
+          { role: "小野", side: "left", jp: "ありがとうございます。お願いします。", zh: "谢谢。拜托了。" }
         ],
         note: "条带零字；海报无字",
       },
       {
         lessonId: 22,
-        sceneCloud: "小樽民宿 · 森さんは今晩テレビを見る",
+        sceneCloud: "简体 · 友達",
         dialogueId: "l22-biaori",
-        headline: "森さんは今晩テレビを見る",
+        headline: "森さんは毎晩テレビを見る",
         visualBeat:
           "石造仓库民宿沙发；グルミ托腮看电视笑；零食行程表；窗外运河瓦斯灯夜景",
         layers: {
@@ -492,14 +492,14 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "テレビ·じゃがポックル",
         },
         bubbles: [          { role: "森", side: "left", jp: "李さん、今週の土曜日、何か予定ある？", zh: "小李，这周六有安排吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "ううん、特にないよ。どうしたの？", zh: "嗯，没什么。怎么了？" },
-          { role: "李", side: "right", isGurumi: true, jp: "ううん、特にないよ。どうしたの？", zh: "嗯，没什么。怎么了？" },
-          { role: "森", side: "left", jp: "うちで送別会をするんだけど、来ない？", zh: "家里要开欢送会，来吗？" }
+          { role: "森", side: "left", jp: "いや、大丈夫。飲み物と食べ物はこっちで用意するから。", zh: "没事，不用。吃的喝的这边准备。" },
+          { role: "李", side: "right", isGurumi: true, jp: "じゃあ、土曜日に会おう。", zh: "那星期六见。" },
+          { role: "全員", side: "left", jp: "乾杯！", zh: "干杯！" }
         ],
       },
       {
         lessonId: 23,
-        sceneCloud: "白い恋人パーク · 散歩したり買い物したり",
+        sceneCloud: "たり表现 · 送別会",
         dialogueId: "l23-biaori",
         headline: "休みの日、散歩したり買い物に行ったりします",
         visualBeat:
@@ -511,14 +511,14 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "相机·购物袋·地图",
         },
         bubbles: [          { role: "小野", side: "left", jp: "今週の金曜日、李さんの送別会をします。みんな、何をしますか。", zh: "这周五要办小李的欢送会。大家准备做什么？" },
-          { role: "森", side: "left", jp: "食事をしたり、話をしたり、写真を撮ったりしましょう。", zh: "一起吃饭、聊天、拍照吧。" },
-          { role: "森", side: "left", jp: "食事をしたり、話をしたり、写真を撮ったりしましょう。", zh: "一起吃饭、聊天、拍照吧。" },
-          { role: "田中", side: "left", jp: "いいですね。カラオケも行ったりしますか。", zh: "不错啊。也会去唱卡拉OK吗？" }
+          { role: "森", side: "left", jp: "遅れる場合は、連絡するように言っておきます。", zh: "如果迟到，我会让他们联系一声。" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいですね。日本では週末の過ごし方は人によって違いますね。", zh: "不错啊。在日本周末怎么过，因人而异。" },
+          { role: "小野", side: "left", jp: "いいアイデアですね。それでは、早速準備を始めましょう。", zh: "好主意。那我们马上开始准备吧。" }
         ],
       },
       {
         lessonId: 24,
-        sceneCloud: "新千歳空港 · もうすぐ来ると思います",
+        sceneCloud: "引用与思考 · 見送り",
         dialogueId: "l24-biaori",
         headline: "李さんはもうすぐ来ると思います",
         visualBeat:
@@ -530,9 +530,9 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "各地土产挂件·护照",
         },
         bubbles: [          { role: "小野", side: "left", jp: "李さん、もうすぐ出発の時間ですね。", zh: "小李，快出发了吧。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい。本当にありがとうございました。", zh: "嗯。非常感谢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい。本当にありがとうございました。", zh: "嗯。非常感谢。" },
-          { role: "森", side: "left", jp: "こちらこそ。李さんのおかげで、楽しい時間を過ごせました。", zh: "我才要谢谢你。托小李的福，过得很开心。" }
+          { role: "李", side: "right", isGurumi: true, jp: "そうですか。田中さんにもよろしくと伝えてください。", zh: "是吗。也请代我向田中问好。" },
+          { role: "小野", side: "left", jp: "そろそろ時間ですね。", zh: "差不多到时间了吧。" },
+          { role: "李", side: "right", isGurumi: true, jp: "ありがとう！日本での思い出は一生忘れません。", zh: "谢谢！在日本的回忆我一辈子都不会忘。" }
         ],
         note: "条带零字；与单元1旅行帽呼应",
       },

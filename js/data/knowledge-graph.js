@@ -190,6 +190,73 @@ const KNOWLEDGE_GRAPH = {
         { lessonId: 1, anchorId: "l1_g1", gate: 1, label: "第1课・です（对照）", role: "preview" },
       ],
     },
+    "counter-suffix": {
+      label: "数量词・助数词",
+      refs: [
+        { lessonId: 13, anchorId: "l13_g1", gate: 1, label: "第13课・数量词", role: "intro" },
+        { lessonId: 13, anchorId: "l13_dlg_0", gate: 2, label: "第13课・会話①", role: "review" },
+        { lessonId: 4, anchorId: "l4_g1", gate: 1, label: "第4课・数量（预告）", role: "preview" },
+      ],
+    },
+    "te-form-chain": {
+      label: "て形・连续动作",
+      refs: [
+        { lessonId: 14, anchorId: "l14_g1", gate: 1, label: "第14课・て形", role: "intro" },
+        { lessonId: 15, anchorId: "l15_g1", gate: 1, label: "第15课・ている", role: "extend" },
+        { lessonId: 16, anchorId: "l16_g1", gate: 1, label: "第16课・形容词て形", role: "extend" },
+      ],
+    },
+    "adj-te": {
+      label: "形容词て形",
+      refs: [
+        { lessonId: 16, anchorId: "l16_g1", gate: 1, label: "第16课・広くて", role: "intro" },
+        { lessonId: 16, anchorId: "l16_dlg_0", gate: 2, label: "第16课・会話①", role: "review" },
+        { lessonId: 14, anchorId: "l14_g1", gate: 1, label: "第14课・て形（对照）", role: "preview" },
+      ],
+    },
+    "hoshii": {
+      label: "〜がほしい",
+      refs: [
+        { lessonId: 17, anchorId: "l17_g1", gate: 1, label: "第17课・愿望", role: "intro" },
+        { lessonId: 17, anchorId: "l17_dlg_0", gate: 2, label: "第17课・会話①", role: "review" },
+      ],
+    },
+    "naru-change": {
+      label: "〜なる（变化）",
+      refs: [
+        { lessonId: 18, anchorId: "l18_g1", gate: 1, label: "第18课・变化", role: "intro" },
+        { lessonId: 18, anchorId: "l18_dlg_0", gate: 2, label: "第18课・会話①", role: "review" },
+      ],
+    },
+    "naide": {
+      label: "〜ないで（禁止）",
+      refs: [
+        { lessonId: 19, anchorId: "l19_g1", gate: 1, label: "第19课・ないで", role: "intro" },
+        { lessonId: 19, anchorId: "l19_dlg_0", gate: 2, label: "第19课・会話①", role: "review" },
+      ],
+    },
+    "ta-koto": {
+      label: "〜たことがある",
+      refs: [
+        { lessonId: 21, anchorId: "l21_g1", gate: 1, label: "第21课・经历", role: "intro" },
+        { lessonId: 21, anchorId: "l21_dlg_0", gate: 2, label: "第21课・会話①", role: "review" },
+      ],
+    },
+    "to-omo": {
+      label: "〜と思う",
+      refs: [
+        { lessonId: 22, anchorId: "l22_g1", gate: 1, label: "第22课・思う", role: "intro" },
+        { lessonId: 22, anchorId: "l22_dlg_0", gate: 2, label: "第22课・会話①", role: "review" },
+        { lessonId: 24, anchorId: "l24_dlg_0", gate: 2, label: "第24课・引用", role: "extend" },
+      ],
+    },
+    "tari": {
+      label: "〜たり〜たり",
+      refs: [
+        { lessonId: 23, anchorId: "l23_g1", gate: 1, label: "第23课・たり", role: "intro" },
+        { lessonId: 23, anchorId: "l23_dlg_0", gate: 2, label: "第23课・会話①", role: "review" },
+      ],
+    },
   },
   anchors: {
     l1_g1: ["particle-wa", "desu-plain"],
@@ -232,13 +299,29 @@ const KNOWLEDGE_GRAPH = {
     l11_dlg_0: ["ga-suki"],
     l12_g1: ["yori-ichiban"],
     l12_dlg_0: ["yori-ichiban"],
-    l14_g1: ["te-form"],
-    l14_dlg_0: ["te-form"],
-    l15_g1: ["te-iru"],
-    l15_dlg_0: ["te-iru"],
+    l14_g1: ["te-form", "te-form-chain"],
+    l14_dlg_0: ["te-form", "te-form-chain"],
+    l15_g1: ["te-iru", "te-form-chain"],
+    l15_dlg_0: ["te-iru", "te-form-chain"],
     l20_g1: ["kotoga-dekiru"],
     l20_dlg_0: ["kotoga-dekiru"],
     l24_g1: ["plain-form"],
-    l24_dlg_0: ["plain-form"],
+    l24_dlg_0: ["plain-form", "to-omo"],
+    l13_g1: ["counter-suffix"],
+    l13_dlg_0: ["counter-suffix"],
+    l16_g1: ["adj-te", "te-form-chain"],
+    l16_dlg_0: ["adj-te"],
+    l17_g1: ["hoshii"],
+    l17_dlg_0: ["hoshii"],
+    l18_g1: ["naru-change"],
+    l18_dlg_0: ["naru-change"],
+    l19_g1: ["naide"],
+    l19_dlg_0: ["naide"],
+    l21_g1: ["ta-koto"],
+    l21_dlg_0: ["ta-koto"],
+    l22_g1: ["to-omo"],
+    l22_dlg_0: ["to-omo"],
+    l23_g1: ["tari"],
+    l23_dlg_0: ["tari"],
   },
 };

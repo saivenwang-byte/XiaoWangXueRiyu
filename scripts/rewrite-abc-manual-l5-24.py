@@ -114,7 +114,18 @@ def variant_b(jp: str) -> str:
     s = re.sub(r"どうも\s+", "", s)
     s = re.sub(r"本当に\s+", "", s)
     s = re.sub(r"とても\s+", "", s)
-    if "。" in s and s.count("。") >= 2:
+    # 读信/引用：読みましょう。『…』 — 勿按句号拆破引号
+    qm = re.match(r"^(.+?『)(.+)(』)$", s)
+    if qm:
+        prefix, inner, suffix = qm.group(1), qm.group(2), qm.group(3)
+        if "。" in inner:
+            inner_parts = [p.strip() for p in inner.split("。") if p.strip()]
+            if len(inner_parts) >= 2:
+                shorter = inner_parts[0] + "。"
+                cand = norm_jp(prefix + shorter + suffix)
+                if cand and cand != a:
+                    return cand
+    if "。" in s and s.count("。") >= 2 and "『" not in s:
         parts = [p.strip() for p in s.split("。") if p.strip()]
         if len(parts) >= 2:
             s = parts[-1] + "。"
@@ -202,9 +213,12 @@ def abc_guide(dlg: dict, lid: int) -> str:
     speaker = (dlg.get("userTurn") or {}).get("speaker") or "B"
     title = (dlg.get("title") or "会話").split("（")[0].strip()
     theme = LESSON_SCENE_HINT.get(lid, "会話")
+    replies = (dlg.get("userTurn") or {}).get("replies") or []
+    ajp = (replies[0].get("japanese") if replies else "") or ""
+    hint = ajp[:18] + "…" if len(ajp) > 18 else ajp
     return (
-        f"「{title}」· {theme} · 本句由{speaker}回答。"
-        f"A=课文；B=缩短/口语变体；C=更礼貌说法（三种均可沟通）。"
+        f"「{title}」· {theme} · {speaker}应答。"
+        f"A＝课文「{hint}」；B＝同场景口语/缩短；C＝更礼貌或郑重。"
     )
 
 

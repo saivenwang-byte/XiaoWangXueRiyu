@@ -11378,6 +11378,16 @@ button.story-reward-panel.is-unlocked:focus-visible {
   border: 1px dashed #cfd8dc;
 }
 
+.story-comic-zoom-dialogue .manga-panel-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-comic-zoom-dialogue .manga-bubble {
+  max-width: 100%;
+}
+
 .story-comic-zoom-unit-arc {
   margin: 10px 0 0;
   font-size: 12px;

@@ -312,7 +312,9 @@ const StoryReward = (function () {
     const prose = isAlbumStripUnit(unitId) ? "" : arcUnit?.unitArcZh || "";
     const bubbleHtml =
       typeof StoryComicUi !== "undefined" && panel
-        ? `<div class="story-comic-zoom-dialogue">${StoryComicUi.renderPanelInterior(panel)}</div>`
+        ? `<div class="story-comic-zoom-dialogue">${StoryComicUi.renderPanelInterior(panel, {
+            maxBubbles: StoryComicUi.MAX_BUBBLES_ZOOM || 4,
+          })}</div>`
         : "";
     el.innerHTML = `
       <div class="story-comic-zoom-sheet story-comic-zoom-sheet--panel">
