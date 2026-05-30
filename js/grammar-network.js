@@ -524,6 +524,12 @@ const GrammarNetwork = (() => {
       if (lesson.lessonId === 1 && typeof L1KnowledgeTips !== "undefined") {
         tip = L1KnowledgeTips.grammar(node);
       } else if (
+        lesson.lessonId >= 2 &&
+        lesson.lessonId <= 4 &&
+        typeof Unit1KnowledgeTips !== "undefined"
+      ) {
+        tip = Unit1KnowledgeTips.grammar(node);
+      } else if (
         typeof Lesson1Flow !== "undefined" &&
         Lesson1Flow.isUnits3to6Mvp(lesson.lessonId) &&
         typeof Lessons924KnowledgeTips !== "undefined"

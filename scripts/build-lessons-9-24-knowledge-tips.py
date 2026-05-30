@@ -330,7 +330,7 @@ def emit_vocab_entry(vid: str, lines: list[str], ref: str) -> str:
     parts.append("    ],")
     parts.append(f"    links: [conv, {link_gram}],")
     body = "\n".join(parts)
-    return f"  {js_str(vid)}: {{\n{body}\n  }},"
+    return f"  {js_str(vid)}: {{\n{body}\n  },"
 
 
 def emit_hw_lesson(lid: int, hw: dict) -> str:

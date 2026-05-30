@@ -6895,7 +6895,7 @@ body.mvp-app.is-splash-open #main-content {
   --splash-brand-inset-top: max(10px, env(safe-area-inset-top, 0px));
   --splash-cta-inset-bottom: max(12px, env(safe-area-inset-bottom, 0px));
   --splash-cover-anchor-x: 50%;
-  --splash-cover-anchor-y: 52%;
+  --splash-cover-anchor-y: calc(52% + 10px);
   --splash-cover-fit: cover;
   position: relative;
   box-sizing: border-box;
@@ -6951,8 +6951,9 @@ body.mvp-app.is-splash-open #main-content {
 }
 
 .splash-screen--complete .splash-brand {
-  max-height: min(16dvh, 136px);
+  max-height: min(18dvh, 152px);
   padding: 0;
+  overflow: visible;
 }
 
 .splash-screen--complete .splash-map-stage {

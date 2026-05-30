@@ -54,7 +54,10 @@ tts-cache MP3  1025 个文件
 - `lessons-mvp-depth.js` 课外 **denseList / pair / list** 的 `jp` `kana` `bad` `good`
 - `lesson-vocab-biaori.js` 单词 `kana` / `jp` / `example`
 - 测验 `questionTts`（填空朗读句）
-- 会話 `japanese` 等
+- 会話课文 `lessons-data.js` 的 `japanese`
+- **会話 ABC 三答**：`l1-dialogue-abc.js` · `unit1-dialogue-abc-l234.js` · `unit2-dialogue-abc-l5-8.js` · `lessons-9-24-dialogue-abc.js`（B/C 变体句必扫）
+- **知识卡会話行**：`unit1/2-knowledge-tips.js` · `lessons-9-24-knowledge-tips.js` 内 `lines[].ja`
+- **单元条带气泡**：`unit-strip-storyboard.js` 内 `bubbles[].jp`
 
 与页面 `grammar-network.js` 的 `denseSpeakLine`（`→` 取后半）对齐。
 

@@ -24,6 +24,17 @@ MVP_SCAN_FILES = [
     ROOT / "js" / "data" / "intro-kana-tips.js",
     ROOT / "js" / "data" / "intro-content.js",
     ROOT / "js" / "data" / "l1-knowledge-tips.js",
+    # 会話 ABC（A/B/C 三答 · 喇叭朗读）
+    ROOT / "js" / "data" / "l1-dialogue-abc.js",
+    ROOT / "js" / "data" / "unit1-dialogue-abc-l234.js",
+    ROOT / "js" / "data" / "unit2-dialogue-abc-l5-8.js",
+    ROOT / "js" / "data" / "lessons-9-24-dialogue-abc.js",
+    # 知识卡会話行（lines[].ja）
+    ROOT / "js" / "data" / "unit1-knowledge-tips.js",
+    ROOT / "js" / "data" / "unit2-knowledge-tips.js",
+    ROOT / "js" / "data" / "lessons-9-24-knowledge-tips.js",
+    # 单元条带气泡（与课文对齐 · 部分 B/C 变体）
+    ROOT / "js" / "data" / "unit-strip-storyboard.js",
 ]
 
 # 选修 / 旧包（不纳入发布前必检，可 --full 扫描）
@@ -38,7 +49,7 @@ SCAN_FILES = MVP_SCAN_FILES
 # 与 build-tts-cache.py 一致，并扩展 questionTts / meaningJa / line / bad / good
 _JP_FIELD = (
     r"lessonTitle|title|example|explain|explanation|japanese|question|questionTts|"
-    r"pattern|timeline|mistake|jp|kana|meaningJa|line|bad|good|text|answer"
+    r"pattern|timeline|mistake|jp|ja|kana|meaningJa|line|bad|good|text|answer"
 )
 STRING_KEYS = re.compile(
     rf'(?:"(?:{_JP_FIELD})"|(?:{_JP_FIELD}))\s*:\s*"((?:\\.|[^"\\])*)"',

@@ -101,7 +101,7 @@ def emit_vocab_entry(vid: str, lines: list[str], ref: str) -> str:
         parts.append(f"      {{ zh: {js_str(ln)} }},")
     parts.append("    ],")
     parts.append(f"    links: [conv, {link_gram}],")
-    return f"  {js_str(vid)}: {{\n" + "\n".join(parts) + "\n  }},"
+    return f"  {js_str(vid)}: {{\n" + "\n".join(parts) + "\n  },"
 
 
 def emit_map(lid: int, m: dict) -> str:

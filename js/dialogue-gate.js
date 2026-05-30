@@ -443,11 +443,43 @@ const DialogueGate = (() => {
     </div>`;
   }
 
-  function renderL1SceneKcard(sceneIdx) {
-    if (typeof L1KnowledgeTips === "undefined" || typeof L1KnowledgeCard === "undefined") return "";
-    const tip = L1KnowledgeTips.dialogue(sceneIdx);
-    const html = L1KnowledgeCard.html(tip, `l1_dlg_${sceneIdx}`, lesson?.lessonId || 1);
+  function renderSceneKcard(sceneIdx) {
+    if (typeof L1KnowledgeCard === "undefined") return "";
+    const lid = Number(lesson?.lessonId) || 1;
+    let tip = null;
+    let anchorId = `l${lid}_dlg_${sceneIdx}`;
+    if (lid === 1 && typeof L1KnowledgeTips !== "undefined") {
+      tip = L1KnowledgeTips.dialogue(sceneIdx);
+      anchorId = `l1_dlg_${sceneIdx}`;
+    } else if (
+      lid >= 2 &&
+      lid <= 4 &&
+      typeof Unit1KnowledgeTips !== "undefined" &&
+      typeof Unit1KnowledgeTips.dialogue === "function"
+    ) {
+      tip = Unit1KnowledgeTips.dialogue(sceneIdx, lid);
+    } else if (
+      lid >= 5 &&
+      lid <= 8 &&
+      typeof Unit2KnowledgeTips !== "undefined" &&
+      typeof Unit2KnowledgeTips.dialogue === "function"
+    ) {
+      tip = Unit2KnowledgeTips.dialogue(sceneIdx, lid);
+    } else if (
+      lid >= 9 &&
+      lid <= 24 &&
+      typeof Lessons924KnowledgeTips !== "undefined" &&
+      typeof Lessons924KnowledgeTips.dialogue === "function"
+    ) {
+      tip = Lessons924KnowledgeTips.dialogue(sceneIdx, lid);
+    }
+    if (!tip) return "";
+    const html = L1KnowledgeCard.html(tip, anchorId, lid);
     return html ? `<div class="l1-tip-slot l1-tip-slot--scene">${html}</div>` : "";
+  }
+
+  function renderL1SceneKcard(sceneIdx) {
+    return renderSceneKcard(sceneIdx);
   }
 
   function renderBranchSceneBody(d, idx) {
@@ -509,12 +541,14 @@ const DialogueGate = (() => {
       }
       html += `<p class="dg-your-turn dg-your-turn-compact">${escapeHtml(speakerB)} · 選ぶ回答 <span class="dg-abc-hint">A＝课文 · B/C＝场景变体（均可沟通）</span></p>`;
       if (replies.length) html += renderReplyList(replies, idx);
+      html += renderSceneKcard(idx);
       html += renderFooter(null, idx);
       return html;
     }
     if (isMvpFiveGatePanel()) {
       let html = renderL1OpenerBlock(d, idx);
       if (replies.length) html += renderReplyList(replies, idx);
+      html += renderSceneKcard(idx);
       html += renderFooter(null, idx);
       return html;
     }

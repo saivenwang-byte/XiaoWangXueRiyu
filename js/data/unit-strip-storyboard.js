@@ -26,11 +26,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ旅行帽+背包·ワクワク·站员仅背影/剪影",
           L4: "红色护照·橙色四轮箱",
         },
-        bubbles: [
-          { role: "田中", side: "left", jp: "はじめまして。わたしは田中です。", zh: "初次见面，我是田中。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はじめまして。わたしは李です。中国人です。", zh: "初次见面，我是小李，中国人。" },
-          { role: "田中", side: "left", jp: "李さんは学生ですか。", zh: "你是学生吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "いいえ、学生じゃありません。会社員です。", zh: "不，是公司职员。" },
+        bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "JC企画の 小野さんですか。" },
+          { role: "小野", side: "left", jp: "はい、小野です。李秀麗さんですか。" },
+          { role: "小野", side: "left", jp: "はい、小野です。李秀麗さんですか。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、李秀麗です。はじめまして。どうぞ よろしく お願いします。" }
         ],
         note: "条带零字；泡里「田中」=风影接机人，不必写实脸",
       },
@@ -47,11 +46,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ踮脚指风铃·站员侧后弯腰无正脸",
           L4: "玻璃风铃",
         },
-        bubbles: [
-          { role: "站員", side: "left", jp: "これは何ですか。", zh: "这是什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "これは本です。", zh: "这是书。" },
-          { role: "站員", side: "left", jp: "それは何ですか。", zh: "那是什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "それはノートです。", zh: "那是笔记本。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、それは 何ですか。", zh: "李小姐，那是什么？" },
+          { role: "李", side: "right", isGurumi: true, jp: "これは 私の 家族の 写真です。", zh: "这是我家人的照片。" },
+          { role: "李", side: "right", isGurumi: true, jp: "これは 私の 家族の 写真です。", zh: "这是我家人的照片。" },
+          { role: "小野", side: "left", jp: "この 方は どなたですか。", zh: "这位是谁？" }
         ],
         note: "课文「本」=风铃/和杂货（指示词场景），非教室",
       },
@@ -69,11 +67,10 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "折叠观光地图",
         },
         captionSmall: "ここはデパートです。（点格说明·指远景百货剪影时可叠）",
-        bubbles: [
-          { role: "同行", side: "left", jp: "すみません、図書館はどこですか。", zh: "图书馆在哪儿？" },
-          { role: "李", side: "right", isGurumi: true, jp: "図書館はあそこです。", zh: "在那儿。" },
-          { role: "同行", side: "left", jp: "食堂はどこですか。", zh: "食堂呢？" },
-          { role: "李", side: "right", isGurumi: true, jp: "食堂はここです。", zh: "在这里。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、ここは あなたの ホテルですか。", zh: "李小姐，这是您的酒店吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、そうです。", zh: "是的。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、そうです。", zh: "是的。" },
+          { role: "小野", side: "left", jp: "あそこが 公園です。とても きれいですよ。", zh: "那边是公园。很漂亮哦。" }
         ],
         note: "会話=场所询问；条带禁止可读招牌",
       },
@@ -91,11 +88,10 @@ const UNIT_STRIP_STORYBOARD = [
           L4: "房卡",
         },
         captionSmall: "表情：ここが今日の部屋（心情，不进条带）",
-        bubbles: [
-          { role: "朋友", side: "left", jp: "部屋に何がありますか。", zh: "房间里有什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "机と椅子があります。", zh: "有桌子和椅子。" },
-          { role: "朋友", side: "left", jp: "テレビはありますか。", zh: "有电视吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、あります。パソコンもあります。", zh: "有，还有电脑。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、部屋は どうですか。", zh: "李小姐，房间怎么样？" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても きれいです。", zh: "非常漂亮。" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても きれいです。", zh: "非常漂亮。" },
+          { role: "小野", side: "left", jp: "何が ありますか。", zh: "有什么？" }
         ],
         note: "朋友=风影门外/手机光；条带无泡无字",
       },
@@ -121,11 +117,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ被窝伸手关闹钟·困倦",
           L4: "电子钟·Room Service托盘",
         },
-        bubbles: [
-          { role: "同事", side: "left", jp: "森さんは何時に起きますか。", zh: "森几点起床？" },
-          { role: "李", side: "right", isGurumi: true, jp: "森さんは七時に起きます。", zh: "森七点起床。" },
-          { role: "同事", side: "left", jp: "李さんは何時ですか。", zh: "你几点？" },
-          { role: "李", side: "right", isGurumi: true, jp: "わたしも七時です。", zh: "我也是七点。" },
+        bubbles: [          { role: "小野", side: "left", jp: "森さん、毎朝何時に起きますか。", zh: "森先生，每天早上几点起床？" },
+          { role: "森", side: "left", jp: "６時半に起きます。", zh: "6点半起床。" },
+          { role: "森", side: "left", jp: "６時半に起きます。", zh: "6点半起床。" },
+          { role: "小野", side: "left", jp: "じゃあ、朝ごはんは？", zh: "那么，早饭呢？" }
         ],
         note: "条带零字；钟面仅数字无日文招牌",
       },
@@ -142,11 +137,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ围巾震撼O型嘴",
           L4: "新干线车票·行李箱",
         },
-        bubbles: [
-          { role: "同事", side: "left", jp: "吉田さんはいつ中国へ行きますか。", zh: "吉田什么时候去中国？" },
-          { role: "李", side: "right", isGurumi: true, jp: "吉田さんは来月中国へ行きます。", zh: "吉田下个月去中国。" },
-          { role: "同事", side: "left", jp: "新幹線で行きますか。", zh: "坐新干线去吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、そうです。", zh: "是的。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、来月の休みにどこかへ行きますか。", zh: "小李，下个月休假要去哪儿吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、京都へ行く予定です。", zh: "嗯，打算去京都。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、京都へ行く予定です。", zh: "嗯，打算去京都。" },
+          { role: "小野", side: "left", jp: "いいですね。何で行きますか。", zh: "好啊。坐什么去？" }
         ],
       },
       {
@@ -162,11 +156,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ小领巾满足眯眼·奶泡胡子",
           L4: "虹吸壶·咖啡杯热气",
         },
-        bubbles: [
-          { role: "店员", side: "left", jp: "いらっしゃいませ。", zh: "欢迎。" },
-          { role: "李", side: "right", isGurumi: true, jp: "コーヒーをください。", zh: "请给我咖啡。" },
-          { role: "店员", side: "left", jp: "毎日飲みますか。", zh: "每天都喝吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、毎日コーヒーを飲みます。", zh: "嗯，每天都喝咖啡。" },
+        bubbles: [          { role: "店員", side: "left", jp: "いらっしゃいませ。ご注文はお決まりですか。", zh: "欢迎光临。您点好了吗？" },
+          { role: "小野", side: "left", jp: "すみません、ちょっとまだ… 李さん、何にしますか。", zh: "不好意思，还没……小李，你点什么？" },
+          { role: "小野", side: "left", jp: "すみません、ちょっとまだ… 李さん、何にしますか。", zh: "不好意思，还没……小李，你点什么？" },
+          { role: "李", side: "right", isGurumi: true, jp: "私はコーヒーにします。小野さんは？", zh: "我点咖啡。小野呢？" }
         ],
         note: "菜单无字；店员=吧台后剪影",
       },
@@ -183,11 +176,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ商务领巾写字",
           L4: "钢笔·信纸·信封抽象线",
         },
-        bubbles: [
-          { role: "同事", side: "left", jp: "何をしていますか。", zh: "在做什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "友達に手紙を書いています。", zh: "给朋友写信。" },
-          { role: "同事", side: "left", jp: "日本語で書きますか。", zh: "用日语写吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、日本語で手紙を書きます。", zh: "是的，用日语写信。" },
+        bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "小野さん、これ、プレゼントです。中国のお菓子です。", zh: "小野，这是礼物。中国的点心。" },
+          { role: "小野", side: "left", jp: "まあ、ありがとうございます。開けてもいいですか。", zh: "哎呀，谢谢。可以打开吗？" },
+          { role: "小野", side: "left", jp: "まあ、ありがとうございます。開けてもいいですか。", zh: "哎呀，谢谢。可以打开吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、どうぞ。", zh: "嗯，请。" }
         ],
         note: "条带无字；信纸假名仅泡区后置可选",
       },
@@ -213,11 +205,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ辛い表情·浴衣",
           L4: "湯豆腐锅·辣味噌红油",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "この料理は辛いですか。", zh: "这菜辣吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、とても辛いです。", zh: "嗯，很辣。" },
-          { role: "同伴", side: "left", jp: "おいしいですか。", zh: "好吃吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、おいしいです。", zh: "好吃。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、この四川料理はどうですか。", zh: "小李，这道四川菜怎么样？" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても辛いですが、美味しいです。", zh: "非常辣，但很好吃。" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても辛いですが、美味しいです。", zh: "非常辣，但很好吃。" },
+          { role: "小野", side: "left", jp: "そうですか。私はちょっと辛すぎます。", zh: "是吗。我觉得有点太辣了。" }
         ],
         note: "条带零字；headline「四川」靠辛い味觉与泡",
       },
@@ -234,11 +225,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ浴衣羽织·签文",
           L4: "絵馬·红叶地面",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "京都の紅葉は有名ですね。", zh: "京都红叶很有名呢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、とても有名です。", zh: "嗯，很有名。" },
-          { role: "同伴", side: "left", jp: "きれいですね。", zh: "好漂亮。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、とてもきれいです。", zh: "非常漂亮。" },
+        bubbles: [          { role: "森", side: "left", jp: "李さん、京都はどうでしたか。", zh: "小李，京都怎么样？" },
+          { role: "李", side: "right", isGurumi: true, jp: "とてもよかったです。紅葉が本当にきれいでした。", zh: "非常好。红叶真的很漂亮。" },
+          { role: "李", side: "right", isGurumi: true, jp: "とてもよかったです。紅葉が本当にきれいでした。", zh: "非常好。红叶真的很漂亮。" },
+          { role: "森", side: "left", jp: "そうですか。どこへ行きましたか。", zh: "是吗。你去哪儿了？" }
         ],
         note: "签文大吉无字；headline红叶=秋景有名きれい",
       },
@@ -255,11 +245,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ陶醉唱歌·旅馆浴衣",
           L4: "麦克风·茶点矮桌",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "小野さんは歌が好きです。", zh: "小野喜欢唱歌。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、歌が上手です。", zh: "嗯，唱得好。" },
-          { role: "同伴", side: "left", jp: "李さんも歌が好きですか。", zh: "你也喜欢唱吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "いいえ、聞くのが好きです。", zh: "不，我喜欢听。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、趣味は何ですか。", zh: "小李，爱好是什么？" },
+          { role: "李", side: "right", isGurumi: true, jp: "音楽を聞くことです。特に日本のポップスが好きです。", zh: "听音乐，尤其喜欢日本流行音乐。" },
+          { role: "李", side: "right", isGurumi: true, jp: "音楽を聞くことです。特に日本のポップスが好きです。", zh: "听音乐，尤其喜欢日本流行音乐。" },
+          { role: "小野", side: "left", jp: "そうですか。私は歌を歌うことが好きです。でも、あまり上手じゃありません。", zh: "是吗。我喜欢唱歌，但不太擅长。" }
         ],
         note: "屏幕歌词无字；仅グルミ正脸",
       },
@@ -276,11 +265,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ旅行帽纠结脸",
           L4: "两盒土产·购物篮",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "李さんと森さんとどちらが若いですか。", zh: "你和森谁更年轻？" },
-          { role: "李", side: "right", isGurumi: true, jp: "李さんは森さんより若いです。", zh: "我比森更年轻。" },
-          { role: "同伴", side: "left", jp: "どちらを買いますか。", zh: "买哪个？" },
-          { role: "李", side: "right", isGurumi: true, jp: "どちらがいいか、わかりません。", zh: "不知道哪个好。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、これとこれとどっちがいいですか。", zh: "小李，这个和这个哪个好？" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…値段はどちらも同じぐらいですか。", zh: "嗯……价格两边差不多吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…値段はどちらも同じぐらいですか。", zh: "嗯……价格两边差不多吗？" },
+          { role: "小野", side: "left", jp: "いいえ、左の方がちょっと安いです。右は少し高いです。", zh: "不，左边稍便宜，右边稍贵。" }
         ],
         note: "条带零字；より若い在泡、画面为どっち土产（彩蛋txt）",
       },
@@ -306,11 +294,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ商务领巾踮脚",
           L4: "本·购物篮三冊",
         },
-        bubbles: [
-          { role: "同事", side: "left", jp: "机の上に何がありますか。", zh: "桌上有什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "机の上に本が三冊あります。", zh: "桌上有三本书。" },
-          { role: "同事", side: "left", jp: "もう一冊買いますか。", zh: "再买一本吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、もう一冊ほしいです。", zh: "嗯，还想买一本。" },
+        bubbles: [          { role: "店員", side: "left", jp: "いらっしゃいませ。何をお探しですか。", zh: "欢迎光临。您在找什么？" },
+          { role: "李", side: "right", isGurumi: true, jp: "ノートを探しています。", zh: "我在找笔记本。" },
+          { role: "李", side: "right", isGurumi: true, jp: "ノートを探しています。", zh: "我在找笔记本。" },
+          { role: "店員", side: "left", jp: "こちらがノートです。いろいろな種類があります。", zh: "这边是笔记本。有很多种。" }
         ],
         note: "条带零字；书架标签抽象色块无字",
       },
@@ -327,11 +314,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ帽子围巾看收据",
           L4: "靴·鞄·购物袋",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "昨日デパートへ行きましたか。", zh: "昨天去百货了吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、行って、買い物をしました。", zh: "去了，购物了。" },
-          { role: "同伴", side: "left", jp: "何を買いましたか。", zh: "买了什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "靴と鞄と服を買いました。", zh: "买了鞋、包和衣服。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、今日はどこへ行きましたか。", zh: "小李，今天去哪儿了？" },
+          { role: "李", side: "right", isGurumi: true, jp: "デパートへ行って、買い物しました。", zh: "去了百货公司，买了东西。" },
+          { role: "李", side: "right", isGurumi: true, jp: "デパートへ行って、買い物しました。", zh: "去了百货公司，买了东西。" },
+          { role: "小野", side: "left", jp: "何を買いましたか。", zh: "买了什么？" }
         ],
         note: "收据/logo无字",
       },
@@ -348,11 +334,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ读报进行时",
           L4: "新聞·咖啡杯",
         },
-        bubbles: [
-          { role: "同事", side: "left", jp: "小野さんは何をしていますか。", zh: "小野在做什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "小野さんは今新聞を読んでいます。", zh: "小野正在看报纸。" },
-          { role: "同事", side: "left", jp: "李さんも読みますか。", zh: "你也看吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、今読んでいます。", zh: "嗯，正在看。" },
+        bubbles: [          { role: "李", side: "right", isGurumi: true, jp: "すみません、小野さん、今、ちょっとお聞きしたいんですが。", zh: "不好意思，小野，我现在想请教一下。" },
+          { role: "小野", side: "left", jp: "はい、何ですか。", zh: "嗯，什么事？" },
+          { role: "小野", side: "left", jp: "はい、何ですか。", zh: "嗯，什么事？" },
+          { role: "李", side: "right", isGurumi: true, jp: "このオフィスで写真を撮ってもいいですか。", zh: "在这个办公室拍照可以吗？" }
         ],
         note: "报纸标题无字；条带零字",
       },
@@ -369,11 +354,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ室内服惊喜",
           L4: "行李箱·花瓶百合",
         },
-        bubbles: [
-          { role: "前台", side: "left", jp: "ホテルの部屋はどうですか。", zh: "房间怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "部屋は広くて明るくて、きれいです。", zh: "又宽又亮，很漂亮。" },
-          { role: "前台", side: "left", jp: "風呂はありますか。", zh: "有浴室吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、あります。", zh: "有的。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、ホテルの部屋はどうですか。", zh: "小李，酒店房间怎么样？" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても広くて明るいです。窓から庭が見えます。", zh: "很宽敞明亮。从窗户能看到院子。" },
+          { role: "李", side: "right", isGurumi: true, jp: "とても広くて明るいです。窓から庭が見えます。", zh: "很宽敞明亮。从窗户能看到院子。" },
+          { role: "小野", side: "left", jp: "いいですね。私はこの静かで落ち着く雰囲気が好きです。", zh: "不错啊。我喜欢这种安静、让人静下来的气氛。" }
         ],
         note: "条带零字",
       },
@@ -399,11 +383,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミほしい表情",
           L4: "福袋·橱窗冬装",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "新しい洋服がほしいですか。", zh: "想要新衣服吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、とてもほしいです。", zh: "嗯，很想要。" },
-          { role: "同伴", side: "left", jp: "いいですね。", zh: "真好呢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "でも、ちょっと高いです。", zh: "不过有点贵。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、今、何かほしいものがありますか。", zh: "小李，现在有什么想要的吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…新しいパソコンがほしいです。今使っているのはちょっと古くて、動作が遅いんです。", zh: "嗯……想要新电脑。现在用的有点旧，运行很慢。" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…新しいパソコンがほしいです。今使っているのはちょっと古くて、動作が遅いんです。", zh: "嗯……想要新电脑。现在用的有点旧，运行很慢。" },
+          { role: "小野", side: "left", jp: "ああ、わかります。私も最近、スマホを新しくしようかなと思っています。", zh: "啊，我懂。我最近也在想要不要换新手机。" }
         ],
         note: "条带零字；海报灯笼无字",
       },
@@ -420,11 +403,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ惊讶大小对比",
           L4: "新旧携帯·みかん",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "新しい携帯はどうですか。", zh: "新手机怎么样？" },
-          { role: "李", side: "right", isGurumi: true, jp: "携帯電話はとても小さくなりました。", zh: "手机变小了很多。" },
-          { role: "同伴", side: "left", jp: "軽くなりましたか。", zh: "变轻了吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、前より軽くなりました。", zh: "比以前轻了。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、最近の携帯電話は本当に小さくなりましたね。", zh: "小李，最近的手机真的变小了。" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね。昔のは大きくて重かったですが、今のは軽くて持ちやすいです。", zh: "是啊。以前的又大又重，现在的轻便好拿。" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね。昔のは大きくて重かったですが、今のは軽くて持ちやすいです。", zh: "是啊。以前的又大又重，现在的轻便好拿。" },
+          { role: "森", side: "left", jp: "それに、機能も便利になりました。インターネットもできるし、写真もきれいです。", zh: "而且功能也更方便了。能上网，照片也清晰。" }
         ],
       },
       {
@@ -440,11 +422,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ慌张汗珠",
           L4: "スーツケース·空口袋",
         },
-        bubbles: [
-          { role: "站員", side: "left", jp: "かぎを忘れないでくださいね。", zh: "别忘了钥匙哦。" },
-          { role: "李", side: "right", isGurumi: true, jp: "あ、かぎを忘れました。", zh: "啊，忘了钥匙。" },
-          { role: "站員", side: "left", jp: "落とし物はありますか。", zh: "有遗失物吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "すみません、探します。", zh: "对不起，我找找。" },
+        bubbles: [          { role: "森", side: "left", jp: "李さん、明日から旅行ですね。気をつけて行ってきてください。", zh: "小李，明天开始旅行了吧。路上小心。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、ありがとうございます。", zh: "好的，谢谢。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい、ありがとうございます。", zh: "好的，谢谢。" },
+          { role: "小野", side: "left", jp: "ところで、ホテルの部屋のかぎは忘れないでくださいね。", zh: "对了，别忘了拿酒店房间钥匙。" }
         ],
         note: "站员=暖金色剪影无正脸；标识无字",
       },
@@ -461,11 +442,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミできる喜び",
           L4: "杵·餅·雪洞烛光",
         },
-        bubbles: [
-          { role: "おばあさん", side: "left", jp: "餅つき、できますか。", zh: "会打年糕吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、できます。やってみます。", zh: "会，我试试。" },
-          { role: "おばあさん", side: "left", jp: "上手ですね。", zh: "很熟练呢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "ありがとうございます。", zh: "谢谢。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、何か特技はありますか。", zh: "小李，有什么特长吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…中国の料理を作ることができます。特に餃子が得意です。", zh: "嗯……会做中国菜。尤其擅长包饺子。" },
+          { role: "李", side: "right", isGurumi: true, jp: "そうですね…中国の料理を作ることができます。特に餃子が得意です。", zh: "嗯……会做中国菜。尤其擅长包饺子。" },
+          { role: "森", side: "left", jp: "すごいですね。私は料理があまりできません。", zh: "真厉害。我不太会做饭。" }
         ],
         note: "headlineピアノ→餅つきできる（可能形）；条带零字",
       },
@@ -491,11 +471,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ食べたことがある回味",
           L4: "烤炉·筷子·饭碗",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "すき焼きを食べたことがありますか。", zh: "吃过涮羊肉吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、食べたことがあります。", zh: "吃过。" },
-          { role: "同伴", side: "left", jp: "おいしいですか。", zh: "好吃吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、とてもおいしいです。", zh: "非常好吃。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、日本の伝統的なものを見たことがありますか。", zh: "小李，看过日本传统的东西吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、まだあまりありません。でも、いつか歌舞伎を見たいです。", zh: "还没有，不多。但我想哪天去看看歌舞伎。" },
+          { role: "李", side: "right", isGurumi: true, jp: "いいえ、まだあまりありません。でも、いつか歌舞伎を見たいです。", zh: "还没有，不多。但我想哪天去看看歌舞伎。" },
+          { role: "森", side: "left", jp: "私は見たことがあります。先月、友達と一緒に歌舞伎座へ行きました。", zh: "看过。上个月和朋友一起去了歌舞伎座。" }
         ],
         note: "条带零字；海报无字",
       },
@@ -512,11 +491,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ放松大笑",
           L4: "テレビ·じゃがポックル",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "森さんは今晩何をしますか。", zh: "森今晚做什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "森さんは今晩テレビを見る。", zh: "森今晚看电视。" },
-          { role: "同伴", side: "left", jp: "李さんは。", zh: "你呢？" },
-          { role: "李", side: "right", isGurumi: true, jp: "わたしもテレビを見ます。", zh: "我也看电视。" },
+        bubbles: [          { role: "森", side: "left", jp: "李さん、今週の土曜日、何か予定ある？", zh: "小李，这周六有安排吗？" },
+          { role: "李", side: "right", isGurumi: true, jp: "ううん、特にないよ。どうしたの？", zh: "嗯，没什么。怎么了？" },
+          { role: "李", side: "right", isGurumi: true, jp: "ううん、特にないよ。どうしたの？", zh: "嗯，没什么。怎么了？" },
+          { role: "森", side: "left", jp: "うちで送別会をするんだけど、来ない？", zh: "家里要开欢送会，来吗？" }
         ],
       },
       {
@@ -532,11 +510,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ忙乱快乐舔冰淇淋",
           L4: "相机·购物袋·地图",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "休みの日、何をしますか。", zh: "休息日做什么？" },
-          { role: "李", side: "right", isGurumi: true, jp: "散歩したり、買い物に行ったりします。", zh: "散步，也去购物。" },
-          { role: "同伴", side: "left", jp: "忙しいですね。", zh: "很忙呢。" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、でも楽しいです。", zh: "嗯，但很开心。" },
+        bubbles: [          { role: "小野", side: "left", jp: "今週の金曜日、李さんの送別会をします。みんな、何をしますか。", zh: "这周五要办小李的欢送会。大家准备做什么？" },
+          { role: "森", side: "left", jp: "食事をしたり、話をしたり、写真を撮ったりしましょう。", zh: "一起吃饭、聊天、拍照吧。" },
+          { role: "森", side: "left", jp: "食事をしたり、話をしたり、写真を撮ったりしましょう。", zh: "一起吃饭、聊天、拍照吧。" },
+          { role: "田中", side: "left", jp: "いいですね。カラオケも行ったりしますか。", zh: "不错啊。也会去唱卡拉OK吗？" }
         ],
       },
       {
@@ -552,11 +529,10 @@ const UNIT_STRIP_STORYBOARD = [
           L3: "グルミ旅行帽背包首尾呼应",
           L4: "各地土产挂件·护照",
         },
-        bubbles: [
-          { role: "同伴", side: "left", jp: "もう帰りますか。", zh: "要回去了吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、もうすぐ帰ります。", zh: "嗯，快回去了。" },
-          { role: "同伴", side: "left", jp: "また来ますか。", zh: "还会来吗？" },
-          { role: "李", side: "right", isGurumi: true, jp: "はい、また来ると思います。", zh: "嗯，我想还会来的。" },
+        bubbles: [          { role: "小野", side: "left", jp: "李さん、もうすぐ出発の時間ですね。", zh: "小李，快出发了吧。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい。本当にありがとうございました。", zh: "嗯。非常感谢。" },
+          { role: "李", side: "right", isGurumi: true, jp: "はい。本当にありがとうございました。", zh: "嗯。非常感谢。" },
+          { role: "森", side: "left", jp: "こちらこそ。李さんのおかげで、楽しい時間を過ごせました。", zh: "我才要谢谢你。托小李的福，过得很开心。" }
         ],
         note: "条带零字；与单元1旅行帽呼应",
       },

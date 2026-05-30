@@ -37,8 +37,15 @@ const L1KnowledgeCard = (function () {
       btn.dataset.l1LinkBound = "1";
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
+        e.preventDefault();
         const gate = btn.dataset.l1Gate;
-        if (gate !== "" && opts?.switchGate) opts.switchGate(Number(gate));
+        const ref = btn.dataset.l1Ref || "";
+        const lid = opts?.lessonId != null ? Number(opts.lessonId) : null;
+        if (gate === "" || !opts?.switchGate) return;
+        opts.switchGate(Number(gate));
+        if (ref && typeof KnowledgeLink !== "undefined" && lid) {
+          KnowledgeLink.navigateTo(lid, Number(gate), ref);
+        }
       });
     });
   }

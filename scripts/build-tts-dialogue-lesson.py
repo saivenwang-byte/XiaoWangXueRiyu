@@ -27,7 +27,13 @@ from tts_lib import (  # noqa: E402
 
 OUT_DIRS = [ROOT / "tts-cache", ROOT / "发布包" / "tts-cache"]
 VOICE = "ja-JP-NanamiNeural"
-DIALOGUE_ABC = ROOT / "js" / "data" / "lessons-9-24-dialogue-abc.js"
+# 与 index.html 会話 ABC 一致（按课补缺时按 lessonId 过滤块）
+DIALOGUE_ABC_BY_LESSON = [
+    (1, 1, ROOT / "js" / "data" / "l1-dialogue-abc.js"),
+    (2, 4, ROOT / "js" / "data" / "unit1-dialogue-abc-l234.js"),
+    (5, 8, ROOT / "js" / "data" / "unit2-dialogue-abc-l5-8.js"),
+    (9, 24, ROOT / "js" / "data" / "lessons-9-24-dialogue-abc.js"),
+]
 
 
 def safe_print(msg: str) -> None:
@@ -62,22 +68,27 @@ def lesson_chunk(text: str, lesson_id: int) -> str:
 
 
 def collect_lesson_phrases(lesson_from: int, lesson_to: int) -> dict[str, str]:
-    text = DIALOGUE_ABC.read_text(encoding="utf-8")
     req: dict[str, str] = {}
-    for lid in range(lesson_from, lesson_to + 1):
-        chunk = lesson_chunk(text, lid)
-        if not chunk:
+    for lo, hi, path in DIALOGUE_ABC_BY_LESSON:
+        if lesson_to < lo or lesson_from > hi:
             continue
-        for m in STRING_KEYS.finditer(chunk):
-            raw = m.group(1).replace('\\"', '"').strip()
-            if SKIP_PREFIX.match(raw):
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for lid in range(max(lesson_from, lo), min(lesson_to, hi) + 1):
+            chunk = lesson_chunk(text, lid)
+            if not chunk:
                 continue
-            fname = field_name_before(chunk, m.start())
-            if fname in SKIP_FIELDS:
-                continue
-            for jp in fallback_lines_from_raw(raw):
-                if jp:
-                    req[tts_key(jp)] = jp
+            for m in STRING_KEYS.finditer(chunk):
+                raw = m.group(1).replace('\\"', '"').strip()
+                if SKIP_PREFIX.match(raw):
+                    continue
+                fname = field_name_before(chunk, m.start())
+                if fname in SKIP_FIELDS:
+                    continue
+                for jp in fallback_lines_from_raw(raw):
+                    if jp:
+                        req[tts_key(jp)] = jp
     return req
 
 

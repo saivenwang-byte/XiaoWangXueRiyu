@@ -206,17 +206,6 @@ const SenseiTipCard = (() => {
         body.hidden = !open;
       });
     });
-    root.querySelectorAll(".l1-kcard-link").forEach((btn) => {
-      if (btn.dataset.l1LinkBound === "1") return;
-      btn.dataset.l1LinkBound = "1";
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const gate = btn.dataset.l1Gate;
-        if (gate !== "" && btn.closest("[data-switch-gate]")) {
-          /* optional hook */
-        }
-      });
-    });
     if (typeof KnowledgeLink !== "undefined") KnowledgeLink.bindRelated(root);
   }
 
