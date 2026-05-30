@@ -1,0 +1,116 @@
+第6单元：さようなら！日本（北海道·夏）
+
+第21課：わたしはすき焼きを食べたことがあります
+层级	内容
+课文主题	<span style="color:red">〜たことがある</span>（経験）・<span style="color:red">〜たあとで</span> — 札幌のジンギスカン料理店
+远景（地理彩蛋）	透过料理店的窗户，远处札幌テレビ塔在傍晚的天空下闪耀着温暖的橙色灯光。大通公園的绿荫和喷泉隐约可见。夕阳把天空染成橙红色。
+中景（课文主体） ★	札幌市内一家热闹的<span style="color:red">ジンギスカン</span>料理店。店内热气腾腾，每张桌子上都有铁板烤炉。墙上贴着各种北海道名物料理的海报：「<span style="color:red">すき焼き</span>」「<span style="color:red">石狩鍋</span>」「<span style="color:red">札幌ラーメン</span>」。开放式厨房里厨师正在忙碌。店内回荡着食客们的谈笑声和烤肉滋滋声。
+近景（人物+道具）	ぐるみ坐在小矮桌前，面前放着一个滋滋作响的铁板烤炉，上面烤着<span style="color:red">ジンギスカン</span>（羊肉）和蔬菜。ぐるみ一手拿筷子正在夹一片刚烤好的肉，另一手举着小碗白饭。桌上还摆着<span style="color:red">すき焼き</span>的小锅和生鸡蛋蘸料。旁边的店员正端上一盘新肉。
+特写（表情）	烤肉入口的瞬间，眼睛眯成弯月，脸颊鼓鼓的塞满食物，嘴角沾着烤肉酱。表情是「おいしい！<span style="color:red">食べたことがある</span>けど、やっぱり最高！」的幸福与满足。像在回忆以前吃过但依然觉得惊艳的感觉。
+服装	夏季轻便旅装（短袖T恤、小帽子），适应北海道夏日的凉爽
+持ち物	筷子、小碗、烤炉
+情绪线	体验 — 幸福回味
+🎬 构图与镜头：
+
+视角：平视，从ぐるみ正对面拍摄，仿佛坐在同一张桌子对面
+
+构图：铁板烤炉占据画面下方中央，升腾的热气和烟雾形成天然的柔焦效果。ぐるみ在烤炉后方居中，两侧的食材和调料瓶形成丰富的前景。窗外札幌电视塔在右上方
+
+镜头：35mm标准镜头，焦点在ぐるみ满足的表情和筷子上的烤肉上。烤炉的热气使画面带有轻微的朦胧感，窗外远景柔焦
+
+光线：店内暖黄色顶灯和烤炉的火光为主光源，色调非常温暖。铁板上的火光在ぐるみ脸上投下微微跳动的暖光。窗外是傍晚蓝调时刻（ブルーアワー），室内外的冷暖色彩形成强烈对比
+
+光晕：烤炉上升腾的热气在暖光中形成柔和的上升光晕，铁板表面有高温的红色微光
+
+🎨 AI提示词：
+
+text
+A mouthwatering food experience illustration in Gurumi art style, warm firelight against blue dusk outside.
+Straight-on dining composition: a round white fluffy creature (Gurumi) in a light summer travel outfit, seated at a low table in a lively Sapporo Jingisukan (grilled lamb) restaurant. A sizzling iron grill dominates the foreground, with lamb and vegetables cooking, steam and smoke rising softly. The creature holds chopsticks with a piece of grilled meat, cheeks puffed with food, eyes closed in blissful nostalgia — remembering past meals but still amazed. On the table: a small sukiyaki pot, raw egg dip, bowls of rice. Through the window on the upper right, Sapporo TV Tower glows warm orange against the evening blue hour sky, with Odori Park's greenery visible. Warm amber restaurant lights and the glow of the grill contrast with the cool dusk outside. The rising steam creates a soft atmospheric haze. The creature's expression says "I've had this before, but it's still the best!" --ar 16:9 --style expressive
+
+
+第22課：森さんは今晩テレビを見る
+层级	内容
+课文主题	<span style="color:red">簡体</span>（普通体）・<span style="color:red">〜予定だ</span> — 小樽運河沿いのゲストハウス
+远景（地理彩蛋）	透过民宿的大窗，小樽運河的夜景尽收眼底。运河两岸的瓦斯灯亮着暖黄色的光，映在水面上形成长长的倒影。远处小樽港的起重机轮廓在夜色中隐约可见。
+中景（课文主体） ★	小樽運河旁一家改成ゲストハウス（民宿）的古老<span style="color:red">石造り倉庫</span>内部。挑高的空间保留了砖墙和木梁结构。公共区域的沙发上放着毛毯和靠垫。矮桌上放着一台<span style="color:red">テレビ</span>（电视），正在播放晚间综艺节目。墙上贴着手绘的小樽観光マップ和<span style="color:red">「予定表」</span>。
+近景（人物+道具）	ぐるみ趴在沙发上，双手托腮，正<span style="color:red">テレビを見る</span>（看电视）。电视里放着搞笑艺人的段子，ぐるみ看得入迷。身旁的小桌上放着一杯<span style="color:red">小樽ビール</span>（其实是苹果汁）、一袋<span style="color:red">じゃがポックル</span>（北海道薯条零食）和一张明天去<span style="color:red">積丹半島</span>的行程表。
+特写（表情）	被电视节目逗得咯咯笑，眼睛弯成两道缝，嘴巴张得大大的。小脚丫翘起来在空中晃动。表情是完全放松的「<span style="color:red">楽しい</span>！」状态。
+服装	宽松舒适的室内服（民宿提供的软棉家居服），赤脚
+持ち物	薯条零食、饮料、<span style="color:red">予定表</span>
+情绪线	休闲 — 放松
+🎬 构图与镜头：
+
+视角：从电视机方向看向沙发，略带仰角（电视机的光从下方打在ぐるみ脸上）
+
+构图：沙发和ぐるみ占据画面中央偏下，电视在画面右下角作为光源。窗外小樽运河夜景在左上方。民宿的砖墙和木梁形成温暖的包围感。茶几上的零食和行程表在左下角
+
+镜头：35mm镜头，焦点在ぐるみ开心的笑脸上。电视机屏幕和窗外夜景都虚化成色彩光斑
+
+光线：室内主要光源是电视机的蓝白跳动的冷光，打在ぐるみ脸上形成有趣的明暗变化。旁边一盏落地灯补暖光。窗外运河的瓦斯灯是温暖的橙色光点。冷暖光线在ぐるみ身上交汇
+
+光晕：电视屏幕的光在ぐるみ轮廓上形成微弱的蓝白边缘光，窗外瓦斯灯在运河水面上的倒影透过玻璃形成柔和的橙黄色光斑
+
+🎨 AI提示词：
+
+text
+A cozy evening illustration in Gurumi art style, mixed TV glow and warm lamplight.
+Relaxed sofa composition: a round white fluffy creature (Gurumi) in soft loungewear, sprawled comfortably on a sofa in a converted stone warehouse guesthouse along Otaru Canal. The creature is watching a comedy show on TV, face lit by the blue-white screen glow, laughing with eyes squeezed shut and tiny feet kicking in the air. On a low table: a glass of apple juice, Hokkaido potato snacks, and a tomorrow's itinerary to Shakotan Peninsula. Through the large window on the upper left, Otaru Canal at night — gas lamps reflecting golden light trails on the dark water, the port's silhouette beyond. Exposed brick walls and wooden beams of the historic building create a warm, rustic atmosphere. A floor lamp adds warm amber light that mixes with the cool TV glow on the creature's face. Pure relaxation and contentment. --ar 16:9 --style expressive
+
+
+第23課：休みの日、散歩したり買い物に行ったりします
+层级	内容
+课文主题	<span style="color:red">〜たり〜たりする</span>（動作の列挙） — 札幌・白い恋人パーク
+远景（地理彩蛋）	花园远处，札幌ドーム的银色穹顶在阳光下闪耀。更远处，藻岩山的绿色山体环绕着札幌市区。蓝天上飘着大朵的夏日积雨云。
+中景（课文主体） ★	白い恋人パーク（白色恋人巧克力工厂主题公园）。欧风建筑被玫瑰花园环绕，仿佛童话世界。庭院里有喷泉、玫瑰拱门、玩具士兵雕像。游客们在<span style="color:red">散歩したり</span>（散步）、<span style="color:red">写真を撮ったり</span>（拍照）、<span style="color:red">ベンチで休んだり</span>（在长椅休息）。入口处有大大的「白い恋人」标志。
+近景（人物+道具）	ぐるみ在公园里忙得不亦乐乎。一只手举着<span style="color:red">白い恋人</span>的冰淇淋，另一只手拿着相机<span style="color:red">写真を撮ったりしている</span>（正在拍照）。脚边放着购物袋，里面装着几盒<span style="color:red">白い恋人</span>饼干和<span style="color:red">札幌農学校</span>的牛奶饼干。脖子上挂着一张小地图，上面圈出了今天要去的景点。
+特写（表情）	冰淇淋快要融化了，ぐるみ一边慌忙舔着冰淇淋一边还惦记着拍照，舌头伸得长长的，眼睛盯着相机屏幕。忙乱但快乐的表情——「<span style="color:red">散歩したり買い物したり</span>、忙しいけど楽しい！」
+服装	夏季旅装（遮阳帽、T恤、短裤），帽子上夹着一朵在公园摘的小花
+持ち物	冰淇淋、相机、购物袋（饼干）、观光地图
+情绪线	活动 — 充实忙碌
+🎬 构图与镜头：
+
+视角：平视，从正前方捕捉ぐるみ忙碌的样子
+
+构图：ぐるみ在画面中央，一手举冰淇淋一手举相机，形成左右对称中带不对称的动态平衡。身后的玫瑰花园和欧风建筑作为背景。远处札幌巨蛋和藻岩山在上方。画面充满了「正在进行中」的动感
+
+镜头：35mm标准镜头，焦点在ぐるみ舔冰淇淋的瞬间表情和手上的相机。背景花园和远处风景轻微虚化
+
+光线：北海道夏日明媚的阳光下，光线清澈明亮。蓝天白云下的自然光均匀柔和。冰淇淋在光线下有融化时的反光质感。整体色调明亮、清爽、饱和度适中
+
+光晕：阳光在喷泉水雾中形成微弱的迷你彩虹。冰淇淋表面的融化物在光线下有细小的高光点
+
+🎨 AI提示词：
+
+text
+A bustling summer activity illustration in Gurumi art style, bright Hokkaido sunshine.
+Action-packed center composition: a round white fluffy creature (Gurumi) in a sun hat with a tiny flower tucked in the band, summer T-shirt and shorts, standing in the Shiroi Koibito Park rose garden. One tiny hand holds a melting ice cream cone, the other holds up a camera to take photos. Shopping bags with cookie boxes dangle from the arm. A tourist map hangs around the neck. The creature is simultaneously licking the dripping ice cream and trying to frame a photo — expression is busy but joyful. Behind, the European-style chocolate factory building is surrounded by roses, fountains, and strolling visitors. In the far distance, the silver dome of Sapporo Dome and the green mass of Mount Moiwa under a blue sky with fluffy summer clouds. Bright, crisp natural daylight. A faint rainbow in the fountain mist. The scene captures the essence of a packed sightseeing day. --ar 16:9 --style expressive
+
+
+第24課：李さんはもうすぐ来ると思います
+层级	内容
+课文主题	<span style="color:red">〜と思う</span>（推量）・<span style="color:red">〜と言う</span>（引用） — 新千歳空港
+远景（地理彩蛋）	透过机场巨大的玻璃幕墙，夕張山地和日高山脈的远山轮廓在夕阳中呈深蓝剪影。跑道上，一架全日空飞机刚刚起飞，机身倾斜冲向晚霞。天空从橙到紫到深蓝渐层。
+中景（课文主体） ★	新千歳空港（新千岁机场）的国际线出発ロビー。宽敞明亮的大厅，有<span style="color:red">出発案内</span>电子看板、チェックインカウンター、土产店。大厅里旅客们推着行李车穿梭。广播里传来登机提醒的日语广播。免税店的<span style="color:red">「北海道限定」</span>看板醒目。
+近景（人物+道具）	ぐるみ站在出境审查入口前，背着小背包，身边放着行李箱。手里拿着整个旅途中收集的各站纪念品：<span style="color:red">東京</span>的雷门小挂件、<span style="color:red">大阪</span>的章鱼烧钥匙扣、<span style="color:red">箱根</span>的寄木细工小盒子、<span style="color:red">名古屋</span>的金色鯱鉾模型、<span style="color:red">東北</span>的こけし（小木偶人）、<span style="color:red">北海道</span>的熊出没注意铃铛。ぐるみ正把这些纪念品挂在行李箱上，挂得满满当当。
+特写（表情）	回头望向机场大窗外的日本景色，眼眶里含着一点点泪水，但嘴角是温暖的微笑。表情是「<span style="color:red">また来ると思う</span>」的感动与不舍。不是悲伤的告别，而是带着满满回忆和对未来的期待。
+服装	最终旅装（和第一课相同的旅行帽和背包，形成了首尾呼应，但背包上挂满了各地纪念品）
+持ち物	行李箱（挂满各地纪念品）、护照
+情绪线	告别 — 感动与期待
+🎬 构图与镜头：
+
+视角：从ぐるみ身后偏右的角度拍摄，能看到ぐるみ回头的侧脸，同时看到机场大窗外起飞的飞机
+
+构图：ぐるみ站在画面中央偏左，回头望向右侧窗外。出境入口的标志在左上角。行李箱在ぐるみ脚边，上面挂满了五颜六色的纪念品。窗外夕阳和起飞的飞机在右上角。整个画面形成从ぐるみ→纪念品→窗外→飞机的视觉流动线
+
+镜头：50mm标准镜头，焦点在ぐるみ回头的表情和挂在行李箱上的纪念品上。窗外飞机和山景轻微柔焦
+
+光线：黄昏的黄金光线从右侧玻璃幕墙斜射入大厅，在地板上形成长长的影子。夕阳光是浓郁的金橙色，给ぐるみ全身镀上一层暖金轮廓光。大厅内的照明偏冷白，形成冷暖对比。起飞的飞机在逆光中呈剪影
+
+光晕：夕阳在大厅玻璃上有柔和的橙色反射光晕，地板的倒影中也有温暖的光斑。整个画面被黄昏的怀旧光线笼罩
+
+🎨 AI提示词：
+
+text
+A bittersweet farewell illustration in Gurumi art style, golden sunset light flooding the airport terminal.
+Three-quarter back composition: a round white fluffy creature (Gurumi) in the same travel hat and backpack from the very first journey, standing at the departure gate of New Chitose Airport, turning back to look through the giant glass windows at the Japanese landscape one last time. The creature's eyes hold tiny tears but the smile is warm — "I think I'll come back again." A suitcase at the creature's feet is covered in souvenirs from every stop: a Kaminarimon charm (Tokyo), takoyaki keychain (Osaka), yosegi box (Hakone), golden shachihoko (Nagoya), kokeshi doll (Tohoku), and a bear bell (Hokkaido). Through the window on the upper right, an ANA airplane ascends against a dramatic dusk sky graded from orange to purple to deep blue, with the Yubari and Hidaka mountain silhouettes on the horizon. Golden hour light streams through the glass, casting long shadows and a warm halo around the creature. The scene carries the weight of memories and the hope of return. Nostalgic, cinematic, heartwarming. --ar 16:9 --style expressive

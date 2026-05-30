@@ -1,0 +1,116 @@
+会社の生活②
+
+第13課：机の上に本が三冊あります
+层级	内容
+课文主题	助数詞・存在の詳細 — 名古屋の書店
+远景（地理彩蛋）	透过书店大玻璃窗，远处名古屋城的金色<span style="color:red">鯱鉾</span>（しゃちほこ）在午后阳光下闪闪发光。窗外是名古屋市中心宽敞的大街，路边种植着银杏树。
+中景（课文主体） ★	名古屋一家大型书店的内部。整齐排列的书架上摆满了各种书籍。中间有一张展示<span style="color:red">机</span>（つくえ），上面平铺着新书推荐。书架分类标签写着「<span style="color:red">雑誌</span>」「<span style="color:red">漫画</span>」「<span style="color:red">文庫</span>」等。墙上贴着畅销书排行榜海报。
+近景（人物+道具）	ぐるみ站在书架前，踮起脚伸手去够一本放在高处的<span style="color:red">本</span>（ほん）。另一只手已经抱着两本书。脚边放着一个购物篮，里面已经有<span style="color:red">三冊</span>（さんさつ）书：一本旅游指南、一本漫画、一本料理书。ぐるみ正努力想再拿一本关于名古屋美食的书。
+特写（表情）	踮脚踮得小腿发抖，眼睛盯着高处那本书，脸上是「もうちょっと…！」的努力表情。额头冒出一滴汗珠。
+服装	商务休闲装（小领巾），与在名古屋办公的场景呼应
+持ち物	<span style="color:red">本</span>、购物篮
+情绪线	探索 — 努力
+🎬 构图与镜头：
+
+视角：低角度仰拍（从ぐるみ脚下向上看），强化书架的高大和ぐるみ的娇小
+
+构图：书架作为前景和背景形成纵向延伸感，ぐるみ在画面中间偏右，踮脚伸手向上。远处的名古屋城在左上角窗外作为地理彩蛋
+
+镜头：24mm广角镜头，纳入高大书架和ぐるみ的小小身影，形成强烈的空间对比
+
+光线：午后暖阳从右侧大窗斜射入书店，在书架间形成一道道光柱。书脊在光线中呈现丰富的色彩。整体色调温暖、安静，带有纸张和木质书架的温馨感
+
+光晕：光线穿过空气中细微的灰尘颗粒，形成可见的朦胧光柱
+
+🎨 AI提示词：
+
+text
+A warm bookstore illustration in Gurumi art style, afternoon sunlight streaming through windows.
+Low-angle composition: a tiny round white fluffy creature (Gurumi) in a business scarf, standing on tiptoes in front of a tall wooden bookshelf, reaching up for a book on a high shelf with a trembling leg. One arm already holds two books, and a shopping basket on the floor contains three more books. Through the large window on the upper left, Nagoya Castle with its golden shachihoko ornaments is visible against the afternoon sky. The bookstore is warm and quiet, with sunbeams cutting through the air. Dust motes dance in the light. Book spines in various colors line the shelves. The creature has a bead of sweat from the effort, expression determined and adorable. --ar 16:9 --style expressive
+
+
+第14課：昨日デパートへ行って、買い物しました
+层级	内容
+课文主题	動詞て形・買い物 — 名古屋の<span style="color:red">デパート</span>
+远景（地理彩蛋）	透过百货商场的大玻璃幕墙，远处可见名古屋テレビ塔和オアシス21的椭圆形玻璃屋顶。夜色初降，城市灯火开始点亮。
+中景（课文主体） ★	名古屋<span style="color:red">栄</span>（さかえ）地区的大型<span style="color:red">デパート</span>内部。百货商场一楼，化妆品和服饰卖场。光洁的大理石地板，明亮的灯光。电梯旁有楼层指南看板，显示「<span style="color:red">靴</span>」「<span style="color:red">鞄</span>」「<span style="color:red">服</span>」等楼层信息。
+近景（人物+道具）	ぐるみ刚刚<span style="color:red">買い物</span>（かいもの）完毕，一手拎着几个购物袋（上面印着百货店的logo），另一手拿着<span style="color:red">レシート</span>（收据）在看。脚边放着一双新买的<span style="color:red">靴</span>（くつ）和一个新<span style="color:red">鞄</span>（かばん）。购物袋里还露出一件叠好的<span style="color:red">服</span>（ふく）。
+特写（表情）	看着レシート上「<span style="color:red">安い</span>」打折后的价格，眼睛笑成弯月，嘴角上扬，一脸「いい買い物した！」的满足与得意。
+服装	外出购物装（戴上小帽子，系了条时尚小围巾）
+持ち物	购物袋、レシート、<span style="color:red">靴</span>、<span style="color:red">鞄</span>
+情绪线	购物 — 满足
+🎬 构图与镜头：
+
+视角：平视，从ぐるみ对面角度拍摄
+
+构图：ぐるみ在画面中央偏左，周围环绕着购物袋和新买的东西。背后的楼层指南看板清晰可见，远处窗外是名古屋电视塔夜景
+
+镜头：35mm标准镜头，焦点在ぐるみ看着收据的开心表情上，周围购物袋和背景略虚化
+
+光线：商场内明亮的人工照明（暖色），地板有柔和反光。窗外是蓝调暮色和城市灯火，形成室内暖/室外冷的色彩对比
+
+光晕：商场顶灯在地板上形成一圈圈柔和光晕，玻璃幕墙有轻微反射
+
+🎨 AI提示词：
+
+text
+A happy shopping illustration in Gurumi art style, bright department store lighting.
+Eye-level composition: a round white fluffy creature (Gurumi) in a stylish little scarf and hat, standing in a Nagoya department store, holding several shopping bags and looking at a receipt with a delighted smile. Near the creature are new shoes and a new bag. The receipt shows a discount price, and the creature's eyes are crescent moons of joy. In the background, a floor guide displays "靴・鞄・服". Through the glass wall, Nagoya TV Tower and the Oasis 21 glass roof are lit up in the early evening. Warm interior lighting contrasts with the blue dusk outside. Polished floor reflects soft light. The scene captures the thrill of a successful shopping trip. --ar 16:9 --style expressive
+
+
+第15課：小野さんは今新聞を読んでいます
+层级	内容
+课文主题	〜ています（動作の進行） — 名古屋の会社の休憩室
+远景（地理彩蛋）	透过休息室窗户，可以看到名古屋駅前的繁华街景。远处JRセントラルタワーズ的双塔高耸入云，黄昏的天空被染成橙紫色。
+中景（课文主体） ★	名古屋某公司的<span style="color:red">休憩室</span>（きゅうけいしつ）。有舒适的沙发、自动贩卖机、杂志架、咖啡机。墙上挂着公司活动照片和一张名古屋地图。茶几上放着几份今天的<span style="color:red">新聞</span>（しんぶん）和几本杂志。
+近景（人物+道具）	ぐるみ坐在沙发上，正专注地<span style="color:red">読んでいます</span>（よんでいます）一份打开的<span style="color:red">新聞</span>。报纸太大，把ぐるみ整个身体都遮住了，只露出两只小手抓住报纸边缘和头顶的一撮毛。旁边的小茶几上放着一杯<span style="color:red">コーヒー</span>，还冒着热气。
+特写（表情）	从报纸上方只露出两只圆眼睛，眼球从左到右移动，认真阅读。看到有趣新闻时眉毛微微上扬。
+服装	商务装（小领巾），和在办公室时一致
+持ち物	<span style="color:red">新聞</span>、<span style="color:red">コーヒー</span>
+情绪线	日常 — 专注
+🎬 构图与镜头：
+
+视角：正面平视，从ぐるみ对面看过去
+
+构图：报纸作为巨大前景占据画面下半部分，ぐるみ被报纸遮住只露出眼睛和头顶。报纸上的日文标题隐约可见。窗外名古屋站双塔在远景上方。茶几和咖啡杯在右侧
+
+镜头：50mm标准镜头，焦点在报纸上方露出的眼睛上，窗外远景柔焦
+
+光线：黄昏，窗外是温暖的暮色。室内日光灯为主光源，偏白。咖啡的热气在光线下袅袅升起。窗外橙色天光透过窗户给室内补了一层暖色
+
+光晕：窗外黄昏天空在玻璃上有轻微反光，咖啡热气有小颗粒光点
+
+🎨 AI提示词：
+
+text
+A cute reading scene illustration in Gurumi art style, warm dusk light from the window.
+Straight-on composition: a round white fluffy creature (Gurumi) in a business scarf, sitting on a sofa in a company break room, completely hidden behind an oversized newspaper held by tiny hands. Only the top of the creature's head and two round eyes are visible above the newspaper, scanning the text. A steaming cup of coffee sits on a side table. Through the window, the twin towers of JR Central Towers at Nagoya Station rise against a purple-orange dusk sky. The break room has a sofa, vending machine, and magazine rack. Warm evening light blends with cool indoor fluorescent lighting. The newspaper has visible Japanese headlines. Cozy, focused atmosphere. --ar 16:9 --style expressive
+
+
+第16課：ホテルの部屋は広くて明るいです
+层级	内容
+课文主题	形容詞て形・結果の状態 — 名古屋のホテルの部屋
+远景（地理彩蛋）	透过酒店大窗，夜晚的名古屋港和港口摩天轮在远处闪烁。摩天轮的灯光色彩变幻，倒映在水面上。远处还可看见名古屋港水族馆的轮廓。
+中景（课文主体） ★	名古屋的<span style="color:red">ホテル</span>房间。一间<span style="color:red">広くて</span>（ひろくて）<span style="color:red">明るい</span>（あかるい）双人房。空间宽敞，有张大床、书桌、落地灯、衣柜。墙壁是暖米色，窗帘是优雅的淡蓝色。房间整洁明亮。落地窗前有一张小圆桌和两把椅子。
+近景（人物+道具）	ぐるみ站在房间中央，双臂张开，试图用小小的身体丈量房间的宽敞。床上放着打开的行李箱，里面的衣物叠得整整齐齐。落地灯亮着暖光。床边的柜子上放着一只<span style="color:red">花瓶</span>（かびん），里面插着几枝名古屋市花百合。
+特写（表情）	环视房间后露出惊喜的表情，眼睛瞪大，嘴巴微张，脸颊粉红。表情是「<span style="color:red">広い</span>！<span style="color:red">きれい</span>！」的赞叹。
+服装	轻便室内服（脱了帽子和外套）
+持ち物	行李箱、花瓶
+情绪线	安顿 — 赞叹
+🎬 构图与镜头：
+
+视角：从房间一角的高处俯拍，类似监控摄像头或从天花板看向房间的视角
+
+构图：ぐるみ在画面中央偏下，张开双臂形成一个小小的大字。大床、落地窗、窗外港口夜景在画面上方。房间的线条（墙角、窗框）形成几何框架
+
+镜头：20mm超广角，夸大空间的宽敞感。ぐるみ显得很小，房间显得很大，强化「広い」的视觉印象
+
+光线：室内暖色落地灯和床头灯为主光源，色调温暖柔和。窗外是冷色调的港口夜景灯光。暖冷对比让房间显得更加温馨
+
+光晕：落地灯在墙面投下柔和的圆形光斑，窗外摩天轮灯光在玻璃上有轻微的彩色反射
+
+🎨 AI提示词：
+
+text
+A spacious hotel room illustration in Gurumi art style, warm interior light with cool night view outside.
+High-angle composition: a tiny round white fluffy creature (Gurumi) in casual indoor clothes, standing in the center of a large hotel room with arms spread wide, marveling at how spacious and bright the room is. The room is elegantly simple - a large bed, desk, floor lamp, wardrobe, and a vase with lilies. An open suitcase on the bed shows neatly folded clothes. Through the large window, the Nagoya Port Ferris wheel sparkles with colorful lights reflecting on the water, and the aquarium is silhouetted in the distance. Warm lamp light fills the room, contrasting with the cool blue night outside. The wide-angle perspective emphasizes the room's spaciousness. The creature's expression is one of delighted wonder. --ar 16:9 --style expressive

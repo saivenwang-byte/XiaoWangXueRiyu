@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="日语初级课后练习" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#58cc02" />
+  <meta name="description" content="初级上第14/16/18课：知识地图+闯关，手机微信点开即学" />
+  <meta property="og:title" content="日语初级课后练习" />
+  <meta property="og:description" content="选课→知识关联图→闯关练习，手机专用" />
+  <meta property="og:type" content="website" />
+  <link rel="manifest" href="manifest.json" />
+  <title>日语初级课后练习 · 手机版</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      background: linear-gradient(180deg, #58cc02 0%, #58cc02 100px, #e5f8d8 100px, #f7f9fc 240px);
+      min-height: 100dvh; color: #3c3c3c; padding-bottom: calc(58px + env(safe-area-inset-bottom));
+    }
+    body.nav-lesson { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+    .top {
+      padding: 12px 16px; padding-top: calc(12px + env(safe-area-inset-top));
+      display: flex; align-items: center; justify-content: space-between; color: #fff;
+      gap: 8px;
+    }
+    .top-left { display: flex; align-items: center; gap: 6px; min-width: 0; flex-shrink: 1; }
+    .version-chip {
+      padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,.45);
+      background: rgba(0,0,0,.12); color: #fff; font-size: 10px; font-weight: 800;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .version-chip:active { background: rgba(0,0,0,.25); }
+    .pick-version-foot {
+      margin: 8px 16px 0; text-align: center; font-size: 11px; color: rgba(255,255,255,.85);
+    }
+    .pick-version-foot button {
+      background: none; border: none; color: #fff; text-decoration: underline;
+      font-size: 11px; font-weight: 700; cursor: pointer; padding: 0;
+    }
+    #version-modal .changelog {
+      max-height: 50vh; overflow-y: auto; text-align: left; margin: 12px 0;
+      font-size: 13px; line-height: 1.55; color: #444;
+    }
+    #version-modal .changelog li { margin-bottom: 8px; }
+    #version-modal .changelog b { color: #46a302; }
+    .top button.back { background: rgba(255,255,255,.25); border: none; color: #fff;
+      padding: 6px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .top .stats { display: flex; gap: 14px; font-weight: 800; font-size: 15px; }
+    #ui-heart-btn { cursor: pointer; padding: 4px 8px; border-radius: 8px; background: rgba(255,255,255,.2); border: none; color: #fff; font: inherit; }
+    #ui-heart-btn:active { opacity: 0.85; }
+    .screen { display: none; max-width: 440px; margin: 0 auto; }
+    .screen.on { display: block; }
+
+    /* 选课 */
+    .pick-hint { margin: 0 16px 12px; color: #fff; font-size: 14px; font-weight: 600; opacity: .95; }
+    .lesson-card {
+      margin: 0 16px 14px; background: #fff; border-radius: 18px; padding: 16px;
+      border: 3px solid #46a302; box-shadow: 0 5px 0 #46a302; cursor: pointer; text-align: left;
+    }
+    .lesson-card:active { transform: translateY(2px); box-shadow: 0 3px 0 #46a302; }
+    .lesson-card h2 { font-size: 20px; margin-bottom: 4px; }
+    .lesson-card .theme { font-size: 13px; color: #666; margin-bottom: 10px; }
+    .lesson-card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .lesson-card .tag { font-size: 11px; padding: 4px 8px; border-radius: 8px; background: #e8f5e0; color: #2d6a1e; font-weight: 700; }
+    .lesson-card .meta { margin-top: 10px; font-size: 12px; color: #888; }
+    .pick-share-link { margin: 4px 16px 16px; text-align: center; }
+    .pick-share-btn {
+      background: none; border: none; color: rgba(255,255,255,.9); font-size: 12px;
+      font-weight: 700; text-decoration: underline; cursor: pointer; padding: 4px 8px;
+    }
+    .pick-share-btn:active { opacity: 0.75; }
+
+    /* 课内：子标签 */
+    .sub-tabs { display: flex; margin: 0 16px 10px; gap: 8px; }
+    .sub-tabs button {
+      flex: 1; padding: 11px; border: 2px solid #46a302; border-radius: 12px;
+      background: #fff; font-weight: 800; font-size: 14px; color: #46a302; cursor: pointer;
+    }
+    .sub-tabs button.on { background: #58cc02; color: #fff; box-shadow: 0 3px 0 #46a302; }
+
+    /* 情景对话 */
+    #panel-convo { padding: 0 12px 20px; }
+    .convo-hint { font-size: 13px; color: #666; line-height: 1.5; margin: 0 4px 12px; }
+    .convo-card {
+      display: block; width: 100%; text-align: left; margin-bottom: 10px; padding: 14px;
+      border: 2px solid #1cb0f6; border-radius: 16px; background: #fff;
+      box-shadow: 0 4px 0 #1899d6; cursor: pointer;
+    }
+    .convo-card.done { border-color: #58cc02; box-shadow: 0 4px 0 #46a302; }
+    .convo-card strong { display: block; font-size: 16px; color: #333; }
+    .convo-card small { color: #888; font-size: 12px; }
+    .convo-card .preview { font-size: 14px; color: #444; margin-top: 8px; }
+    #convo-modal .modal-box { max-width: 100%; width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin: 0; padding: 12px 16px 24px; display: flex; flex-direction: column; }
+    .convo-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .convo-top button { border: none; background: #eee; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+    #convo-prog { flex: 1; font-size: 13px; color: #666; text-align: center; }
+    #convo-stage { flex: 1; overflow-y: auto; }
+    #convo-footer { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    #convo-footer .btn-duo { flex: 1; min-width: 120px; }
+    .convo-scene { text-align: center; padding: 24px 12px; }
+    .convo-scene .big { font-size: 48px; }
+    .convo-npc { background: #f0f7ff; border-radius: 16px; padding: 14px; margin: 8px 0; }
+    .convo-npc .role { font-size: 12px; color: #1cb0f6; font-weight: 700; }
+    .convo-npc .jp { font-size: 17px; line-height: 1.6; margin-top: 6px; }
+    .convo-npc-line { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+    .convo-npc-line .jp { flex: 1; margin: 0; }
+    .convo-npc-speak {
+      flex-shrink: 0; width: 48px; height: 48px; border: 2px solid #1cb0f6; border-radius: 14px;
+      background: #e8f7ff; font-size: 22px; cursor: pointer; line-height: 1;
+    }
+    .convo-choice-btn.picked { border-color: #1cb0f6; background: #f0f9ff; }
+    .convo-npc .zh { font-size: 13px; color: #888; margin-top: 6px; }
+    .convo-guide { background: #fff8e6; border-radius: 14px; padding: 14px; border: 2px solid #ffc800; }
+    .convo-tier { background: linear-gradient(135deg,#e8f5e9,#fff); border: 2px solid #58cc02; border-radius: 14px; padding: 14px; text-align: center; }
+    .convo-tier .tier-num { display: inline-block; background: #58cc02; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; margin-bottom: 8px; }
+    .convo-transition { text-align: center; padding: 20px 12px; background: #f0f9ff; border-radius: 14px; border: 2px dashed #1cb0f6; }
+    .convo-transition .big { font-size: 40px; }
+    .convo-choice-btn { display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; background: #fff; cursor: pointer; }
+    .convo-choice-btn.correct { border-color: #58cc02; background: #f0fff0; }
+    .convo-choice-btn.wrong { border-color: #e03030; background: #fff5f5; }
+    .convo-reply-opt { display: flex; gap: 8px; align-items: stretch; margin-bottom: 10px; }
+    .convo-reply-opt .convo-choice-btn { flex: 1; margin: 0; }
+    .convo-reply-opt .convo-listen { flex-shrink: 0; width: 52px; border: 2px solid #1cb0f6; border-radius: 12px; background: #e8f7ff; font-size: 20px; cursor: pointer; }
+    .convo-scene-nav { display: flex; gap: 8px; margin-top: 8px; }
+    .convo-scene-nav button { flex: 1; padding: 8px; border: 2px solid #ddd; border-radius: 10px; background: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .convo-step-nav { display: flex; gap: 6px; align-items: center; }
+    .convo-step-nav button { border: none; background: #eee; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+    .game-nav { display: flex; gap: 8px; padding: 10px 12px 16px; max-width: 440px; margin: 0 auto; }
+    .game-nav button { flex: 1; padding: 12px 8px; border: 2px solid #46a302; border-radius: 12px; background: #fff; font-weight: 800; font-size: 14px; color: #46a302; cursor: pointer; }
+    .game-nav button:disabled { opacity: 0.45; border-color: #ccc; color: #999; }
+    .listen-box { text-align: center; }
+    .listen-phase { font-size: 15px; color: #1cb0f6; font-weight: 700; margin: 16px 0; }
+    .listen-q { font-size: 16px; font-weight: 700; margin: 12px 0; color: #333; }
+    .ra-btn-hint { font-size: 11px; color: #888; display: block; margin-top: 2px; font-weight: 500; }
+    .convo-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-left: 6px; vertical-align: middle; }
+    .convo-tag.integrated { background: #fff3cd; color: #856404; }
+    .convo-tag.branch { background: #e7f3ff; color: #0c5460; }
+
+    /* 知识地图 */
+    .kg-box {
+      margin: 0 12px 16px; background: #fff; border-radius: 20px; padding: 16px 12px 20px;
+      border: 2px solid #e0e0e0; box-shadow: 0 4px 0 #e0e0e0;
+    }
+    .kg-head { text-align: center; margin-bottom: 14px; }
+    .kg-head .jp { font-size: 15px; color: #333; line-height: 1.5; margin-top: 6px; }
+    .kg-head .zh { font-size: 12px; color: #888; }
+    .kg-core {
+      text-align: center; padding: 14px; padding-top: 18px;
+      border-radius: 16px; border: 3px solid; font-weight: 800; width: 100%;
+    }
+    .kg-core .icon { font-size: 32px; }
+    .kg-core .t { font-size: 16px; margin-top: 4px; }
+    .kg-core .d { font-size: 12px; color: #666; margin-top: 6px; font-weight: 500; }
+    .kg-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
+    .kg-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .kg-node-card { position: relative; flex: 1; min-width: 0; }
+    .kg-speak-btn {
+      position: absolute; top: 4px; right: 4px; z-index: 3;
+      width: 30px; height: 30px; padding: 0; border: none; border-radius: 50%;
+      background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.12); font-size: 15px;
+      cursor: pointer; line-height: 30px; text-align: center;
+    }
+    .kg-speak-btn:active { transform: scale(0.92); background: #e8f7ff; }
+    .kg-node {
+      width: 100%; padding: 10px 8px 8px; padding-top: 12px; border-radius: 14px;
+      border: 2px solid #ddd; background: #fafafa;
+      cursor: pointer; text-align: center; transition: transform .1s;
+    }
+    .kg-node:active { transform: scale(0.98); }
+    .kg-node-card.speaking .kg-node { box-shadow: 0 0 0 3px rgba(28,176,246,.45); }
+    .kg-core-wrap { position: relative; max-width: 200px; margin: 0 auto 16px; }
+    .kg-core-wrap .kg-speak-btn { top: 6px; right: 6px; }
+    .kg-node .ic { font-size: 22px; }
+    .kg-node .t { font-size: 12px; font-weight: 800; margin-top: 4px; line-height: 1.3; }
+    .kg-node.grammar { border-color: #ffc800; background: #fff8e0; }
+    .kg-node.scene { border-color: #1cb0f6; background: #e8f7ff; }
+    .kg-node.vocab { border-color: #ce82ff; background: #f5eeff; }
+    .kg-node.dialogue { border-color: #58cc02; background: #eefae0; }
+    .kg-legend {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      font-size: 11px; color: #666; margin-top: 12px; padding-top: 10px; border-top: 1px dashed #ddd;
+    }
+    .kg-legend span::before { content: "●"; }
+    .kg-legend .g::before { color: #ffc800; }
+    .kg-legend .s::before { color: #1cb0f6; }
+    .kg-legend .v::before { color: #ce82ff; }
+    .kg-legend .d::before { color: #58cc02; }
+    .kg-link-hint {
+      text-align: center; font-size: 12px; color: #999; margin: 8px 0;
+    }
+    .kg-map-content { margin: 0 -4px; }
+    .kg-section {
+      margin-bottom: 12px; border-radius: 16px; padding: 12px 10px 10px;
+      border: 2px solid;
+    }
+    .kg-section.grammar { border-color: #ffc800; background: #fff8e0; }
+    .kg-section.scene { border-color: #1cb0f6; background: #e8f7ff; }
+    .kg-section.vocab { border-color: #ce82ff; background: #f5eeff; }
+    .kg-section.dialogue { border-color: #58cc02; background: #eefae0; }
+    .kg-section-title {
+      font-size: 14px; font-weight: 800; margin: 0 0 10px 4px;
+    }
+    .kg-section.grammar .kg-section-title { color: #a67c00; }
+    .kg-section.scene .kg-section-title { color: #0d8ec7; }
+    .kg-section.vocab .kg-section-title { color: #9b5de5; }
+    .kg-section.dialogue .kg-section-title { color: #46a302; }
+    .kg-grid {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    }
+    .kg-grid .kg-node-card { flex: 1 1 calc(50% - 8px); min-width: 88px; max-width: 100%; }
+    .kg-core-row { margin-bottom: 10px; }
+    .wx-browser-banner {
+      margin: 0 12px 10px; padding: 12px 14px; border-radius: 14px;
+      background: #fff3cd; border: 2px solid #ffc800; color: #5c4a00;
+      font-size: 13px; line-height: 1.5; box-shadow: 0 3px 0 #e6b800;
+    }
+    .wx-browser-banner b { color: #c45c00; }
+    .wx-browser-banner button {
+      margin-top: 10px; width: 100%; padding: 10px; border: none; border-radius: 10px;
+      background: #ffc800; color: #3c2800; font-weight: 800; font-size: 14px; cursor: pointer;
+    }
+    .wx-browser-banner.collapsed { display: none; }
+    .freeplay-tip {
+      font-size: 12px; color: #1cb0f6; background: #e8f7ff; padding: 8px 10px;
+      border-radius: 10px; margin: 10px 0; line-height: 1.45;
+    }
+    .outline-list { margin: 0 16px 16px; }
+    .outline-list h3 { font-size: 14px; margin-bottom: 8px; color: #46a302; }
+    .outline-item {
+      background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px;
+      border-left: 4px solid #58cc02; font-size: 13px; cursor: pointer;
+    }
+    .outline-item b { display: block; margin-bottom: 4px; }
+    .outline-item small { color: #777; }
+
+    /* 闯关 */
+    .mode-row {
+      margin: 0 16px 10px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,.9); padding: 10px 12px; border-radius: 12px;
+      font-size: 12px; font-weight: 700; color: #555;
+    }
+    .mode-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    #map { padding: 8px 24px 24px; }
+    .unit-title { text-align: center; font-weight: 800; font-size: 14px; color: #46a302; margin: 12px 0; }
+    .path { display: flex; flex-direction: column; align-items: center; }
+    .node-wrap { position: relative; width: 100%; display: flex; justify-content: center; padding: 6px 0; }
+    .node-wrap.left { justify-content: flex-start; padding-left: 20%; }
+    .node-wrap.right { justify-content: flex-end; padding-right: 20%; }
+    .connector { width: 4px; height: 24px; background: #46a302; margin: 0 auto; opacity: .5; border-radius: 2px; }
+    .node {
+      width: 68px; height: 68px; border-radius: 50%; border: 4px solid #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; position: relative; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.12);
+    }
+    .node .node-lbl {
+      font-size: 11px; font-weight: 800; color: #fff; line-height: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,.25);
+    }
+    .node.locked .node-lbl { color: #eee; }
+    .node .node-ic { font-size: 24px; line-height: 1; }
+    .node.locked { background: #c4c4c4 !important; cursor: not-allowed; opacity: .85; }
+    .node.current { animation: pulse 1.2s infinite; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(88,204,2,.3); } }
+    .node.done::after {
+      content: "✓"; position: absolute; bottom: 0; right: 0; background: #ffc800;
+      color: #fff; width: 22px; height: 22px; border-radius: 50%; font-size: 12px;
+      font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;
+    }
+
+    #game { display: none; position: fixed; inset: 0; background: #f7f9fc; z-index: 50; flex-direction: column; }
+    #game.show { display: flex; }
+    .game-top {
+      background: #58cc02; color: #fff; padding: 12px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      display: flex; align-items: center; gap: 12px;
+    }
+    .game-top button { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
+    .game-top .hearts { margin-left: auto; }
+    .game-body { flex: 1; overflow-y: auto; padding: 20px 16px; max-width: 480px; margin: 0 auto; width: 100%; }
+    .game-card { background: #fff; border-radius: 20px; padding: 24px 20px; border: 2px solid #e5e5e5; box-shadow: 0 4px 0 #e5e5e5; }
+    .game-card .jp { font-size: 21px; line-height: 1.65; margin: 14px 0; text-align: center; }
+    .game-card .zh { text-align: center; color: #777; font-size: 14px; }
+    /* 练习界面默认不显示中文释义（帮助弹窗除外） */
+    #ra-zh, .no-zh-ui { display: none !important; }
+    .help-zh { display: block; }
+    .opts { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .opt {
+      padding: 14px; border: 2px solid #e5e5e5; border-radius: 14px; background: #fff;
+      font-size: 15px; text-align: left; cursor: pointer; box-shadow: 0 3px 0 #e5e5e5;
+    }
+    .opt.right { border-color: #58cc02; background: #d7ffb8; }
+    .opt.wrong { border-color: #ff4b4b; background: #ffe5e5; }
+    .opt:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
+    .opt.wrong:disabled, .opt.right:disabled { opacity: 1; }
+    .btn-duo {
+      display: block; width: 100%; padding: 15px; margin-top: 14px; border: none; border-radius: 14px;
+      font-size: 16px; font-weight: 800; background: #58cc02; color: #fff; box-shadow: 0 4px 0 #46a302; cursor: pointer;
+    }
+    .btn-duo.secondary { background: #1cb0f6; box-shadow: 0 4px 0 #0d8ec7; }
+    .btn-duo.pulse-hint { animation: tts-pulse 1s ease-in-out 3; }
+    @keyframes tts-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 0 #0d8ec7; }
+      50% { transform: scale(1.04); box-shadow: 0 0 12px rgba(28, 176, 246, 0.8); }
+    }
+    .hold { background: linear-gradient(#ff4b4b, #e03030) !important; box-shadow: 0 4px 0 #b02020 !important; border-radius: 50px !important; }
+    .btn-rec { background: linear-gradient(#ff4b4b, #e03030) !important; box-shadow: 0 4px 0 #b02020 !important; }
+    .btn-rec.on { background: linear-gradient(#333, #111) !important; box-shadow: 0 4px 0 #000 !important; animation: recpulse 1s infinite; }
+    @keyframes recpulse { 50% { opacity: 0.85; } }
+    .voice-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .teacher-box {
+      margin-top: 14px; padding: 14px; border-radius: 16px; background: #f0faf0;
+      border: 2px solid #58cc02; display: flex; gap: 12px; align-items: flex-start;
+    }
+    .teacher-box .owl-t { font-size: 36px; flex-shrink: 0; }
+    .teacher-box .score { font-size: 22px; font-weight: 800; color: #58cc02; }
+    .teacher-box .tip { font-size: 13px; color: #555; line-height: 1.5; margin-top: 6px; }
+    .teacher-box .heard { font-size: 12px; color: #888; margin-top: 8px; }
+    .btn-duo:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+    .btn-duo.ra-wait-rec { opacity: 0.75; pointer-events: auto; cursor: pointer; }
+    .btn-duo.ra-need-mic { opacity: 1; }
+    #ra-playback:not(.ra-wait-rec),
+    #ra-compare:not(.ra-wait-rec),
+    #ra-grade:not(.ra-wait-rec) { opacity: 1; }
+    #ra-mic-setup { background: #58cc02; color: #fff; }
+    #ra-fb { margin-top: 12px; min-height: 48px; }
+    #ra-fb .teacher-box { margin-top: 4px; }
+
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none;
+      align-items: flex-end; justify-content: center; z-index: 80; padding: 0; }
+    .modal.show { display: flex; }
+    #readalong-modal.show { z-index: 130; }
+    body.ra-modal-open { overflow: hidden; }
+    #readalong-modal.show .modal-box { max-height: 90vh; }
+    .modal-box {
+      background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 28px;
+      width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } }
+    .modal-box .type-badge {
+      display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 10px;
+      border-radius: 8px; margin-bottom: 8px;
+    }
+    .modal-box h2 { font-size: 18px; margin-bottom: 8px; }
+    .modal-box .jp { font-size: 17px; line-height: 1.6; margin: 10px 0; }
+    .modal-box .zh { font-size: 14px; color: #666; }
+    .related-box { margin: 14px 0; padding: 12px; background: #f5f5f5; border-radius: 12px; }
+    .related-box h4 { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .related-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .related-chips button {
+      padding: 6px 10px; border-radius: 20px; border: 1px solid #ccc; background: #fff;
+      font-size: 12px; cursor: pointer;
+    }
+    .win-modal { align-items: center; padding: 20px; }
+    .win-modal .modal-box { border-radius: 24px; text-align: center; max-height: none; }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      display: flex; background: #fff; border-top: 1px solid #e5e5e5;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .bottom-nav button {
+      flex: 1; padding: 12px 4px 10px; border: none; background: none;
+      font-size: 11px; font-weight: 700; color: #999; cursor: pointer;
+    }
+    .bottom-nav button.on { color: #58cc02; }
+    .bottom-nav button .ic { display: block; font-size: 22px; margin-bottom: 2px; }
+    .wx-bar {
+      margin: 0 16px 12px; padding: 12px; background: #fff;
+      border-radius: 14px; border: 2px solid #1cb0f6; box-shadow: 0 3px 0 #0d8ec7;
+    }
+    .wx-bar p { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.45; }
+    .wx-bar button {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      background: #1cb0f6; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer;
+    }
+    .wx-bar button.sec { margin-top: 8px; background: #fff; color: #1cb0f6; border: 2px solid #1cb0f6; }
+    .bottom-refresh-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 55;
+      pointer-events: auto;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      background: #fff; border-top: 2px solid #ddd;
+      box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+    }
+    body.nav-lesson .bottom-refresh-bar {
+      bottom: calc(52px + env(safe-area-inset-bottom));
+    }
+    .bottom-refresh-bar button {
+      width: 100%; padding: 13px 16px; border: none; border-radius: 12px;
+      background: linear-gradient(#f0f0f0, #e8e8e8); color: #333;
+      font-size: 16px; font-weight: 800; cursor: pointer;
+      border: 2px solid #ccc;
+    }
+    .bottom-refresh-bar button:active { background: #ddd; }
+    .fab-read {
+      position: fixed; right: 16px; bottom: calc(70px + env(safe-area-inset-bottom));
+      z-index: 56; width: 56px; height: 56px; border-radius: 50%; border: 3px solid #fff;
+      pointer-events: auto;
+      background: linear-gradient(#ff4b4b, #e03030); color: #fff; font-size: 26px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25); cursor: pointer;
+      line-height: 1;
+    }
+    .fab-read.fab-playing {
+      background: linear-gradient(#555, #333);
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .fab-read.fab-hidden { display: none !important; }
+    .fab-read:active { transform: scale(0.95); }
+    body.nav-lesson .fab-read { bottom: calc(122px + env(safe-area-inset-bottom)); }
+    .fab-globe {
+      position: fixed; right: 16px; bottom: calc(188px + env(safe-area-inset-bottom));
+      z-index: 119; width: 52px; height: 52px; border-radius: 50%; border: 3px solid #fff;
+      background: linear-gradient(145deg, #1cb0f6, #1899d6); color: #fff; font-size: 26px;
+      box-shadow: 0 4px 14px rgba(28,176,246,.45); cursor: pointer;
+    }
+    body.nav-lesson .fab-globe { display: block; }
+    .fab-globe { display: none; }
+    .map-globe-bar {
+      margin: 0 12px 12px; padding: 10px 12px; background: #e8f7ff; border-radius: 14px;
+      border: 2px solid #1cb0f6; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .map-globe-bar p { flex: 1; font-size: 12px; color: #333; line-height: 1.45; min-width: 140px; }
+    .map-globe-bar button {
+      padding: 10px 14px; border: none; border-radius: 12px; background: #1cb0f6; color: #fff;
+      font-weight: 800; font-size: 13px; cursor: pointer; white-space: nowrap;
+    }
+    #globe-url-box {
+      word-break: break-all; font-size: 12px; color: #1899d6; background: #f5fbff;
+      padding: 10px; border-radius: 10px; margin: 10px 0; line-height: 1.5;
+    }
+    .heart-toast {
+      position: fixed; left: 50%; top: 72px; transform: translateX(-50%);
+      z-index: 120; padding: 10px 18px; border-radius: 12px;
+      background: rgba(28,176,246,.95); color: #fff; font-weight: 800; font-size: 15px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2); pointer-events: none;
+      opacity: 0; transition: opacity .25s;
+    }
+    .heart-toast.show { opacity: 1; }
+    .tap-read {
+      display: inline-block; margin-top: 10px; padding: 8px 14px; border-radius: 20px;
+      background: #fff3e0; border: 2px solid #ffc800; color: #b8860b; font-size: 13px;
+      font-weight: 800; cursor: pointer;
+    }
+    .readalong-jp { font-size: 20px; line-height: 1.65; text-align: center; margin: 12px 0; }
+    .ra-env-tip {
+      font-size: 12px; line-height: 1.55; padding: 10px 12px; border-radius: 12px;
+      margin-bottom: 10px; background: #fff8e0; border: 2px solid #ffc800; color: #5c4a00;
+    }
+    .ra-env-tip.warn { background: #ffe8e8; border-color: #ff4b4b; color: #8a2020; }
+    .ra-env-tip b { color: #c45c00; }
+    .ra-env-tip.warn b { color: #c03030; }
+    .score-bars { margin-top: 10px; font-size: 11px; color: #555; }
+    .score-bar-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+    .score-bar-row span:first-child { width: 52px; flex-shrink: 0; }
+    .score-bar-track { flex: 1; height: 8px; background: #e5e5e5; border-radius: 4px; overflow: hidden; }
+    .score-bar-fill { height: 100%; background: #58cc02; border-radius: 4px; }
+    .engine-note { font-size: 11px; color: #999; margin-top: 8px; line-height: 1.45; }
+    .file-open-banner {
+      display: none; margin: 0 12px 10px; padding: 12px 14px; border-radius: 14px;
+      background: #fff3e0; border: 2px solid #ff9600; color: #5c3d00; font-size: 13px; line-height: 1.45;
+    }
+    .file-open-banner.show { display: block; }
+    .file-open-banner b { color: #c45c00; }
+    .file-open-banner .row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .file-open-banner button {
+      padding: 8px 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer;
+    }
+    .file-open-banner .btn-try { background: #1cb0f6; color: #fff; }
+    .file-open-banner .btn-hide { background: #eee; color: #555; }
+  </style>
+</head>
+<body>
+  <div id="file-open-banner" class="file-open-banner help-zh" role="alert">
+    <strong>⚠️ 您是直接双击打开的 index.html（没有声音是正常的）</strong><br>
+    浏览器禁止在这种方式下播语音。<b>请改用下面任一方式</b>（推荐第 1 种）：<br>
+    ① 双击同文件夹里的 <b>打开本地预览.bat</b>（会自动打开有声音的网页）<br>
+    ② 把文件夹上传到 Netlify 后，发 <b>https://…</b> 链接给别人<br>
+    <span style="font-size:12px;color:#888">已联网时可先点「尝试在线朗读」试 🔊（录音仍需用①或②）</span>
+    <div class="row">
+      <button type="button" class="btn-try" id="file-banner-try-tts">尝试在线朗读（需联网）</button>
+      <button type="button" class="btn-hide" id="file-banner-hide">知道了</button>
+    </div>
+  </div>
+  <div class="top">
+    <div class="top-left">
+      <button type="button" class="back" id="btn-back" style="display:none">← 選課</button>
+      <button type="button" class="version-chip" id="btn-version" title="查看版本与更新记录">v?</button>
+    </div>
+    <span id="top-title" style="font-weight:800;flex:1;text-align:center;min-width:0">日语初级课后练习</span>
+    <div class="stats">
+      <span id="ui-xp">⚡ 0</span>
+      <button type="button" id="ui-heart-btn" title="共 60 颗；跟读及格可赚红心">❤️ <span id="ui-heart-num">60</span></button>
+    </div>
+  </div>
+
+  <div id="wx-browser-banner" class="wx-browser-banner collapsed help-zh" role="alert">
+    <strong>🎤 跟读 / 录音在微信里常不可用</strong><br>
+    请点右上角 <b>···</b> → <b>在浏览器中打开</b>（Safari / Chrome），语音和麦克风才稳定。
+    <button type="button" id="wx-banner-dismiss">知道了</button>
+  </div>
+
+  <!-- 选课 -->
+  <div id="screen-pick" class="screen on">
+    <p class="pick-hint help-zh">选一课，先看知识地图，再闯关练习</p>
+    <p class="pick-hint help-zh" style="margin-top:6px;font-size:13px;color:#c45c00">📱 iPhone：进课后请先<b>点一次</b>地图或闯关里的 🔊（首次会解锁声音）</p>
+    <p class="pick-hint" style="margin-top:4px;font-size:13px;opacity:.9">レッスンを選ぶ → 知識マップ → チャレンジ</p>
+    <p style="margin:0 16px 8px"><button type="button" id="btn-howto" class="pick-share-btn help-zh" style="font-size:13px">❓ 怎么玩（中文说明）</button></p>
+    <p class="pick-version-foot" id="pick-version-foot"></p>
+    <div id="pick-list"></div>
+    <p class="pick-share-link"><button type="button" id="btn-pick-globe" class="pick-share-btn">🌐 网站链接·有声音（Safari 打开）</button></p>
+    <p class="pick-share-link"><button type="button" id="btn-open-share" class="pick-share-btn">分享给朋友 ›</button></p>
+  </div>
+
+  <!-- 课内：知识图 + 闯关 -->
+  <div id="screen-lesson" class="screen">
+    <div class="sub-tabs" id="sub-tabs">
+      <button type="button" data-tab="map" class="on">🗺️ 知識マップ</button>
+      <button type="button" data-tab="convo">💬 会話</button>
+      <button type="button" data-tab="play">🎮 チャレンジ</button>
+    </div>
+    <div id="panel-map">
+      <div class="map-globe-bar help-zh" id="map-globe-bar">
+        <p>没声音？用 <b>https 网站链接</b> 在 Safari 打开本课地图（地球仪可复制链接并试听）</p>
+        <button type="button" id="btn-map-globe">🌐 网站·有声音</button>
+      </div>
+      <div id="kg-root"></div>
+      <div class="outline-list" id="outline-root"></div>
+    </div>
+    <div id="panel-convo" style="display:none">
+      <p class="convo-hint help-zh">多轮情景对话：先听对方说，再跟读你的台词。内容按本课单词与句型编排。</p>
+      <div id="convo-list"></div>
+    </div>
+    <div id="panel-play" style="display:none">
+      <div class="mode-row">
+        <span id="mode-hint">最初のステージから</span>
+        <label><input type="checkbox" id="free-play" /> フリー選關</label>
+      </div>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <div id="game">
+    <div class="game-top">
+      <button type="button" id="btn-close">×</button>
+      <span id="game-title">ステージ</span>
+      <span class="hearts" id="game-hearts">❤️ 60/60</span>
+    </div>
+    <div class="game-body"><div class="game-card" id="game-card"></div></div>
+    <div class="game-nav" id="game-nav">
+      <button type="button" id="btn-level-prev">← 上一关</button>
+      <button type="button" id="btn-level-next">下一关 →</button>
+    </div>
+  </div>
+
+  <div class="modal" id="detail-modal">
+    <div class="modal-box" id="detail-box"></div>
+  </div>
+
+  <div class="modal win-modal" id="heart-modal">
+    <div class="modal-box">
+      <div style="font-size:52px">💔</div>
+      <h2 style="color:#e03030;margin:8px 0" id="heart-modal-title">ハート不足</h2>
+      <p id="heart-wait-tip" style="color:#666;font-size:14px;line-height:1.5;margin-bottom:12px"></p>
+      <p style="font-size:13px;color:#555;line-height:1.55;margin-bottom:14px;text-align:left">
+        <b>赚红心（不用等）</b>：🎤 跟读 → 录音 → 老师打分<strong>及格 +3 ❤️</strong>（可反复练）<br>
+        <b>自动恢复</b>：未满时约 <strong>3 分钟 +1 ❤️</strong>，最多存 <strong>60 ❤️</strong>
+      </p>
+      <button type="button" class="btn-duo" id="btn-earn-hearts-practice">🎤 シャドーでハート獲得</button>
+      <button type="button" class="btn-duo secondary" id="btn-restore-hearts" style="margin-top:10px">❤️ ハート満タン（60）</button>
+      <button type="button" class="btn-duo secondary" id="btn-heart-close" style="margin-top:10px">戻る</button>
+      <p style="font-size:12px;color:#999;margin-top:14px;line-height:1.55;text-align:left">
+        <b>刷新网页</b>：点最底部「↻ 刷新页面」也会回满红心。
+      </p>
+    </div>
+  </div>
+
+  <div class="modal win-modal" id="win-modal">
+    <div class="modal-box">
+      <div style="font-size:56px">🎉</div>
+      <h2 style="color:#58cc02">クリア！</h2>
+      <p id="win-text" style="color:#666;margin:12px 0 20px">+10 EXP</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button type="button" class="btn-duo secondary" id="btn-win-prev">← 上一关</button>
+        <button type="button" class="btn-duo" id="btn-next">下一关 →</button>
+        <button type="button" class="btn-duo secondary" id="btn-win-stay">继续练习本关</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="heart-toast" id="heart-toast" aria-live="polite"></div>
+
+
+  <div class="modal" id="share-modal">
+    <div class="modal-box">
+      <h2 style="color:#1cb0f6;margin-bottom:8px">分享给微信好友</h2>
+      <p id="wx-bar-tip" style="font-size:13px;color:#666;line-height:1.5;margin-bottom:12px"></p>
+      <button type="button" class="btn-duo" id="btn-wx-share" style="margin-bottom:8px">📤 复制链接 / 转发</button>
+      <button type="button" class="btn-duo secondary" id="btn-wx-help">❓ 怎么发链接（3步）</button>
+      <button type="button" class="btn-duo secondary" id="btn-share-close" style="margin-top:12px">关闭</button>
+    </div>
+  </div>
+
+  <div class="modal win-modal" id="version-modal">
+    <div class="modal-box">
+      <h2 style="color:#46a302;margin-bottom:4px">版本与更新记录</h2>
+      <p id="version-summary" style="font-size:14px;color:#666;margin-bottom:8px"></p>
+      <ol class="changelog" id="version-changelog"></ol>
+      <button type="button" class="btn-duo secondary" id="btn-version-close">关闭</button>
+    </div>
+  </div>
+
+  <button type="button" class="fab-globe" id="fab-globe" title="网站链接·有声音" aria-label="网站打开">🌐</button>
+  <button type="button" class="fab-read" id="fab-read" title="タップで再生／再生中は✕で停止" style="display:none" aria-label="音声再生">🔊</button>
+
+  <div class="modal" id="globe-modal">
+    <div class="modal-box">
+      <h2 style="color:#1cb0f6;margin-bottom:6px">🌐 用网站打开（有声音）</h2>
+      <p class="help-zh" style="font-size:13px;color:#666;line-height:1.55;margin-bottom:8px">
+        iPhone 请用 <b>Safari</b> 打开下面的 <b>https</b> 链接，进课后点地图 🔊 或「试听」。
+        链接可直达当前课的知识地图。
+      </p>
+      <div id="globe-url-box"></div>
+      <button type="button" class="btn-duo" id="btn-globe-copy" style="margin-bottom:8px">📋 复制链接</button>
+      <button type="button" class="btn-duo" id="btn-globe-open" style="margin-bottom:8px">🔗 在浏览器打开本课</button>
+      <button type="button" class="btn-duo secondary" id="btn-globe-test-sound" style="margin-bottom:8px">🔊 试听（点一次解锁声音）</button>
+      <button type="button" class="btn-duo secondary" id="btn-globe-close">关闭</button>
+    </div>
+  </div>
+
+  <div class="modal" id="convo-modal">
+    <div class="modal-box">
+      <div class="convo-top">
+        <button type="button" id="convo-close" aria-label="关闭">×</button>
+        <div class="convo-step-nav">
+          <button type="button" id="convo-prev-step" aria-label="上一步">‹</button>
+          <span id="convo-prog"></span>
+          <button type="button" id="convo-next-step" aria-label="下一步">›</button>
+        </div>
+      </div>
+      <div id="convo-stage"></div>
+      <div id="convo-footer"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="readalong-modal">
+    <div class="modal-box">
+      <h2 id="ra-title" style="font-size:17px;margin-bottom:4px">シャドーイング</h2>
+      <div class="ra-env-tip help-zh" id="ra-env-tip" hidden></div>
+      <button type="button" class="btn-duo" id="ra-mic-setup" style="display:none;width:100%;margin-bottom:10px">🎤 マイクを許可（点一次·系统弹窗授权）</button>
+      <p class="readalong-jp" id="ra-jp"></p>
+      <p class="zh no-zh-ui" id="ra-zh"></p>
+      <div class="voice-btns" style="margin-top:12px">
+        <button type="button" class="btn-duo secondary" id="ra-demo">🔊 お手本</button>
+        <button type="button" class="btn-duo btn-rec" id="ra-rec">🎤 录音开始<span class="ra-btn-hint">点一下即录</span></button>
+        <button type="button" class="btn-duo secondary ra-wait-rec" id="ra-playback">▶️ 听自己的录音<span class="ra-btn-hint">录完可点</span></button>
+        <button type="button" class="btn-duo secondary ra-wait-rec" id="ra-compare">🔁 比对<span class="ra-btn-hint">先示范→再你的</span></button>
+        <button type="button" class="btn-duo ra-wait-rec" id="ra-grade">🦉 发音评分<span class="ra-btn-hint">录完再点</span></button>
+      </div>
+      <div id="ra-fb"></div>
+      <button type="button" class="btn-duo secondary" id="ra-close" style="margin-top:12px">閉じる</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" id="bottom-nav" style="display:none">
+    <button type="button" data-nav="pick"><span class="ic">📚</span>選課</button>
+    <button type="button" data-nav="map"><span class="ic">🗺️</span>マップ</button>
+    <button type="button" data-nav="play"><span class="ic">🎮</span>チャレンジ</button>
+  </nav>
+
+  <div class="bottom-refresh-bar" id="bottom-refresh-bar">
+    <button type="button" id="btn-reload">↻ 刷新页面（红心回满 60 · 重新加载）</button>
+  </div>
+
+  <script src="lesson-dialogues.js?v=46"></script>
+  <script src="app.js?v=46"></script>
+</body>
+</html>

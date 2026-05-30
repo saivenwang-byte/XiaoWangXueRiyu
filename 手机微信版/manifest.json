@@ -1,0 +1,11 @@
+{
+  "name": "日语初级课后练习",
+  "short_name": "日语初级课后练习",
+  "description": "知识地图 + 闯关练习，手机微信专用",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#58cc02",
+  "theme_color": "#58cc02",
+  "orientation": "portrait",
+  "lang": "zh-CN"
+}

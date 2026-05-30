@@ -1,0 +1,63 @@
+══════════════════════════════════════
+  你看到的「Site not found」是什么意思？
+══════════════════════════════════════
+
+说明：这个网址 https://qingjing-biaori.netlify.app
+      在 Netlify 上还没有建好（或名字没改对）。
+
+不是程序坏了，是「还没发布到这个地址」。
+
+
+══════════════════════════════════════
+  立刻能用的链接（已测可打开）
+══════════════════════════════════════
+
+https://saivenwang-byte.github.io/XiaoWangXueRiyu-v2/index.html?v=403
+
+用手机 4G 打开。可以先用这条发微信。
+
+
+══════════════════════════════════════
+  修好 Netlify（在已登录的网页上做）
+══════════════════════════════════════
+
+【A】如果你已经拖过文件夹，只是名字不对：
+
+  1. 打开 https://app.netlify.com/
+  2. 点进你的那个站点（列表里唯一一个也行）
+  3. 站点地址在顶部，形如：
+     https://xxxx-xxxxx.netlify.app
+     复制这个地址，在浏览器打开：
+     https://xxxx-xxxxx.netlify.app/index.html?v=346
+     能打开 = 发布成功了，只是名字不是 qingjing-biaori
+
+  4. 要改成 qingjing-biaori：
+     Site configuration → Domain management → Options
+     → Change project name → 填 qingjing-biaori → Save
+     等 1 分钟再打开新地址。
+
+
+【B】如果列表里没有任何站点（从没拖成功）：
+
+  1. https://app.netlify.com/
+  2. Add new site → Deploy manually
+  3. 拖入整个「日语学习」文件夹（有 index.html 的那一层）
+     不要只拖「js」或「发布包」子文件夹
+  4. 等 Published
+  5. 再按【A】改名字或复制顶部地址
+
+
+【C】拖进去时常见错误
+
+  × 拖了子文件夹 → 会 404
+  √ 拖「日语学习」根目录（和 index.html 同级）
+
+
+══════════════════════════════════════
+  发布成功后告诉我
+══════════════════════════════════════
+
+把 Netlify 顶部显示的完整网址发我（一行），
+我帮你写进程序里，以后复制分享就都对。
+
+══════════════════════════════════════

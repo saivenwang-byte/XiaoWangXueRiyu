@@ -1,0 +1,116 @@
+第1单元 李さんは中国人です
+
+第1課：李さんは中国人です
+层级	内容
+课文主题	自我介绍 — 成田机场到达大厅
+远景（地理彩蛋）	透过机场大玻璃窗，远处隐约可见东京塔轮廓，蓝天白云，几片樱花瓣飘落。
+中景（课文主体） ★	成田机场到达大厅，明亮现代。墙上有「東京へようこそ」大型欢迎牌，电子航班看板、行李传送带、自动门。整洁、崭新、充满期待的氛围。
+近景（人物+道具）	ぐるみ站在大厅中央，戴小小旅行帽、背小背包。一手握红色护照（封面有樱花贴纸），脚边放着迷你行李箱。
+特写（表情）	双眼圆睁闪亮，嘴巴微张成惊叹状，脸颊兴奋泛红。表情是纯粹的「ワクワク」期待与好奇。
+服装	旅行装：迷你帽子、小背包
+持ち物	红色护照、迷你行李箱
+情绪线	旅程起点 — 兴奋
+🎬 构图与镜头：
+
+视角：平视，ぐるみ的视线高度（低机位，让ぐるみ看起来虽小但充满画面）
+
+构图：中心对称构图，ぐるみ站在画面正中央，背后的欢迎牌和窗外东京塔形成纵深层次
+
+镜头：24mm广角镜头效果，前景ぐるみ清晰，中景大厅开阔，远景东京塔虚化
+
+光线：清晨柔和的侧光从右侧玻璃窗洒入，给ぐるみ镀上暖金色轮廓光。整体色调温暖明亮，阴影柔和。
+
+光晕：窗户方向有轻微的柔光光晕，空气中几片樱花花瓣在光线中发光。
+
+🎨 AI提示词：
+
+text
+A wide-angle illustration in Gurumi art style, warm morning light.
+Center composition: a round white fluffy creature (Gurumi) with pink cheeks, wearing a tiny travel hat and backpack, holding a red passport, standing in the middle of Narita Airport arrival lobby. A large welcome sign reads "東京へようこそ". Through the window, Tokyo Tower is faintly visible in the distance. Cherry blossom petals floating in the air, catching sunlight. Soft golden side lighting from the right, gentle lens flare near the window. Warm pastel color palette, watercolor texture, shallow depth of field blurring the distant tower. The creature's eyes are wide and sparkling with excitement, mouth slightly open in awe. --ar 16:9 --style expressive
+
+
+第2課：これは本です
+层级	内容
+课文主题	指示词・物品询问 — 机场小商店
+远景（地理彩蛋）	店外玻璃窗外，停机坪上停着全日空（ANA）飞机，尾翼上有蓝色ANA标志。
+中景（课文主体） ★	成田机场内小商店。货架上整齐陈列日式杂货：扇子、风铃、招き猫、和风小物。收银台旁有「東京限定」展示架。
+近景（人物+道具）	ぐるみ站在货架前，踮起脚伸长小手，指着架上一个日本风铃。另一手拉着站员小姐的衣角。
+特写（表情）	眼睛闪亮，仰头看站员小姐，表情是「これ、なんですか？」的好奇与天真。
+服装	同第1课旅行装
+持ち物	指着风铃
+情绪线	探索 — 好奇
+🎬 构图与镜头：
+
+视角：低角度仰拍（从ぐるみ的高度向上看货架和站员小姐）
+
+构图：对角线构图，货架从左下延伸到右上，ぐるみ在左下角伸手向上，站员小姐在右侧弯腰
+
+镜头：35mm标准镜头，焦点在ぐるみ的手指和风铃上，货架前后有景深感
+
+光线：店内暖色顶光照亮货架，窗外的自然光从左侧射入形成逆光边缘。风铃在光线下有细小反光。
+
+光晕：风铃玻璃材质有一圈柔和的折射光晕。
+
+🎨 AI提示词：
+
+text
+A warm illustration in Gurumi art style, cozy shop interior lighting.
+Diagonal composition: a round white fluffy creature (Gurumi) in travel hat, standing on tiptoes and reaching up toward a glass wind chime on a shop shelf. A kind station attendant lady in uniform bends down beside. In the background, a shop at Narita Airport with Japanese souvenirs - folding fans, maneki-neko lucky cat figurines. Through the shop window, an ANA airplane with blue tail logo visible on the tarmac. Warm overhead light, soft backlight from the window. Focus on the creature's tiny hand and the wind chime. The creature's expression is curious and innocent, eyes sparkling upward. --ar 16:9 --style expressive
+
+
+第3課：ここはデパートです
+层级	内容
+课文主题	场所询问・指引 — 浅草站前
+远景（地理彩蛋）	浅草雷门的巨大红色灯笼在远方清晰可见，灯笼上写着「雷门」二字。仲见世通入口隐约可见。
+中景（课文主体） ★	浅草站前广场。周边有路线指示牌、交番（小派出所）、观光地图看板。几位观光客在拍照。
+近景（人物+道具）	ぐるみ站在观光地图看板前，伸手指着地图上某个位置，歪头思考。另一手拿着折叠式东京观光地图。站员小姐微笑弯腰指向雷门方向。
+特写（表情）	眉头微皱，歪头，嘴唇微抿。表情是「ここはどこかな？」的困惑与认真。
+服装	旅行装，加了一条小围巾
+持ち物	东京观光地图、小背包
+情绪线	寻找 — 困惑
+🎬 构图与镜头：
+
+视角：略高的俯拍视角（从观光地图看板的上方往下看）
+
+构图：三分法构图，左侧是ぐるみ和站员小姐在看地图，右侧留白处是远处的雷门灯笼（虚化）
+
+镜头：50mm标准镜头，焦点在ぐるみ和地图上，浅景深虚化远景灯笼
+
+光线：上午的晴朗日光，明亮均匀。地面有淡淡阴影，整体色调清爽偏暖。
+
+光晕：无明显光晕，灯笼红色在远处形成自然视觉焦点。
+
+🎨 AI提示词：
+
+text
+A bright illustration in Gurumi art style, sunny morning light.
+Rule-of-thirds composition: on the left, a round white fluffy creature (Gurumi) with a small scarf, looking at a large tourist map board with a tilted head, one tiny hand pointing at the map. A station attendant lady smiles and points toward the right side of frame. On the right, in soft bokeh, the giant red lantern of Kaminarimon gate with "雷門" characters visible. Asakusa station plaza with directional signs and a small police box. Clean daylight, soft shadows, warm and crisp atmosphere. The creature's expression is slightly puzzled and earnest. --ar 16:9 --style expressive
+
+
+第4課：部屋に机といすがあります
+层级	内容
+课文主题	存在句・方位词 — 酒店房间
+远景（地理彩蛋）	透过酒店窗户，远处东京晴空塔在夜色中点亮，隅田川河面倒映灯光。
+中景（课文主体） ★	东京商务酒店房间。简洁干净：一张单人床、书桌、椅子、小电视、衣柜。桌上放着酒店便笺和笔。墙上挂着东京观光海报。
+近景（人物+道具）	ぐるみ在房间里东张西望。打开衣柜看里面，又跑到书桌前拉开抽屉，最后跳上床蹦了一下。
+特写（表情）	坐在床上，环视房间，露出满意笑容。表情是「ここが今日の部屋か〜」的新奇与安心。
+服装	轻便室内服（脱了帽子和背包）
+持ち物	酒店房卡
+情绪线	安顿 — 新奇
+🎬 构图与镜头：
+
+视角：平视，从房间角落看向床的方向
+
+构图：框架构图，利用酒店房间的门框或窗户框住画面，床在中间偏右，窗外晴空塔在左上角
+
+镜头：28mm广角，纳入整个房间，让观众感受空间的真实大小
+
+光线：夜晚，窗外城市灯光为主光源，偏冷色调。室内台灯补暖光，形成冷暖对比。晴空塔的灯光在夜空中柔和发光。
+
+光晕：窗外远处灯光有轻微柔光扩散，台灯在ぐるみ身上投下暖色光斑。
+
+🎨 AI提示词：
+
+text
+A cozy night illustration in Gurumi art style, warm interior light against cool night outside.
+Frame-within-a-frame composition: a round white fluffy creature (Gurumi) in casual indoor clothes, sitting on a hotel bed and looking around the room with a satisfied smile. Through the window, Tokyo Skytree is illuminated against the night sky, its reflection shimmering on the Sumida River. A standard Japanese business hotel room - bed, desk, chair, TV, closet. A small desk lamp casts warm light, contrasting with the blue city lights outside. The creature has a hotel key card nearby. Soft bokeh on the distant tower. --ar 16:9 --style expressive

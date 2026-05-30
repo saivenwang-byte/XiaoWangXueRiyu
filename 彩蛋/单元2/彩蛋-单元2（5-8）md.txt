@@ -1,0 +1,116 @@
+会社の生活①
+
+第5課：森さんは七時に起きます
+层级	内容
+课文主题	时间表达・一日行程 — 酒店早晨
+远景（地理彩蛋）	窗外晨光中的东京街景，远处东京塔在朝阳下呈剪影，通勤电车在高架轨道上驶过。
+中景（课文主体） ★	酒店房间早晨。床头柜上的电子时钟显示「7:00」。窗帘半开，阳光洒进房间。桌上放着Room Service早餐托盘。
+近景（人物+道具）	ぐるみ被闹钟吵醒，从被子里伸出一只小手摸闹钟，另一手揉眼睛。头发睡得乱糟糟。
+特写（表情）	半睡半醒，眼睛眯成一条线，打了小哈欠。表情是「もう朝か…」的困倦。
+服装	睡衣（小浴衣当睡衣）
+持ち物	闹钟
+情绪线	日常 — 困倦
+🎬 构图与镜头：
+
+视角：俯拍（从床头方向往下看）
+
+构图：闹钟在画面右下角作为前景，ぐるみ在床中央蜷缩在被子里，窗外东京塔在左上角
+
+镜头：50mm标准镜头，焦点在ぐるみ迷糊的脸上，闹钟和窗外都略带虚化
+
+光线：清晨暖金色阳光从左侧窗帘缝隙斜射入，形成一道光柱。整体色调温暖柔和，高光偏金，阴影偏暖灰。
+
+光晕：阳光洒入处有轻微的尘埃粒子在光线中漂浮，形成温馨的晨光氛围。
+
+🎨 AI提示词：
+
+text
+A sleepy morning illustration in Gurumi art style, warm golden sunrise light.
+Overhead composition: a round white fluffy creature (Gurumi) wrapped in a small yukata as pajamas, tangled in white hotel sheets, one tiny hand reaching out from under the blanket to silence an alarm clock showing 7:00. The creature's hair is messy, eyes barely open, mid-yawn. Through the half-open curtain, morning sunlight streams in a visible beam, dust particles floating in the light. Tokyo Tower is a silhouette in the golden dawn through the window. A breakfast tray sits on the nearby desk. Soft, dreamy morning atmosphere with warm highlights and gentle shadows. --ar 16:9 --style expressive
+
+
+第6課：吉田さんは来月中国へ行きます
+层级	内容
+课文主题	移动・交通工具 — 东京站新干线月台
+远景（地理彩蛋）	东京站丸之内赤炼瓦站舍在远方隐约可见。月台上方有大型电子时刻表。
+中景（课文主体） ★	东京站新干线月台。流线型东海道新干线列车停在轨道上，车身白色带蓝色条纹。月台上乘客排队等候上车，站务员举着牌子。
+近景（人物+道具）	ぐるみ站在月台上，一手拿着新干线车票，一手拉着行李箱。仰头看着巨大的新干线车头，身体后仰，显得车子超级大。
+特写（表情）	嘴巴张成O型，双眼倒映出新干线的白色车身。表情是「でっかい…！」的震撼与兴奋。
+服装	旅行装，加了一条小围巾
+持ち物	新干线车票、行李箱
+情绪线	出发 — 震撼
+🎬 构图与镜头：
+
+视角：低角度仰拍（从ぐるみ膝盖高度向上拍，强化新干线的巨大感）
+
+构图：ぐるみ在画面右下角很小，新干线车头占据左上大半画面，形成强烈的大小对比
+
+镜头：16mm超广角，夸张透视效果，车头因透视显得更大，轨道线从前景延伸至远方
+
+光线：白天明亮日光，月台上方透过半透明顶棚形成漫射柔光。车身白色部分有高光反射。整体色调清新偏冷。
+
+光晕：车头高光处有轻微反射光晕，远处月台尽头有阳光洒入的明亮区域。
+
+🎨 AI提示词：
+
+text
+A dramatic wide-angle illustration in Gurumi art style, bright daytime station light.
+Low-angle composition with extreme size contrast: a tiny round white fluffy creature (Gurumi) with a scarf stands in the bottom right corner of a Shinkansen platform, holding a train ticket and a small suitcase, head tilted all the way back to look up. Towering over the frame is the massive white nose of a Tokaido Shinkansen bullet train with blue stripes, stretching diagonally across the composition. Tokyo Station platform with passengers and a station attendant in the middle ground. The red brick facade of Tokyo Station Marunouchi building faintly visible in the far background. Clean daylight filtering through the platform roof, bright highlights on the train body. The creature's mouth forms an O-shape of awe, eyes reflecting the white train. Extreme perspective emphasizing scale. --ar 16:9 --style expressive
+
+
+第7課：李さんは毎日コーヒーを飲みます
+层级	内容
+课文主题	动作对象・频率副词 — 咖啡店点单
+远景（地理彩蛋）	透过咖啡店的玻璃窗，远处可见道顿堀川和著名的格力高跑步人广告牌。河面上有观光船缓缓驶过。
+中景（课文主体） ★	大阪心斋桥附近的一家复古喫茶店内部。深色木质吧台、皮质座椅、墙上挂着老式挂钟。吧台上有虹吸壶和手冲咖啡器具。菜单立在桌上，用毛笔字写着「本日のコーヒー」。
+近景（人物+道具）	ぐるみ坐在吧台高脚凳上（脚够不到地面晃来晃去），面前放着一杯冒着热气的咖啡。ぐるみ双手捧着咖啡杯（杯子显得特别大），旁边有一小碟方糖和牛奶。
+特写（表情）	轻轻吹着咖啡热气，眼睛眯成满足的弯月形。第一口抿下去后露出「美味しい！」的惊喜表情。嘴角沾了一点点奶泡。
+服装	商务休闲装（小领巾，和单元2的办公场景呼应）
+持ち物	咖啡杯、方糖夹
+情绪线	日常 — 满足
+🎬 构图与镜头：
+
+视角：平视，略偏右侧，从吧台侧面看向ぐるみ
+
+构图：前景是ぐるみ和巨大的咖啡杯占据画面右半部，中景是吧台和咖啡器具，远景透过左侧玻璃窗看到道顿堀的格力高广告牌
+
+镜头：50mm标准镜头，焦点在ぐるみ捧着咖啡杯的双手和满足的表情上，窗外远景柔焦虚化
+
+光线：午后暖阳从左侧窗户斜射入店内，在木质吧台上投下温暖的光斑。咖啡的热气在光线中袅袅升起，形成微小的高光粒子。整体色调偏暖棕色系，怀旧感。
+
+光晕：咖啡热气上方有轻微的柔光折射，窗外光线在杯沿形成一圈淡淡的轮廓光。
+
+🎨 AI提示词：
+
+text
+A cozy afternoon illustration in Gurumi art style, warm vintage coffee shop atmosphere.
+Side-angle composition: a round white fluffy creature (Gurumi) in a small business scarf, sitting on a tall bar stool with tiny legs dangling, holding an oversized coffee cup with both hands. The creature is blowing gently on the steaming coffee, eyes closed in bliss. A retro kissaten in Osaka - dark wood counter, leather seats, siphon coffee maker, wall clock. On the table: a small milk pitcher, sugar cubes with tiny tongs. Through the shop window on the left, the famous Glico running man sign and Dotonbori canal are visible in soft bokeh. Warm golden afternoon sunlight streams through the window, creating light patches on the wooden counter. Steam from the coffee catches the light with tiny glowing particles. The creature has a tiny milk foam mustache. Nostalgic, peaceful atmosphere. --ar 16:9 --style expressive
+
+
+第8課：李さんは日本語で手紙を書きます
+层级	内容
+课文主题	手段・授受表达 — 公司办公桌写信
+远景（地理彩蛋）	透过办公室窗外，大阪城天守阁的金色鯱鉾在午后阳光下闪闪发光。窗外下方是大手町的银杏林荫道。
+中景（课文主体） ★	大阪公司的办公区。一张整洁的办公桌，上有电脑显示器、笔筒（里面对讲机笔、铅笔等）、便签纸、小型观叶植物。桌角放着「大阪限定」的章鱼烧小摆件和一杯煎茶。墙上贴着公司日程表和一张日本地图。
+近景（人物+道具）	ぐるみ坐在办公椅上，面前铺着一张日式便笺。右手拿着钢笔，正在认真写字。左手压着信纸边缘。旁边放着一封已经写好的信封，上面用工整的日语写着收件人地址。
+特写（表情）	眉头微皱，专注认真，舌尖微微伸出（努力写字的可爱小习惯）。眼神盯着笔尖，生怕写错字。信纸上已经写了几行工整的假名。
+服装	商务装（小领巾整齐系好），和单元2办公室场景一致
+持ち物	钢笔、信纸、信封
+情绪线	工作 — 专注
+🎬 构图与镜头：
+
+视角：45度俯拍（从办公桌上方向下看，类似从同事座位看过来的角度）
+
+构图：信纸和钢笔作为前景占画面下方1/3，ぐるみ的身体在中间，窗外大阪城在左上角远景。形成「手→脸→窗」的视觉引导线
+
+镜头：85mm中长焦，焦点精准落在ぐるみ的手和信纸上，周围办公物品轻微虚化，窗外大阪城明显虚化成色块
+
+光线：下午柔和的自然光从左侧大窗洒入，在办公桌上形成柔和的漫反射。信纸上有轻微反光，钢笔尖有细小金属光泽。整体色调偏暖白，干净明亮。
+
+光晕：窗外光线在信纸边缘形成一圈极淡的白色柔光，钢笔金属部分有一点高光反射。
+
+🎨 AI提示词：
+
+text
+A focused workspace illustration in Gurumi art style, soft afternoon office light.
+45-degree overhead composition: a round white fluffy creature (Gurumi) in a tidy business scarf, seated at an office desk, carefully writing Japanese characters on a letter with a fountain pen. The tip of the creature's tiny tongue is sticking out slightly in concentration. The desk has a computer monitor, pen holder, small plant, a takoyaki-themed souvenir, and a cup of green tea. Through the large window on the upper left, Osaka Castle with its golden shachihoko ornaments is visible in soft bokeh against the afternoon sky, with ginkgo trees lining the street below. Natural light from the window illuminates the desk softly. The letter paper has a subtle sheen. Clean, bright, warm office atmosphere. Focus on the tiny hands holding the pen and the neat hiragana on the paper. --ar 16:9 --style expressive

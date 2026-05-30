@@ -1,0 +1,116 @@
+箱根で
+
+第9課：四川料理は辛いです
+层级	内容
+课文主题	イ形容詞・味の表現 — 箱根の食事処
+远景（地理彩蛋）	透过餐厅的大窗，远处芦ノ湖的湖面在夕阳下泛着金光，湖边山林已染上秋色，红叶黄叶层层叠叠。湖面上有小型游览船缓缓行驶。
+中景（课文主体） ★	箱根温泉街的一家传统日式餐厅。木造建筑内部，榻榻米座席，低矮的食台。墙上挂着「箱根寄木細工」的工艺挂饰和一幅富士山水墨画。隔壁座位有穿着浴衣的客人在用餐。
+近景（人物+道具）	ぐるみ跪坐在座垫上，面前摆着一份定食：陶锅中咕嘟咕嘟煮着湯豆腐，旁边有小碟漬物、一碗味噌汁、一碗白饭。ぐるみ刚夹起一块沾了辣味噌的豆腐，正准备送入口中。筷子尖上还滴着红红的辣油。
+特写（表情）	豆腐入口瞬间，双眼圆睁，脸颊瞬间涨红，嘴巴张开呼气，眼角挂着一小滴辣出来的眼泪。表情是「からい！でも…うまい！」的冲击与惊喜交织。
+服装	浴衣（ゆかた），和旅馆温泉街氛围融合
+持ち物	筷子、辣味噌小碟
+情绪线	体验 — 冲击
+🎬 构图与镜头：
+
+视角：平视，略低角度（从食台高度看向ぐるみ的脸）
+
+构图：食台作为前景占画面下方1/3，ぐるみ居中，背后窗外的芦之湖夕阳景色占据画面上方。陶锅的热气在画面中央形成上升的白色蒸汽流。
+
+镜头：50mm标准镜头，焦点在ぐるみ被辣到的瞬间表情上。前景的陶锅和背景的湖景都轻微虚化。
+
+光线：黄昏的金色暖光从右侧窗户斜射入，给整个画面铺上温暖的橙金色调。陶锅热气在逆光中发光。辣味噌的红色在暖色调中格外醒目。
+
+光晕：窗外夕阳在湖面上有一道金色光带反射，窗框附近有轻微的暖色光晕。
+
+🎨 AI提示词：
+
+text
+A dramatic food reaction illustration in Gurumi art style, warm golden hour light from the window.
+Eye-level composition: a round white fluffy creature (Gurumi) in a soft cotton yukata robe, kneeling at a low traditional dining table in a Hakone hot spring town restaurant. The creature has just taken a bite of tofu with spicy miso, chopsticks still in hand. Its cheeks are flushed bright red, eyes wide and watery, mouth open in a gasp — a mix of shock and delight at the spiciness. On the table: a clay pot of simmering yudofu, pickled vegetables, miso soup, and a small dish of red spicy miso. Through the large window behind, Lake Ashi glows golden in sunset, autumn leaves on the surrounding hills. Steam rises from the hot pot, catching the backlight. Warm orange-gold tones throughout, with the red chili oil providing a vibrant color contrast. --ar 16:9 --style expressive
+
+
+第10課：京都の紅葉は有名です
+层级	内容
+课文主题	ナ形容詞・観光地の感想 — 箱根神社参道
+远景（地理彩蛋）	富士山完整地矗立在远方的蓝天下，山顶积雪纯白。山脚下是芦ノ湖碧蓝的湖面。湖畔的森林已染上红黄秋色。天空中几只鹰在盘旋。
+中景（课文主体） ★	箱根神社的参道。两侧高大的杉树林立，石灯笼沿路排列，青苔覆盖在石灯笼底座上。参道尽头隐约可见朱红色的神社鸟居。地面上有几片散落的红叶。
+近景（人物+道具）	ぐるみ站在参道正中央，手持一个小小的おみくじ（神签），低头认真读签文。旁边的石灯笼底座上放着一枚刚买来的絵馬（许愿牌），上面画着一只小ぐるみ头像。
+特写（表情）	展开签文时眼睛紧张地眯成一条缝，然后慢慢睁开一只眼看结果。看到「大吉」二字后，整张脸瞬间绽放出灿烂的笑容，眼睛弯成月牙。
+服装	浴衣，外搭一件薄羽織（はおり）
+持ち物	おみくじ、絵馬
+情绪线	观光 — 喜悦
+🎬 构图与镜头：
+
+视角：正面平视，从参道正前方看向ぐるみ和远处的富士山
+
+构图：对称构图，参道两侧的杉树形成天然画框，ぐるみ站在画面中轴线上。远处富士山位于画面上方正中央。石灯笼在两侧形成前景框架。
+
+镜头：35mm小广角，纳入参道的纵深感，远景富士山清晰可见。焦点在ぐるみ和手中的签文，远景轻微柔焦。
+
+光线：上午的晴朗日光，空气清澈。阳光从右上方透过树冠形成斑驳光影洒在参道上。富士山在远处沐浴在均匀明亮的光线中。整体色调清新、干净、偏冷，红叶的红色作为点缀色。
+
+光晕：树冠缝隙中有几束光线射下形成轻微的体积光，石灯笼青苔上有细小露珠的反光。
+
+🎨 AI提示词：
+
+text
+A serene shrine visit illustration in Gurumi art style, crisp autumn morning light.
+Symmetrical composition: a round white fluffy creature (Gurumi) in a yukata with a light haori jacket, standing in the center of a forested shrine path in Hakone. The creature is reading a small omikuji fortune slip, with one eye peeked open nervously before breaking into a joyful smile. On a nearby stone lantern sits a wooden ema votive tablet with a tiny Gurumi face drawn on it. Towering cedar trees line both sides of the path, stone lanterns covered in moss. Through the natural frame of trees, Mount Fuji rises majestically in the distance with a snow-capped peak, reflected in the blue waters of Lake Ashi below. Autumn red and gold leaves scattered on the stone path. Dappled sunlight filtering through the tree canopy, soft god rays. Clean, crisp, cool-toned atmosphere with warm autumn accents. --ar 16:9 --style expressive
+
+
+第11課：小野さんは歌が好きです
+层级	内容
+课文主题	好き・嫌い・上手・下手 — 温泉旅館の広間
+远景（地理彩蛋）	透过広間的大窗户，傍晚的箱根外輪山山脊线在暮色中呈深蓝剪影。山间有温泉的白色蒸汽袅袅升起，远处隐约可见小田原方向的城镇灯火。
+中景（课文主体） ★	温泉旅馆的大広間（聚会厅）。榻榻米地板，墙上装饰着挂轴和插花。角落里放着一台カラオケ机器，屏幕亮着。几张矮桌上摆着茶点和水果。
+近景（人物+道具）	ぐるみ站在広間前方，手里拿着カラオケ麦克风，正在引吭高歌。屏幕上显示着演歌的歌词和画面。周围几位旅馆客人（简单剪影）坐在座垫上微笑着拍手打拍子。
+特写（表情）	双眼紧闭，全身心投入唱歌。嘴巴张得大大的，脸颊红扑扑。麦克风线缠在短腿上完全没注意到。表情是「気持ちいい！」的忘我与陶醉。
+服装	浴衣（旅馆统一花纹款）
+持ち物	麦克风
+情绪线	社交 — 陶醉
+🎬 构图与镜头：
+
+视角：从观众席角度看向前方，略带仰角（让ぐるみ看起来像在舞台上）
+
+构图：ぐるみ在画面中央偏左，麦克风线在脚下形成曲线的视觉引导。カラオケ屏幕在右上角，窗外暮色在左上角。观众剪影在前景模糊。
+
+镜头：35mm镜头，焦点在ぐるみ的陶醉表情上。前景观众虚化成剪影，窗外景色柔焦。
+
+光线：室内暖黄色顶灯为主光源，カラオケ屏幕发出蓝白色光打在ぐるみ侧脸上形成冷暖对比。窗外是深蓝暮色。整体氛围温馨热闹，色调偏暖。
+
+光晕：屏幕的蓝光在ぐるみ边缘形成微弱的冷色轮廓光，和室内的暖光形成有趣的色彩对比。
+
+🎨 AI提示词：
+
+text
+A joyful karaoke scene illustration in Gurumi art style, warm indoor evening light.
+Audience perspective with slight low angle: a round white fluffy creature (Gurumi) in a matching hotel yukata, standing at the front of a traditional Japanese inn hall, singing passionately into a karaoke microphone with eyes squeezed shut and mouth wide open. The microphone cord is comically tangled around its tiny legs. A karaoke screen glows blue-white on the right. Through the large windows, the outer rim of Hakone mountains is silhouetted against the twilight sky, with onsen steam rising from the valleys and distant town lights twinkling. Simple silhouettes of other guests sit on tatami mats, clapping along. Warm amber overhead lighting contrasts with the cool blue screen glow on the creature's face. Lively, heartwarming atmosphere. --ar 16:9 --style expressive
+
+
+第12課：李さんは森さんより若いです
+层级	内容
+课文主题	比較表現・どっちがいい — 箱根土産店
+远景（地理彩蛋）	透过土产店玻璃窗，箱根登山电车正沿着陡峭的山坡缓缓行驶，红色车身在绿色山林中格外醒目。远处的大涌谷冒着白色火山蒸汽。
+中景（课文主体） ★	箱根温泉街的土产店内部。货架上琳琅满目：温泉饅頭（不同口味的盒装）、箱根寄木細工（秘密箱、小抽屉盒）、黒たまご（大涌谷名物）、富士山形状的饼干、各种卡通化的地藏小摆件。
+近景（人物+道具）	ぐるみ站在货架前，左手拿着一盒「黒たまご」右手拿着一盒「温泉饅頭」，来回比较，拿不定主意。购物篮里已经放了几样小东西。脚边有个「お土産ランキング」的立牌。
+特写（表情）	左看右看，脑袋像拨浪鼓一样来回转动。眉头纠结，嘴巴抿成一条线。表情是「どっちにしようかな…」的经典选择困难。
+服装	旅装，戴回小帽子
+持ち物	黑鸡蛋、温泉馒头、购物篮
+情绪线	选择 — 纠结
+🎬 构图与镜头：
+
+视角：平视，从货架对面看向ぐるみ
+
+构图：货架上的商品作为前景和背景包围画面，ぐるみ居中。左右手各拿一件商品的对称构图形成视觉天平感。登山电车和大涌谷在窗外远景。
+
+镜头：50mm标准镜头，焦点在ぐるみ和两件商品上。货架前后景有浅景深虚化。
+
+光线：白天店内明亮均匀的荧光灯照明（偏冷白），窗外是午后阳光的暖色。商品包装色彩鲜艳丰富，在冷白灯光下显得琳琅满目。
+
+光晕：无明显光晕效果。包装的塑料膜有轻微反光。
+
+🎨 AI提示词：
+
+text
+A charming souvenir shop illustration in Gurumi art style, bright interior light.
+Symmetrical choice composition: a round white fluffy creature (Gurumi) in travel hat, standing in a Hakone souvenir shop, holding a box of "black eggs" (Owakudani specialty) in one tiny hand and a box of onsen manju sweets in the other, head swiveling back and forth in adorable indecision. The creature's brow is furrowed in classic "which one should I pick?" dilemma. Shop shelves are packed with colorful local products - boxes of hot spring steamed buns, intricate Hakone yosegi puzzle boxes, Mount Fuji-shaped cookies, tiny Jizo statues. A ranking sign for popular souvenirs stands nearby. Through the shop window, the red Hakone Tozan mountain train climbs a steep slope through green forest, and white volcanic steam rises from Owakudani in the distance. Bright cool fluorescent store lighting makes the colorful packaging pop, with afternoon sunlight outside providing warm contrast. --ar 16:9 --style expressive

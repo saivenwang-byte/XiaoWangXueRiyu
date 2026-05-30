@@ -1,0 +1,7 @@
+【2026-05-21】已切换为 PRD 三关版
+- index.html 与根目录 index.html 共用 ../js 下同一套代码
+- 底部：首页 / 复习 / 我的
+- 旧版 24 课情景：打开 ../legacy.html
+
+预览：双击「打开本地预览.bat」后访问
+  http://localhost:8765/手机微信版/index.html

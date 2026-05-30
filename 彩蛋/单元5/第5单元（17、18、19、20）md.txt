@@ -1,0 +1,117 @@
+第5单元：日本でお正月を迎える
+
+
+第17課：わたしは新しい洋服がほしいです
+层级	内容
+课文主题	<span style="color:red">ほしい</span>・<span style="color:red">たい</span>（願望表現） — 仙台の商店街
+远景（地理彩蛋）	透过商店街拱廊的玻璃顶棚，远处可见仙台城跡的丘陵轮廓，山顶覆盖着白雪。冬季的街道两旁挂着新年装饰的松竹。天空飘着细小的雪花。
+中景（课文主体） ★	仙台<span style="color:red">一番町</span>商店街的アーケード内。两侧是各式各样的店铺：<span style="color:red">服屋</span>（洋服店）、書店、薬局。商店街的柱子上贴着「<span style="color:red">冬物セール</span>」的海报。新年将至，拱廊上方悬挂着红白相间的装饰灯笼。
+近景（人物+道具）	ぐるみ站在一家洋服店的橱窗前，鼻子贴在玻璃上，眼巴巴地看着橱窗里模特身上的<span style="color:red">新しい洋服</span>（あたらしいようふく）——一件带有传统花纹的现代款式冬装。ぐるみ的一只小手放在自己身上穿着的旧衣服上，露出羡慕的眼神。旁边地上放着一个小小<span style="color:red">福袋</span>。
+特写（表情）	双眼变成星星状闪闪发光，嘴巴微张。橱窗玻璃上倒映出ぐるみ渴望的表情，和模特身上的新衣服重叠在一起。表情是「<span style="color:red">ほしい</span>…！」的强烈愿望。
+服装	冬装（稍微有点旧的棉衣，和想要的“新衣服”形成对比）
+持ち物	<span style="color:red">福袋</span>
+情绪线	愿望 — 渴望
+🎬 构图与镜头：
+
+视角：从橱窗内侧看向外面的ぐるみ（透过玻璃的反光效果）
+
+构图：橱窗作为画面主要框架，模特和新衣服占据画面右半部，ぐるみ在左侧透过玻璃往里看。玻璃上有半透明的反光，映出ぐるみ渴望的脸和身后商店街的灯笼。形成「现实/渴望」的双重画面
+
+镜头：50mm标准镜头，焦点在ぐるみ的眼睛和橱窗内的衣服上，背景商店街轻微虚化
+
+光线：冬日柔和散射光从拱廊顶棚洒下。橱窗内有暖色射灯照亮模特和新衣服，形成「温暖明亮的渴望之物」和「稍冷的外部现实」的光线对比。雪花在顶棚外飘落
+
+光晕：橱窗射灯在玻璃上形成柔和的光晕，ぐるみ呼出的白气在冷空气中可见
+
+🎨 AI提示词：
+
+text
+A wistful winter shopping illustration in Gurumi art style, soft winter light through a shopping arcade.
+Window-reflection composition: a round white fluffy creature (Gurumi) in slightly worn winter clothes, standing outside a clothing shop in Sendai Ichibancho shopping arcade, face pressed against the glass, eyes turned into sparkling stars at the new winter outfit on a mannequin inside. The creature's tiny hand rests on its own older coat. The shop window glows with warm display lighting. Glass reflection shows the creature's longing face superimposed over the desired clothes, with New Year lanterns and falling snow reflected behind. Arcade ceiling shows hints of snowflakes drifting down. Warm shop lights contrast with cool winter exterior. The creature's breath makes tiny white puffs in the cold air. A small lucky bag sits at its feet. --ar 16:9 --style expressive
+
+
+第18課：携帯電話はとても小さくなりました
+层级	内容
+课文主题	<span style="color:red">なる</span>・<span style="color:red">する</span>（変化） — 仙台のこたつ部屋
+远景（地理彩蛋）	透过和室窗户，外面是雪中庭院。松島湾的岛屿群在远处隐约可见，被白雪覆盖。庭院里的石灯笼顶部积了厚厚一层雪。雪花静静飘落。
+中景（课文主体） ★	仙台近郊的日式旅馆和室。房间中央放着<span style="color:red">こたつ</span>（被炉），上面的橘子皮剥了一半。墙上挂着水墨山水挂轴。角落的电视里放着新年特别节目。こたつ旁边放着<span style="color:red">携帯電話</span>（けいたいでんわ）——是旧款大块头手机和新款小巧手机的对比。
+近景（人物+道具）	ぐるみ半身探出こたつ，正拿着两部手机做比较。左手举着旧式大手机（像砖头一样大），右手拿着新式<span style="color:red">小さくなった</span>（ちいさくなった）智能手机。旧手机比ぐるみ的脸还大，新手机正好合适。こたつ桌上还放着<span style="color:red">みかん</span>和一杯热茶。
+特写（表情）	看着旧手机时眉头皱起（好重好大），看向新手机时眼睛亮起来，露出惊讶的表情。眼神在新旧手机之间来回移动，表情是「こんなに<span style="color:red">小さくなった</span>！」的感叹。
+服装	冬装室内服（厚棉和服式家居服），裹着こたつ布団
+持ち物	新旧两部<span style="color:red">携帯電話</span>、<span style="color:red">みかん</span>
+情绪线	比较 — 感叹变化
+🎬 构图与镜头：
+
+视角：俯拍（从こたつ正上方往下看），同时看到ぐるみ、两部手机、こたつ上的物品
+
+构图：こたつ桌面作为画面主体，ぐるみ从こたつ布団里探出上半身居中。左手举的大手机和右手举的小手机形成强烈的「大/小」对比，是画面的核心视觉焦点。窗外雪中庭院占据画面上方1/4
+
+镜头：35mm广角微俯视，焦点在ぐるみ的两只手和两部手机上，窗外远景柔焦
+
+光线：室内暖色こたつ灯泡的橙黄光线为主。窗外是雪天柔和的白色反射光。冷暖对比，こたつ周围特别温暖。两部手机屏幕发出微弱的冷光
+
+光晕：こたつ暖光在ぐるみ脸部形成柔和阴影，窗外雪光在纸拉门上透出柔和的白色光芒。橘子皮上的细小油光在暖光下闪烁
+
+🎨 AI提示词：
+
+text
+A cozy comparison scene illustration in Gurumi art style, warm kotatsu glow against snowy window light.
+Overhead kotatsu composition: a round white fluffy creature (Gurumi) in thick winter loungewear, peeking out from under a warm kotatsu blanket. In one tiny hand, a comically large old brick-style mobile phone; in the other, a sleek new smartphone. The size contrast is dramatic and adorable. The kotatsu tabletop has half-peeled mikan oranges and a steaming cup of tea. Through the shoji window, a snowy Japanese garden with a snow-covered stone lantern is visible, and the pine-clad islands of Matsushima Bay can be faintly seen in the distance. The creature's expression shifts from a frown at the heavy old phone to wide-eyed wonder at the tiny new one. Warm orange kotatsu light contrasts with cool white snow light through the paper screen. Intimate, warm, nostalgic winter atmosphere. --ar 16:9 --style expressive
+
+
+第19課：部屋のかぎを忘れないでください
+层级	内容
+课文主题	<span style="color:red">ないでください</span>・<span style="color:red">なければなりません</span>（禁止・義務） — 仙台駅
+远景（地理彩蛋）	仙台駅东口外，远处矗立着仙台うみの杜水族館的巨大観覧車（摩天轮），在冬日晴空下缓缓旋转。站前广场上行人穿着厚外套穿梭往来。
+中景（课文主体） ★	仙台駅的改札口（检票口）附近。有自动改札机、精算所、みどりの窓口。墙上贴着<span style="color:red">「忘れ物注意」</span>的海报和<span style="color:red">「禁煙」</span>标识。站内广播喇叭正在播放提醒。地上有指引方向的箭头标识。
+近景（人物+道具）	ぐるみ刚出改札口，突然站住，表情慌张地在翻口袋。一只小手摸着自己身上的口袋——房间的<span style="color:red">かぎ</span>（钥匙）不见了！行李箱放在脚边。旁边一位站务员大叔弯腰关切地看着ぐるみ，手里拿着<span style="color:red">落とし物</span>的登记本。
+特写（表情）	额头冒汗，嘴巴张大，眼睛惊慌地左右乱看。一只手在空口袋里掏来掏去。表情是「鍵がない！<span style="color:red">忘れた</span>！」的惊慌失措。
+服装	外出冬装（厚外套、围巾、帽子），准备出行
+持ち物	行李箱、空口袋（<span style="color:red">かぎ</span>忘了）
+情绪线	出发 — 惊慌
+🎬 构图与镜头：
+
+视角：平视，从站务员角度看向ぐるみ
+
+构图：ぐるみ在画面中央偏左，慌张翻口袋的动作形成动态焦点。站务员在右侧弯腰，形成「大人帮助小孩」的呼应关系。改札口和禁烟标志在中景。远处摩天轮在左上角窗外
+
+镜头：35mm标准镜头，焦点在ぐるみ惊慌的表情和翻口袋的动作上，背景车站虚化
+
+光线：白天车站内明亮的荧光灯照明，整体偏冷白。窗外冬日阳光呈暖色对比。站内光线均匀无明显阴影
+
+光晕：无明显光晕。窗户玻璃有轻微反光。电子看板文字发出红色光
+
+🎨 AI提示词：
+
+text
+A comedic panic scene illustration in Gurumi art style, bright station interior lighting.
+Confrontational composition: a round white fluffy creature (Gurumi) in thick winter coat, scarf, and hat, standing frozen outside a ticket gate at Sendai Station, frantically patting empty pockets with a panicked expression. The room key is missing! A kind station attendant in uniform bends down to help, holding a lost-and-found notebook. The ticket gate machines and a "No Smoking" sign are visible in the middle ground. Through the station windows on the upper left, the giant Ferris wheel of Sendai Umino-Mori Aquarium rotates against a clear winter sky. The creature has visible sweat drops and wide, darting eyes. Bright fluorescent station lighting with cool tones, warm sunlight through windows providing contrast. The expression is pure "I forgot the key!" panic. --ar 16:9 --style expressive
+
+
+第20課：スミスさんはピアノを弾くことができます
+层级	内容
+课文主题	<span style="color:red">ことができる</span>（可能）・<span style="color:red">〜前に</span> — 東北の雪まつり会場
+远景（地理彩蛋）	雪まつり会場の遠方に、蔵王連峰の雪化粧した山々が連なる。中でも蔵王のお釜（火口湖）の稜線が特徴的なシルエットを見せている。会場には雪灯籠が並び、夕暮れの空が紫からオレンジにグラデーションしている。
+中景（课文主体） ★	東北地方の<span style="color:red">雪まつり</span>（ゆきまつり）会場。雪で作られた小さなかまくら（雪洞）がいくつも並び、中にろうそくが灯っている。ステージでは地域の<span style="color:red">餅つき</span>（もちつき）実演が行われている。屋台が数軒並び、焼きそばや甘酒のいい匂い。会場入り口に「<span style="color:red">冬祭り</span>」ののぼり旗。
+近景（人物+道具）	ぐるみがステージ前に立ち、両手で小さな<span style="color:red">杵</span>（きね）を持って餅つきに挑戦中。周りの地元の人たちが「よいしょ！」の掛け声。ぐるみの<span style="color:red">前に</span>（まえに）、おばあさんが大きな杵でリズムよく餅をついている。ぐるみはその動きをじっと観察してから自分もやってみている。
+特写（表情）	杵を振り上げる時は真剣な表情で口をぎゅっと結ぶ。餅に杵が当たった瞬間、目が輝いて「<span style="color:red">できた</span>！」の喜びの笑顔。体全体で「自分にも<span style="color:red">できる</span>！」と表現している。
+服装	冬の防寒着（もこもこジャケット、耳あて付き帽子、手袋）
+持ち物	<span style="color:red">杵</span>（きね）、餅
+情绪线	挑战 — 达成感
+🎬 构图与镜头：
+
+视角：从正面低角度拍摄，让ぐるみ的挑战显得更有勇気
+
+构图：ぐるみが画面中央下寄り、杵を振り上げた瞬間を捉える。背後におばあさんが優しく見守る姿。左右に雪洞の灯りがぼんやりと並び、上方遠景に蔵王連峰。人物の動きを感じさせる斜めの構図
+
+镜头：35mmレンズ、ぐるみの振り上げた杵と表情にピント。背景の雪洞と山は浅い被写界深度でやわらかく
+
+光线：夕暮れの暖かい黄金光。雪洞の中のろうそくの灯りがオレンジ色に揺らめき、雪面に反射している。空は紫からオレンジへのグラデーション。全体的に温かみのある光に包まれている
+
+光晕：雪洞のろうそくの灯りがふんわりとした光暈（こううん）を作り、雪の表面が黄金色に輝いている
+
+🎨 AI提示词：
+
+text
+A heartwarming winter festival illustration in Gurumi art style, magical dusk light with candle glow.
+Low-angle action composition: a round white fluffy creature (Gurumi) in puffy winter jacket, earmuffs, and mittens, bravely lifting a small wooden mallet to pound mochi at a snow festival in Tohoku. Before the creature, a grandmother rhythmically pounds with a larger mallet as a demonstration. The creature's expression shifts from nervous determination (mouth tightly closed, brow furrowed) to pure joy on contact — "I can do it!" Snow lanterns line both sides of the scene, candles glowing warmly inside. In the distance, the distinctive silhouette of Mount Zao's volcanic crater lake stands against a dusk sky that gradients from purple to orange. Festival banners and food stalls with steaming sweet sake add atmosphere. Golden hour light combined with the warm orange glow of candles reflecting on snow. The scene captures the moment of discovering one's own ability. --ar 16:9 --style expressive
