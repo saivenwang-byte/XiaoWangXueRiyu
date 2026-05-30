@@ -6894,6 +6894,7 @@ body.mvp-app.is-splash-open #main-content {
   --splash-safe-bottom: env(safe-area-inset-bottom, 0px);
   --splash-brand-inset-top: max(10px, env(safe-area-inset-top, 0px));
   --splash-cta-inset-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  --splash-cta-lift: 50px;
   --splash-cover-anchor-x: 50%;
   --splash-cover-anchor-y: calc(52% + 10px);
   --splash-cover-fit: cover;
@@ -6941,7 +6942,7 @@ body.mvp-app.is-splash-open #main-content {
   padding:
     calc(var(--splash-brand-inset-top) + var(--splash-safe-top))
     var(--splash-pad-x)
-    calc(72px + var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
+    calc(96px + var(--splash-cta-lift) + var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
   pointer-events: none;
 }
 
@@ -6960,15 +6961,19 @@ body.mvp-app.is-splash-open #main-content {
   display: none;
 }
 
-/* CTA dock：上移一框，留拇指区 */
+/* CTA dock：上移 50px · 主按钮 + 下方两行合规 */
 .splash-screen--complete .splash-cta {
   position: absolute;
   left: max(12px, env(safe-area-inset-left, 0px));
   right: max(12px, env(safe-area-inset-right, 0px));
-  bottom: calc(var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
+  bottom: calc(var(--splash-cta-lift) + var(--splash-cta-inset-bottom) + var(--splash-safe-bottom));
   z-index: 4;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   text-align: center;
 }
 
@@ -6995,12 +7000,16 @@ body.mvp-app.is-splash-open #main-content {
 }
 
 .splash-screen--complete .splash-disclaimer {
-  margin: 8px 12px 0;
-  max-width: 320px;
+  max-width: min(320px, 92%);
+  margin: 0;
   font-size: 10px;
   line-height: 1.45;
   color: #90a4ae;
   text-align: center;
+}
+
+.splash-screen--complete .splash-disclaimer-line {
+  display: block;
 }
 
 .splash-screen--complete .splash-btn-start,
@@ -7009,7 +7018,7 @@ body.mvp-app.is-splash-open #main-content {
   width: min(88%, 340px);
   max-width: 340px;
   min-height: 48px;
-  margin: 0 auto;
+  margin: 0;
   display: block;
   border: none;
   border-radius: 999px;

@@ -23,6 +23,16 @@ const HomeSplash = (function () {
     return d.innerHTML;
   }
 
+  /** 合规声明 · 两行（CTA 按钮下方） */
+  function disclaimerHtmlTwoLines(text) {
+    const t = (text || "").trim();
+    const idx = t.indexOf("，");
+    if (idx > 0 && idx < t.length - 1) {
+      return `<span class="splash-disclaimer-line">${escapeHtml(t.slice(0, idx + 1))}</span><span class="splash-disclaimer-line">${escapeHtml(t.slice(idx + 1).trim())}</span>`;
+    }
+    return `<span class="splash-disclaimer-line">${escapeHtml(t)}</span>`;
+  }
+
   function coverQuery() {
     return SPLASH_ASSET_VER ? `?s=${encodeURIComponent(SPLASH_ASSET_VER)}` : "";
   }
@@ -78,11 +88,15 @@ const HomeSplash = (function () {
           <h1 class="splash-title">${escapeHtml(title)}</h1>
           <p class="splash-path jp">学習の道</p>
           <p class="splash-sub jp">新幹線 24 駅</p>
-          ${disclaimer ? `<p class="splash-disclaimer zh-annotation">${escapeHtml(disclaimer)}</p>` : ""}
         </header>
         <div class="splash-map-stage" aria-hidden="true"></div>
         <footer class="splash-cta">
           <button type="button" class="btn primary splash-btn-start" id="btn-splash-start">开始学习</button>
+          ${
+            disclaimer
+              ? `<p class="splash-disclaimer zh-annotation" aria-label="${escapeHtml(disclaimer)}">${disclaimerHtmlTwoLines(disclaimer)}</p>`
+              : ""
+          }
         </footer>
       </div>`;
   }

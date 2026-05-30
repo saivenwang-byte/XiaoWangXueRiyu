@@ -2,7 +2,7 @@
   "schema": "hyouga-version-history/v1",
   "current": {
     "product": "1.0.2",
-    "cache": "399",
+    "cache": "401",
     "date": "2026-05-30",
     "note": "提示卡链接修复·L1会話黄卡·开机底图下移 v397",
     "git_tag": null,
